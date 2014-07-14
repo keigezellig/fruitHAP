@@ -18,7 +18,8 @@ namespace EventNotifier.Plugins.DesktopNotifier
 
         public void HandleMessage(DoorMessage message)
         {
-           SetupGrowl();
+           logger.Info("Sending message to Growl...");
+            SetupGrowl();
             
             if (message.EventType != EventType.Ring) 
                 return;

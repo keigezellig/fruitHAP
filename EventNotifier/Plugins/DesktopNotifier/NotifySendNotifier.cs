@@ -15,10 +15,18 @@ namespace EventNotifier.Plugins.DesktopNotifier
             this.logger = logger ?? NullLogger.Instance;
             
         }
+
+        private bool IsLinux()
+        {
+            int p = (int) Environment.OSVersion.Platform;
+            return (p == 4) || (p == 6) || (p == 128);
+
+        }
+
         public void HandleMessage(DoorMessage message)
         {
             
-            if (message.EventType == EventType.Ring)
+            if (message.EventType == EventType.Ring && IsLinux())
             {
                 logger.Info("Doorbell rang!! Sending notification to desktop");
                 ExecuteCommand(message);    

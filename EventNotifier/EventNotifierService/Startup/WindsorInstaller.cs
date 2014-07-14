@@ -23,6 +23,11 @@ namespace EventNotifierService.Startup
             var busBuilder = new BusBuilder(container);
             container.AddFacility<LoggingFacility>(
                 f => f.LogUsing(new NLogFactory(NLogConfigurationFactory.CreateNLogConfiguration())));
+            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(@"C:\develop\projects\doorbell\EventNotifier\Plugins\bin"))
+                .IncludeNonPublicTypes()
+                .BasedOn<IMessageHandler>()
+                .WithService.FromInterface()
+                .LifestyleTransient());
             container.Register(
                 Component.For<IEventNotifier>().ImplementedBy<EventNotifier>().LifestyleTransient(),
                 Component.For<IBus>().UsingFactoryMethod(busBuilder.CreateMessageBus).LifestyleSingleton(),
@@ -31,11 +36,7 @@ namespace EventNotifierService.Startup
                 Component.For<IEasyNetQLogger>().ImplementedBy<EasyNetQLoggerAdapter>().LifestyleSingleton()
                 );
 
-            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(@"C:\develop\projects\EventNotifier\EventNotifier\Plugins\bin"))
-                .IncludeNonPublicTypes()
-                .BasedOn<IMessageHandler>()
-                .WithService.FromInterface()
-                .LifestyleTransient());
+            
 
            
 
