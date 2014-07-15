@@ -1,38 +1,37 @@
 ﻿using System;
 using System.Diagnostics;
 using Castle.Core.Logging;
-using EventNotifierService.Messages;
+using EventNotifierService.Common.Messages;
+using EventNotifierService.Common.Plugin;
 
 namespace EventNotifier.Plugins.DesktopNotifier
 {
-    public class NotifySendNotifier : IMessageHandler
+    public class NotifySendNotifier : PluginBase
     {
-        private readonly ILogger logger;
         private const string CmdLine = "/usr/bin/notify-send -u normal \"{0}\" \"{1}\" ";
         
-        public NotifySendNotifier(ILogger logger)
+        public NotifySendNotifier(ILogger logger) : base(logger)
         {
-            this.logger = logger ?? NullLogger.Instance;
-            
         }
 
-        private bool IsLinux()
+        private bool IsServiceRunningOnLinux()
         {
             int p = (int) Environment.OSVersion.Platform;
             return (p == 4) || (p == 6) || (p == 128);
-
         }
 
-        public void HandleMessage(DoorMessage message)
+        protected override bool CanProcessMessage(DoorMessage message)
         {
-            
-            if (message.EventType == EventType.Ring && IsLinux())
-            {
-                logger.Info("Doorbell rang!! Sending notification to desktop");
-                ExecuteCommand(message);    
-            }
+            return message.EventType == EventType.Ring && IsServiceRunningOnLinux();
         }
 
+        protected override void ProcessMessage(DoorMessage message)
+        {
+            logger.Info("Doorbell rang!! Sending notification to desktop");
+            ExecuteCommand(message);
+        }
+
+       
         private void ExecuteCommand(DoorMessage message)
         {
             string notificationMessage = string.Format("The doorbell rang at {0}. Please go answer it!",

@@ -1,9 +1,10 @@
 ﻿using System;
 using EasyNetQ;
 
-namespace EventNotifierService.Messages
+namespace EventNotifierService.Common.Messages
 {
     [Queue("DoorMessagesQueue", ExchangeName = "EventExchange")]
+// ReSharper disable once ClassNeverInstantiated.Global
     public class DoorMessage
     {
         public DateTime TimeStamp {get; set;}

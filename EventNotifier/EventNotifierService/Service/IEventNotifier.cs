@@ -1,4 +1,4 @@
-﻿namespace EventNotifierService
+﻿namespace EventNotifierService.Service
 {
     public interface IEventNotifier
     {

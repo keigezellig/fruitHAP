@@ -1,4 +1,5 @@
 ﻿using Castle.Windsor;
+using EventNotifierService.Service;
 using NLog;
 using Topshelf;
 using Topshelf.HostConfigurators;

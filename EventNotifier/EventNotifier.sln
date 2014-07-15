@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesktopNotifier", "Plugins\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{75003470-38AB-4CA0-B351-3ACBC534BC6E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{729B860F-6351-4D48-B06C-77B1B6D42DB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{3189A247-E533-4E97-B26C-D065A0117881}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3189A247-E533-4E97-B26C-D065A0117881}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3189A247-E533-4E97-B26C-D065A0117881}.Release|Any CPU.Build.0 = Release|Any CPU
+		{729B860F-6351-4D48-B06C-77B1B6D42DB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{729B860F-6351-4D48-B06C-77B1B6D42DB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{729B860F-6351-4D48-B06C-77B1B6D42DB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{729B860F-6351-4D48-B06C-77B1B6D42DB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

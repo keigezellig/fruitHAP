@@ -1,29 +1,30 @@
-﻿using System;
-using Castle.Core.Logging;
-using EventNotifierService.Messages;
+﻿using Castle.Core.Logging;
+using EventNotifierService.Common.Messages;
+using EventNotifierService.Common.Plugin;
 using Growl.Connector;
 
 namespace EventNotifier.Plugins.DesktopNotifier
 {
-    public class GrowlNotifier : IMessageHandler
+    public class GrowlNotifier : PluginBase
     {
-        private readonly GrowlConnector growlConnector;
-        private readonly ILogger logger;
+        private readonly GrowlConnector growlConnector;        
 
-        public GrowlNotifier(ILogger logger)
-        {
-            this.logger = logger;
+        public GrowlNotifier(ILogger logger) : base(logger)
+        {            
             growlConnector = new GrowlConnector();
+            
         }
 
-        public void HandleMessage(DoorMessage message)
+        protected override bool CanProcessMessage(DoorMessage message)
+        {
+            return message.EventType == EventType.Ring && GrowlConnector.IsGrowlRunningLocally();
+
+        }
+
+        protected override void ProcessMessage(DoorMessage message)
         {
            logger.Info("Sending message to Growl...");
-            SetupGrowl();
-            
-            if (message.EventType != EventType.Ring) 
-                return;
-
+           SetupGrowl();
             string notificationMessage = string.Format("The doorbell rang at {0}. Please go answer it!",message.TimeStamp);            
             var notification = new Notification("EventNotifier", "DOOR", null, "DINGDONG", notificationMessage);            
             growlConnector.Notify(notification);
@@ -31,6 +32,10 @@ namespace EventNotifier.Plugins.DesktopNotifier
 
         private void SetupGrowl()
         {
+            if (!GrowlConnector.IsGrowlRunningLocally())
+            {
+                logger.Warn("Growl is not running");
+            }
             var application = new Application("EventNotifier");
             var doorEventReceived = new NotificationType("DOOR", "Door");
             growlConnector.Register(application, new[] { doorEventReceived });

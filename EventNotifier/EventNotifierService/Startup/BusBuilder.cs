@@ -19,7 +19,7 @@ namespace EventNotifierService.Startup
             {
                 throw new EventNotifierServiceException("MQ connection string is missing");
             }
-            return RabbitHutch.CreateBus(connectionString, x => x.Register<IEasyNetQLogger>(_ => container.Resolve<IEasyNetQLogger>()));
+            return RabbitHutch.CreateBus(connectionString, x => x.Register(_ => container.Resolve<IEasyNetQLogger>()));
         }
     }
 }

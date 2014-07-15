@@ -1,19 +1,20 @@
 ﻿using System;
-using EasyNetQ;
-using EventNotifierService.Messages;
 using System.Collections.Generic;
 using Castle.Core.Logging;
+using EasyNetQ;
+using EventNotifierService.Common.Messages;
+using EventNotifierService.Common.Plugin;
 
-namespace EventNotifierService
+namespace EventNotifierService.Service
 {
     public class EventNotifier : IEventNotifier
     {
         private readonly IBus bus;
-        private IList<IMessageHandler> handlers;
+        private readonly IList<IPlugin> handlers;
         private IDisposable consumer;
         private ILogger logger = NullLogger.Instance;        
         
-        public EventNotifier(IBus bus, IList<IMessageHandler> handlers)
+        public EventNotifier(IBus bus, IList<IPlugin> handlers)
         {
             this.bus = bus;
             this.handlers = handlers;
