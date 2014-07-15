@@ -8,7 +8,7 @@ namespace EventNotifier.Plugins.DesktopNotifier
 {
     public class NotifySendNotifier : PluginBase
     {
-        private const string CmdLine = "/usr/bin/notify-send -u normal \"{0}\" \"{1}\" ";
+        private const string CmdLine = "/usr/bin/notify-send -u normal `{0}` `{1}` ";
         
         public NotifySendNotifier(ILogger logger) : base(logger)
         {
@@ -34,9 +34,11 @@ namespace EventNotifier.Plugins.DesktopNotifier
        
         private void ExecuteCommand(DoorMessage message)
         {
-            string notificationMessage = string.Format("The doorbell rang at {0}. Please go answer it!",
+            string notificationMessage = string.Format("The doorbell rang at {0}. Please go answer it",
                 message.TimeStamp);
-            var process = Process.Start(string.Format(CmdLine, "DINGDONG", notificationMessage));
+            string cmdToSend = string.Format(CmdLine, "DINGDONG", notificationMessage); 
+            logger.DebugFormat("cmd to execute: {0}", cmdToSend);
+            var process = Process.Start(cmdToSend);
             process.WaitForExit();
             logger.DebugFormat("Exit code notify: {0}", process.ExitCode);
         }
