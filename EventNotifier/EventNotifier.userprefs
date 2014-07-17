@@ -1,22 +1,22 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="EventNotifierService/Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Plugins/DesktopNotifier/NotifySendNotifier.cs">
     <Files>
-      <File FileName="EventNotifierService/Messages/DoorMessage.cs" Line="26" Column="1" />
-      <File FileName="EventNotifierService/IEventNotifier.cs" Line="10" Column="2" />
-      <File FileName="EventNotifierService/EventNotifier.cs" Line="28" Column="21" />
-      <File FileName="EventNotifierService/Configuration/BusBuilder.cs" Line="16" Column="65" />
-      <File FileName="EventNotifierService/Configuration/WindsorInstaller.cs" Line="21" Column="1" />
-      <File FileName="EventNotifierService/Configuration/ServiceHostConfigurator.cs" Line="21" Column="79" />
-      <File FileName="EventNotifierService/Program.cs" Line="18" Column="62" />
+      <File FileName="EventNotifierService/Program.cs" Line="1" Column="1" />
+      <File FileName="EventNotifierService/app.config" Line="1" Column="1" />
+      <File FileName="Plugins/DesktopNotifier/NotifySendNotifier.cs" Line="31" Column="37" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
+          <Node name="Plugins" expanded="True">
+            <Node name="DesktopNotifier" expanded="True">
+              <Node name="References" selected="True" />
+            </Node>
+          </Node>
           <Node name="EventNotifierService" expanded="True">
-            <Node name="Configuration" expanded="True" />
-            <Node name="Messages" expanded="True" />
-            <Node name="Program.cs" selected="True" />
+            <Node name="Service" expanded="True" />
+            <Node name="Startup" expanded="True" />
           </Node>
         </State>
       </Pad>
