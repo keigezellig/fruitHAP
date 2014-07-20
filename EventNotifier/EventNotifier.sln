@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{7500
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{729B860F-6351-4D48-B06C-77B1B6D42DB0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageQueuePublisher", "MessageQueuePublisher\MessageQueuePublisher.csproj", "{93BBB5D7-8F22-47D3-A41A-DD85ACE94829}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{729B860F-6351-4D48-B06C-77B1B6D42DB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{729B860F-6351-4D48-B06C-77B1B6D42DB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{729B860F-6351-4D48-B06C-77B1B6D42DB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93BBB5D7-8F22-47D3-A41A-DD85ACE94829}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93BBB5D7-8F22-47D3-A41A-DD85ACE94829}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93BBB5D7-8F22-47D3-A41A-DD85ACE94829}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93BBB5D7-8F22-47D3-A41A-DD85ACE94829}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
