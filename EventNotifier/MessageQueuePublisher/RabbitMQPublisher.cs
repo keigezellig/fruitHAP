@@ -5,11 +5,11 @@ using EventNotifierService.Common.Messages;
 
 namespace DoorPi.MessageQueuePublisher
 {
-    public class RabbitMQPublisher : IMQPublisher
+    public class RabbitMqPublisher : IMQPublisher
     {
         private IBus messageBus;
 
-        public RabbitMQPublisher(string connectionString)
+        public RabbitMqPublisher(string connectionString)
         {
             messageBus = CreateMessageBus(connectionString);
         }
