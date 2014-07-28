@@ -54,6 +54,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GrowlNotifier.cs" />
+    <Compile Include="NotifySendConfiguration.cs" />
+    <Compile Include="NotifySendConfigProvider.cs" />
     <Compile Include="NotifySendNotifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

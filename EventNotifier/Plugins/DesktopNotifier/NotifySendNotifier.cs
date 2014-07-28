@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using Castle.Core.Logging;
 using EventNotifierService.Common.Messages;
 using EventNotifierService.Common.Plugin;
@@ -8,10 +9,14 @@ namespace EventNotifier.Plugins.DesktopNotifier
 {
     public class NotifySendNotifier : PluginBase
     {
-        private const string CmdLine = "/usr/bin/notify-send -u normal \"{0}\" \"{1}\" ";
+        private readonly IConfigProvider<NotifySendConfiguration> configProvider;
+        private readonly NotifySendConfiguration configuration;
         
-        public NotifySendNotifier(ILogger logger) : base(logger)
+        public NotifySendNotifier(ILogger logger, IConfigProvider<NotifySendConfiguration> configProvider) : base(logger)
         {
+            this.configProvider = configProvider;
+            this.name = "NotifySendNotifier";
+            configuration = configProvider.LoadConfigFromFile(name + ".xml");
         }
 
         private bool IsServiceRunningOnLinux()
@@ -20,9 +25,29 @@ namespace EventNotifier.Plugins.DesktopNotifier
             return (p == 4) || (p == 6) || (p == 128);
         }
 
-        protected override bool CanProcessMessage(DoorMessage message)
+        protected override bool ShouldMessageBeProcessed(DoorMessage message)
         {
-            return message.EventType == EventType.Ring && IsServiceRunningOnLinux();
+            if (configuration == null)
+            {
+                logger.Error("No configuration available");
+                return false;
+            }
+
+            if (!IsServiceRunningOnLinux())
+            {
+                logger.Warn("Service is not running on a Linux machine");
+                return false;
+            }
+
+
+            if (!File.Exists(configuration.FullPathToNotifySendExecutable))
+            {
+                logger.ErrorFormat("Notify-send executable not found at {0}. Check configuration",
+                    configuration.FullPathToNotifySendExecutable);
+            }
+
+
+            return message.EventType == EventType.Ring;
         }
 
         protected override void ProcessMessage(DoorMessage message)
@@ -36,10 +61,10 @@ namespace EventNotifier.Plugins.DesktopNotifier
         {
             string notificationMessage = string.Format("The doorbell rang at {0}. Please go answer it",
                 message.TimeStamp);
-
+            
             ProcessStartInfo cmdToSend = new ProcessStartInfo();
             logger.DebugFormat("cmd to execute: {0}", cmdToSend);
-            cmdToSend.FileName = "/usr/bin/notify-send";
+            cmdToSend.FileName = string.Format("{0}/notify-send",configuration.FullPathToNotifySendExecutable);
             cmdToSend.Arguments = string.Format("-u normal \"{0}\" \"{1}\"", "DINGDONG", notificationMessage);
             cmdToSend.UseShellExecute = false;
             var process = Process.Start(cmdToSend);

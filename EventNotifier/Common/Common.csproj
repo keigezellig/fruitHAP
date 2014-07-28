@@ -51,8 +51,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\XmlSerializerHelper.cs" />
     <Compile Include="IMQPublisher.cs" />
     <Compile Include="Messages\DoorMessage.cs" />
+    <Compile Include="Plugin\ConfigProviderBase.cs" />
+    <Compile Include="Plugin\IConfigProvider.cs" />
     <Compile Include="Plugin\IPlugin.cs" />
     <Compile Include="Plugin\PluginBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -60,6 +63,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

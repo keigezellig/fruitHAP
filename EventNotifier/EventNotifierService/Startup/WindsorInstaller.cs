@@ -30,7 +30,9 @@ namespace EventNotifierService.Startup
             string pluginDirectory = ConfigurationManager.AppSettings["PluginDirectory"] ?? Path.Combine(".","plugins");
             RegisterPlugins(container, pluginDirectory);
 
-            
+            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(pluginDirectory))
+                .BasedOn(typeof(IConfigProvider<>))
+                .WithServiceBase());            
         }
 
         private static void RegisterPlugins(IWindsorContainer container, string pluginDirectory)

@@ -1,13 +1,15 @@
-﻿using Castle.Core.Logging;
+﻿using System.Security.Cryptography.X509Certificates;
+using Castle.Core.Logging;
 using EventNotifierService.Common.Messages;
 
 namespace EventNotifierService.Common.Plugin
 {
     public abstract class PluginBase : IPlugin
     {
-        protected abstract bool CanProcessMessage(DoorMessage message);
+        protected abstract bool ShouldMessageBeProcessed(DoorMessage message);
         protected abstract void ProcessMessage(DoorMessage message);
         protected readonly ILogger logger;
+        protected string name;
 
         protected PluginBase(ILogger logger)
         {
@@ -16,7 +18,7 @@ namespace EventNotifierService.Common.Plugin
         
         public void HandleMessage(DoorMessage message)
         {
-            if (CanProcessMessage(message))
+            if (ShouldMessageBeProcessed(message))
             {
                 ProcessMessage(message);    
             }
@@ -25,6 +27,11 @@ namespace EventNotifierService.Common.Plugin
                 logger.Warn("Plugin cannot handle this message");
             }
 
+        }
+
+        public string Name
+        {
+            get { return name; }
         }
     }
 }

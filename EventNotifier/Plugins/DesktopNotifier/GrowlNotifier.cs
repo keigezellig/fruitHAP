@@ -15,7 +15,7 @@ namespace EventNotifier.Plugins.DesktopNotifier
             
         }
 
-        protected override bool CanProcessMessage(DoorMessage message)
+        protected override bool ShouldMessageBeProcessed(DoorMessage message)
         {
             return message.EventType == EventType.Ring && GrowlConnector.IsGrowlRunningLocally();
 
