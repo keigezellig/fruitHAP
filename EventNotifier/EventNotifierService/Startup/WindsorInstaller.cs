@@ -9,6 +9,7 @@ using Castle.Services.Logging.NLogIntegration;
 using Castle.Windsor;
 using Castle.Windsor.Installer;
 using EasyNetQ;
+using PushBullet = EventNotifier.Plugins.PushBullet;
 using EventNotifierService.Common.Plugin;
 using EventNotifierService.Logging;
 using EventNotifierService.Service;
@@ -37,18 +38,23 @@ namespace EventNotifierService.Startup
 
         private static void RegisterPlugins(IWindsorContainer container, string pluginDirectory)
         {
-            
-            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(pluginDirectory))                
+
+            container.Register(
+                          Component.For<PushBullet.IPushBulletService>().ImplementedBy<PushBullet.PushBulletService>().LifestyleTransient()
+                          );
+
+            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(pluginDirectory))
                 .BasedOn<IPlugin>()
-                .WithService.FromInterface()                
+                .WithService.FromInterface()
                 .LifestyleTransient());
+
         }
 
         private void RegisterMessageBus(IWindsorContainer container)
         {
             var busBuilder = new BusBuilder(container);
             container.Register(
-                Component.For<IEventNotifier>().ImplementedBy<EventNotifier>().LifestyleTransient(),
+                Component.For<IEventNotifier>().ImplementedBy<EventNotifierService.Service.EventNotifier>().LifestyleTransient(),
                 Component.For<IBus>().UsingFactoryMethod(busBuilder.CreateMessageBus).LifestyleSingleton()
                 );
         }

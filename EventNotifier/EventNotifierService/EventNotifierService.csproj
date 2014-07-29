@@ -110,5 +110,9 @@
       <Project>{729B860F-6351-4D48-B06C-77B1B6D42DB0}</Project>
       <Name>Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Plugins\PushBullet\Pushbullet.csproj">
+      <Project>{77605F14-13B1-409A-B577-941DD0871A6F}</Project>
+      <Name>Pushbullet</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
