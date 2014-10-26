@@ -36,6 +36,9 @@
     <Reference Include="Castle.Core">
       <HintPath>..\packages\Castle.Core.3.3.0\lib\net40-client\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\..\packages\RestSharp.104.4.0\lib\net4\RestSharp.dll</HintPath>
     </Reference>
@@ -52,6 +55,8 @@
     <Compile Include="PushBulletNotifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PushBulletService.cs" />
+    <Compile Include="Utils\NewtonJsonSerializer.cs" />
+    <Compile Include="Utils\PropertyNameContractResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Common.csproj">

@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net;
 using Castle.Core.Logging;
+using EventNotifier.Plugins.PushBullet.Utils;
 using RestSharp;
 using RestSharp.Deserializers;
+using RestSharp.Serializers;
 
 namespace EventNotifier.Plugins.PushBullet
 {
     public class PushBulletService : IPushBulletService
     {
-        private string accessToken;
         private ILogger logger;
         private RestProxy restProxy;
 
@@ -25,8 +24,24 @@ namespace EventNotifier.Plugins.PushBullet
             RestRequest request = new RestRequest(Method.POST);
             request.Resource = "/v2/pushes";
             request.RequestFormat = DataFormat.Json;
-            request.AddBody(new PostNoteRequestBody() {Type = "Note", Title = title, Body = body});
-            var result = restProxy.Execute<PostNoteResponse>(request);
+            request.JsonSerializer = new NewtonJsonSerializer();
+            request.AddBody(new PostNoteRequestBody() { PushType = "note", Title = title, Body = body });
+            
+            var response = restProxy.Execute(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                JsonDeserializer deserializer = new JsonDeserializer();
+                var errorResponse = deserializer.Deserialize<Dictionary<string, Error>>(response);
+                logger.Error("Error posting note to PushBullet");
+                logger.ErrorFormat("HTTP StatusCode: {0}",response.StatusCode);
+                logger.ErrorFormat("Response: {0}", errorResponse["error"]);
+            }
+            else
+            {
+                JsonDeserializer deserializer = new JsonDeserializer();
+                PostNoteResponse sucessResponse = deserializer.Deserialize<PostNoteResponse>(response);
+            }
+            
 
         }
 
@@ -35,29 +50,56 @@ namespace EventNotifier.Plugins.PushBullet
             restProxy = new RestProxy(accessToken, pushBulletUri);
         }
 
-
-
         private class PostNoteRequestBody
         {
-            public string Type { get; set; }
+            [SerializeAs(Name = "type")]
+            public string PushType { get; set; }
+            [SerializeAs(Name = "title")]
             public string Title { get; set; }
+            [SerializeAs(Name = "body")]
             public string Body { get; set; }
         }
 
+
+        
+        internal class Error
+        {
+            [DeserializeAs(Name = "type")]            
+            public string ErrorType { get; set; }
+            [DeserializeAs(Name = "message")]
+            public string Message { get; set; }
+            [DeserializeAs(Name = "param")]
+            public string Parameter { get; set; }
+            [DeserializeAs(Name = "cat")]
+            public string Cat { get; set; }
+
+            public override string ToString()
+            {
+                return string.Format("Type: {0} Message: {1} Parameter: {2} Kittycat: {3}", ErrorType, Message,
+                    Parameter, Cat);
+            }
+        }
+        
         internal class PostNoteResponse
         {
             [DeserializeAs(Name = "iden")]
             public string Identity { get; set; }
+
             [DeserializeAs(Name = "receiver_iden")]
             public string ReceiverIdentity { get; set; }
+
             [DeserializeAs(Name = "sender_email_normalized")]
             public string SenderEmailNormalized { get; set; }
+
             [DeserializeAs(Name = "sender_email")]
             public string SenderEmail { get; set; }
+
             [DeserializeAs(Name = "receiver_email_normalized")]
             public string ReceiverEmailNormalized { get; set; }
+
             [DeserializeAs(Name = "receiver_email")]
             public string ReceiverEmail { get; set; }
+
             public string Type { get; set; }
             public string Title { get; set; }
             public string Body { get; set; }
@@ -65,10 +107,10 @@ namespace EventNotifier.Plugins.PushBullet
             public bool Dismissed { get; set; }
             public DateTime Created { get; set; }
             public DateTime Modified { get; set; }
+        }
 
 
-
-            /*{
+        /*{
   ""iden": "ujxvzW0RqaypjArHrh8WLA",
     "sender_email_normalized": "mhjoosten666@gmail.com",
     "receiver_iden": "ujxvzW0Rqay",
@@ -84,7 +126,7 @@ namespace EventNotifier.Plugins.PushBullet
     "modified": 1406664511.9977,
     "sender_email": "mh.joosten666@gmail.com"
 }*/
-        }
+        
     }
 
     public class RestProxy
@@ -98,20 +140,23 @@ namespace EventNotifier.Plugins.PushBullet
             this.pushBulletUri = pushBulletUri;
         }
 
-        public T Execute<T>(RestRequest request) where T : new()
+        public IRestResponse Execute(RestRequest request)
         {
             var client = new RestClient();
             client.BaseUrl = pushBulletUri;
             client.Authenticator = new HttpBasicAuthenticator(accessToken, "");
-            var response = client.Execute<T>(request);
 
+            JsonDeserializer a = new JsonDeserializer();
+            var rawResponse = client.Execute(request);
+
+            var response = client.Execute(request);            
             if (response.ErrorException != null)
             {
-                const string message = "Error retrieving response.  Check inner details for more info.";
+                const string message = "error retrieving response.  Check inner details for more info.";
                 var ex = new ApplicationException(message, response.ErrorException);
                 throw ex;
             }
-            return response.Data;
+            return response;
         }
     }
 }
