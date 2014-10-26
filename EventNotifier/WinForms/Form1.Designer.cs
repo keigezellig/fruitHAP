@@ -51,8 +51,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(82, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Message server";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            this.label1.Text = "Message server";            
             // 
             // txtMessageServer
             // 
@@ -60,6 +59,8 @@
             this.txtMessageServer.Name = "txtMessageServer";
             this.txtMessageServer.Size = new System.Drawing.Size(248, 20);
             this.txtMessageServer.TabIndex = 2;
+            this.txtMessageServer.Text = "host=192.168.1.80;username=admin;password=admin";
+            this.txtMessageServer.TextChanged += new System.EventHandler(this.txtMessageServer_TextChanged);
             // 
             // Form1
             // 
