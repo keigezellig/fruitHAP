@@ -51,10 +51,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataObjects\ErrorResponse.cs" />
     <Compile Include="IPushBulletService.cs" />
+    <Compile Include="DataObjects\PostNoteRequest.cs" />
+    <Compile Include="DataObjects\PostNoteResponse.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="PushBulletNotifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PushBulletService.cs" />
+    <Compile Include="RestProxy.cs" />
     <Compile Include="Utils\NewtonJsonSerializer.cs" />
     <Compile Include="Utils\PropertyNameContractResolver.cs" />
   </ItemGroup>

@@ -1,9 +1,11 @@
 ﻿using Castle.Core.Logging;
+using EventNotifier.Plugins.PushBullet.Annotations;
 using EventNotifierService.Common.Messages;
 using EventNotifierService.Common.Plugin;
 
 namespace EventNotifier.Plugins.PushBullet
 {
+    [UsedImplicitly]
     public class PushBulletNotifier : PluginBase
     {
         private readonly IPushBulletService pushBulletService;
@@ -23,7 +25,7 @@ namespace EventNotifier.Plugins.PushBullet
         {
             string notificationMessage = string.Format("The doorbell rang at {0}. Please go answer it!", message.TimeStamp);
             string title = "DINGDONG";
-            pushBulletService.PostNote(title,notificationMessage);
+            pushBulletService.PostNote(title, notificationMessage);
         }
     }
 }
