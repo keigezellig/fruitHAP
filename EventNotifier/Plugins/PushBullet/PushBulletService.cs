@@ -25,9 +25,9 @@ namespace EventNotifier.Plugins.PushBullet
             restProxy = new RestProxy(accessToken, pushBulletUri);
         }
 
-        public void PostNote(string title, string body)
+        public void PostNote(string title, string body, string channel)
         {
-            var request = CreateNoteRequest(title, body);
+            var request = CreateNoteRequest(title, body, channel);
 
             var response = restProxy.Execute(request);
             if (response.StatusCode != HttpStatusCode.OK)
@@ -50,13 +50,13 @@ namespace EventNotifier.Plugins.PushBullet
             logger.ErrorFormat("Response: {0}", errorResponse["error"]);
         }
 
-        private RestRequest CreateNoteRequest(string title, string body)
+        private RestRequest CreateNoteRequest(string title, string body, string channel)
         {
             RestRequest request = new RestRequest(Method.POST);
             request.Resource = "/v2/pushes";
             request.RequestFormat = DataFormat.Json;
             request.JsonSerializer = new NewtonJsonSerializer();
-            request.AddBody(new PostNoteRequest {PushType = "note", Title = title, Body = body});
+            request.AddBody(new PostNoteRequest {PushType = "note", Title = title, Body = body, Channel = channel});
             return request;
         }
         

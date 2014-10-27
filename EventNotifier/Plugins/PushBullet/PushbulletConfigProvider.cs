@@ -15,7 +15,7 @@ namespace EventNotifier.Plugins.PushBullet
         protected override PushbulletConfiguration LoadFromFile(string fileName)
         {            
             var result = XmlSerializerHelper.Deserialize<PushbulletConfiguration>(fileName);
-            logger.DebugFormat("Url={0}, ApiKey={1}",result.PushbulletUri, result.ApiKey);
+            logger.DebugFormat("Url={0}, ApiKey={1}, Channel={2}",result.PushbulletUri, result.ApiKey, result.Channel);
             return result;
         }
 

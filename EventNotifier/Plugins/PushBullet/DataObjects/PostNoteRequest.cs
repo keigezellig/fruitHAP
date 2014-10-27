@@ -11,5 +11,7 @@ namespace EventNotifier.Plugins.PushBullet.DataObjects
         public string Title { [UsedImplicitly] get; set; }
         [SerializeAs(Name = "body")]
         public string Body { [UsedImplicitly] get; set; }
+        [SerializeAs(Name = "channel_tag")]
+        public string Channel { [UsedImplicitly] get; set; }
     }
 }

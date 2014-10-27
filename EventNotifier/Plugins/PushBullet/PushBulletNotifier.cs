@@ -9,13 +9,13 @@ namespace EventNotifier.Plugins.PushBullet
     public class PushBulletNotifier : PluginBase
     {
         private readonly IPushBulletService pushBulletService;
-        
+        private PushbulletConfiguration config;
 
         public PushBulletNotifier(ILogger logger, IPushBulletService pushBulletService, IConfigProvider<PushbulletConfiguration> configProvider) : base(logger)
         {
             name = "Pushbullet";            
             this.pushBulletService = pushBulletService;
-            var config = configProvider.LoadConfigFromFile(name + ".xml");            
+            config = configProvider.LoadConfigFromFile(name + ".xml");            
             pushBulletService.Initialize(config.ApiKey, config.PushbulletUri);            
         }
 
@@ -28,7 +28,7 @@ namespace EventNotifier.Plugins.PushBullet
         {
             string notificationMessage = string.Format("The doorbell rang at {0}. Please go answer it!", message.TimeStamp);
             string title = "DINGDONG";
-            pushBulletService.PostNote(title, notificationMessage);
+            pushBulletService.PostNote(title, notificationMessage,config.Channel);
         }
     }
 }
