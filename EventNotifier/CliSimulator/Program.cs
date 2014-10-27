@@ -1,7 +1,5 @@
 ﻿using System;
-using DoorPi.MessageQueuePublisher;
-using EventNotifierService.Common;
-using EventNotifierService.Common.Messages;
+using SimulatorCommon;
 
 namespace DoorPi.CliSimulator
 {
@@ -20,12 +18,7 @@ namespace DoorPi.CliSimulator
 
             try
             {
-                using (IMQPublisher publisher = new RabbitMqPublisher(connectionString))
-                {
-
-                    DoorMessage message = new DoorMessage {EventType = EventType.Ring, TimeStamp = DateTime.Now};
-                    publisher.Publish(message);
-                }
+                SimulatorLogic.PublishRingMessage(connectionString,@"C:\Users\Public\Pictures\Sample Pictures\desert.jpg");
             }
             catch (Exception ex)
             {

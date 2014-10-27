@@ -9,6 +9,7 @@ namespace EventNotifierService.Common.Messages
     {
         public DateTime TimeStamp {get; set;}
         public EventType EventType { get; set; }
+        public string EncodedImage { get; set; }
 
         public override string ToString()
         {

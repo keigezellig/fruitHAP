@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
-using DoorPi.MessageQueuePublisher;
-using EventNotifierService.Common;
-using EventNotifierService.Common.Messages;
+using SimulatorCommon;
 
 namespace WinForms
 {
@@ -13,9 +17,15 @@ namespace WinForms
             InitializeComponent();
         }
 
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             string connectionString = txtMessageServer.Text;
+
             SendMessage(connectionString);
         }
 
@@ -23,21 +33,12 @@ namespace WinForms
         {
             try
             {
-                using (IMQPublisher publisher = new RabbitMqPublisher(connectionString))
-                {
-                    DoorMessage message = new DoorMessage {EventType = EventType.Ring, TimeStamp = DateTime.Now};
-                    publisher.Publish(message);
-                }
+               SimulatorLogic.PublishRingMessage(connectionString,null);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format("Error occured! {0}", ex));
+                MessageBox.Show(string.Format("Error occured! {0}", ex.Message));
             }
-        }
-
-        private void txtMessageServer_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }
