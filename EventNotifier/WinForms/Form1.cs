@@ -6,9 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using DoorPi.MessageQueuePublisher;
-using EventNotifierService.Common;
-using EventNotifierService.Common.Messages;
+using SimulatorCommon;
 
 namespace WinForms
 {
@@ -35,11 +33,7 @@ namespace WinForms
         {
             try
             {
-                using (IMQPublisher publisher = new RabbitMqPublisher("host="+connectionString))
-                {
-                    DoorMessage message = new DoorMessage {EventType = EventType.Ring, TimeStamp = DateTime.Now};
-                    publisher.Publish(message);
-                }
+               SimulatorLogic.PublishRingMessage(connectionString,null);
             }
             catch (Exception ex)
             {
