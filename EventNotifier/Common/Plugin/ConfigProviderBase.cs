@@ -9,7 +9,7 @@ namespace EventNotifierService.Common.Plugin
 {
     public abstract class ConfigProviderBase<TConfig> : IConfigProvider<TConfig>
     {
-        private ILogger logger;
+        protected ILogger logger;
 
         protected ConfigProviderBase(ILogger logger)
         {
@@ -26,6 +26,7 @@ namespace EventNotifierService.Common.Plugin
         {
             try
             {
+                logger.DebugFormat("Loading from file {0}", fileName);
                 return LoadFromFile(fileName);
             }
             catch (Exception ex)

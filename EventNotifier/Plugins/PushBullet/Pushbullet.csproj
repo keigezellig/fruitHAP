@@ -43,6 +43,7 @@
       <HintPath>..\..\packages\RestSharp.104.4.0\lib\net4\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -56,6 +57,8 @@
     <Compile Include="DataObjects\PostNoteRequest.cs" />
     <Compile Include="DataObjects\PostNoteResponse.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="PushbulletConfigProvider.cs" />
+    <Compile Include="PushbulletConfiguration.cs" />
     <Compile Include="PushBulletNotifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PushBulletService.cs" />
@@ -71,6 +74,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="pushbullet.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

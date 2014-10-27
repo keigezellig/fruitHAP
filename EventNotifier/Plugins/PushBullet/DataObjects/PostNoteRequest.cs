@@ -5,7 +5,7 @@ namespace EventNotifier.Plugins.PushBullet.DataObjects
 {
     public class PostNoteRequest
     {
-        [SerializeAs(Name = "typle")]
+        [SerializeAs(Name = "type")]
         public string PushType { [UsedImplicitly] get; set; }
         [SerializeAs(Name = "title")]
         public string Title { [UsedImplicitly] get; set; }

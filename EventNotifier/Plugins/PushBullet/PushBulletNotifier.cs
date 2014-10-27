@@ -9,11 +9,14 @@ namespace EventNotifier.Plugins.PushBullet
     public class PushBulletNotifier : PluginBase
     {
         private readonly IPushBulletService pushBulletService;
+        
 
-        public PushBulletNotifier(ILogger logger, IPushBulletService pushBulletService) : base(logger)
+        public PushBulletNotifier(ILogger logger, IPushBulletService pushBulletService, IConfigProvider<PushbulletConfiguration> configProvider) : base(logger)
         {
+            name = "Pushbullet";            
             this.pushBulletService = pushBulletService;
-            pushBulletService.Initialize("v1cULYbIkSKLywzH0b3k5xf3mgsuWyWJE2ujxvzW0Rqay","https://api.pushbullet.com");
+            var config = configProvider.LoadConfigFromFile(name + ".xml");            
+            pushBulletService.Initialize(config.ApiKey, config.PushbulletUri);            
         }
 
         protected override bool ShouldMessageBeProcessed(DoorMessage message)
