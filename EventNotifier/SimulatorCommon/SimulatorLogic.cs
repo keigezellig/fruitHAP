@@ -11,7 +11,7 @@ using EventNotifierService.Common.Messages;
 
 namespace SimulatorCommon
 {
-    public class SimulatorLogic
+    public static class SimulatorLogic
     {
         public static void PublishRingMessage(string connectionString, string imagePath)
         {
@@ -19,16 +19,12 @@ namespace SimulatorCommon
 
             if (!string.IsNullOrEmpty(imagePath))
             {
-                message.EncodedImage = EncodeImage(imagePath);
-               // DecodeImage(message.EncodedImage);
-
+                message.EncodedImage = EncodeImage(imagePath);               
             }
+            
             using (IMQPublisher publisher = new RabbitMqPublisher(connectionString))
             {
-                for (int i = 0; i < 100; i++)
-                {
-                    publisher.Publish(message);
-                }
+                publisher.Publish(message);
             }
         }
 

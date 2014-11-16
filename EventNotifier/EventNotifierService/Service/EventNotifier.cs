@@ -45,7 +45,10 @@ namespace EventNotifierService.Service
 
         public void Stop()
         {
-            consumer.Dispose();
+            if (consumer != null)
+            {
+                consumer.Dispose();
+            }
         }
 
     }
