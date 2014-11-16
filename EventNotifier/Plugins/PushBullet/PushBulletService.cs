@@ -37,9 +37,10 @@ namespace EventNotifier.Plugins.PushBullet
             else
             {
                 logger.Info("Note successfully posted");
+                HandlePostNoteResponse(response);
             }
-
         }
+        
 
         private void HandleErrorResponse(IRestResponse response)
         {
@@ -48,6 +49,14 @@ namespace EventNotifier.Plugins.PushBullet
             logger.Error("Error posting note to PushBullet");
             logger.ErrorFormat("HTTP StatusCode: {0}", response.StatusCode);
             logger.ErrorFormat("Response: {0}", errorResponse["error"]);
+        }
+
+        private void HandlePostNoteResponse(IRestResponse response)
+        {
+            JsonDeserializer deserializer = new JsonDeserializer();
+            var responseDeserialized = deserializer.Deserialize<PostNoteResponse>(response);            
+            logger.DebugFormat("HTTP StatusCode: {0}", response.StatusCode);
+            logger.DebugFormat("Response: {0}", responseDeserialized);
         }
 
         private RestRequest CreateNoteRequest(string title, string body, string channel)

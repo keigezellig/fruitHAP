@@ -63,7 +63,7 @@
             this.txtMessageServer.Size = new System.Drawing.Size(248, 20);
             this.txtMessageServer.TabIndex = 2;
             this.txtMessageServer.Text = "host=192.168.1.80;username=admin;password=admin";
-            this.txtMessageServer.TextChanged += new System.EventHandler(this.txtMessageServer_TextChanged);
+            
             // 
             // pictureBox1
             // 
