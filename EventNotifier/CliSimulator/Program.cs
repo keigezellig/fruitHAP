@@ -7,7 +7,8 @@ namespace DoorPi.CliSimulator
     {
         static void Main(string[] args)
         {
-
+            string imagepath = "";
+            
             if (args == null || args.Length == 0)
             {
                 Console.WriteLine("Usage: {0} connection_string ", Environment.GetCommandLineArgs()[0]);
@@ -16,9 +17,14 @@ namespace DoorPi.CliSimulator
 
             string connectionString = args[0];
 
+            if (args.Length == 2)
+            {
+                imagepath = args[1];
+            }
+
             try
             {
-                SimulatorLogic.PublishRingMessage(connectionString,@"C:\Users\Public\Pictures\Sample Pictures\desert.jpg");
+                SimulatorLogic.PublishRingMessage(connectionString, imagepath);
             }
             catch (Exception ex)
             {
