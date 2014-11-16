@@ -68,7 +68,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -80,13 +82,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{729b860f-6351-4d48-b06c-77b1b6d42db0}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MessageQueuePublisher\MessageQueuePublisher.csproj">
-      <Project>{93bbb5d7-8f22-47d3-a41a-dd85ace94829}</Project>
-      <Name>MessageQueuePublisher</Name>
+    <ProjectReference Include="..\SimulatorCommon\SimulatorCommon.csproj">
+      <Project>{695b9b80-7637-40a6-a21f-edf1c7bd04bb}</Project>
+      <Name>SimulatorCommon</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

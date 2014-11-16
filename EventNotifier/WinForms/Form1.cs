@@ -6,14 +6,14 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using DoorPi.MessageQueuePublisher;
-using EventNotifierService.Common;
-using EventNotifierService.Common.Messages;
+using SimulatorCommon;
 
 namespace WinForms
 {
     public partial class Form1 : Form
     {
+        private string imagePath;
+        
         public Form1()
         {
             InitializeComponent();
@@ -28,22 +28,31 @@ namespace WinForms
         {
             string connectionString = txtMessageServer.Text;
 
-            SendMessage(connectionString);
+            SendMessage(connectionString,imagePath);
         }
 
-        private static void SendMessage(string connectionString)
+        private void SendMessage(string connectionString, string imagePath)
         {
             try
             {
-                using (IMQPublisher publisher = new RabbitMqPublisher("host="+connectionString))
-                {
-                    DoorMessage message = new DoorMessage {EventType = EventType.Ring, TimeStamp = DateTime.Now};
-                    publisher.Publish(message);
-                }
+                SimulatorLogic.PublishRingMessage(connectionString, imagePath);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format("Error occured! {0}", ex.Message));
+                MessageBox.Show(string.Format("Error occured! {0}", ex));
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openImageDialog = new OpenFileDialog();
+            openImageDialog.Filter = "Image files|*.jpg;*.bmp;*.png";
+            openImageDialog.CheckFileExists = true;
+
+            if (openImageDialog.ShowDialog() == DialogResult.OK)
+            {
+                imagePath = openImageDialog.FileName;
+                pictureBox1.ImageLocation = imagePath;
             }
         }
     }

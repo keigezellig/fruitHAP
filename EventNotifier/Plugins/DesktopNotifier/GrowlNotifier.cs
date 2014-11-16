@@ -1,7 +1,9 @@
-﻿using Castle.Core.Logging;
+﻿using System;
+using Castle.Core.Logging;
 using EventNotifierService.Common.Messages;
 using EventNotifierService.Common.Plugin;
 using Growl.Connector;
+using Growl.CoreLibrary;
 
 namespace EventNotifier.Plugins.DesktopNotifier
 {
@@ -25,9 +27,20 @@ namespace EventNotifier.Plugins.DesktopNotifier
         {
            logger.Info("Sending message to Growl...");
            SetupGrowl();
-            string notificationMessage = string.Format("The doorbell rang at {0}. Please go answer it!",message.TimeStamp);            
-            var notification = new Notification("EventNotifier", "DOOR", null, "DINGDONG", notificationMessage);            
+            string notificationMessage = string.Format("The doorbell rang at {0}. Please go answer it!",message.TimeStamp);
+            var notification = new Notification("EventNotifier", "DOOR", null, "DINGDONG", notificationMessage);
+            if (!string.IsNullOrEmpty(message.EncodedImage))
+            {
+                byte[] imageData = LoadImageFromMessage(message);
+                notification.Icon = new BinaryData(imageData);
+            }
+
             growlConnector.Notify(notification);
+        }
+
+        private byte[] LoadImageFromMessage(DoorMessage message)
+        {
+            return Convert.FromBase64String(message.EncodedImage);
         }
 
         private void SetupGrowl()
