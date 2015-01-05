@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorBinding", "SensorBinding\SensorBinding.csproj", "{4626921D-8978-4EB8-B2BE-5F1DFD40E701}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorBinding.Tests", "SensorBinding.Tests\SensorBinding.Tests.csproj", "{804FD7D2-AF6E-477A-9B33-AA75375A2C71}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4626921D-8978-4EB8-B2BE-5F1DFD40E701}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4626921D-8978-4EB8-B2BE-5F1DFD40E701}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4626921D-8978-4EB8-B2BE-5F1DFD40E701}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4626921D-8978-4EB8-B2BE-5F1DFD40E701}.Release|Any CPU.Build.0 = Release|Any CPU
+		{804FD7D2-AF6E-477A-9B33-AA75375A2C71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{804FD7D2-AF6E-477A-9B33-AA75375A2C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{804FD7D2-AF6E-477A-9B33-AA75375A2C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{804FD7D2-AF6E-477A-9B33-AA75375A2C71}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
