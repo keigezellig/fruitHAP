@@ -40,11 +40,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Decoders\IDecoder.cs" />
-    <Compile Include="Decoders\ChainedDecoder.cs" />
-    <Compile Include="Decoders\NullDecoder.cs" />
     <Compile Include="Decoders\RfxDecoder\AcSubProtocolDecoder.cs" />
-    <Compile Include="Decoders\RfxDecoder\LightningTwoProtocolDecoder.cs" />
-    <Compile Include="Decoders\RfxDecoder\RfxDecoder.cs" />
+    <Compile Include="Decoders\RfxDecoder\LightingTwoProtocolDecoder.cs" />
+    <Compile Include="Decoders\RfxDecoder\RfxProtocol.cs" />
     <Compile Include="Eventing\AcPduPublisher.cs" />
     <Compile Include="Eventing\IAcPduPublisher.cs" />
     <Compile Include="Eventing\IPduPublisher.cs" />

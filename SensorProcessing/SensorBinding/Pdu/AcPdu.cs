@@ -20,6 +20,6 @@ namespace SensorBinding.Pdu
         SetLevel = 2,
         GroupOff = 3,
         GroupOn = 4,
-        SetGroup = 5
+        SetGroupLevel = 5
     }
 }

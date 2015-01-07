@@ -7,6 +7,6 @@ namespace SensorBinding.Decoders
 {
     public interface IDecoder
     {
-        void Decode(byte[] input);
+        bool Decode(byte[] input);
     }
 }
