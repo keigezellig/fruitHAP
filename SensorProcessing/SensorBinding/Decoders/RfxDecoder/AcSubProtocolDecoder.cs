@@ -5,7 +5,7 @@ using SensorBinding.Pdu;
 
 namespace SensorBinding.Decoders.RfxDecoder
 {
-    public class AcSubProtocolDecoder : IDecoder
+    public class AcSubProtocolDecoder : BaseDecoder
     {
         private readonly IAcPduPublisher pduPublisher;
 
@@ -14,13 +14,8 @@ namespace SensorBinding.Decoders.RfxDecoder
             this.pduPublisher = pduPublisher;
         }
 
-        public bool Decode(byte[] input)
+        protected override bool ExecuteDecode(byte[] input)
         {
-            if (!IsAcProtocol(input))
-            {
-                return false;
-            }
-           
             AcPdu pdu = new AcPdu();
             byte[] deviceBytes = input.Skip(4).Take(4).Reverse().ToArray();
             pdu.DeviceId = BitConverter.ToUInt32(deviceBytes,0);
@@ -33,10 +28,9 @@ namespace SensorBinding.Decoders.RfxDecoder
             return true;
         }
 
-        private bool IsAcProtocol(byte[] input)
+        protected override bool CanDecode(byte[] input)
         {
             return input[2] == 0x00;
         }
-
     }
 }

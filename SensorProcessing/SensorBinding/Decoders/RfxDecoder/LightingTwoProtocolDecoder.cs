@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace SensorBinding.Decoders.RfxDecoder
 {
-    public class LightingTwoProtocolDecoder : IDecoder
+    public class LightingTwoProtocolDecoder : BaseDecoder
     {
         private readonly List<IDecoder> subDecoders;
 
@@ -15,13 +12,9 @@ namespace SensorBinding.Decoders.RfxDecoder
         }
 
 
-        public bool Decode(byte[] input)
+        protected override bool ExecuteDecode(byte[] input)
         {
             bool decodeResult = true;
-            if (!IsLightingTwoProtocol(input))
-           {
-               return false;
-           }
 
             foreach (var subDecoder in subDecoders)
             {
@@ -35,9 +28,10 @@ namespace SensorBinding.Decoders.RfxDecoder
             return decodeResult;
         }
 
-       private bool IsLightingTwoProtocol(byte[] input)
+        protected override bool CanDecode(byte[] input)
        {
            return input[0] == 0x0B && input[1] == 0x11;
        }
+      
     }
 }

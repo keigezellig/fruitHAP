@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Decoders\BaseDecoder.cs" />
     <Compile Include="Decoders\IDecoder.cs" />
     <Compile Include="Decoders\RfxDecoder\AcSubProtocolDecoder.cs" />
     <Compile Include="Decoders\RfxDecoder\LightingTwoProtocolDecoder.cs" />
