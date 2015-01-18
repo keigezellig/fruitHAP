@@ -44,6 +44,9 @@
     <Reference Include="Castle.Windsor">
       <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net40\Castle.Windsor.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.Prism.PubSubEvents">
+      <HintPath>..\packages\Prism.PubSubEvents.1.1.2\lib\portable-sl5+windowsphone8+windows8+net40+wpa81\Microsoft.Practices.Prism.PubSubEvents.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.3.1.0.0\lib\net40\NLog.dll</HintPath>
     </Reference>

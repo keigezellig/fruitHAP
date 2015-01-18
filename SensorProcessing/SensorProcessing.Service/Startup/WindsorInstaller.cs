@@ -10,6 +10,7 @@ using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Services.Logging.NLogIntegration;
 using Castle.Windsor;
+using Microsoft.Practices.Prism.PubSubEvents;
 using NLog;
 using SensorProcessing.Common;
 using SensorProcessing.Common.Configuration;
@@ -25,10 +26,19 @@ namespace SensorProcessing.Service.Startup
         {
             container.Kernel.ComponentRegistered += Kernel_ComponentRegistered;
             container.Kernel.Resolver.AddSubResolver(new CollectionResolver(container.Kernel, true));
+            RegisterEventAggregator(container);
             RegisterLogging(container);
             RegisterBindings(container);
             RegisterService(container);
             
+        }
+
+        private void RegisterEventAggregator(IWindsorContainer container)
+        {
+            container.Register(
+               Component.For<IEventAggregator>()
+                   .ImplementedBy<EventAggregator>()
+                   .LifestyleTransient());
         }
 
         private void RegisterService(IWindsorContainer container)

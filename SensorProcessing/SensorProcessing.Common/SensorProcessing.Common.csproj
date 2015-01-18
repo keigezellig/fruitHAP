@@ -33,6 +33,9 @@
     <Reference Include="Castle.Core">
       <HintPath>..\packages\Castle.Core.3.3.3\lib\net40-client\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.Prism.PubSubEvents">
+      <HintPath>..\packages\Prism.PubSubEvents.1.1.2\lib\portable-sl5+windowsphone8+windows8+net40+wpa81\Microsoft.Practices.Prism.PubSubEvents.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Configuration\ConfigProviderBase.cs" />
     <Compile Include="Eventing\IPduPublisher.cs" />
+    <Compile Include="Eventing\AcPduAvailable.cs" />
     <Compile Include="Helpers\XmlSerializerHelper.cs" />
     <Compile Include="IBinding.cs" />
     <Compile Include="Configuration\IConfigProvider.cs" />
