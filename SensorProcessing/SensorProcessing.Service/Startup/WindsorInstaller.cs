@@ -17,6 +17,7 @@ using SensorProcessing.Common.Configuration;
 using SensorProcessing.Common.InterfaceReaders;
 using SensorProcessing.SensorBinding.RfxBinding;
 using SensorProcessing.Service.Service;
+using SensorProcessing.SensorAction;
 
 namespace SensorProcessing.Service.Startup
 {
@@ -29,8 +30,20 @@ namespace SensorProcessing.Service.Startup
             RegisterEventAggregator(container);
             RegisterLogging(container);
             RegisterBindings(container);
+            RegisterActions(container);
             RegisterService(container);
             
+        }
+
+        private void RegisterActions(IWindsorContainer container)
+        {
+            string actionDirectory = ConfigurationManager.AppSettings["ActionDirectory"] ??
+                                     Path.Combine(".", "actions");
+
+            container.Register(
+                Component.For<ISensorAction>()
+                    .ImplementedBy<DoorbellAction>()
+                    .LifestyleSingleton());
         }
 
         private void RegisterEventAggregator(IWindsorContainer container)
@@ -38,7 +51,7 @@ namespace SensorProcessing.Service.Startup
             container.Register(
                Component.For<IEventAggregator>()
                    .ImplementedBy<EventAggregator>()
-                   .LifestyleTransient());
+                   .LifestyleSingleton());
         }
 
         private void RegisterService(IWindsorContainer container)
@@ -73,8 +86,6 @@ namespace SensorProcessing.Service.Startup
             .BasedOn<IBinding>()
             .WithService.FromInterface()
             .LifestyleSingleton());
-
-
         }
 
 

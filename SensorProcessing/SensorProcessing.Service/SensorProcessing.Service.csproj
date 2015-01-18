@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SensorProcessing.Service</RootNamespace>
     <AssemblyName>SensorProcessing.Service</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -21,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -30,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">
@@ -78,9 +81,13 @@
     <Compile Include="Startup\WindsorInstaller.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SensorBindings\RFXBinding\RfxBinding.csproj">
+    <ProjectReference Include="..\SensorAction\SensorAction.csproj">
+      <Project>{65fda412-8acb-4728-a47d-a825916cc542}</Project>
+      <Name>SensorAction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SensorBindings\RFXBinding\SensorBinding.RfxBinding.csproj">
       <Project>{4626921d-8978-4eb8-b2be-5f1dfd40e701}</Project>
-      <Name>RfxBinding</Name>
+      <Name>SensorBinding.RfxBinding</Name>
     </ProjectReference>
     <ProjectReference Include="..\SensorProcessing.Common\SensorProcessing.Common.csproj">
       <Project>{ae0ef050-dee8-4bd7-b0a1-589c796102fb}</Project>

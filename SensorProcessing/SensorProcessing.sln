@@ -10,11 +10,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorProcessing.Common", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SensorBindings", "SensorBindings", "{2E6AB716-8C39-436A-9708-1E7948391708}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RfxBinding", "SensorBindings\RFXBinding\RfxBinding.csproj", "{4626921D-8978-4EB8-B2BE-5F1DFD40E701}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorBinding.RfxBinding", "SensorBindings\RFXBinding\SensorBinding.RfxBinding.csproj", "{4626921D-8978-4EB8-B2BE-5F1DFD40E701}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorBinding.Tests", "SensorBindings\SensorBinding.Tests\SensorBinding.Tests.csproj", "{804FD7D2-AF6E-477A-9B33-AA75375A2C71}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorProcessing.Service", "SensorProcessing.Service\SensorProcessing.Service.csproj", "{E40DB61E-60D3-42E9-A4AC-32E931630D0B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{72AB7DF7-67EA-4194-9E3C-365BF5E2CF5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorAction", "SensorAction\SensorAction.csproj", "{65FDA412-8ACB-4728-A47D-A825916CC542}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +42,10 @@ Global
 		{E40DB61E-60D3-42E9-A4AC-32E931630D0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E40DB61E-60D3-42E9-A4AC-32E931630D0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E40DB61E-60D3-42E9-A4AC-32E931630D0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65FDA412-8ACB-4728-A47D-A825916CC542}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65FDA412-8ACB-4728-A47D-A825916CC542}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65FDA412-8ACB-4728-A47D-A825916CC542}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65FDA412-8ACB-4728-A47D-A825916CC542}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,5 +53,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{4626921D-8978-4EB8-B2BE-5F1DFD40E701} = {2E6AB716-8C39-436A-9708-1E7948391708}
 		{804FD7D2-AF6E-477A-9B33-AA75375A2C71} = {2E6AB716-8C39-436A-9708-1E7948391708}
+		{65FDA412-8ACB-4728-A47D-A825916CC542} = {72AB7DF7-67EA-4194-9E3C-365BF5E2CF5E}
 	EndGlobalSection
 EndGlobal
