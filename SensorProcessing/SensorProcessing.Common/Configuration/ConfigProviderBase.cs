@@ -12,6 +12,7 @@ namespace SensorProcessing.Common.Configuration
             this.logger = logger ?? NullLogger.Instance;
         }
         protected abstract TConfig LoadFromFile(string fileName);
+        protected abstract void SaveToFile(string fileName, TConfig config);
 
         protected virtual TConfig LoadDefaultConfig()
         {
@@ -20,21 +21,27 @@ namespace SensorProcessing.Common.Configuration
 
         public TConfig LoadConfigFromFile(string fileName)
         {
+            var result = default(TConfig);
+            
             try
             {
                 logger.DebugFormat("Loading from file {0}", fileName);
-                return LoadFromFile(fileName);
+                result = LoadFromFile(fileName);
             }
             catch (Exception ex)
             {
                 logger.Warn("Cannnot load config from configfile. Loading default config", ex);
-                return LoadDefaultConfig();
+                result = LoadDefaultConfig();
+                SaveConfigToFile(result, fileName);
             }
+
+            return result;
+
         }
 
         public void SaveConfigToFile(TConfig config, string fileName)
         {
-            throw new NotImplementedException();
+            SaveToFile(fileName,config);
         }
     }
 }

@@ -11,14 +11,24 @@ namespace SensorProcessing.Common.Helpers
     {
         public static void Serialize<T>(string fileName, T obj)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
-            serializer.Serialize(new FileStream(fileName, FileMode.Create), obj);
+            using (FileStream fs = new FileStream(fileName, FileMode.Create))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof (T));
+                serializer.Serialize(fs, obj);
+            }
         }
 
         public static T Deserialize<T>(string fileName)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
-            return (T)serializer.Deserialize(new FileStream(fileName, FileMode.Open));
+            T result = default(T);
+
+            using (FileStream fs = new FileStream(fileName, FileMode.Open))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof (T));
+                result = (T) serializer.Deserialize(fs);
+            }
+
+            return result;
 
         }
     }
