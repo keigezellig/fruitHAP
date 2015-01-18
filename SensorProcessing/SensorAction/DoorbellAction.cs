@@ -25,6 +25,7 @@ namespace SensorProcessing.SensorAction
 
         public void Initialize()
         {
+            logger.InfoFormat("Initializing action {0}", this);
             this.eventAggregator.GetEvent<AcPduAvailable>().Subscribe(HandleAcPdu);
         }
     }

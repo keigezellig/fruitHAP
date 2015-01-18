@@ -19,18 +19,19 @@ namespace SensorProcessing.Service.Service
 
         public void Start()
         {
-            log.Info("Starting bindings..");
+            log.Info("Initialize actions");
+            foreach (var sensorAction in actions)
+            {
+                sensorAction.Initialize();
+            }
+
+            log.Info("Starting bindings");
 
             foreach (var binding in bindings)
             {
                 binding.Start();
             }
 
-            log.Info("Initialize actions");
-            foreach (var sensorAction in actions)
-            {
-                sensorAction.Initialize();
-            }
         }
 
         public void Stop()

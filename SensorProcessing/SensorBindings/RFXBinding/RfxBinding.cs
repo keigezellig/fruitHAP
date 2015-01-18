@@ -12,17 +12,18 @@ namespace SensorProcessing.SensorBinding.RfxBinding
     public class RfxBinding : IBinding
     {
         private readonly IProtocol protocol;
+        private readonly IConfigProvider<RfxBindingConfiguration> configProvider;
+        private readonly IInterfaceReaderFactory interfaceReaderFactory;
         private readonly ILogger logger;
         private RfxBindingConfiguration configuration;
-        private readonly IInterfaceReader interfaceReader;
+        private IInterfaceReader interfaceReader;
 
         public RfxBinding(IRfxProtocolFactory protocol, IConfigProvider<RfxBindingConfiguration> configProvider, IInterfaceReaderFactory interfaceReaderFactory, ILogger logger)
         {
             this.protocol = protocol.CreateRfxProtocol();
+            this.configProvider = configProvider;
+            this.interfaceReaderFactory = interfaceReaderFactory;
             this.logger = logger;
-            this.configuration = configProvider.LoadConfigFromFile("RfxConfig.xml");
-            interfaceReader = interfaceReaderFactory.CreateInterfaceReader(configuration.ConnectionString);
-            interfaceReader.DataReceived += interfaceReader_DataReceived;
         }
 
         void interfaceReader_DataReceived(object sender, ExternalDataReceivedEventArgs e)
@@ -32,8 +33,14 @@ namespace SensorProcessing.SensorBinding.RfxBinding
 
         public void Start()
         {
+            logger.InfoFormat("Starting binding {0}", this);
+
             try
             {
+                this.configuration = configProvider.LoadConfigFromFile("RfxConfig.xml");
+                interfaceReader = interfaceReaderFactory.CreateInterfaceReader(configuration.ConnectionString);
+                interfaceReader.DataReceived += interfaceReader_DataReceived;
+ 
                 interfaceReader.Open();
                 interfaceReader.StartReading();
             }
@@ -46,12 +53,14 @@ namespace SensorProcessing.SensorBinding.RfxBinding
 
         public void Stop()
         {
-           interfaceReader.StopReading();
+           logger.InfoFormat("Stopping binding {0}",this);
+            interfaceReader.StopReading();
            interfaceReader.Close();
         }
 
         public void Dispose()
         {
+            logger.DebugFormat("Dispose binding {0}", this);
             interfaceReader.Dispose();
         }
     }

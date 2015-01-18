@@ -40,10 +40,10 @@ namespace SensorProcessing.Service.Startup
             string actionDirectory = ConfigurationManager.AppSettings["ActionDirectory"] ??
                                      Path.Combine(".", "actions");
 
-            container.Register(
-                Component.For<ISensorAction>()
-                    .ImplementedBy<DoorbellAction>()
-                    .LifestyleSingleton());
+            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(actionDirectory))
+                .BasedOn<ISensorAction>()
+                .WithService.FromInterface()
+                .LifestyleSingleton());
         }
 
         private void RegisterEventAggregator(IWindsorContainer container)
