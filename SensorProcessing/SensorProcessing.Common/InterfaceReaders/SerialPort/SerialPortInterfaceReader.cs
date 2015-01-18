@@ -24,7 +24,6 @@ namespace SensorProcessing.Common.InterfaceReaders.SerialPort
 
         public void StartReading()
         {
-            Open();
             SetupTask();
             readerTask.Start();
             log.Info("Read task started");
@@ -66,6 +65,7 @@ namespace SensorProcessing.Common.InterfaceReaders.SerialPort
             catch (IOException ex)
             {
                 log.Error("Exception occured when opening the serial port", ex);
+                throw;
             }
             
         }

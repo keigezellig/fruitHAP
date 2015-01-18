@@ -19,6 +19,7 @@ namespace SensorProcessing.Service.Service
         public void Start()
         {
             log.Info("Starting bindings..");
+
             foreach (var binding in bindings)
             {
                 binding.Start();

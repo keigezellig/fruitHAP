@@ -31,9 +31,17 @@ namespace SensorProcessing.SensorBinding.RfxBinding
         }
 
         public void Start()
-        { 
-            interfaceReader.Open();
-            interfaceReader.StartReading();
+        {
+            try
+            {
+                interfaceReader.Open();
+                interfaceReader.StartReading();
+            }
+            catch (Exception ex)
+            {
+                logger.Debug("Cannot start binding..",ex);
+            }
+           
         }
 
         public void Stop()
