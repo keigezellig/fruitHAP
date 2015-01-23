@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Castle.Core.Logging;
 
 namespace SensorProcessing.SensorBinding.RfxBinding.Decoders.RfxDecoder
 {
@@ -6,7 +7,7 @@ namespace SensorProcessing.SensorBinding.RfxBinding.Decoders.RfxDecoder
     {
         private readonly List<IDecoder> subDecoders;
 
-        public LightingTwoProtocolDecoder(List<IDecoder> subDecoders)
+        public LightingTwoProtocolDecoder(List<IDecoder> subDecoders, ILogger logger) : base(logger)
         {
             this.subDecoders = subDecoders;
         }

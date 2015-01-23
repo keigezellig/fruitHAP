@@ -41,6 +41,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,14 +49,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DoorbellAction.cs" />
+    <Compile Include="ImprovedDoorbellAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SensorProcessing.Common\SensorProcessing.Common.csproj">
+    <ProjectReference Include="..\..\SensorProcessing.Common\SensorProcessing.Common.csproj">
       <Project>{AE0EF050-DEE8-4BD7-B0A1-589C796102FB}</Project>
       <Name>SensorProcessing.Common</Name>
     </ProjectReference>

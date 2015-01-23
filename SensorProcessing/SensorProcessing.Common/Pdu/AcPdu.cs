@@ -9,7 +9,7 @@
 
         public override string ToString()
         {
-            return string.Format("Device id: {0}\nUnit code: {1}\nCommand:{2}\nLevel:{3}", DeviceId, UnitCode, Command,
+            return string.Format("Device id: {0:X} ({0})\nUnit code: {1}\nCommand:{2}\nLevel:{3}", DeviceId, UnitCode, Command,
                 Level);
         }
     }

@@ -21,9 +21,9 @@ namespace SensorProcessing.SensorBinding.RfxBinding
 
         public IProtocol CreateRfxProtocol()
         {
-            var acDecoder = new AcSubProtocolDecoder(new AcPduPublisher(eventAggregator,logger));
-            var lightingTwoDecoder = new LightingTwoProtocolDecoder(new List<IDecoder>() {acDecoder});
+            var acDecoder = new AcSubProtocolDecoder(new AcPduPublisher(eventAggregator, logger), logger);
+            var lightingTwoDecoder = new LightingTwoProtocolDecoder(new List<IDecoder>() {acDecoder}, logger);
             return new RfxProtocol(new List<IDecoder>() {lightingTwoDecoder});
         }
     }
-    }
+}

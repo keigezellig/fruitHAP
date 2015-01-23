@@ -16,8 +16,9 @@ using SensorProcessing.Common;
 using SensorProcessing.Common.Configuration;
 using SensorProcessing.Common.InterfaceReaders;
 using SensorProcessing.SensorBinding.RfxBinding;
+using SensorProcessing.SensorDevices;
 using SensorProcessing.Service.Service;
-using SensorProcessing.SensorAction;
+
 
 namespace SensorProcessing.Service.Startup
 {
@@ -30,9 +31,18 @@ namespace SensorProcessing.Service.Startup
             RegisterEventAggregator(container);
             RegisterLogging(container);
             RegisterBindings(container);
+            RegisterDeviceRepository(container);
             RegisterActions(container);
             RegisterService(container);
             
+        }
+
+        private void RegisterDeviceRepository(IWindsorContainer container)
+        {
+            container.Register(
+               Component.For<IDeviceRepository>()
+                   .ImplementedBy<DeviceRepository>()
+                   .LifestyleSingleton());
         }
 
         private void RegisterActions(IWindsorContainer container)

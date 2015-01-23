@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AE0EF050-DEE8-4BD7-B0A1-589C796102FB}</ProjectGuid>
+    <ProjectGuid>{7EFC587D-5A8D-4412-A4B3-B84844939245}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SensorProcessing.Common</RootNamespace>
-    <AssemblyName>SensorProcessing.Common</AssemblyName>
+    <RootNamespace>SensorProcessing.SensorDevices</RootNamespace>
+    <AssemblyName>SensorProcessing.SensorDevices</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -34,14 +34,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">
-      <HintPath>..\packages\Castle.Core.3.3.3\lib\net40-client\Castle.Core.dll</HintPath>
+      <HintPath>..\Actions\SensorAction\bin\Debug\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism.PubSubEvents">
       <HintPath>..\packages\Prism.PubSubEvents.1.1.2\lib\portable-sl5+windowsphone8+windows8+net40+wpa81\Microsoft.Practices.Prism.PubSubEvents.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,33 +49,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\ConfigProviderBase.cs" />
-    <Compile Include="Device\IButton.cs" />
-    <Compile Include="Device\ICamera.cs" />
-    <Compile Include="Eventing\IPduPublisher.cs" />
-    <Compile Include="Eventing\AcPduAvailable.cs" />
-    <Compile Include="Extensions\IEnumerableExtensions.cs" />
-    <Compile Include="Helpers\XmlSerializerHelper.cs" />
-    <Compile Include="IBinding.cs" />
-    <Compile Include="Configuration\IConfigProvider.cs" />
-    <Compile Include="Device\IDevice.cs" />
-    <Compile Include="IDeviceRepository.cs" />
-    <Compile Include="InterfaceReaders\IInterfaceReader.cs" />
-    <Compile Include="InterfaceReaders\IInterfaceReaderFactory.cs" />
-    <Compile Include="InterfaceReaders\InterfaceReaderFactory.cs" />
-    <Compile Include="InterfaceReaders\NullInterfaceReader.cs" />
-    <Compile Include="InterfaceReaders\SerialPort\ISerialPort.cs" />
-    <Compile Include="InterfaceReaders\SerialPort\SerialPort.cs" />
-    <Compile Include="InterfaceReaders\SerialPort\SerialPortInterfaceReader.cs" />
-    <Compile Include="IProtocol.cs" />
-    <Compile Include="ISensorAction.cs" />
-    <Compile Include="Pdu\AcPdu.cs" />
+    <Compile Include="DeviceRepository.cs" />
+    <Compile Include="Devices\IpCamera.cs" />
+    <Compile Include="Devices\KlikAanKlikUitButton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SensorProcessing.Common\SensorProcessing.Common.csproj">
+      <Project>{AE0EF050-DEE8-4BD7-B0A1-589C796102FB}</Project>
+      <Name>SensorProcessing.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

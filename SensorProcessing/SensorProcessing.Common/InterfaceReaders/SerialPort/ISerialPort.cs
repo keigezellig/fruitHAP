@@ -12,7 +12,7 @@ namespace SensorProcessing.Common.InterfaceReaders.SerialPort
         string NewLine { get; }
         string PortName { get; }
         int BytesToRead { get; }
-
+        byte[] ReadBytesToEnd();
         string ReadExisting();
     }
 }

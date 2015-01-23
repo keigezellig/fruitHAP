@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using Castle.Core.Logging;
+using SensorProcessing.Common.Extensions;
 using SensorProcessing.Common.Pdu;
 using SensorProcessing.SensorBinding.RfxBinding.Eventing;
 
@@ -9,7 +11,7 @@ namespace SensorProcessing.SensorBinding.RfxBinding.Decoders.RfxDecoder
     {
         private readonly IAcPduPublisher pduPublisher;
 
-        public AcSubProtocolDecoder(IAcPduPublisher pduPublisher)
+        public AcSubProtocolDecoder(IAcPduPublisher pduPublisher, ILogger logger) : base(logger)
         {
             this.pduPublisher = pduPublisher;
         }
@@ -18,6 +20,7 @@ namespace SensorProcessing.SensorBinding.RfxBinding.Decoders.RfxDecoder
         {
             AcPdu pdu = new AcPdu();
             byte[] deviceBytes = input.Skip(4).Take(4).Reverse().ToArray();
+            logger.DebugFormat("{0}",deviceBytes.PrettyPrint());
             pdu.DeviceId = BitConverter.ToUInt32(deviceBytes,0);
             pdu.UnitCode = input[8];
             pdu.Command = (AcCommand)input[9];
