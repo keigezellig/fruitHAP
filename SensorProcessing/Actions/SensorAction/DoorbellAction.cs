@@ -42,7 +42,7 @@ namespace SensorProcessing.SensorAction
             try
             {
                 logger.Info("Send notification");
-                mqPublisher.Publish("EventExchange","#",message);
+                mqPublisher.Publish("EventExchange","",message);
             }
             catch (Exception ex)
             {
