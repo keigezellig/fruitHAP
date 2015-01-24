@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SensorProcessing.Common</RootNamespace>
     <AssemblyName>SensorProcessing.Common</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -20,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">
@@ -38,6 +41,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,11 +50,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\ConfigProviderBase.cs" />
+    <Compile Include="Device\IButton.cs" />
+    <Compile Include="Device\ICamera.cs" />
     <Compile Include="Eventing\IPduPublisher.cs" />
     <Compile Include="Eventing\AcPduAvailable.cs" />
+    <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Helpers\XmlSerializerHelper.cs" />
     <Compile Include="IBinding.cs" />
     <Compile Include="Configuration\IConfigProvider.cs" />
+    <Compile Include="Device\IDevice.cs" />
+    <Compile Include="IDeviceRepository.cs" />
     <Compile Include="InterfaceReaders\IInterfaceReader.cs" />
     <Compile Include="InterfaceReaders\IInterfaceReaderFactory.cs" />
     <Compile Include="InterfaceReaders\InterfaceReaderFactory.cs" />
@@ -59,6 +68,7 @@
     <Compile Include="InterfaceReaders\SerialPort\SerialPort.cs" />
     <Compile Include="InterfaceReaders\SerialPort\SerialPortInterfaceReader.cs" />
     <Compile Include="IProtocol.cs" />
+    <Compile Include="ISensorAction.cs" />
     <Compile Include="Pdu\AcPdu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

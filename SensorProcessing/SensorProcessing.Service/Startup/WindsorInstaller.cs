@@ -16,7 +16,9 @@ using SensorProcessing.Common;
 using SensorProcessing.Common.Configuration;
 using SensorProcessing.Common.InterfaceReaders;
 using SensorProcessing.SensorBinding.RfxBinding;
+using SensorProcessing.SensorDevices;
 using SensorProcessing.Service.Service;
+
 
 namespace SensorProcessing.Service.Startup
 {
@@ -29,8 +31,29 @@ namespace SensorProcessing.Service.Startup
             RegisterEventAggregator(container);
             RegisterLogging(container);
             RegisterBindings(container);
+            RegisterDeviceRepository(container);
+            RegisterActions(container);
             RegisterService(container);
             
+        }
+
+        private void RegisterDeviceRepository(IWindsorContainer container)
+        {
+            container.Register(
+               Component.For<IDeviceRepository>()
+                   .ImplementedBy<DeviceRepository>()
+                   .LifestyleSingleton());
+        }
+
+        private void RegisterActions(IWindsorContainer container)
+        {
+            string actionDirectory = ConfigurationManager.AppSettings["ActionDirectory"] ??
+                                     Path.Combine(".", "actions");
+
+            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(actionDirectory))
+                .BasedOn<ISensorAction>()
+                .WithService.FromInterface()
+                .LifestyleSingleton());
         }
 
         private void RegisterEventAggregator(IWindsorContainer container)
@@ -38,7 +61,7 @@ namespace SensorProcessing.Service.Startup
             container.Register(
                Component.For<IEventAggregator>()
                    .ImplementedBy<EventAggregator>()
-                   .LifestyleTransient());
+                   .LifestyleSingleton());
         }
 
         private void RegisterService(IWindsorContainer container)
@@ -73,8 +96,6 @@ namespace SensorProcessing.Service.Startup
             .BasedOn<IBinding>()
             .WithService.FromInterface()
             .LifestyleSingleton());
-
-
         }
 
 

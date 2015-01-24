@@ -17,7 +17,7 @@ namespace SensorProcessing.Service.Startup
             var result = new LoggingConfiguration();
             
             string loggingDirectory = ConfigurationManager.AppSettings["loggingDirectory"] ?? Path.Combine(".","log");
-            string logFileName = Path.Combine(loggingDirectory, "eventNotifier.log");
+            string logFileName = Path.Combine(loggingDirectory, "sensorProcessing.log");
             
             AddFileTarget(logFileName, LogLevel.Info, result);
             AddConsoleTarget(LogLevel.Trace, result);

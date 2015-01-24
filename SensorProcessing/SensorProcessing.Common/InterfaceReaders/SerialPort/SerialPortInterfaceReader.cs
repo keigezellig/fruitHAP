@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Castle.Core.Logging;
+using SensorProcessing.Common.Extensions;
 
 namespace SensorProcessing.Common.InterfaceReaders.SerialPort
 {
@@ -162,10 +163,11 @@ namespace SensorProcessing.Common.InterfaceReaders.SerialPort
             if(serialPort.BytesToRead != 0)
             {
                 log.Debug(string.Format("Bytes to read: {0} ", serialPort.BytesToRead));
-                string line = serialPort.ReadExisting();
-                if(line != null)
+                byte[] buffer = serialPort.ReadBytesToEnd();
+     
+                if(buffer != null)
                 {
-                    byte[] buffer = Encoding.Default.GetBytes(line);
+                    log.DebugFormat("Bytes received: {0}",buffer.PrettyPrint());
                     OnDataReceived(buffer);
                 }
             }            

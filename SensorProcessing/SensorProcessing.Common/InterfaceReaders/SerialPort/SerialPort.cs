@@ -65,6 +65,14 @@ namespace SensorProcessing.Common.InterfaceReaders.SerialPort
             return serialPort.ReadExisting();
         }
 
+        public byte[] ReadBytesToEnd()
+        {
+            var bytesToRead = this.BytesToRead;
+            byte[] buffer = new byte[bytesToRead];
+            serialPort.Read(buffer, 0, bytesToRead);
+            return buffer;
+        }
+
         public void Dispose()
         {
             serialPort.Dispose();

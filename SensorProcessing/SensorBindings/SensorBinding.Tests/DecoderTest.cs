@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Castle.Core.Logging;
 using FakeItEasy;
 using NUnit;
 using NUnit.Framework;
@@ -16,14 +17,16 @@ namespace SensorBinding.Tests
     {
         private IAcPduPublisher eventPublisherFake;
         private RfxProtocol protocol;
+        private ILogger loggerFake;
 
         [SetUp]
         public void Setup()
         {
             eventPublisherFake = A.Fake<IAcPduPublisher>();
+            loggerFake = A.Fake<ILogger>();
             A.CallTo(() => eventPublisherFake.Publish(A<AcPdu>.Ignored)).Invokes(AssertAcPdu);
-            var acDecoder = new AcSubProtocolDecoder(eventPublisherFake);
-            var lightingTwoDecoder = new LightingTwoProtocolDecoder(new List<IDecoder>() { acDecoder });
+            var acDecoder = new AcSubProtocolDecoder(eventPublisherFake,loggerFake);
+            var lightingTwoDecoder = new LightingTwoProtocolDecoder(new List<IDecoder>() { acDecoder },loggerFake);
 
             protocol = new RfxProtocol(new List<IDecoder>() { lightingTwoDecoder });
             
