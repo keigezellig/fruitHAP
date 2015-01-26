@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Castle.Core.Logging;
-using SensorProcessing.Common;
+using FruitHAP.SensorProcessing.Common;
 
-namespace SensorProcessing.Service.Service
+namespace FruitHAP.SensorProcessing.Service.Service
 {
     public class SensorProcessingService : ISensorProcessingService
     {

@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Security.Cryptography;
-using System.Security.Principal;
 using Castle.Core.Logging;
+using FruitHAP.SensorProcessing.Common.Device;
+using FruitHAP.SensorProcessing.Common.Eventing;
+using FruitHAP.SensorProcessing.Common.Pdu;
 using Microsoft.Practices.Prism.PubSubEvents;
-using SensorProcessing.Common.Device;
-using SensorProcessing.Common.Eventing;
-using SensorProcessing.Common.Pdu;
 
-namespace SensorProcessing.SensorDevices
+namespace FruitHAP.SensorProcessing.SensorDevices.Devices
 {
     public class KlikAanKlikUitButton : IButton
     {

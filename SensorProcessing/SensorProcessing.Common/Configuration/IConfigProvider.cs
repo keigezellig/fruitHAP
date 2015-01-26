@@ -1,4 +1,4 @@
-﻿namespace SensorProcessing.Common.Configuration
+﻿namespace FruitHAP.SensorProcessing.Common.Configuration
 {
     public interface IConfigProvider<TConfig>
     {

@@ -2,8 +2,8 @@
 using System.Diagnostics;
 using System.IO;
 using Castle.Core.Logging;
-using EventNotifierService.Common.Messages;
 using EventNotifierService.Common.Plugin;
+using FruitHAP.Messages;
 
 namespace EventNotifier.Plugins.DesktopNotifier
 {

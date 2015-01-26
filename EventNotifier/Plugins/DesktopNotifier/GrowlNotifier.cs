@@ -1,7 +1,7 @@
 ﻿using System;
 using Castle.Core.Logging;
-using EventNotifierService.Common.Messages;
 using EventNotifierService.Common.Plugin;
+using FruitHAP.Messages;
 using Growl.Connector;
 using Growl.CoreLibrary;
 

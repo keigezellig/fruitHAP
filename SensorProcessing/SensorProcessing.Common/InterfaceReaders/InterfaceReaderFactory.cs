@@ -2,9 +2,9 @@
 using System.IO.Ports;
 using System.Linq;
 using Castle.Core.Logging;
-using SensorProcessing.Common.InterfaceReaders.SerialPort;
+using FruitHAP.SensorProcessing.Common.InterfaceReaders.SerialPort;
 
-namespace SensorProcessing.Common.InterfaceReaders
+namespace FruitHAP.SensorProcessing.Common.InterfaceReaders
 {
     public class InterfaceReaderFactory : IInterfaceReaderFactory
     {
@@ -49,7 +49,7 @@ namespace SensorProcessing.Common.InterfaceReaders
                     StopBits stopBits = ParseStopBits(parameters[4]);
 
                     return
-                    new SerialPortInterfaceReader(new SerialPort.SerialPort(portname, baudrate, parity, databits,
+                    new SerialPortInterfaceReader(new FruitHAP.SensorProcessing.Common.InterfaceReaders.SerialPort.SerialPort(portname, baudrate, parity, databits,
                         stopBits), logger);
 
                 }

@@ -1,7 +1,7 @@
-﻿using Microsoft.Practices.Prism.PubSubEvents;
-using SensorProcessing.Common.Pdu;
+﻿using FruitHAP.SensorProcessing.Common.Pdu;
+using Microsoft.Practices.Prism.PubSubEvents;
 
-namespace SensorProcessing.Common.Eventing
+namespace FruitHAP.SensorProcessing.Common.Eventing
 {
     public class AcPduAvailable : PubSubEvent<AcPdu>
     {

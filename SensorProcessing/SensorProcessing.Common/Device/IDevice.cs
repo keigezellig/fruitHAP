@@ -1,4 +1,4 @@
-﻿namespace SensorProcessing.Common.Device
+﻿namespace FruitHAP.SensorProcessing.Common.Device
 {
     public interface IDevice
     {

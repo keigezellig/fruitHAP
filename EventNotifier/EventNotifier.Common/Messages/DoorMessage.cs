@@ -1,0 +1,4 @@
+﻿namespace EventNotifierService.Common.Messages
+{
+}
+

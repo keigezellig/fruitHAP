@@ -1,8 +1,8 @@
 ﻿using Castle.Core.Logging;
-using SensorProcessing.Common.Configuration;
-using SensorProcessing.Common.Helpers;
+using FruitHAP.SensorProcessing.Common.Configuration;
+using FruitHAP.SensorProcessing.Common.Helpers;
 
-namespace SensorProcessing.SensorBinding.RfxBinding
+namespace FruitHAP.SensorProcessing.SensorBinding.RfxBinding
 {
     public class RfxBindingConfigurationProvider : ConfigProviderBase<RfxBindingConfiguration>
     {

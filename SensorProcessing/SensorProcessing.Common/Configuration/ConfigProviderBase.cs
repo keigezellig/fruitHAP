@@ -1,7 +1,7 @@
 ﻿using System;
 using Castle.Core.Logging;
 
-namespace SensorProcessing.Common.Configuration
+namespace FruitHAP.SensorProcessing.Common.Configuration
 {
     public abstract class ConfigProviderBase<TConfig> : IConfigProvider<TConfig>
     {

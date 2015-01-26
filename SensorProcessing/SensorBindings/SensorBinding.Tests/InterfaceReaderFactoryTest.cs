@@ -1,10 +1,10 @@
 ﻿using Castle.Core.Logging;
 using FakeItEasy;
+using FruitHAP.SensorProcessing.Common.InterfaceReaders;
+using FruitHAP.SensorProcessing.Common.InterfaceReaders.SerialPort;
 using NUnit.Framework;
-using SensorProcessing.Common.InterfaceReaders;
-using SensorProcessing.Common.InterfaceReaders.SerialPort;
 
-namespace SensorBinding.Tests
+namespace FruitHAP.SensorBinding.Tests
 {
     [TestFixture]
     public class InterfaceReaderFactoryTest

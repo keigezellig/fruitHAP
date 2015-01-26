@@ -1,4 +1,4 @@
-﻿namespace SensorProcessing.Common.Pdu
+﻿namespace FruitHAP.SensorProcessing.Common.Pdu
 {
     public class AcPdu
     {

@@ -1,4 +1,4 @@
-﻿namespace SensorProcessing.SensorBinding.RfxBinding.Decoders
+﻿namespace FruitHAP.SensorProcessing.SensorBinding.RfxBinding.Decoders
 {
     public interface IDecoder
     {

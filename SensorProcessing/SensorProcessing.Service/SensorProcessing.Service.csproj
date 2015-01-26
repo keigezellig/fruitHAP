@@ -7,8 +7,8 @@
     <ProjectGuid>{E40DB61E-60D3-42E9-A4AC-32E931630D0B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SensorProcessing.Service</RootNamespace>
-    <AssemblyName>SensorProcessing.Service</AssemblyName>
+    <RootNamespace>FruitHAP.SensorProcessing.Service</RootNamespace>
+    <AssemblyName>FruitHAP.SensorProcessing.Service</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

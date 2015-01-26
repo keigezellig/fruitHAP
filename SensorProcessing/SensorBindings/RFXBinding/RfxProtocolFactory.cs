@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using Castle.Core.Logging;
+using FruitHAP.SensorProcessing.Common;
+using FruitHAP.SensorProcessing.SensorBinding.RfxBinding.Decoders;
+using FruitHAP.SensorProcessing.SensorBinding.RfxBinding.Decoders.RfxDecoder;
+using FruitHAP.SensorProcessing.SensorBinding.RfxBinding.Eventing;
 using Microsoft.Practices.Prism.PubSubEvents;
-using SensorProcessing.Common;
-using SensorProcessing.SensorBinding.RfxBinding.Decoders;
-using SensorProcessing.SensorBinding.RfxBinding.Decoders.RfxDecoder;
-using SensorProcessing.SensorBinding.RfxBinding.Eventing;
 
-namespace SensorProcessing.SensorBinding.RfxBinding
+namespace FruitHAP.SensorProcessing.SensorBinding.RfxBinding
 {
     public class RfxProtocolFactory : IRfxProtocolFactory
     {

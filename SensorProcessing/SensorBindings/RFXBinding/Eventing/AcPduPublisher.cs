@@ -1,10 +1,9 @@
-﻿using System;
-using Castle.Core.Logging;
+﻿using Castle.Core.Logging;
+using FruitHAP.SensorProcessing.Common.Eventing;
+using FruitHAP.SensorProcessing.Common.Pdu;
 using Microsoft.Practices.Prism.PubSubEvents;
-using SensorProcessing.Common.Eventing;
-using SensorProcessing.Common.Pdu;
 
-namespace SensorProcessing.SensorBinding.RfxBinding.Eventing
+namespace FruitHAP.SensorProcessing.SensorBinding.RfxBinding.Eventing
 {
     public class AcPduPublisher : IAcPduPublisher
     {

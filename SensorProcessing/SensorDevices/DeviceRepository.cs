@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Castle.Core.Logging;
+using FruitHAP.SensorProcessing.Common;
+using FruitHAP.SensorProcessing.Common.Device;
+using FruitHAP.SensorProcessing.Common.Pdu;
+using FruitHAP.SensorProcessing.SensorDevices.Devices;
 using Microsoft.Practices.Prism.PubSubEvents;
-using SensorProcessing.Common;
-using SensorProcessing.Common.Device;
-using SensorProcessing.Common.Pdu;
-using SensorProcessing.SensorDevices.Devices;
 
-namespace SensorProcessing.SensorDevices
+namespace FruitHAP.SensorProcessing.SensorDevices
 {
     public class DeviceRepository : IDeviceRepository
     {
@@ -26,8 +26,11 @@ namespace SensorProcessing.SensorDevices
         {
             devices = new List<IDevice>();
             
+            //var button = new KlikAanKlikUitButton(eventAggregator, logger);
+            //button.Initialize("Doorbell","My doorbell",0x00E41822,01,AcCommand.GroupOn);
+
             var button = new KlikAanKlikUitButton(eventAggregator, logger);
-            button.Initialize("Doorbell","My doorbell",0x00E41822,01,AcCommand.GroupOn);
+            button.Initialize("Doorbell", "My doorbell", 0x0D9D6DA, 10, AcCommand.On);
 
             var ipcam = new IpCamera(logger);
             ipcam.Initialize("DoorCamera","My front door camera",new Uri("http://bihac/snapshot.cgi"),"visitor","visitor");

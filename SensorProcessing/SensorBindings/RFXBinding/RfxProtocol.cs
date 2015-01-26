@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using SensorProcessing.Common;
-using SensorProcessing.SensorBinding.RfxBinding.Decoders;
+using FruitHAP.SensorProcessing.Common;
+using FruitHAP.SensorProcessing.SensorBinding.RfxBinding.Decoders;
 
-namespace SensorProcessing.SensorBinding.RfxBinding
+namespace FruitHAP.SensorProcessing.SensorBinding.RfxBinding
 {
     public class RfxProtocol : IProtocol
     {

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Castle.Core.Logging; 
-using SensorProcessing.Common;
-using SensorProcessing.Common.Configuration;
-using SensorProcessing.Common.InterfaceReaders;
+using Castle.Core.Logging;
+using FruitHAP.SensorProcessing.Common;
+using FruitHAP.SensorProcessing.Common.Configuration;
+using FruitHAP.SensorProcessing.Common.InterfaceReaders;
 
-namespace SensorProcessing.SensorBinding.RfxBinding
+namespace FruitHAP.SensorProcessing.SensorBinding.RfxBinding
 {
     public class RfxBinding : IBinding
     {

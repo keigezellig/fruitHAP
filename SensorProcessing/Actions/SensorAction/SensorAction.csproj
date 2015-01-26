@@ -7,8 +7,8 @@
     <ProjectGuid>{65FDA412-8ACB-4728-A47D-A825916CC542}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SensorProcessing.SensorAction</RootNamespace>
-    <AssemblyName>SensorProcessing.SensorAction</AssemblyName>
+    <RootNamespace>FruitHAP.SensorProcessing.SensorAction</RootNamespace>
+    <AssemblyName>FruitHAP.SensorProcessing.SensorAction</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -59,15 +59,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DoorbellAction.cs" />
-    <Compile Include="DoorMessage.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RabbitMqPublisher.cs" />
+    <Compile Include="DoorbellAction.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RabbitMqPublisherOld.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Messages\Messages\Messages.csproj">
+      <Project>{ADF24A81-11A8-4CC5-8594-FBC9F91B5861}</Project>
+      <Name>Messages</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SensorProcessing.Common\SensorProcessing.Common.csproj">
       <Project>{AE0EF050-DEE8-4BD7-B0A1-589C796102FB}</Project>
       <Name>SensorProcessing.Common</Name>

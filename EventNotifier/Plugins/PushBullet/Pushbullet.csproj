@@ -43,13 +43,7 @@
       <HintPath>..\..\packages\RestSharp.104.4.0\lib\net4\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataObjects\ErrorResponse.cs" />
@@ -67,9 +61,13 @@
     <Compile Include="Utils\PropertyNameContractResolver.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\Common.csproj">
+    <ProjectReference Include="..\..\..\Messages\Messages\Messages.csproj">
+      <Project>{ADF24A81-11A8-4CC5-8594-FBC9F91B5861}</Project>
+      <Name>Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\EventNotifier.Common\EventNotifier.Common.csproj">
       <Project>{729b860f-6351-4d48-b06c-77b1b6d42db0}</Project>
-      <Name>Common</Name>
+      <Name>EventNotifier.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

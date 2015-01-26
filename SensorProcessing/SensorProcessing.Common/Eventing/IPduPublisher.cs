@@ -1,4 +1,4 @@
-﻿namespace SensorProcessing.Common.Eventing
+﻿namespace FruitHAP.SensorProcessing.Common.Eventing
 {
     public interface IPduPublisher<TPdu>
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SensorProcessing.Common.InterfaceReaders.SerialPort
+namespace FruitHAP.SensorProcessing.Common.InterfaceReaders.SerialPort
 {
     public interface ISerialPort : IDisposable
     {

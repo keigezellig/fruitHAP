@@ -7,8 +7,8 @@
     <ProjectGuid>{4626921D-8978-4EB8-B2BE-5F1DFD40E701}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SensorProcessing.SensorBinding.RfxBinding</RootNamespace>
-    <AssemblyName>SensorProcessing.SensorBinding.RfxBinding</AssemblyName>
+    <RootNamespace>FruitHAP.SensorProcessing.SensorBinding.RfxBinding</RootNamespace>
+    <AssemblyName>FruitHAP.SensorProcessing.SensorBinding.RfxBinding</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

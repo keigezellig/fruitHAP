@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SensorProcessing.Common.InterfaceReaders
+namespace FruitHAP.SensorProcessing.Common.InterfaceReaders
 {
     public interface IInterfaceReader : IDisposable
     {

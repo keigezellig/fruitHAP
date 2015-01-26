@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SensorProcessing.SensorBinding.RfxBinding
+﻿namespace FruitHAP.SensorProcessing.SensorBinding.RfxBinding
 {
     public class RfxBindingConfiguration
     {

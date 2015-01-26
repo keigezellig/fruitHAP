@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
 using Castle.Core.Logging;
-using SensorProcessing.Common;
-using SensorProcessing.Common.Device;
+using FruitHAP.Messages;
+using FruitHAP.SensorProcessing.Common;
+using FruitHAP.SensorProcessing.Common.Device;
 
-namespace SensorProcessing.SensorAction
+namespace FruitHAP.SensorProcessing.SensorAction
 {
     public class DoorbellAction : ISensorAction
     {
@@ -24,7 +18,7 @@ namespace SensorProcessing.SensorAction
             this.deviceRepository = deviceRepository;
             this.logger = logger;
             //amqp://userName:password@hostName:portNumber/virtualHost
-            mqPublisher = new RabbitMqPublisher("amqp://admin:admin@ljubljana");
+            
         }
 
         public void Initialize()
@@ -39,15 +33,19 @@ namespace SensorProcessing.SensorAction
             var message = await CreateMessage();
             logger.DebugFormat("Message = {0}", message);
 
-            try
+            using (var mqPublisher = new RabbitMqPublisher("amqp://admin:admin@192.168.1.80"))
             {
-                logger.Info("Send notification");
-                mqPublisher.Publish("EventExchange","",message);
+                try
+                {
+                    logger.Info("Send notification");
+                    mqPublisher.Publish(message);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Error sending notification", ex);
+                }
             }
-            catch (Exception ex)
-            {
-                logger.Error("Error sending notification",ex);
-            }
+
         }
 
         private async Task<DoorMessage> CreateMessage()

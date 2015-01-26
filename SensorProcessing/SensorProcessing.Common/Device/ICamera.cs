@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
-namespace SensorProcessing.Common.Device
+namespace FruitHAP.SensorProcessing.Common.Device
 {
     public interface ICamera : IDevice
     {

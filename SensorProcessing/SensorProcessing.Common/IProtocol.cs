@@ -1,4 +1,4 @@
-namespace SensorProcessing.Common
+namespace FruitHAP.SensorProcessing.Common
 {
     public interface IProtocol
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Castle.Core.Logging;
 
-namespace SensorProcessing.Common.InterfaceReaders
+namespace FruitHAP.SensorProcessing.Common.InterfaceReaders
 {
     public class NullInterfaceReader : IInterfaceReader
     {

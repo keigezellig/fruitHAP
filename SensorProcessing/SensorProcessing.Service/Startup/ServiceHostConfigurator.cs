@@ -1,10 +1,10 @@
 ﻿using Castle.Windsor;
+using FruitHAP.SensorProcessing.Service.Service;
 using NLog;
-using SensorProcessing.Service.Service;
 using Topshelf;
 using Topshelf.HostConfigurators;
 
-namespace SensorProcessing.Service.Startup
+namespace FruitHAP.SensorProcessing.Service.Startup
 {
     public class ServiceHostConfigurator
     {

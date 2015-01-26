@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using Castle.Core.Logging;
-using SensorProcessing.Common.Extensions;
-using SensorProcessing.Common.Pdu;
-using SensorProcessing.SensorBinding.RfxBinding.Eventing;
+using FruitHAP.SensorProcessing.Common.Extensions;
+using FruitHAP.SensorProcessing.Common.Pdu;
+using FruitHAP.SensorProcessing.SensorBinding.RfxBinding.Eventing;
 
-namespace SensorProcessing.SensorBinding.RfxBinding.Decoders.RfxDecoder
+namespace FruitHAP.SensorProcessing.SensorBinding.RfxBinding.Decoders.RfxDecoder
 {
     public class AcSubProtocolDecoder : BaseDecoder
     {

@@ -7,8 +7,8 @@
     <ProjectGuid>{AE0EF050-DEE8-4BD7-B0A1-589C796102FB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SensorProcessing.Common</RootNamespace>
-    <AssemblyName>SensorProcessing.Common</AssemblyName>
+    <RootNamespace>FruitHAP.SensorProcessing.Common</RootNamespace>
+    <AssemblyName>FruitHAP.SensorProcessing.Common</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -41,11 +41,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>

@@ -4,9 +4,9 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Castle.Core.Logging;
-using SensorProcessing.Common.Device;
+using FruitHAP.SensorProcessing.Common.Device;
 
-namespace SensorProcessing.SensorDevices.Devices
+namespace FruitHAP.SensorProcessing.SensorDevices.Devices
 {
     public class IpCamera : ICamera
     {

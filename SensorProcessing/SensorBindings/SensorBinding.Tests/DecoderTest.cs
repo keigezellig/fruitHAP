@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Castle.Core.Logging;
 using FakeItEasy;
-using NUnit;
+using FruitHAP.SensorProcessing.Common.Pdu;
+using FruitHAP.SensorProcessing.SensorBinding.RfxBinding;
+using FruitHAP.SensorProcessing.SensorBinding.RfxBinding.Decoders;
+using FruitHAP.SensorProcessing.SensorBinding.RfxBinding.Decoders.RfxDecoder;
+using FruitHAP.SensorProcessing.SensorBinding.RfxBinding.Eventing;
 using NUnit.Framework;
-using SensorProcessing.Common.Pdu;
-using SensorProcessing.SensorBinding.RfxBinding;
-using SensorProcessing.SensorBinding.RfxBinding.Decoders;
-using SensorProcessing.SensorBinding.RfxBinding.Decoders.RfxDecoder;
-using SensorProcessing.SensorBinding.RfxBinding.Eventing;
 
-namespace SensorBinding.Tests
+namespace FruitHAP.SensorBinding.Tests
 {
     [TestFixture]
     public class DecoderTest

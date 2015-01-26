@@ -1,7 +1,7 @@
-﻿using SensorProcessing.Common.Eventing;
-using SensorProcessing.Common.Pdu;
+﻿using FruitHAP.SensorProcessing.Common.Eventing;
+using FruitHAP.SensorProcessing.Common.Pdu;
 
-namespace SensorProcessing.SensorBinding.RfxBinding.Eventing
+namespace FruitHAP.SensorProcessing.SensorBinding.RfxBinding.Eventing
 {
     public interface IAcPduPublisher : IPduPublisher<AcPdu>
     {

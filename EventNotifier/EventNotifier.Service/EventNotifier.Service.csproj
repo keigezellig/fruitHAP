@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C585080D-8A3C-49FD-AAAD-839F860F0824}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EventNotifierService</RootNamespace>
+    <AssemblyName>EventNotifierService</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\packages\Castle.Core.3.3.0\lib\net40-client\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.Logging">
+      <HintPath>..\packages\Castle.LoggingFacility.3.3.0\lib\net40\Castle.Facilities.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Services.Logging.NLogIntegration">
+      <HintPath>..\packages\Castle.Core-NLog.3.3.0\lib\net40-client\Castle.Services.Logging.NLogIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net40\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="EasyNetQ, Version=0.40.3.352, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\EasyNetQ.0.40.3.352\lib\net40\EasyNetQ.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.3.1.0.0\lib\net40\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="RabbitMQ.Client, Version=3.4.3.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\RabbitMQ.Client.3.4.3\lib\net35\RabbitMQ.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Topshelf">
+      <HintPath>..\packages\Topshelf.3.1.3\lib\net40-full\Topshelf.dll</HintPath>
+    </Reference>
+    <Reference Include="Topshelf.Linux">
+      <HintPath>..\packages\Topshelf.Linux.1.0.7.7\lib\Topshelf.Linux.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="Topshelf.NLog">
+      <HintPath>..\packages\Topshelf.NLog.3.1.3\lib\net40-full\Topshelf.NLog.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Startup\NLogConfigurationFactory.cs" />
+    <Compile Include="Logging\EasyNetQLoggerAdapter.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\IEventNotifier.cs" />
+    <Compile Include="Service\EventNotifier.cs" />
+    <Compile Include="Startup\BusBuilder.cs" />
+    <Compile Include="Startup\WindsorInstaller.cs" />
+    <Compile Include="Startup\ServiceHostConfigurator.cs" />
+    <Compile Include="Service\EventNotifierServiceException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Messages\Messages\Messages.csproj">
+      <Project>{ADF24A81-11A8-4CC5-8594-FBC9F91B5861}</Project>
+      <Name>Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EventNotifier.Common\EventNotifier.Common.csproj">
+      <Project>{729B860F-6351-4D48-B06C-77B1B6D42DB0}</Project>
+      <Name>EventNotifier.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Plugins\PushBullet\Pushbullet.csproj">
+      <Project>{77605F14-13B1-409A-B577-941DD0871A6F}</Project>
+      <Name>Pushbullet</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

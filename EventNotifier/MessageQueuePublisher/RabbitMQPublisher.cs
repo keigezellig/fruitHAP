@@ -1,7 +1,7 @@
 ﻿using System;
 using EasyNetQ;
 using EventNotifierService.Common;
-using EventNotifierService.Common.Messages;
+using FruitHAP.Messages;
 
 namespace DoorPi.MessageQueuePublisher
 {

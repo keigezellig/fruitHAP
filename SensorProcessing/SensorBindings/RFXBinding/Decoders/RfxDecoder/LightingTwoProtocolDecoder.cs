@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Castle.Core.Logging;
 
-namespace SensorProcessing.SensorBinding.RfxBinding.Decoders.RfxDecoder
+namespace FruitHAP.SensorProcessing.SensorBinding.RfxBinding.Decoders.RfxDecoder
 {
     public class LightingTwoProtocolDecoder : BaseDecoder
     {

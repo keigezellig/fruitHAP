@@ -1,7 +1,7 @@
 ﻿using Castle.Core.Logging;
 using EventNotifier.Plugins.PushBullet.Annotations;
-using EventNotifierService.Common.Messages;
 using EventNotifierService.Common.Plugin;
+using FruitHAP.Messages;
 
 namespace EventNotifier.Plugins.PushBullet
 {

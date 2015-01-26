@@ -1,6 +1,6 @@
 ﻿using Castle.Core.Logging;
 
-namespace SensorProcessing.SensorBinding.RfxBinding.Decoders
+namespace FruitHAP.SensorProcessing.SensorBinding.RfxBinding.Decoders
 {
     public abstract class BaseDecoder : IDecoder
     {

@@ -4,9 +4,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Castle.Core.Logging;
-using SensorProcessing.Common.Extensions;
+using FruitHAP.SensorProcessing.Common.Extensions;
 
-namespace SensorProcessing.Common.InterfaceReaders.SerialPort
+namespace FruitHAP.SensorProcessing.Common.InterfaceReaders.SerialPort
 {
     public sealed class SerialPortInterfaceReader : IInterfaceReader
     {

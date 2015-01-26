@@ -1,6 +1,6 @@
-﻿using SensorProcessing.Common;
+﻿using FruitHAP.SensorProcessing.Common;
 
-namespace SensorProcessing.SensorBinding.RfxBinding
+namespace FruitHAP.SensorProcessing.SensorBinding.RfxBinding
 {
     public interface IRfxProtocolFactory
     {

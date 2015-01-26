@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Text;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
 
-namespace SensorProcessing.Service.Startup
+namespace FruitHAP.SensorProcessing.Service.Startup
 {
      public static class NLogConfigurationFactory
     {

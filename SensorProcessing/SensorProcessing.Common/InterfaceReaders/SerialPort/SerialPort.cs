@@ -1,6 +1,6 @@
 ﻿using System.IO.Ports;
 
-namespace SensorProcessing.Common.InterfaceReaders.SerialPort
+namespace FruitHAP.SensorProcessing.Common.InterfaceReaders.SerialPort
 {
     public sealed class SerialPort : ISerialPort
     {

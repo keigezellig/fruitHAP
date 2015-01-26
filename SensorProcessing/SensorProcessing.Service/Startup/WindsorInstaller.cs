@@ -1,26 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Text;
 using Castle.Facilities.Logging;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Services.Logging.NLogIntegration;
 using Castle.Windsor;
+using FruitHAP.SensorProcessing.Common;
+using FruitHAP.SensorProcessing.Common.Configuration;
+using FruitHAP.SensorProcessing.Common.InterfaceReaders;
+using FruitHAP.SensorProcessing.SensorBinding.RfxBinding;
+using FruitHAP.SensorProcessing.SensorDevices;
+using FruitHAP.SensorProcessing.Service.Service;
 using Microsoft.Practices.Prism.PubSubEvents;
 using NLog;
-using SensorProcessing.Common;
-using SensorProcessing.Common.Configuration;
-using SensorProcessing.Common.InterfaceReaders;
-using SensorProcessing.SensorBinding.RfxBinding;
-using SensorProcessing.SensorDevices;
-using SensorProcessing.Service.Service;
 
-
-namespace SensorProcessing.Service.Startup
+namespace FruitHAP.SensorProcessing.Service.Startup
 {
     public class WindsorInstaller : IWindsorInstaller
     {

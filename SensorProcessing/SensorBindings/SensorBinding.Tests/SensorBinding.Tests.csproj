@@ -6,8 +6,8 @@
     <ProjectGuid>{804FD7D2-AF6E-477A-9B33-AA75375A2C71}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SensorBinding.Tests</RootNamespace>
-    <AssemblyName>SensorBinding.Tests</AssemblyName>
+    <RootNamespace>FruitHAP.SensorBinding.Tests</RootNamespace>
+    <AssemblyName>FruitHAP.SensorBinding.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -59,11 +59,7 @@
         <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
       </ItemGroup>
     </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
-      </ItemGroup>
-    </Otherwise>
+    <Otherwise />
   </Choose>
   <ItemGroup>
     <Compile Include="DecoderTest.cs" />
