@@ -43,6 +43,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageQueuePublisher", "Ev
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messages", "Messages\Messages\Messages.csproj", "{ADF24A81-11A8-4CC5-8594-FBC9F91B5861}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitHAP.Core", "FruitHAP.Core\FruitHAP.Core.csproj", "{7868342A-DF79-4E86-B522-7F63BCB0BA2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitHAP.Common", "FruitHAP.Common\FruitHAP.Common.csproj", "{9C6519AB-BAA8-4833-AED7-687506CD240D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +113,14 @@ Global
 		{ADF24A81-11A8-4CC5-8594-FBC9F91B5861}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADF24A81-11A8-4CC5-8594-FBC9F91B5861}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADF24A81-11A8-4CC5-8594-FBC9F91B5861}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7868342A-DF79-4E86-B522-7F63BCB0BA2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7868342A-DF79-4E86-B522-7F63BCB0BA2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7868342A-DF79-4E86-B522-7F63BCB0BA2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7868342A-DF79-4E86-B522-7F63BCB0BA2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C6519AB-BAA8-4833-AED7-687506CD240D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C6519AB-BAA8-4833-AED7-687506CD240D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C6519AB-BAA8-4833-AED7-687506CD240D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C6519AB-BAA8-4833-AED7-687506CD240D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
