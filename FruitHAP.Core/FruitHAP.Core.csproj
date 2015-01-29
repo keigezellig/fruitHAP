@@ -59,6 +59,7 @@
     <Compile Include="Sensor\SensorTypes\ICamera.cs" />
     <Compile Include="Service\ISensorProcessingService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\SensorProcessingService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FruitHAP.Common\FruitHAP.Common.csproj">

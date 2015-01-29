@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
+using Castle.Core.Logging;
 using FruitHAP.Core.Sensor;
 
 namespace FruitHAP.Core.SensorRepository
@@ -11,8 +12,9 @@ namespace FruitHAP.Core.SensorRepository
     {
         private IEnumerable<ISensor> sensors;
 
-        public SensorRepository(ISensorLoader sensorLoader)
+        public SensorRepository(ISensorLoader sensorLoader, ILogger logger)
         {
+            logger.Info("Loading sensors");
             sensors = sensorLoader.LoadSensors();
         }
         

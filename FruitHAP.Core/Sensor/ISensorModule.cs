@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FruitHAP.SensorProcessing.Common
+namespace FruitHAP.Core.Sensor
 {
     public interface ISensorModule : IDisposable
     {
