@@ -52,6 +52,7 @@
     <Compile Include="Protocol\KakuProtocol.cs" />
     <Compile Include="Protocol\KakuProtocolData.cs" />
     <Compile Include="Protocol\KakuProtocolEventArgs.cs" />
+    <Compile Include="Protocol\ProtocolException.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FruitHAP.Common\FruitHAP.Common.csproj">
