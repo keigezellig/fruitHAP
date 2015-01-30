@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using Castle.Core.Logging;
 using FruitHAP.SensorProcessing.Common;
 using FruitHAP.SensorProcessing.Common.Configuration;
