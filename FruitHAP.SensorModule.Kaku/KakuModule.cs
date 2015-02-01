@@ -31,12 +31,20 @@ namespace FruitHAP.SensorModule.Kaku
 
         void PhysicalInterfaceDataReceived(object sender, ExternalDataReceivedEventArgs e)
         {
-            var data = protocol.Decode(e.Data);
-            OnKakuDataReceived(data);
+            try
+            {
+                var data = protocol.Decode(e.Data);
+                OnKakuDataReceived(data);
+            }
+            catch (ProtocolException ex)
+            {                
+                logger.ErrorFormat("Cannot decode packet. Error: {0}",ex.Message);
+            }
         }
 
         protected virtual void OnKakuDataReceived(KakuProtocolData data)
         {
+            //TODO: Encoding here??
             if (KakuDataReceived != null)
             {
                 var localEvent = KakuDataReceived;

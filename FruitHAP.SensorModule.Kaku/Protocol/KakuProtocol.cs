@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Castle.Core.Logging;
+using FruitHAP.Common.Helpers;
 
 namespace FruitHAP.SensorModule.Kaku.Protocol
 {
@@ -24,9 +26,59 @@ namespace FruitHAP.SensorModule.Kaku.Protocol
 
     public class KakuProtocol : IKakuProtocol
     {
+        private ILogger logger;
+
+        public KakuProtocol(ILogger logger)
+        {
+            this.logger = logger;
+        }
+
         public KakuProtocolData Decode(byte[] rawData)
         {
-            throw new NotImplementedException();
+            CheckLength(rawData);
+            CheckProtocolIndicator(rawData);
+            CheckPacketIndicator(rawData);
+            
+            return GetProtocolData(rawData);
+        }
+
+        private KakuProtocolData GetProtocolData(byte[] rawData)
+        {
+            byte[] deviceBytes = rawData.Skip(4).Take(4).Reverse().ToArray();
+            logger.DebugFormat("{0}", deviceBytes.BytesAsString());
+
+            var pdu = new KakuProtocolData();
+            pdu.DeviceId = BitConverter.ToUInt32(deviceBytes, 0);
+            pdu.UnitCode = rawData[8];
+            pdu.Command = (Command)rawData[9];
+            pdu.Level = rawData[10];
+
+            return pdu;
+        }
+
+        private void CheckPacketIndicator(byte[] rawData)
+        {
+            if (rawData[2] != 0x00)
+            {
+                throw new ProtocolException(string.Format("Incorrect packet indicator. This is not a KaKu packet. Packet indicator is 0x{0:X}",rawData[2]));
+            }
+        }
+
+        private void CheckProtocolIndicator(byte[] rawData)
+        {
+            if (rawData[0] != 0x0B || rawData[1] != 0x11)
+            {
+                throw new ProtocolException(string.Format("Incorrect protocol indicator. This is not a KaKu packet. Protocol indicator is 0x{0:X} 0x{1:X}", rawData[0], rawData[1]));
+            }
+        }
+
+        private void CheckLength(byte[] rawData)
+        {
+            if (rawData.Count() != 12)
+            {
+                throw new ProtocolException(string.Format("Incorrect packet length. This is not a KaKu packet. Length={0}", rawData.Count()));
+            }
+            
         }
 
         public byte[] Encode(KakuProtocolData protocolData)
