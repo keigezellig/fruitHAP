@@ -70,15 +70,15 @@ namespace FruitHAP.Startup
 
         private void RegisterModules(IWindsorContainer container)
         {
-            string bindingDirectory = ConfigurationManager.AppSettings["ModuleDirectory"] ??
+            string moduleDirectory = ConfigurationManager.AppSettings["ModuleDirectory"] ??
                                       Path.Combine(".", "modules");
         
-            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(bindingDirectory))
+            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(moduleDirectory))
                 .BasedOn<ISensorModule>()
                 .WithService.FromInterface()
                 .LifestyleSingleton());
 
-            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(bindingDirectory))
+            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(moduleDirectory))
                .BasedOn<ISensor>()
                .WithService.Base()
                .LifestyleTransient());
