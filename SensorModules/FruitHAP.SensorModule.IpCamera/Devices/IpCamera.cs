@@ -10,7 +10,7 @@ using FruitHAP.Core.Sensor.SensorTypes;
 
 namespace FruitHAP.SensorModule.IpCamera.Devices
 {
-    public class IpCamera : ICamera, ISensorInitializer
+    public class IpCamera : ICamera, ISensorInitializer, ICloneable
     {
         private readonly ILogger logger;
         private Uri url;
@@ -20,6 +20,10 @@ namespace FruitHAP.SensorModule.IpCamera.Devices
         public string Name { get; private set; }
         public string Description { get; private set; }
 
+        public IpCamera()
+        {
+            
+        }
         public IpCamera(ILogger logger)
         {
             this.logger = logger;
@@ -29,7 +33,7 @@ namespace FruitHAP.SensorModule.IpCamera.Devices
         {
             Name = parameters["Name"];
             Description = parameters["Description"];
-            username = parameters["UserName"];
+            username = parameters["Username"];
             password = parameters["Password"];
             url = new Uri(parameters["Url"]);
             
@@ -62,7 +66,10 @@ namespace FruitHAP.SensorModule.IpCamera.Devices
             return await GetImageAsync(url, username, password);
         }
 
-       
-    
+
+        public object Clone()
+        {
+            return new IpCamera(this.logger);
+        }
     }
 }

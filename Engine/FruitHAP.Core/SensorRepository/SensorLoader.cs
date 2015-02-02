@@ -28,31 +28,39 @@ namespace FruitHAP.Core.SensorRepository
 
             var result = new List<ISensor>();
 
-            List<SensorDefinition> definitions = JsonSerializerHelper.Deserialize<List<SensorDefinition>>(sensorFile);
+            List<SensorDefinition> definitions = JsonSerializerHelper.Deserialize<List<SensorDefinition>>(sensorFile);            
             foreach (var definition in definitions)
             {
-                ISensor prototype = prototypes.SingleOrDefault(f => f.GetType().Name.Contains(definition.SensorType));
+                try
+                {
+                    ISensor prototype = prototypes.SingleOrDefault(f => f.GetType().Name.Contains(definition.SensorType));
 
-                if (prototype != null)
-                {
-                    var instance = GetInstance(prototype.GetType());
-                    Dictionary<string, string> parameters = new Dictionary<string, string>(definition.Parameters);
-                    parameters["Name"] = definition.Name;
-                    parameters["Description"] = definition.Description;
-                    instance.Initialize(parameters);
-                    result.Add(instance as ISensor);
+                    if (prototype != null)
+                    {
+                        var instance = GetInstance(prototype);
+                        Dictionary<string, string> parameters = new Dictionary<string, string>(definition.Parameters);
+                        parameters["Name"] = definition.Name;
+                        parameters["Description"] = definition.Description;
+                        instance.Initialize(parameters);
+                        result.Add(instance as ISensor);
+                    }
+                    else
+                    {
+                        logger.ErrorFormat("Cannot load sensor {0}. Check your configuration!", definition.SensorType);
+                    }
                 }
-                else
+                catch (Exception exception)
                 {
-                    logger.ErrorFormat("Cannot load sensor {0}. Check your configuration!", definition.SensorType);
+                    logger.ErrorFormat("Cannot load sensor {0}. Check your configuration! Error message={1}", definition.SensorType, exception.Message);
                 }
             }
             return result;
         }
 
-        private ISensorInitializer GetInstance(Type type)
+        private ISensorInitializer GetInstance(object prototype)
         {
-            return Activator.CreateInstance(type) as ISensorInitializer;
+            var clonableType = prototype as ICloneable;            
+            return clonableType.Clone() as ISensorInitializer;
         }
     }
 }
