@@ -24,11 +24,11 @@ namespace FruitHAP.Core.SensorRepository
         public IEnumerable<ISensor> LoadSensors()
         {
             string sensorFile = ConfigurationManager.AppSettings["SensorFile"] ??
-                                                  Path.Combine(".", "sensors.xml");
+                                                  Path.Combine(".", "sensors.json");
 
             var result = new List<ISensor>();
 
-            List<SensorDefinition> definitions = XmlSerializerHelper.Deserialize<List<SensorDefinition>>(sensorFile);
+            List<SensorDefinition> definitions = JsonSerializerHelper.Deserialize<List<SensorDefinition>>(sensorFile);
             foreach (var definition in definitions)
             {
                 ISensor prototype = prototypes.SingleOrDefault(f => f.GetType().Name.Contains(definition.SensorType));
