@@ -8,15 +8,18 @@ namespace FruitHAP.Core.Service
 {
     public class SensorProcessingService : ISensorProcessingService
     {
+        private readonly ISensorRepository sensorRepository;
         private readonly IEnumerable<ISensorModule> modules;
         private readonly IEnumerable<IAction> actions;
         private readonly ILogger log;
 
-        public SensorProcessingService(IEnumerable<ISensorModule> modules, IEnumerable<IAction> actions, ILogger log)
+        public SensorProcessingService(ISensorRepository sensorRepository, IEnumerable<ISensorModule> modules, IEnumerable<IAction> actions, ILogger log)
         {
+            this.sensorRepository = sensorRepository;
             this.modules = modules;
             this.actions = actions;
             this.log = log;
+            
         }
 
         public void Start()
@@ -26,6 +29,9 @@ namespace FruitHAP.Core.Service
                 log.Error("No modules loaded. Nothing to do");
                 return;
             }
+
+            log.Info("Loading sensors");
+            sensorRepository.Initialize();
 
             log.Info("Starting modules");
 

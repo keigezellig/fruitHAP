@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FruitHAP.Core.Sensor;
 
 namespace FruitHAP.SensorModule.Kaku.Protocol
 {
-    public interface IKakuProtocol
+    public interface IKakuProtocol : ISensorProtocol<KakuProtocolData>
     {
-        KakuProtocolData Decode(byte[] rawData);
-        byte[] Encode(KakuProtocolData protocolData);
+        
     }
 }

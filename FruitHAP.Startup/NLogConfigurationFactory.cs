@@ -2,6 +2,7 @@
 using System.IO;
 using NLog;
 using NLog.Config;
+using NLog.Layouts;
 using NLog.Targets;
 
 namespace FruitHAP.Startup
@@ -23,6 +24,7 @@ namespace FruitHAP.Startup
         private static void AddConsoleTarget(LogLevel minimumLogLevel, LoggingConfiguration config)
         {
             var consoleTarget = new ColoredConsoleTarget();
+            //consoleTarget.Layout = new SimpleLayout("${longdate} ${message}\n${exception:format=message}");
             config.AddTarget("file", consoleTarget);
             var consoleRule = new LoggingRule("*", minimumLogLevel, consoleTarget);
             config.LoggingRules.Add(consoleRule);

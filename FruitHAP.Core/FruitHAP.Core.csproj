@@ -55,6 +55,7 @@
     <Compile Include="Sensor\ISensor.cs" />
     <Compile Include="Sensor\ISensorModule.cs" />
     <Compile Include="Action\IAction.cs" />
+    <Compile Include="Sensor\ISensorProtocol.cs" />
     <Compile Include="Sensor\SensorTypes\IButton.cs" />
     <Compile Include="Sensor\SensorTypes\ICamera.cs" />
     <Compile Include="Service\ISensorProcessingService.cs" />

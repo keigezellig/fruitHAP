@@ -8,6 +8,8 @@ using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Services.Logging.NLogIntegration;
 using Castle.Windsor;
+using FruitHAP.Common.Configuration;
+using FruitHAP.Common.PhysicalInterfaces;
 using FruitHAP.Core.Action;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Core.SensorRepository;
@@ -24,7 +26,7 @@ namespace FruitHAP.Startup
             container.Kernel.ComponentRegistered += Kernel_ComponentRegistered;
             container.Kernel.Resolver.AddSubResolver(new CollectionResolver(container.Kernel, true));
             RegisterEventAggregator(container);
-            RegisterLogging(container);
+            RegisterLogging(container);            
             RegisterModules(container);
             RegisterDeviceRepository(container);
             RegisterActions(container);
@@ -35,9 +37,16 @@ namespace FruitHAP.Startup
         private void RegisterDeviceRepository(IWindsorContainer container)
         {
             container.Register(
+                Component.For<ISensorLoader>()
+                    .ImplementedBy<SensorLoader>()
+                    .LifestyleSingleton());
+
+            container.Register(
                Component.For<ISensorRepository>()
                    .ImplementedBy<SensorRepository>()
                    .LifestyleSingleton());
+
+            
         }
 
         private void RegisterActions(IWindsorContainer container)
@@ -71,18 +80,33 @@ namespace FruitHAP.Startup
         private void RegisterModules(IWindsorContainer container)
         {
             string moduleDirectory = ConfigurationManager.AppSettings["ModuleDirectory"] ??
-                                      Path.Combine(".", "modules");
-        
+                                     Path.Combine(".", "modules");
+
+
             container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(moduleDirectory))
-                .BasedOn<ISensorModule>()
+                .BasedOn(typeof (ISensorProtocol<>))
+                .WithService.AllInterfaces()
+                .LifestyleSingleton());
+
+            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(moduleDirectory))
+                .BasedOn(typeof (IConfigProvider<>))
+                .WithService.Base()
+                .LifestyleSingleton());
+
+            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(moduleDirectory))
+                .BasedOn<IPhysicalInterfaceFactory>()
                 .WithService.FromInterface()
                 .LifestyleSingleton());
 
             container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(moduleDirectory))
-               .BasedOn<ISensor>()
-               .WithService.Base()
-               .LifestyleTransient());
-             
+                .BasedOn<ISensorModule>()
+                .WithService.AllInterfaces()
+                .LifestyleSingleton());
+
+            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(moduleDirectory))
+                .BasedOn<ISensor>()
+                .WithService.Base()
+                .LifestyleSingleton());
         }
 
 

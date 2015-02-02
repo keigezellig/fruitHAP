@@ -2,6 +2,7 @@
 using Castle.Core.Logging;
 using FruitHAP.Common.Configuration;
 using FruitHAP.Common.PhysicalInterfaces;
+using FruitHAP.Core.Sensor;
 using FruitHAP.SensorModule.Kaku.Configuration;
 using FruitHAP.SensorModule.Kaku.Protocol;
 
@@ -43,8 +44,7 @@ namespace FruitHAP.SensorModule.Kaku
         }
 
         protected virtual void OnKakuDataReceived(KakuProtocolData data)
-        {
-            //TODO: Encoding here??
+        {            
             if (KakuDataReceived != null)
             {
                 var localEvent = KakuDataReceived;
@@ -55,7 +55,7 @@ namespace FruitHAP.SensorModule.Kaku
 
         public void Start()
         {
-            logger.InfoFormat("Starting binding {0}", this);
+            logger.InfoFormat("Starting module {0}", this);
 
             try
             {
@@ -68,21 +68,21 @@ namespace FruitHAP.SensorModule.Kaku
             }
             catch (Exception ex)
             {
-                logger.Debug("Cannot start binding..", ex);
+                logger.Debug("Cannot start module..", ex);
             }
 
         }
 
         public void Stop()
         {
-            logger.InfoFormat("Stopping binding {0}", this);
+            logger.InfoFormat("Stopping module {0}", this);
             physicalInterface.StopReading();
             physicalInterface.Close();
         }
 
         public void Dispose()
         {
-            logger.DebugFormat("Dispose binding {0}", this);
+            logger.DebugFormat("Dispose module {0}", this);
             physicalInterface.Dispose();
         }
 

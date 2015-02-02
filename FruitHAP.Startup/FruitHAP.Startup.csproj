@@ -82,6 +82,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FruitHAP.Common\FruitHAP.Common.csproj">
+      <Project>{9C6519AB-BAA8-4833-AED7-687506CD240D}</Project>
+      <Name>FruitHAP.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FruitHAP.Core\FruitHAP.Core.csproj">
       <Project>{7868342A-DF79-4E86-B522-7F63BCB0BA2E}</Project>
       <Name>FruitHAP.Core</Name>

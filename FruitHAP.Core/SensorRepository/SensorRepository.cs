@@ -10,12 +10,28 @@ namespace FruitHAP.Core.SensorRepository
 {
     public class SensorRepository : ISensorRepository
     {
+        private readonly ISensorLoader sensorLoader;
+        private readonly ILogger logger;
         private IEnumerable<ISensor> sensors;
 
         public SensorRepository(ISensorLoader sensorLoader, ILogger logger)
         {
-            logger.Info("Loading sensors");
-            sensors = sensorLoader.LoadSensors();
+            this.sensorLoader = sensorLoader;
+            this.logger = logger;
+        }
+
+        public void Initialize()
+        {
+            try
+            {
+                logger.Info("Loading sensors");
+                sensors = sensorLoader.LoadSensors();
+            }
+            catch (Exception ex)
+            {                
+                logger.Error("Cannot load sensors",ex);   
+            }
+            
         }
         
         public IEnumerable<T> FindAllDevicesOfType<T>() where T : ISensor

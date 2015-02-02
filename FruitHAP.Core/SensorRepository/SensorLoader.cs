@@ -26,10 +26,9 @@ namespace FruitHAP.Core.SensorRepository
             string sensorFile = ConfigurationManager.AppSettings["SensorFile"] ??
                                                   Path.Combine(".", "sensors.xml");
 
-            List<SensorDefinition> definitions = XmlSerializerHelper.Deserialize<List<SensorDefinition>>(sensorFile);
-            
             var result = new List<ISensor>();
 
+            List<SensorDefinition> definitions = XmlSerializerHelper.Deserialize<List<SensorDefinition>>(sensorFile);
             foreach (var definition in definitions)
             {
                 ISensor prototype = prototypes.SingleOrDefault(f => f.GetType().Name.Contains(definition.SensorType));
