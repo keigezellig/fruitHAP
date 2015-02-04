@@ -3,6 +3,7 @@ using System.Linq;
 using Castle.Core.Logging;
 using FruitHAP.Core.Action;
 using FruitHAP.Core.Sensor;
+using System.Configuration;
 
 namespace FruitHAP.Core.Service
 {
@@ -12,25 +13,31 @@ namespace FruitHAP.Core.Service
         private readonly IEnumerable<ISensorModule> modules;
         private readonly IEnumerable<IAction> actions;
         private readonly ILogger log;
+		private readonly IMessageQueuePublisher mqPublisher;
 
-        public SensorProcessingService(ISensorRepository sensorRepository, IEnumerable<ISensorModule> modules, IEnumerable<IAction> actions, ILogger log)
+		public SensorProcessingService(ISensorRepository sensorRepository, IEnumerable<ISensorModule> modules, IEnumerable<IAction> actions, IMessageQueuePublisher mqPublisher, ILogger log)
         {
+			this.mqPublisher = mqPublisher;
             this.sensorRepository = sensorRepository;
             this.modules = modules;
             this.actions = actions;
             this.log = log;
+			this.mqPublisher = mqPublisher;
             
         }
 
         public void Start()
         {
-            if (!modules.Any())
+			string mqConnectionString = ConfigurationManager.AppSettings ["mqConnectionString"] ?? "";
+			mqPublisher.Initialize (mqConnectionString);
+
+			if (!modules.Any())
             {
                 log.Error("No modules loaded. Nothing to do");
                 return;
             }
 
-            log.Info("Loading sensors");
+				            
             sensorRepository.Initialize();
 
             log.Info("Starting modules");
@@ -45,6 +52,7 @@ namespace FruitHAP.Core.Service
                 log.Error("No actions loaded. Nothing to do");
                 return;
             }
+
 
             log.Info("Initialize actions");
             foreach (var sensorAction in actions)

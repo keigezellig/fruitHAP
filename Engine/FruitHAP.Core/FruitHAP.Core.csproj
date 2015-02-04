@@ -33,6 +33,12 @@
       <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
+    <Reference Include="RabbitMQ.Client">
+      <HintPath>..\packages\RabbitMQ.Client.3.4.3\lib\net35\RabbitMQ.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="EasyNetQ">
+      <HintPath>..\packages\EasyNetQ.0.41.0.356\lib\net40\EasyNetQ.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -41,6 +47,7 @@
     <Folder Include="Sensor\" />
     <Folder Include="SensorRepository\" />
     <Folder Include="Service\" />
+    <Folder Include="MQ\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action\IAction.cs" />
@@ -58,6 +65,8 @@
     <Compile Include="SensorRepository\SensorRepository.cs" />
     <Compile Include="Service\ISensorProcessingService.cs" />
     <Compile Include="Service\SensorProcessingService.cs" />
+    <Compile Include="MQ\IMessageQueuePublisher.cs" />
+    <Compile Include="MQ\RabbitMqPublisher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

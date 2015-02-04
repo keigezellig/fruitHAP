@@ -1,16 +1,8 @@
 ﻿<Properties StartupItem="FruitHAP.Startup/FruitHAP.Startup.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="FruitHAP.Common/Configuration/ConfigProviderBase.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="FruitHAP.Core/MQ/RabbitMqPublisher.cs">
     <Files>
-      <File FileName="FruitHAP.Common/Configuration/ConfigProviderBase.cs" Line="10" Column="10" />
-      <File FileName="FruitHAP.Common/Helpers/XmlSerializerHelper.cs" Line="1" Column="1" />
-      <File FileName="FruitHAP.Core/SensorRepository/SensorLoader.cs" Line="1" Column="1" />
-      <File FileName="FruitHAP.Core/SensorRepository/SensorRepository.cs" Line="1" Column="1" />
-      <File FileName="FruitHAP.Startup/NLogConfigurationFactory.cs" Line="1" Column="1" />
-      <File FileName="FruitHAP.Startup/ServiceHostConfigurator.cs" Line="1" Column="1" />
-      <File FileName="FruitHAP.Startup/WindsorInstaller.cs" Line="1" Column="1" />
-      <File FileName="FruitHAP.Startup/App.config" Line="1" Column="1" />
-      <File FileName="../../../../usr/lib/mono/4.5/Microsoft.Common.targets" Line="1" Column="1" />
+      <File FileName="FruitHAP.Core/MQ/RabbitMqPublisher.cs" Line="95" Column="95" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

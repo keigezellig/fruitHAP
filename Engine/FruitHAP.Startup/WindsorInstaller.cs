@@ -17,6 +17,8 @@ using FruitHAP.Core.SensorRepository;
 using FruitHAP.Core.Service;
 using Microsoft.Practices.Prism.PubSubEvents;
 using NLog;
+using FruitHAP.Core;
+using FruitHAP.Core.MQ;
 
 namespace FruitHAP.Startup
 {
@@ -33,13 +35,22 @@ namespace FruitHAP.Startup
             container.Kernel.ComponentRegistered += Kernel_ComponentRegistered;
             container.Kernel.Resolver.AddSubResolver(new CollectionResolver(container.Kernel, true));
             RegisterLogging(container);            
-            RegisterEventAggregator(container);            
+			RegisterMQPublisher(container);
+			RegisterEventAggregator(container);            
             RegisterModules(container,moduleDirectory);
             RegisterDeviceRepository(container);
             RegisterActions(container,actionDirectory);
             RegisterService(container);
             
         }
+
+		void RegisterMQPublisher (IWindsorContainer container)
+		{
+			container.Register(
+				Component.For<IMessageQueuePublisher>()
+				.ImplementedBy<RabbitMqPublisher>()
+				.LifestyleSingleton());
+		}
 
         private void RegisterDeviceRepository(IWindsorContainer container)
         {
