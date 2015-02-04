@@ -16,6 +16,7 @@ namespace FruitHAP.SensorModule.Kaku.Devices
         private uint deviceId;
         private byte unitCode;
         private Command command;
+		private KakuProtocolData sensorDefinition;
 
 
         public KakuButton()
@@ -42,13 +43,15 @@ namespace FruitHAP.SensorModule.Kaku.Devices
         
         public void Initialize(Dictionary<string, string> parameters)
         {            
-            name = parameters["Name"];
+			sensorDefinition = new KakuProtocolData ();
+
+			name = parameters["Name"];
             description = parameters["Description"];
-            deviceId = UInt32.Parse(parameters["DeviceId"]);
-            unitCode = byte.Parse(parameters["UnitCode"]);
-            command = (Command) Enum.Parse(typeof(Command),parameters["Command"]);            
+			sensorDefinition.DeviceId = Convert.ToUInt32(parameters["DeviceId"],16);
+			sensorDefinition.UnitCode = Convert.ToByte(parameters["UnitCode"],16);
+            sensorDefinition.Command = (Command) Enum.Parse(typeof(Command),parameters["Command"]);            
             module.KakuDataReceived += module_KakuDataReceived;
-            logger.InfoFormat("Initialized button {0}, {1}, {2:X} ({2}), {3:x}, {4}", name, description, deviceId, unitCode, command);
+			logger.InfoFormat("Initialized button {0} ({1})",name,sensorDefinition);
         }
 
         void module_KakuDataReceived(object sender, KakuProtocolEventArgs e)
@@ -56,7 +59,8 @@ namespace FruitHAP.SensorModule.Kaku.Devices
             logger.DebugFormat("Received event: {0}", e.Data);
             if (DataReceivedCorrespondsToTheButton(e.Data))
             {
-                OnButtonPressed();
+				logger.Debug ("About to Fire event");
+				OnButtonPressed();
             }
         }
 
@@ -64,14 +68,16 @@ namespace FruitHAP.SensorModule.Kaku.Devices
         {
             if (ButtonPressed != null)
             {
-                var localEvent = ButtonPressed;
+				logger.Debug ("Firing event");
+				var localEvent = ButtonPressed;
                 localEvent(this, null);
             }
         }
 
         private bool DataReceivedCorrespondsToTheButton(KakuProtocolData data)
         {
-            return (data.DeviceId == deviceId && data.UnitCode == unitCode && data.Command == command);
+			logger.InfoFormat ("Definition={0} Data={1}", sensorDefinition, data);
+			return (data.DeviceId == sensorDefinition.DeviceId && data.UnitCode == sensorDefinition.UnitCode && data.Command == sensorDefinition.Command);
         }
 
         public object Clone()

@@ -1,7 +1,9 @@
 ﻿using System;
+using EasyNetQ;
 
 namespace FruitHap.MyActions.Messages
 {
+	[Queue("FruitHAPQueue", ExchangeName = "FruitHAPExchange")]
 	public class DoorMessage
 	{
 		public DateTime Timestamp { get; set; }
