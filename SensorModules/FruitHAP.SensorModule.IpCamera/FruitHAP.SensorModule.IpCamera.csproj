@@ -30,12 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\..\Engine\FruitHAP.Core\bin\Release\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="FruitHAP.Core">
-      <HintPath>..\..\Engine\FruitHAP.Core\bin\Release\FruitHAP.Core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
@@ -44,6 +38,15 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Castle.Core">
+      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FruitHAP.Common">
+      <HintPath>..\..\Engine\FruitHAP.Common\bin\Debug\FruitHAP.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="FruitHAP.Core">
+      <HintPath>..\..\Engine\FruitHAP.Core\bin\Debug\FruitHAP.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Devices\IpCamera.cs" />
@@ -57,4 +60,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>
