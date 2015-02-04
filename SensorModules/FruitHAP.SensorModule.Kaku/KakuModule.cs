@@ -5,6 +5,8 @@ using FruitHAP.Common.PhysicalInterfaces;
 using FruitHAP.Core.Sensor;
 using FruitHAP.SensorModule.Kaku.Configuration;
 using FruitHAP.SensorModule.Kaku.Protocol;
+using System.Reflection;
+using System.IO;
 
 namespace FruitHAP.SensorModule.Kaku
 {
@@ -35,7 +37,8 @@ namespace FruitHAP.SensorModule.Kaku
             try
             {
                 var data = protocol.Decode(e.Data);
-                OnKakuDataReceived(data);
+				logger.DebugFormat("Decoded data: {0}",data);
+				OnKakuDataReceived(data);
             }
             catch (ProtocolException ex)
             {                
@@ -59,7 +62,7 @@ namespace FruitHAP.SensorModule.Kaku
 
             try
             {
-                configuration = configProvider.LoadConfigFromFile("kaku.xml");
+				configuration = configProvider.LoadConfigFromFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),"kaku.xml"));
                 physicalInterface = physicalInterfaceFactory.GetPhysicalInterface(configuration.ConnectionString);
                 physicalInterface.DataReceived += PhysicalInterfaceDataReceived;
 
