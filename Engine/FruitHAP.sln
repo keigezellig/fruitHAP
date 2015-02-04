@@ -1,18 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitHAP.Core", "FruitHAP.Core\FruitHAP.Core.csproj", "{7868342A-DF79-4E86-B522-7F63BCB0BA2E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitHAP.Common", "FruitHAP.Common\FruitHAP.Common.csproj", "{179D28CA-9963-44F8-8073-845126C982CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitHAP.Common", "FruitHAP.Common\FruitHAP.Common.csproj", "{9C6519AB-BAA8-4833-AED7-687506CD240D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitHAP.Core", "FruitHAP.Core\FruitHAP.Core.csproj", "{EBEF2FB9-9739-4169-9713-7EFC7B2B8E14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitHAP.Startup", "FruitHAP.Startup\FruitHAP.Startup.csproj", "{A4103C12-DB68-4A35-82D1-4483D4F82706}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{241EDCDF-EFA6-40F8-8081-A352E2B28682}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitHAP.Startup", "FruitHAP.Startup\FruitHAP.Startup.csproj", "{98529DDE-9A39-452F-A8B4-EB77DE9ACD90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,18 +13,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7868342A-DF79-4E86-B522-7F63BCB0BA2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7868342A-DF79-4E86-B522-7F63BCB0BA2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7868342A-DF79-4E86-B522-7F63BCB0BA2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7868342A-DF79-4E86-B522-7F63BCB0BA2E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9C6519AB-BAA8-4833-AED7-687506CD240D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C6519AB-BAA8-4833-AED7-687506CD240D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C6519AB-BAA8-4833-AED7-687506CD240D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C6519AB-BAA8-4833-AED7-687506CD240D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A4103C12-DB68-4A35-82D1-4483D4F82706}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4103C12-DB68-4A35-82D1-4483D4F82706}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4103C12-DB68-4A35-82D1-4483D4F82706}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4103C12-DB68-4A35-82D1-4483D4F82706}.Release|Any CPU.Build.0 = Release|Any CPU
+		{179D28CA-9963-44F8-8073-845126C982CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{179D28CA-9963-44F8-8073-845126C982CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{179D28CA-9963-44F8-8073-845126C982CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{179D28CA-9963-44F8-8073-845126C982CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98529DDE-9A39-452F-A8B4-EB77DE9ACD90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98529DDE-9A39-452F-A8B4-EB77DE9ACD90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98529DDE-9A39-452F-A8B4-EB77DE9ACD90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98529DDE-9A39-452F-A8B4-EB77DE9ACD90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBEF2FB9-9739-4169-9713-7EFC7B2B8E14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBEF2FB9-9739-4169-9713-7EFC7B2B8E14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBEF2FB9-9739-4169-9713-7EFC7B2B8E14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBEF2FB9-9739-4169-9713-7EFC7B2B8E14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
