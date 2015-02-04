@@ -1,0 +1,15 @@
+﻿<Properties StartupItem="FruitHAP.SensorModule.Kaku/FruitHAP.SensorModule.Kaku.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="FruitHAP.SensorModule.Kaku/KakuModule.cs">
+    <Files>
+      <File FileName="FruitHAP.SensorModule.Kaku/Configuration/KakuConfiguration.cs" Line="1" Column="1" />
+      <File FileName="FruitHAP.SensorModule.Kaku/Configuration/KakuConfigProvider.cs" Line="1" Column="1" />
+      <File FileName="FruitHAP.SensorModule.Kaku/KakuModule.cs" Line="65" Column="65" />
+      <File FileName="FruitHAP.SensorModule.IpCamera/Devices/IpCamera.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
