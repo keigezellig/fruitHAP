@@ -13,7 +13,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
+    <OutputPath>..\..\Engine\FruitHAP.Startup\bin\Debug\actions\MyActions</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -23,7 +23,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
+    <OutputPath>..\..\Engine\FruitHAP.Startup\bin\Release\actions\MyActions</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -44,7 +44,7 @@
       <HintPath>..\packages\RabbitMQ.Client.3.4.3\lib\net35\RabbitMQ.Client.dll</HintPath>
     </Reference>
     <Reference Include="EasyNetQ">
-      <HintPath>..\packages\EasyNetQ.0.41.0.356\lib\net40\EasyNetQ.dll</HintPath>
+      <HintPath>..\..\Engine\packages\EasyNetQ.0.42.0.357\lib\net40\EasyNetQ.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

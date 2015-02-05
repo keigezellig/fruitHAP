@@ -13,10 +13,7 @@ namespace FruitHAP.SensorModule.Kaku.Devices
         private readonly ILogger logger;
         private string name;
         private string description;
-        private uint deviceId;
-        private byte unitCode;
-        private Command command;
-		private KakuProtocolData sensorDefinition;
+        private KakuProtocolData sensorDefinition;
 
 
         public KakuButton()
