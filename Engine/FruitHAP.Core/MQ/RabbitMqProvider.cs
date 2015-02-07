@@ -4,12 +4,12 @@ using Castle.Core.Logging;
 
 namespace FruitHAP.Core.MQ
 {
-	public class RabbitMqPublisher : IMessageQueuePublisher
+	public class RabbitMqProvider : IMessageQueueProvider
     {
         private IBus messageBus;
 		private ILogger logger;
 
-		public RabbitMqPublisher(ILogger logger)
+		public RabbitMqProvider(ILogger logger)
         {
 			this.logger = logger;            
         }
@@ -20,9 +20,9 @@ namespace FruitHAP.Core.MQ
 			messageBus = CreateMessageBus(connectionString);
 		}
 
-		public void Publish(object message)
+		public void Publish<T>(T message) where T: class
         {
-            messageBus.Publish(message);
+			messageBus.Publish(message);
         }
 
 

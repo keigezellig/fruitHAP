@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventNotifier.Common", "EventNotifier.Common\EventNotifier.Common.csproj", "{729B860F-6351-4D48-B06C-77B1B6D42DB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventNotifier.Service", "EventNotifier.Service\EventNotifier.Service.csproj", "{C585080D-8A3C-49FD-AAAD-839F860F0824}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{729B860F-6351-4D48-B06C-77B1B6D42DB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{729B860F-6351-4D48-B06C-77B1B6D42DB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{729B860F-6351-4D48-B06C-77B1B6D42DB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{729B860F-6351-4D48-B06C-77B1B6D42DB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C585080D-8A3C-49FD-AAAD-839F860F0824}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C585080D-8A3C-49FD-AAAD-839F860F0824}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C585080D-8A3C-49FD-AAAD-839F860F0824}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C585080D-8A3C-49FD-AAAD-839F860F0824}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

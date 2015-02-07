@@ -13,9 +13,9 @@ namespace FruitHAP.Core.Service
         private readonly IEnumerable<ISensorModule> modules;
         private readonly IEnumerable<IAction> actions;
         private readonly ILogger log;
-		private readonly IMessageQueuePublisher mqPublisher;
+		private readonly IMessageQueueProvider mqPublisher;
 
-		public SensorProcessingService(ISensorRepository sensorRepository, IEnumerable<ISensorModule> modules, IEnumerable<IAction> actions, IMessageQueuePublisher mqPublisher, ILogger log)
+		public SensorProcessingService(ISensorRepository sensorRepository, IEnumerable<ISensorModule> modules, IEnumerable<IAction> actions, IMessageQueueProvider mqPublisher, ILogger log)
         {
 			this.mqPublisher = mqPublisher;
             this.sensorRepository = sensorRepository;

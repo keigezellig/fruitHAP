@@ -47,8 +47,8 @@ namespace FruitHAP.Startup
 		void RegisterMQPublisher (IWindsorContainer container)
 		{
 			container.Register(
-				Component.For<IMessageQueuePublisher>()
-				.ImplementedBy<RabbitMqPublisher>()
+				Component.For<IMessageQueueProvider>()
+				.ImplementedBy<RabbitMqProvider>()
 				.LifestyleSingleton());
 		}
 

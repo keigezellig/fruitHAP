@@ -13,9 +13,9 @@ namespace FruitHAP.MyActions
     {
 		private readonly ISensorRepository sensoRepository;
         private readonly ILogger logger;
-		private readonly IMessageQueuePublisher mqPublisher;
+		private readonly IMessageQueueProvider mqPublisher;
 
-        public DoorbellAction(ISensorRepository deviceRepository, ILogger logger, IMessageQueuePublisher publisher)
+        public DoorbellAction(ISensorRepository deviceRepository, ILogger logger, IMessageQueueProvider publisher)
         {
             this.sensoRepository = deviceRepository;
             this.logger = logger;

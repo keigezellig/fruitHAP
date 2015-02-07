@@ -37,7 +37,7 @@
       <HintPath>..\packages\RabbitMQ.Client.3.4.3\lib\net35\RabbitMQ.Client.dll</HintPath>
     </Reference>
     <Reference Include="EasyNetQ">
-      <HintPath>..\packages\EasyNetQ.0.42.0.357\lib\net40\EasyNetQ.dll</HintPath>
+      <HintPath>..\packages\EasyNetQ.0.43.0.358\lib\net40\EasyNetQ.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -65,8 +65,8 @@
     <Compile Include="SensorRepository\SensorRepository.cs" />
     <Compile Include="Service\ISensorProcessingService.cs" />
     <Compile Include="Service\SensorProcessingService.cs" />
-    <Compile Include="MQ\IMessageQueuePublisher.cs" />
-    <Compile Include="MQ\RabbitMqPublisher.cs" />
+    <Compile Include="MQ\RabbitMqProvider.cs" />
+    <Compile Include="MQ\IMessageQueueProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
