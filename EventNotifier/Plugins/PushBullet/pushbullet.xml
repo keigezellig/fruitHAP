@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<PushbulletConfiguration>
-  <PushbulletUri>https://api.pushbullet.com</PushbulletUri>
-  <ApiKey>v1cULYbIkSKLywzH0b3k5xf3mgsuWyWJE2ujxvzW0Rqay</ApiKey>
-  <Channel>mydoorbell</Channel>
-</PushbulletConfiguration>
