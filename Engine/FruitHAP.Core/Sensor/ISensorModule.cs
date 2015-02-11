@@ -7,5 +7,6 @@ namespace FruitHAP.Core.Sensor
         string Name { get; }
         void Start();
         void Stop();
+		bool IsStarted {get;}
     }
 }

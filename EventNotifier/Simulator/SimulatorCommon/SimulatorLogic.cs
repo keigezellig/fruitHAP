@@ -4,7 +4,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using DoorPi.MessageQueuePublisher;
 using EventNotifierService.Common;
-using FruitHAP.Messages;
+using EventNotifierService.Common.Messages;
 
 namespace SimulatorCommon
 {
@@ -12,7 +12,7 @@ namespace SimulatorCommon
     {
         public static void PublishRingMessage(string connectionString, string imagePath)
         {
-            DoorMessage message = new DoorMessage { EventType = EventType.Ring, TimeStamp = DateTime.Now };
+            DoorMessage message = new DoorMessage { EventType = EventType.Ring, Timestamp = DateTime.Now };
 
             if (!string.IsNullOrEmpty(imagePath))
             {

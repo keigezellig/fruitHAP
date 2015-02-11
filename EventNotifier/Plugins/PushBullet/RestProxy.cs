@@ -16,7 +16,7 @@ namespace EventNotifier.Plugins.PushBullet
 
         public IRestResponse Execute(RestRequest request)
         {
-            var client = new RestClient {BaseUrl = uri, Authenticator = new HttpBasicAuthenticator(accessToken, "")};
+			var client = new RestClient {BaseUrl = new Uri(uri), Authenticator = new HttpBasicAuthenticator(accessToken, "")};
 
             var response = client.Execute(request);
             

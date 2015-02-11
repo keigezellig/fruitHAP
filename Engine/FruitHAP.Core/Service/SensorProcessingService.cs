@@ -4,6 +4,7 @@ using Castle.Core.Logging;
 using FruitHAP.Core.Action;
 using FruitHAP.Core.Sensor;
 using System.Configuration;
+using System;
 
 namespace FruitHAP.Core.Service
 {
@@ -29,7 +30,17 @@ namespace FruitHAP.Core.Service
         public void Start()
         {
 			string mqConnectionString = ConfigurationManager.AppSettings ["mqConnectionString"] ?? "";
-			mqPublisher.Initialize (mqConnectionString);
+			string mqExchangeName = ConfigurationManager.AppSettings ["mqExchangeName"] ?? "";
+
+			try
+			{
+			mqPublisher.Initialize (mqConnectionString,mqExchangeName);
+			}
+			catch (Exception ex) 
+			{
+				log.ErrorFormat ("Error initializing message queue. Message: {0}", ex);
+				return;
+			}
 
 			if (!modules.Any())
             {
@@ -64,11 +75,16 @@ namespace FruitHAP.Core.Service
 
         public void Stop()
         {
-            log.Info("Stopping modules..");
-            foreach (var module in modules)
-            {
-                module.Stop();
-            }
+			log.Info ("Closing message queue connection");
+			mqPublisher.Dispose ();
+
+			log.Info("Stopping modules..");
+			foreach (var module in modules) {
+				if (module.IsStarted) {
+					module.Stop ();
+				}
+			}
+
         }
     }
 }

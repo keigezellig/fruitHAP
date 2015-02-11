@@ -1,8 +1,6 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using Castle.Core.Logging;
 using EventNotifierService.Common.Messages;
-using FruitHAP.Messages;
-
 namespace EventNotifierService.Common.Plugin
 {
     public abstract class PluginBase : IPlugin

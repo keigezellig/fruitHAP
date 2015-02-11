@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace FruitHAP.Common.Helpers
 {
-    public class JsonSerializerHelper
+    public static class JsonSerializerHelper
     {
         public static void Serialize<T>(string fileName, T obj)
         {
@@ -30,5 +30,35 @@ namespace FruitHAP.Common.Helpers
             }
             return result;
         }
+
+		public static T ParseJsonString<T>(this string input) where T: class
+		{
+			var result = default(T);
+			using (StringReader sr = new StringReader(input))
+			{
+				using (JsonReader tr = new JsonTextReader(sr))
+				{
+					Newtonsoft.Json.JsonSerializer serializer = new Newtonsoft.Json.JsonSerializer();
+					result = serializer.Deserialize<T>(tr);
+				}
+			}
+			return result;
+		}
+
+		public static string ToJsonString<T>(this T obj) where T: class
+		{
+			string result = "";
+			using (StringWriter sw = new StringWriter())
+			{
+				using (JsonTextWriter tw = new JsonTextWriter(sw))
+				{
+					JsonSerializer serializer = new JsonSerializer();
+					serializer.Serialize(tw,obj);                    
+				}
+				result = sw.ToString ();
+			}
+
+			return result;
+		}
     }
 }

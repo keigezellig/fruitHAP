@@ -1,9 +1,9 @@
 ﻿using System;
 using Castle.Core.Logging;
 using EventNotifierService.Common.Plugin;
-using FruitHAP.Messages;
 using Growl.Connector;
 using Growl.CoreLibrary;
+using EventNotifierService.Common.Messages;
 
 namespace EventNotifier.Plugins.DesktopNotifier
 {
@@ -27,7 +27,7 @@ namespace EventNotifier.Plugins.DesktopNotifier
         {
            logger.Info("Sending message to Growl...");
            SetupGrowl();
-            string notificationMessage = string.Format("The doorbell rang at {0}. Please go answer it!",message.TimeStamp);
+            string notificationMessage = string.Format("The doorbell rang at {0}. Please go answer it!",message.Timestamp);
             var notification = new Notification("EventNotifier", "DOOR", null, "DINGDONG", notificationMessage);
             if (!string.IsNullOrEmpty(message.EncodedImage))
             {

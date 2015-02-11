@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Castle.Core.Logging;
 using EasyNetQ;
 using EventNotifierService.Common.Plugin;
-using FruitHAP.Messages;
+using EventNotifierService.Common.Messages;
 
 namespace EventNotifierService.Service
 {

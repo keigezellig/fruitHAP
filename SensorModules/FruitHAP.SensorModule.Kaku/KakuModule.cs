@@ -18,6 +18,7 @@ namespace FruitHAP.SensorModule.Kaku
         private readonly ILogger logger;
         private KakuConfiguration configuration;
         private IPhysicalInterface physicalInterface;
+		private bool isStarted;
 
         public KakuModule(IConfigProvider<KakuConfiguration> configProvider, IPhysicalInterfaceFactory physicalInterfaceFactory, IKakuProtocol protocol, ILogger logger)
         {
@@ -31,6 +32,14 @@ namespace FruitHAP.SensorModule.Kaku
         {
             get { return "KlikAan KlikUit module"; }
         }
+
+		public bool IsStarted
+		{
+			get
+			{
+				return isStarted; 
+			}
+		}
 
         void PhysicalInterfaceDataReceived(object sender, ExternalDataReceivedEventArgs e)
         {
@@ -68,10 +77,12 @@ namespace FruitHAP.SensorModule.Kaku
 
                 physicalInterface.Open();
                 physicalInterface.StartReading();
+				isStarted = true;
             }
             catch (Exception ex)
             {
                 logger.Debug("Cannot start module..", ex);
+				isStarted = false;
             }
 
         }

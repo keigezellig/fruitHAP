@@ -77,7 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimulatorCommon\SimulatorCommon.csproj">
-      <Project>{695b9b80-7637-40a6-a21f-edf1c7bd04bb}</Project>
+      <Project>{695B9B80-7637-40A6-A21F-EDF1C7BD04BB}</Project>
       <Name>SimulatorCommon</Name>
     </ProjectReference>
   </ItemGroup>

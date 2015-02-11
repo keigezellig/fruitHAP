@@ -1,6 +1,7 @@
 ﻿using System.Configuration;
 using Castle.Windsor;
 using EasyNetQ;
+using System;
 
 namespace EventNotifierService.Startup
 {
@@ -14,12 +15,19 @@ namespace EventNotifierService.Startup
         }
         public IBus CreateMessageBus()
         {
-            var connectionString = ConfigurationManager.AppSettings["mqConnectionString"];
+			try
+			{
+			var connectionString = ConfigurationManager.AppSettings["mqConnectionString"];
             if (string.IsNullOrEmpty(connectionString))
             {
                 throw new EventNotifierServiceException("MQ connection string is missing");
             }
             return RabbitHutch.CreateBus(connectionString, x => x.Register(_ => container.Resolve<IEasyNetQLogger>()));
+			}
+			catch (Exception ex) 
+			{
+				throw;
+			}
         }
     }
 }

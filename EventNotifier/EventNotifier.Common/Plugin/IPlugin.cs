@@ -1,5 +1,4 @@
 using EventNotifierService.Common.Messages;
-using FruitHAP.Messages;
 
 namespace EventNotifierService.Common.Plugin
 {

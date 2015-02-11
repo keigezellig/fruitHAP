@@ -33,17 +33,17 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\packages\Castle.Core.3.3.0\lib\net40-client\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="RestSharp">
-      <HintPath>..\..\packages\RestSharp.104.4.0\lib\net4\RestSharp.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="RestSharp">
+      <HintPath>..\..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataObjects\ErrorResponse.cs" />
@@ -61,12 +61,8 @@
     <Compile Include="Utils\PropertyNameContractResolver.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Messages\Messages\Messages.csproj">
-      <Project>{ADF24A81-11A8-4CC5-8594-FBC9F91B5861}</Project>
-      <Name>Messages</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\EventNotifier.Common\EventNotifier.Common.csproj">
-      <Project>{729b860f-6351-4d48-b06c-77b1b6d42db0}</Project>
+      <Project>{729B860F-6351-4D48-B06C-77B1B6D42DB0}</Project>
       <Name>EventNotifier.Common</Name>
     </ProjectReference>
   </ItemGroup>

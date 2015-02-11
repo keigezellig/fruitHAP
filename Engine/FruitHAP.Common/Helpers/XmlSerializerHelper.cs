@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 
 namespace FruitHAP.Common.Helpers
 {
-    public class XmlSerializerHelper
+    public static class XmlSerializerHelper
     {
         public static void Serialize<T>(string fileName, T obj)
         {
@@ -27,5 +27,8 @@ namespace FruitHAP.Common.Helpers
             return result;
 
         }
+
+
+
     }
 }

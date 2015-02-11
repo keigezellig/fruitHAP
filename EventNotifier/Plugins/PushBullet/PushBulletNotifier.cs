@@ -1,7 +1,7 @@
 ﻿using Castle.Core.Logging;
 using EventNotifier.Plugins.PushBullet.Annotations;
 using EventNotifierService.Common.Plugin;
-using FruitHAP.Messages;
+using EventNotifierService.Common.Messages;
 
 namespace EventNotifier.Plugins.PushBullet
 {
@@ -26,7 +26,7 @@ namespace EventNotifier.Plugins.PushBullet
 
         protected override void ProcessMessage(DoorMessage message)
         {
-            string notificationMessage = string.Format("The doorbell rang at {0}. Please go answer it!", message.TimeStamp);
+            string notificationMessage = string.Format("The doorbell rang at {0}. Please go answer it!", message.Timestamp);
             string title = "DINGDONG";
             pushBulletService.PostNote(title, notificationMessage,config.Channel);
         }

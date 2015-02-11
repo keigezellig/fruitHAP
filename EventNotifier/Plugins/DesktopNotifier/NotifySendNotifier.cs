@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using Castle.Core.Logging;
 using EventNotifierService.Common.Plugin;
-using FruitHAP.Messages;
+using EventNotifierService.Common.Messages;
 
 namespace EventNotifier.Plugins.DesktopNotifier
 {
@@ -60,7 +60,7 @@ namespace EventNotifier.Plugins.DesktopNotifier
         private void ExecuteCommand(DoorMessage message)
         {
             string notificationMessage = string.Format("The doorbell rang at {0}. Please go answer it",
-                message.TimeStamp);
+                message.Timestamp);
             
             ProcessStartInfo cmdToSend = new ProcessStartInfo();
             logger.DebugFormat("cmd to execute: {0}", cmdToSend);

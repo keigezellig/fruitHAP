@@ -38,7 +38,7 @@ namespace FruitHAP.MyActions
 
 			try {
 				logger.Info ("Send notification");
-				mqPublisher.Publish (message);
+				mqPublisher.Publish (message,"alerts");
 			} catch (Exception ex) {
 				logger.Error ("Error sending notification", ex);
 			}
