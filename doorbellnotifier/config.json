@@ -1,0 +1,13 @@
+{
+  "pushbullet": {
+    "apikey": "Avian",
+    "channel": "Ice Cream",
+    "note_title": "chocolate",
+    "note_text": "bla"
+  },
+  "mq": {
+    "connection_string": "bla",
+    "exchange_name": "bla",
+    "routing_key": "bla"
+  }
+}
