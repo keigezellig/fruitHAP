@@ -4,3 +4,6 @@ obj
 *.dll
 *.userprefs
 packages
+*.log
+*.jpg
+node_modules
