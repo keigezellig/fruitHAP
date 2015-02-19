@@ -30,12 +30,8 @@ io.on('connection', function(connection){
 
         console.log("received alert..");
         var alertObject = JSON.parse(alert);
-        var timestamp = new Date(alertObject['Timestamp']);
-
-        var alertText = "The doorbell rang at "+timestamp;
-
         console.log("Sending alert to browser");
-        connection.send(alertText);
+        connection.send(alertObject);
 
     });
 

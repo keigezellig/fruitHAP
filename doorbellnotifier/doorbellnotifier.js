@@ -1,38 +1,29 @@
-
-var config = get_config("./config.json");
-
-var apikey = "v1cULYbIkSKLywzH0b3k5xf3mgsuWyWJE2ujxvzW0Rqay";
-//var apikey = "v1cULYbIkSKLywzH0b3k5xf3mgsuWyWJE2ujxvzW0Rqaz";
-var channel = "mydoorbell";
-var noteTitle = "Ding dong";
-var deviceParams = {channel_tag: 'mydoorbell'};
-
-var imgPath = "image.jpg";
-
-var PushBullet = require('pushbullet');
 var fs = require('fs');
+var config = get_config("./config.json");
+var PushBullet = require('pushbullet');
+var pusher = new PushBullet(config.pushbullet.apikey);
+var context = new require('rabbit.js').createContext(config.mq.connection_string);
 
-var pusher = new PushBullet(apikey);
-
-
-var context = new require('rabbit.js').createContext('amqp://admin:admin@192.168.1.80');
+var deviceParams = {channel_tag: config.pushbullet.channel};
+var imgPath = "image.jpg";
 var sub = context.socket('SUB', {routing: 'topic', persistent: true});
-sub.connect('FruitHAPExchange','alerts')
+sub.connect(config.mq.exchange_name,config.mq.routing_key);
 sub.setEncoding('utf8');
 sub.on('data', function(alert)
 { 
     console.log("Received alert!");
   var alertObject = JSON.parse(alert);
-  var timestamp = new Date(alertObject['Timestamp']);
+  var timestamp = new Date(alertObject.Timestamp);
 
-  if (alertObject.EncodedImage != "") {
+  if (alertObject.EncodedImage != null && alertObject.EncodedImage != "" )
+  {
       base64_decode(alertObject['EncodedImage'], imgPath);
   }
 
-    var noteBody = "The doorbell rang at "+timestamp;
+    var noteBody = config.pushbullet.note_text+" "+timestamp;
 
     console.log("Sending note");
-  pusher.note(deviceParams, noteTitle, noteBody, function(error, response)
+    pusher.note(deviceParams, config.pushbullet.note_title, noteBody, function(error, response)
   {
     console.log("Response: "+JSON.stringify(response));
     if (error)
@@ -42,7 +33,15 @@ sub.on('data', function(alert)
   });
 
   console.log("Sending image");
-  pusher.file(deviceParams, imgPath, 'Camera image', function(error, response) {});
+  pusher.file(deviceParams, imgPath, 'Camera image', function(error, response)
+  {
+      if (error)
+      {
+          console.log("Error while sending image to push bullet: "+error.message);
+      }
+      console.log("Deleting temp image file");
+      fs.unlinkSync(imgPath);
+  });
  
 });
 
