@@ -8,9 +8,7 @@
 # Description:       A\\\ daemon\\\ that\\\ runs\\\ the\\\ fruithap\\\ engine
 ### END INIT INFO
 
-# ${MONOSERVER} -l:/tmp/MyMonoService.lock /opt/MyMonoService/MyMonoService.exe
 
-# SCRIPT=/usr/local/bin/mono-service2\\\ FruitHAP.Startup.exe
 RUNAS=maarten
 NAME=fruithap
 SERVICE_EXECUTABLE_NAME=FruitHAP.Startup.exe
