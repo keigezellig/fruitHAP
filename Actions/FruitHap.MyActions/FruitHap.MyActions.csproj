@@ -44,7 +44,7 @@
       <HintPath>..\packages\RabbitMQ.Client.3.4.3\lib\net35\RabbitMQ.Client.dll</HintPath>
     </Reference>
     <Reference Include="EasyNetQ">
-      <HintPath>..\..\Engine\packages\EasyNetQ.0.43.0.358\lib\net40\EasyNetQ.dll</HintPath>
+      <HintPath>..\..\Engine\packages\EasyNetQ.0.44.3.363\lib\net40\EasyNetQ.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
