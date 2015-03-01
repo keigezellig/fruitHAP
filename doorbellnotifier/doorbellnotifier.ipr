@@ -30,7 +30,6 @@
   <component name="IdProvider" IDEtalkID="C9FD64C7CA6A9D564BE9778557751051" />
   <component name="JavaScriptLibraryMappings">
     <file url="file://$PROJECT_DIR$" libraries="{doorbellnotifier node_modules}" />
-    <file url="PROJECT" libraries="{Node.js v0.10.33 Core Modules}" />
     <includedPredefinedLibrary name="Node.js Globals" />
   </component>
   <component name="Palette2">
@@ -173,7 +172,7 @@
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="doorbellnotifier" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="$USER_HOME$/apps/nodejs/bin/node" path-to-js-file="doorbellnotifier.js" working-dir="$PROJECT_DIR$">
+    <configuration default="false" name="doorbellnotifier" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="/usr/bin/node" path-to-js-file="doorbellnotifier.js" working-dir="$PROJECT_DIR$">
       <envs>
         <env name="DEBUG" value="doorbellnotifier" />
       </envs>

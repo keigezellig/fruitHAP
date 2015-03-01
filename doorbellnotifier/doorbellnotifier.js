@@ -1,5 +1,5 @@
 var fs = require('fs');
-var config = get_config("./config.json");
+var config = get_config(__dirname + "/config.json");
 var PushBullet = require('pushbullet');
 var pusher = new PushBullet(config.pushbullet.apikey);
 var context = new require('rabbit.js').createContext(config.mq.connection_string);
