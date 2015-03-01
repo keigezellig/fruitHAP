@@ -1,6 +1,6 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          <NAME>
+# Provides:          fruithap
 # Required-Start:    $local_fs $network $named $time $syslog
 # Required-Stop:     $local_fs $network $named $time $syslog
 # Default-Start:     2 3 4 5
@@ -11,62 +11,56 @@
 # ${MONOSERVER} -l:/tmp/MyMonoService.lock /opt/MyMonoService/MyMonoService.exe
 
 # SCRIPT=/usr/local/bin/mono-service2\\\ FruitHAP.Startup.exe
-RUNAS=developer
-NAME=FruitHAP.Startup.exe
-MONOSERVICERUNNER=/usr/local/bin/mono-service
+RUNAS=maarten
+NAME=fruithap
+SERVICE_EXECUTABLE_NAME=FruitHAP.Startup.exe
+MONOSERVICERUNNER=$(which mono-service)
 SERVICE_EXECUTABLE_PATH=/home/$RUNAS/fruithap/
+PIDFILE=/tmp/$SERVICE_EXECUTABLE_NAME.lock
 
-PIDFILE=/tmp/$NAME.lock
-LOGFILE=/home/$RUNAS/$NAME.log
-
-echo $MONOSERVICERUNNER
-echo $SCRIPT
-echo $SERVICE_EXECUTABLE
 
 start() {
   if [ -f $PIDFILE ] && kill -0 $(cat $PIDFILE); then
-    echo 'Service already running' >&2
+    echo "Service $NAME already running" >&2
     return 1
   fi
-  echo 'Starting service…' >&2
+  echo "Starting service $NAME…" >&2
   cd $SERVICE_EXECUTABLE_PATH
-  local CMD="$MONOSERVICERUNNER $NAME  &> \"$LOGFILE\" & echo \$!"
-  echo $CMD
+  local CMD="$MONOSERVICERUNNER $SERVICE_EXECUTABLE_NAME & echo \$!"
   su -c "$CMD" $RUNAS
-  echo 'Service started' >&2
+  echo "Service $NAME started" >&2
 }
 
 stop() {
   if [ ! -f "$PIDFILE" ] || ! kill -0 $(cat "$PIDFILE"); then
-    echo 'Service not running' >&2
+    echo 'Service $NAME not running' >&2
     return 1
   fi
-  echo 'Stopping service…' >&2
+  echo "Stopping service $NAME…" >&2
   kill -15 $(cat "$PIDFILE") && rm -f "$PIDFILE"
-  echo 'Service stopped' >&2
+  echo "Service $NAME stopped" >&2
 }
 
-uninstall() {
-  echo -n "Are you really sure you want to uninstall this service? That cannot be undone. [yes|No] "
-  local SURE
-  read SURE
-  if [ "$SURE" = "yes" ]; then
-    stop
-    rm -f "$PIDFILE"
-    echo "Notice: log file was not removed: '$LOGFILE'" >&2
-    update-rc.d -f <NAME> remove
-    rm -fv "$0"
-  fi
+uninstall() {  
+  echo "Uninstalling $NAME from init system"
+  stop
+  rm -f "$PIDFILE"    
+  update-rc.d -f $NAME remove      
+}
+
+installservice() {  
+  echo "Installing $NAME into the init.d system..."
+  update-rc.d $NAME defaults
 }
 
 status() {
-        printf "%-50s" "Checking $NAME..."
+        printf "%-50s" "Checking service $NAME..."
     if [ -f $PIDFILE ]; then
         PID=$(cat $PIDFILE)
             if [ -z "$(ps axf | grep ${PID} | grep -v grep)" ]; then
                 printf "%s\n" "The process appears to be dead but pidfile still exists"
             else    
-                echo "Running, the PID is $PID"
+                echo "Service $NAME is running, the PID is $PID"
             fi
     else
         printf "%s\n" "Service not running"
@@ -77,6 +71,13 @@ status() {
 case "$1" in
   start)
     start
+    ;;
+  install)
+    installservice
+    ;;
+  reinstall)
+    uninstall
+    installservice
     ;;
   stop)
     stop
