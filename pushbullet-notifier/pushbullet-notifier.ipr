@@ -165,7 +165,7 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/doorbellnotifier.iml" filepath="$PROJECT_DIR$/doorbellnotifier.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pushbullet-notifier.iml" filepath="$PROJECT_DIR$/pushbullet-notifier.iml" />
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true">
