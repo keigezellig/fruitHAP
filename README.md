@@ -1,6 +1,6 @@
 # FruitHAP (Fruit Home Automation Platform) #
 
-A Home Automation Platform designed to run on a Raspberry Pi (hence the Fruit in the name) with extensibility in mind.
+A Home Automation Platform designed to run on a Raspberry Pi with extensibility in mind.
 
 ### What is this all about? ###
 
