@@ -18,12 +18,14 @@ For more info about modules, sensors, actions and notifiers and general architec
 
 ### How do I get set up? ###
 
-You need the following:
+To get up and running with my sample setup, you need the following:
 
 * A Raspberry PI (i use a Model B+, it should also work on other models, but i haven't tested it)
 * A 433 Mhz receiver (i use the RFXtrx433E - see [here](http://www.rfxcom.com) )
 * A KaKu doorbell set (I use [this one](http://www.klikaanklikuit.nl/shop/nl/producten-1/draadloze-deurbellen/draadloze-deurbel-acdb-7000ac-1/) (unfortunately the site is only in Dutch), which consists of a button and an actual doorbell)
-* Raspbian image with the software (See Downloads section)
+* Raspbian image with the FruitHAP software (See Downloads section)
+
+TODO: setup intructions
 
 
 
