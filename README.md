@@ -7,7 +7,7 @@ A Home Automation Platform designed to run on a Raspberry Pi (hence the Fruit in
 This first version (1.0) contains a sample setup which is used in my home to control the front doorbell and contains the following components:
 
 * The Engine (the main component)
-* A module for the KlikAanKlikUit system (which is a 433 Mhz based X10 derivative protocol)
+* A module for the KlikAanKlikUit (KaKu) system (which is a 433 Mhz based X10 derivative system)
 * A module for an IP Camera
 * Support for the following sensor types: Button, Camera
 * Sensor configuration that defines one ip camera and one button (which are placed above my front door)
