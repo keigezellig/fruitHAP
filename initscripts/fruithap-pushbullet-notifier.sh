@@ -17,8 +17,8 @@ SCRIPTNAME=pushbullet-notifier.js
 MIN_UPTIME="1000"
 SPIN_SLEEP_TIME="10000"
 
-LOGFILE=$SCRIPTDIR/$NAME.log   # maybe to /var/log
-PIDFILE=$SCRIPTDIR/$NAME.pid   # maybe to /var/lock
+LOGFILE=/var/log/$NAME.log   # maybe to /var/log
+PIDFILE=/var/lock/$NAME.pid   # maybe to /var/lock
 APPLICATION_PATH=$SCRIPTDIR/$SCRIPTNAME
 FOREVERCMD=$(which forever)
 FOREVEROPTIONS="--pidFile $PIDFILE -a -o $LOGFILE -e $LOGFILE -l $LOGFILE --minUptime $MIN_UPTIME --spinSleepTime $SPIN_SLEEP_TIME start $APPLICATION_PATH"
