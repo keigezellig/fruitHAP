@@ -10,9 +10,9 @@ This first version (1.0) contains a sample setup which is used in my home to con
 * A module for the KlikAanKlikUit (KaKu) system (which is a 433 Mhz based X10 derivative system)
 * A module for an IP Camera
 * Support for the following sensor types: Button, Camera
-* Sensor configuration that defines one ip camera and one button (which are placed above my front door)
+* Sample sensor configuration that defines one ip camera and one button (which are placed above my front door)
 * Sample action that sends an alert to the message queue when the button is pressed (when someone is at the door) containing a snapshot of the camera
-* A notifier script that picks up the message and send it through Pushbullet to another device
+* A notifier script that monitors the message queue for alerts and send it through Pushbullet to another device
 
 For more info about modules, sensors, actions and notifiers and general architecture see the Wiki
 
