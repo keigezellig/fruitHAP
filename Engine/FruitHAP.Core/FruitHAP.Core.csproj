@@ -67,6 +67,7 @@
     <Compile Include="Service\SensorProcessingService.cs" />
     <Compile Include="MQ\RabbitMqProvider.cs" />
     <Compile Include="MQ\IMessageQueueProvider.cs" />
+    <Compile Include="SensorRepository\SensorLoaderConfigProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -25,6 +25,15 @@ namespace FruitHAP.Core.SensorRepository
             {
                 logger.Info("Loading sensors");
                 sensors = sensorLoader.LoadSensors();
+				if (sensors.Any())
+				{
+					logger.InfoFormat("{0} sensors loaded",sensors.Count());
+				}
+				else
+				{
+					logger.Warn("No sensors loaded. Check configuration");
+				}
+
             }
             catch (Exception ex)
             {                

@@ -7,6 +7,7 @@ using System.Text;
 using Castle.Core.Logging;
 using FruitHAP.Common.Helpers;
 using FruitHAP.Core.Sensor;
+using FruitHAP.Common.Configuration;
 
 namespace FruitHAP.Core.SensorRepository
 {
@@ -14,9 +15,11 @@ namespace FruitHAP.Core.SensorRepository
     {
         private readonly IEnumerable<ISensor> prototypes;
         private readonly ILogger logger;
+		private IConfigProvider<List<SensorDefinition>> configProvider;
 
-        public SensorLoader(IEnumerable<ISensor> prototypes, ILogger logger )
+		public SensorLoader(IEnumerable<ISensor> prototypes, ILogger logger, IConfigProvider<List<SensorDefinition>> configProvider )
         {
+			this.configProvider = configProvider;
             this.prototypes = prototypes;
             this.logger = logger;
         }
@@ -28,8 +31,9 @@ namespace FruitHAP.Core.SensorRepository
 
             var result = new List<ISensor>();
 
-            List<SensorDefinition> definitions = JsonSerializerHelper.Deserialize<List<SensorDefinition>>(sensorFile);            
-            foreach (var definition in definitions)
+			List<SensorDefinition> definitions = configProvider.LoadConfigFromFile (sensorFile);
+
+			foreach (var definition in definitions)
             {
                 try
                 {
