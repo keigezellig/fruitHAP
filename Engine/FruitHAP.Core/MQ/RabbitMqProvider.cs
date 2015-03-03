@@ -13,17 +13,29 @@ namespace FruitHAP.Core.MQ
         private IBus messageBus;
 		private ILogger logger;
 		private IExchange exchange;
+		private bool isInitialized;
+
 
 		public RabbitMqProvider(ILogger logger)
         {
-			this.logger = logger;            
+			this.logger = logger;   
+			this.isInitialized = false;
         }
+
+
+		public bool IsIntialized {
+			get 
+			{
+				return isInitialized;
+			}
+		}
 			
 		public void Initialize(string connectionString, string exchangeName)
 		{
 			logger.InfoFormat ("Connecting to Rabbit MQ with connection string {0} and to exchange {1}", connectionString,exchangeName);
 			messageBus = CreateMessageBus(connectionString);
 			exchange = messageBus.Advanced.ExchangeDeclare (exchangeName, ExchangeType.Topic,false,false,false,false,null);
+			this.isInitialized = true;
 		}
 
 		public void Publish<T>(T message, string routingKey) where T: class

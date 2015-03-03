@@ -6,6 +6,7 @@ namespace FruitHAP.Core
 	{
 		void Publish<T>(T message, string routingKey) where T: class;
 		void Initialize(string connectionString, string exchangeName);
+		bool IsIntialized { get;}
 	}
 }
 
