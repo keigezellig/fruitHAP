@@ -7,5 +7,6 @@ namespace FruitHAP.SensorModule.Kaku
     public interface IKakuModule : ISensorModule
     {
         event EventHandler<KakuProtocolEventArgs> KakuDataReceived;
+		void SendData(KakuProtocolData data);
     }
 }

@@ -2,7 +2,6 @@
 using Castle.Core.Logging;
 using FruitHAP.Common.Configuration;
 using FruitHAP.Common.PhysicalInterfaces;
-using FruitHAP.Core.Sensor;
 using FruitHAP.SensorModule.Kaku.Configuration;
 using FruitHAP.SensorModule.Kaku.Protocol;
 using System.Reflection;
@@ -10,7 +9,7 @@ using System.IO;
 
 namespace FruitHAP.SensorModule.Kaku
 {
-    public class KakuModule : IKakuModule
+	public class KakuModule : IKakuModule
     {
         private readonly IConfigProvider<KakuConfiguration> configProvider;
         private readonly IPhysicalInterfaceFactory physicalInterfaceFactory;
@@ -19,6 +18,8 @@ namespace FruitHAP.SensorModule.Kaku
         private KakuConfiguration configuration;
         private IPhysicalInterface physicalInterface;
 		private bool isStarted;
+
+		private static byte SequenceNumber = 1;
 
         public KakuModule(IConfigProvider<KakuConfiguration> configProvider, IPhysicalInterfaceFactory physicalInterfaceFactory, IKakuProtocol protocol, ILogger logger)
         {
@@ -101,6 +102,16 @@ namespace FruitHAP.SensorModule.Kaku
         }
 
         public event EventHandler<KakuProtocolEventArgs> KakuDataReceived;
+
+		public void SendData (KakuProtocolData data)
+		{
+			var bytes = protocol.Encode (data);
+
+			//Add sequence number which is specific for the RFX
+			bytes [3] = SequenceNumber;
+			physicalInterface.Write (bytes);
+			SequenceNumber++;
+		}
     }
 
    

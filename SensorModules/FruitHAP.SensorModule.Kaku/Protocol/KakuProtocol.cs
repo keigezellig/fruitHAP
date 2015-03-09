@@ -20,13 +20,19 @@ namespace FruitHAP.SensorModule.Kaku.Protocol
      * byte 3: Sequence indicator (is not used in protcol itself, but used in the physical communication with the particular RFX receiver)
      * byte 4+5+6+7: Device ID (0xE41822)
      * byte 8: Unit code (0x01)
-     * byte 9: Command
-     *         S
+     * byte 9: Command (0x04)
+     * byte 10: Level
+     * byte 11: Closing byte (always 0x00)
+     *         
      */
 
     public class KakuProtocol : IKakuProtocol
     {
         private ILogger logger;
+		private byte[] ProtocolHeader = new byte[]{0x0B, 0x11};
+		private byte PacketIndicator = 0x00;
+		private byte ClosingByte = 0x00;
+
 
         public KakuProtocol(ILogger logger)
         {
@@ -78,12 +84,20 @@ namespace FruitHAP.SensorModule.Kaku.Protocol
             {
                 throw new ProtocolException(string.Format("Incorrect packet length. This is not a KaKu packet. Length={0}", rawData.Count()));
             }
-            
         }
 
         public byte[] Encode(KakuProtocolData protocolData)
         {
-            throw new NotImplementedException();
+			List<byte> result = new List<byte> ();
+			result.InsertRange (0, ProtocolHeader);
+			result.Insert (2, PacketIndicator);
+			result.Insert (3, byte.MaxValue);
+			result.InsertRange (4, BitConverter.GetBytes (protocolData.DeviceId).Reverse());
+			result.Insert (8, protocolData.UnitCode);
+			result.Insert (9, (byte)protocolData.Command);
+			result.Insert (10, protocolData.Level);
+			result.Insert (11, ClosingByte);
+			return result.ToArray ();
         }
     }
 }
