@@ -7,7 +7,7 @@ using FruitHAP.SensorModule.Kaku.Protocol;
 
 namespace FruitHAP.SensorModule.Kaku.Devices
 {
-    public class KakuButton : IButton, ISensorInitializer, ICloneable
+	public class KakuButton : IButton, ISensorInitializer, ICloneable
     {
         private readonly IKakuModule module;
         private readonly ILogger logger;
@@ -61,6 +61,17 @@ namespace FruitHAP.SensorModule.Kaku.Devices
             }
         }
 
+		public void PressButton ()
+		{
+			logger.Debug ("Sending PressButton to module..");
+			module.SendData (new KakuProtocolData () {
+				DeviceId = sensorDefinition.DeviceId,
+				Command = sensorDefinition.Command,
+				UnitCode = sensorDefinition.UnitCode,
+				Level = 0
+			});
+		}
+
         protected virtual void OnButtonPressed()
         {
             if (ButtonPressed != null)
@@ -81,5 +92,7 @@ namespace FruitHAP.SensorModule.Kaku.Devices
         {
             return new KakuButton(this.module, this.logger);
         }
+
+
     }
 }

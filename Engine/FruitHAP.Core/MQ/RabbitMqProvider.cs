@@ -4,6 +4,7 @@ using Castle.Core.Logging;
 using EasyNetQ.Topology;
 using FruitHAP.Common.Helpers;
 using System.Text;
+using System.Threading.Tasks;
 
 
 namespace FruitHAP.Core.MQ
@@ -19,35 +20,50 @@ namespace FruitHAP.Core.MQ
 			this.logger = logger;            
         }
 			
-		public void Initialize(string connectionString, string exchangeName)
+		public void Initialize(string connectionString, string pubSubExchangeName, string rpcExchangeName, string rpcQueueName)
 		{
-			logger.InfoFormat ("Connecting to Rabbit MQ with connection string {0} and to exchange {1}", connectionString,exchangeName);
-			messageBus = CreateMessageBus(connectionString);
-			exchange = messageBus.Advanced.ExchangeDeclare (exchangeName, ExchangeType.Topic,false,false,false,false,null);
+			logger.InfoFormat ("Connecting to Rabbit MQ with connection string {0} and to exchange {1} and RPC queue {2}", connectionString,pubSubExchangeName,rpcQueueName );
+			messageBus = CreateMessageBus(connectionString, rpcExchangeName, rpcQueueName);
+			exchange = messageBus.Advanced.ExchangeDeclare (pubSubExchangeName, ExchangeType.Topic,false,false,false,false,null);
+
 		}
 
 		public void Publish<T>(T message, string routingKey) where T: class
         {
-			string json = message.ToJsonString();
-			byte[] bytes = Encoding.UTF8.GetBytes (json);
-			MessageProperties properties = new MessageProperties ();
-			properties.ContentType = "text/json";
-			properties.ContentTypePresent = true;
+			var mqMessage = new Message<T> (message);
+			messageBus.Advanced.Publish (exchange, routingKey, false, false, mqMessage);
 
-			messageBus.Advanced.Publish (exchange, routingKey, false, false, properties, bytes);
         }
 
+		public void SubscribeToRequest<TRequest, TResponse>(Func<TRequest, Task<TResponse>> handler) 
+			where TRequest : class  
+			where TResponse : class
+		{
+			messageBus.RespondAsync<TRequest,TResponse> (handler);
+		}
 
-        private IBus CreateMessageBus(string connectionString)
+		private IBus CreateMessageBus(string connectionString, string exchangeName, string rpcQueueName)
         {
-            if (string.IsNullOrEmpty(connectionString))
+			if (string.IsNullOrEmpty(connectionString))
             {
                 throw new Exception("MQ connection string is missing");
             }
-            return RabbitHutch.CreateBus(connectionString);
-        }
+			var bus = RabbitHutch.CreateBus (connectionString);
 
-        public void Dispose()
+			SetCorrectMQNamingConventions (bus, exchangeName, rpcQueueName);
+
+			return bus;        
+		}
+
+		public void SetCorrectMQNamingConventions (IBus bus, string exchangeName, string rpcQueueName)
+		{
+			var conventions = bus.Advanced.Container.Resolve<IConventions> ();
+			conventions.RpcExchangeNamingConvention = () => exchangeName;
+			conventions.RpcRoutingKeyNamingConvention = type => string.Format("{0}.{1}",rpcQueueName,type.FullName);
+		}
+        
+
+		public void Dispose()
         {
             messageBus.Dispose();
         }

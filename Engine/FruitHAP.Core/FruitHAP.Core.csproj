@@ -48,6 +48,7 @@
     <Folder Include="SensorRepository\" />
     <Folder Include="Service\" />
     <Folder Include="MQ\" />
+    <Folder Include="MQ\Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action\IAction.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Service\SensorProcessingService.cs" />
     <Compile Include="MQ\RabbitMqProvider.cs" />
     <Compile Include="MQ\IMessageQueueProvider.cs" />
+    <Compile Include="MQ\Helpers\TypeNameSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

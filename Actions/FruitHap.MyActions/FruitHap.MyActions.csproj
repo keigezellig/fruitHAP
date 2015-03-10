@@ -51,6 +51,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DoorbellAction.cs" />
     <Compile Include="Messages\DoorMessage.cs" />
+    <Compile Include="DoorbellButtonPressAction.cs" />
+    <Compile Include="Messages\ButtonPressRequest.cs" />
+    <Compile Include="Messages\ButtonPressResponse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

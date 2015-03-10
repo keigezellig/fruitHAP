@@ -30,17 +30,11 @@ namespace FruitHAP.Core.Service
         public void Start()
         {
 			string mqConnectionString = ConfigurationManager.AppSettings ["mqConnectionString"] ?? "";
-			string mqExchangeName = ConfigurationManager.AppSettings ["mqExchangeName"] ?? "";
+			string mqPubSubExchangeName = ConfigurationManager.AppSettings ["mqPubSubExchangeName"] ?? "FruitHAP_PubSubExchange";
+			string mqRpcExchangeName = ConfigurationManager.AppSettings ["mqRpcExchangeName"] ?? "FruitHAP_RpcExchange";
+			string mqRpcQueueName = ConfigurationManager.AppSettings ["mqRpcQueueName"] ?? "FruitHAP_RpcQueue";
 
-			try
-			{
-			mqPublisher.Initialize (mqConnectionString,mqExchangeName);
-			}
-			catch (Exception ex) 
-			{
-				log.ErrorFormat ("Error initializing message queue. Message: {0}", ex);
-				return;
-			}
+
 
 			if (!modules.Any())
             {
@@ -64,6 +58,15 @@ namespace FruitHAP.Core.Service
                 return;
             }
 
+			try
+			{
+				mqPublisher.Initialize (mqConnectionString,mqPubSubExchangeName,mqRpcExchangeName, mqRpcQueueName);
+			}
+			catch (Exception ex) 
+			{
+				log.ErrorFormat ("Error initializing message queue. Message: {0}", ex);
+				return;
+			}
 
             log.Info("Initialize actions");
             foreach (var sensorAction in actions)

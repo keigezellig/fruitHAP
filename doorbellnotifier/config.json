@@ -7,7 +7,7 @@
   },
   "mq": {
     "connection_string": "amqp://admin:admin@192.168.1.80",
-    "exchange_name": "FruitHAPExchange",
+    "exchange_name": "FruitHAP_PubSubExchange",
     "routing_key": "alerts"
   }
 }

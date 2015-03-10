@@ -33,13 +33,19 @@ namespace FruitHAP.MyActions
         private async void doorbellButton_ButtonPressed(object sender, EventArgs e)
 		{
 			logger.Info ("Doorbell rang. Creating notification");
+			await PublishMessage ();
+
+		}
+
+		private async Task PublishMessage ()
+		{
 			var message = await CreateMessage ();
 			logger.DebugFormat ("Message = {0}", message);
-
 			try {
 				logger.Info ("Send notification");
-				mqPublisher.Publish (message,"alerts");
-			} catch (Exception ex) {
+				mqPublisher.Publish (message, "alerts");
+			}
+			catch (Exception ex) {
 				logger.Error ("Error sending notification", ex);
 			}
 		}
@@ -53,7 +59,6 @@ namespace FruitHAP.MyActions
             {
                 logger.Info("Retrieving camera image.");
                 image = await GetImageFromCamera();
-                logger.Info("Retrieving camera image.");
             }
             catch (Exception ex)
             {
