@@ -7,7 +7,7 @@ namespace FruitHAP.Core
 	{
 		void Publish<T>(T message, string routingKey) where T: class;
 		void Initialize(string connectionString, string pubSubExchangeName, string rpcExchangeName,  string rpcQueueName);
-		void SubscribeToRequest<TRequest, TResponse>(Func<TRequest, TResponse> handler) where TRequest : class  
+		void SubscribeToRequest<TRequest, TResponse>(Func<TRequest, Task<TResponse>> handler) where TRequest : class  
 																							  where TResponse : class;
 	}
 }

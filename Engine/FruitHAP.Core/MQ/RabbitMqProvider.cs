@@ -25,6 +25,7 @@ namespace FruitHAP.Core.MQ
 			logger.InfoFormat ("Connecting to Rabbit MQ with connection string {0} and to exchange {1} and RPC queue {2}", connectionString,pubSubExchangeName,rpcQueueName );
 			messageBus = CreateMessageBus(connectionString, rpcExchangeName, rpcQueueName);
 			exchange = messageBus.Advanced.ExchangeDeclare (pubSubExchangeName, ExchangeType.Topic,false,false,false,false,null);
+
 		}
 
 		public void Publish<T>(T message, string routingKey) where T: class
@@ -34,18 +35,11 @@ namespace FruitHAP.Core.MQ
 
         }
 
-		public void SubscribeToRequest<TRequest, TResponse>(Func<TRequest, TResponse> handler) 
+		public void SubscribeToRequest<TRequest, TResponse>(Func<TRequest, Task<TResponse>> handler) 
 			where TRequest : class  
 			where TResponse : class
 		{
-			try
-			{
-				messageBus.Respond<TRequest,TResponse> (handler);
-			}
-			catch (Exception ex) 
-			{
-				throw;
-			}
+			messageBus.RespondAsync<TRequest,TResponse> (handler);
 		}
 
 		private IBus CreateMessageBus(string connectionString, string exchangeName, string rpcQueueName)
@@ -54,7 +48,7 @@ namespace FruitHAP.Core.MQ
             {
                 throw new Exception("MQ connection string is missing");
             }
-			var bus = RabbitHutch.CreateBus (connectionString, RegisterMyServices);
+			var bus = RabbitHutch.CreateBus (connectionString);
 
 			SetCorrectMQNamingConventions (bus, exchangeName, rpcQueueName);
 
@@ -65,14 +59,9 @@ namespace FruitHAP.Core.MQ
 		{
 			var conventions = bus.Advanced.Container.Resolve<IConventions> ();
 			conventions.RpcExchangeNamingConvention = () => exchangeName;
-			conventions.RpcRoutingKeyNamingConvention = type => rpcQueueName;
+			conventions.RpcRoutingKeyNamingConvention = type => string.Format("{0}.{1}",rpcQueueName,type.FullName);
 		}
         
-		private void RegisterMyServices(IServiceRegister serviceRegister)
-		{
-			//serviceRegister.Register<ITypeNameSerializer,FruitHAP.Core.MQ.Helpers.TypeNameSerializer> ();
-
-		}
 
 		public void Dispose()
         {

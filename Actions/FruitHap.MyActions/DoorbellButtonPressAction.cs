@@ -1,5 +1,4 @@
-﻿using System;
-using FruitHAP.Core.Action;
+﻿using FruitHAP.Core.Action;
 using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
 using FruitHAP.Core;
@@ -28,62 +27,38 @@ namespace FruitHap.MyActions
 			mqPublisher.SubscribeToRequest<ButtonPressRequest,ButtonPressResponse> (HandleButtonPress);
 		}
 
-//		public Task<ButtonPressResponse> HandleButtonPress(ButtonPressRequest request)
-//		{
-//			Task<ButtonPressResponse> task = 
-//				new Task<ButtonPressResponse> (() => 
-//					{
-//						logger.DebugFormat("Handling Button press. Request = {0}",request);
-//						if (request == null)
-//						{
-//							return new ButtonPressResponse() {Result = false, Message = "Invalid request"};
-//						}
-//
-//						logger.InfoFormat("Looking for button {0}",request.Name);
-//						IButton doorbellButton = sensoRepository.FindDeviceOfTypeByName<IButton>(request.Name);
-//
-//						if (doorbellButton == null)
-//						{
-//							logger.ErrorFormat("Button not found");
-//							return new ButtonPressResponse() {Result = false, Message = string.Format("Button with name {0} is not defined",request.Name)};
-//						}
-//
-//						logger.InfoFormat("Found button: {0}",doorbellButton);
-//						logger.InfoFormat("Push the button!");
-//						doorbellButton.PressButton();
-//						return new ButtonPressResponse() {Result = true};
-//
-//					});
-//
-//			return task;
-//			                                
-//		}
-
-		public ButtonPressResponse HandleButtonPress(ButtonPressRequest request)
+		public Task<ButtonPressResponse> HandleButtonPress(ButtonPressRequest request)
 		{
-			logger.DebugFormat ("Handling Button press. Request = {0}", request);
-			if (request == null) {
-				return new ButtonPressResponse () { Result = false, Message = "Invalid request" };
-			}
+			Task<ButtonPressResponse> task = 
+				new Task<ButtonPressResponse> (() => 
+					{
+						logger.DebugFormat("Handling Button press. Request = {0}",request);
+						if (request == null)
+						{
+							return new ButtonPressResponse() {Result = false, Message = "Invalid request"};
+						}
 
-			logger.InfoFormat ("Looking for button {0}", request.Name);
-			IButton doorbellButton = sensoRepository.FindDeviceOfTypeByName<IButton> (request.Name);
+						logger.InfoFormat("Looking for button {0}",request.Name);
+						IButton doorbellButton = sensoRepository.FindDeviceOfTypeByName<IButton>(request.Name);
 
-			if (doorbellButton == null) {
-				logger.ErrorFormat ("Button not found");
-				return new ButtonPressResponse () {
-					Result = false,
-					Message = string.Format ("Button with name {0} is not defined", request.Name)
-				};
-			}
+						if (doorbellButton == null)
+						{
+							logger.ErrorFormat("Button not found");
+							return new ButtonPressResponse() {Result = false, Message = string.Format("Button with name {0} is not defined",request.Name)};
+						}
 
-			logger.InfoFormat ("Found button: {0}", doorbellButton);
-			logger.InfoFormat ("Push the button!");
-			doorbellButton.PressButton ();
-			return new ButtonPressResponse () { Result = true };
+						logger.InfoFormat("Found button: {0}",doorbellButton);
+						logger.InfoFormat("Push the button!");
+						doorbellButton.PressButton();
+						return new ButtonPressResponse() {Result = true};
 
-					
+					});
+			task.Start ();
+			return task;
+			                                
 		}
+
+
 
 	}
 }
