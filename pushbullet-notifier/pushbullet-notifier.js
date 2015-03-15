@@ -5,7 +5,7 @@ var pusher = new PushBullet(config.pushbullet.apikey);
 var context = new require('rabbit.js').createContext(config.mq.connection_string);
 
 var deviceParams = {channel_tag: config.pushbullet.channel};
-var imgPath = "image.jpg";
+var imgPath = __dirname + "/image.jpg";
 var sub = context.socket('SUB', {routing: 'topic', persistent: true});
 sub.connect(config.mq.exchange_name,config.mq.routing_key);
 sub.setEncoding('utf8');
