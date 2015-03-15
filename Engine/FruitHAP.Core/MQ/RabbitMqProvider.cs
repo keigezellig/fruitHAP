@@ -50,7 +50,14 @@ namespace FruitHAP.Core.MQ
 			where TRequest : class  
 			where TResponse : class
 		{
-			messageBus.RespondAsync<TRequest,TResponse> (handler);
+			try
+			{
+				messageBus.RespondAsync<TRequest,TResponse> (handler);
+			}
+			catch (Exception ex) 
+			{
+				logger.ErrorFormat ("Error subscribing to request: ", ex.Message);
+			}
 		}
 
 		private IBus CreateMessageBus(string connectionString, string exchangeName, string rpcQueueName)

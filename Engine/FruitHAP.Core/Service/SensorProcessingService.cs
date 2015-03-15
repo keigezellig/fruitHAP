@@ -61,6 +61,7 @@ namespace FruitHAP.Core.Service
 
 			try
 			{
+				log.Info("Connecting to message queue");
 				mqPublisher.Initialize (mqConnectionString,mqPubSubExchangeName,mqRpcExchangeName, mqRpcQueueName);
 			}
 			catch (Exception ex) 
@@ -76,15 +77,7 @@ namespace FruitHAP.Core.Service
             }
 
 
-			try
-			{
-				mqPublisher.Initialize (mqConnectionString,mqExchangeName);
-			}
-			catch (Exception ex) 
-			{
-				log.ErrorFormat ("Error initializing message queue. Message: {0}", ex.Message);
-				return;
-			}
+
 
         }
 
