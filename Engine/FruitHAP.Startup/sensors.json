@@ -1,0 +1,2 @@
+ [{"Name":"Doorbell","Description":"My doorbell","SensorType":"KakuButton","Parameters":{"DeviceId":"0x00D9D6DA","UnitCode":"0x0A","Command":"1"}},
+  {"Name":"DoorCamera","Description":"My doorcam","SensorType":"IpCamera","Parameters":{"Username":"visitor","Password":"visitor","Url":"http://bihac/snapshot.cgi"}}]

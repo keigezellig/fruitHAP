@@ -1,0 +1,13 @@
+{
+  "pushbullet": {
+    "apikey": "put_your_api_key_here",
+    "channel": "put_your_channel_here",
+    "note_title": "Ding dong",
+    "note_text": "The doorbell rang: "
+  },
+  "mq": {
+    "connection_string": "amqp://username:password@192.168.1.80",
+    "exchange_name": "FruitHAPExchange",
+    "routing_key": "alerts"
+  }
+}

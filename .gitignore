@@ -1,3 +1,9 @@
 bin
 obj
 *.suo
+*.dll
+*.userprefs
+packages
+*.log
+*.jpg
+node_modules
