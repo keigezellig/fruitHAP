@@ -1,7 +1,7 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          fruithap-notifier
-# Required-Start:    $local_fs $network $named $time $syslog rabbitmq-server
+# Provides:          fruithap-pushbullet-notifier
+# Required-Start:    $local_fs $network $named $time $syslog
 # Required-Stop:     $local_fs $network $named $time $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
@@ -9,10 +9,10 @@
 ### END INIT INFO
 
 
-RUNAS=maarten
-NAME=fruithap-notifier
-SCRIPTDIR=/home/$RUNAS/fruithap/notifier
-SCRIPTNAME=doorbellnotifier.js
+RUNAS=pi
+NAME=fruithap-pushbullet-notifier
+SCRIPTDIR=/home/$RUNAS/fruithap/pushbullet-notifier
+SCRIPTNAME=pushbullet-notifier.js
 
 MIN_UPTIME="1000"
 SPIN_SLEEP_TIME="10000"

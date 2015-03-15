@@ -14,11 +14,22 @@ namespace FruitHAP.Core.MQ
         private IBus messageBus;
 		private ILogger logger;
 		private IExchange exchange;
+		private bool isInitialized;
+
 
 		public RabbitMqProvider(ILogger logger)
         {
-			this.logger = logger;            
+			this.logger = logger;   
+			this.isInitialized = false;
         }
+
+
+		public bool IsIntialized {
+			get 
+			{
+				return isInitialized;
+			}
+		}
 			
 		public void Initialize(string connectionString, string pubSubExchangeName, string rpcExchangeName, string rpcQueueName)
 		{

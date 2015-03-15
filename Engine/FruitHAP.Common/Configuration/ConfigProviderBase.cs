@@ -32,7 +32,8 @@ namespace FruitHAP.Common.Configuration
             {
                 logger.Error("Error occured while loading config from configfile. Loading default config", ex);
                 result = LoadDefaultConfig();
-                SaveConfigToFile(result, fileName);
+				logger.InfoFormat("Saving default configuration to {0}",fileName);
+				SaveConfigToFile(result, fileName);
             }
 
             return result;

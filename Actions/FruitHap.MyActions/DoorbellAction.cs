@@ -26,7 +26,8 @@ namespace FruitHAP.MyActions
 
         public void Initialize()
         {
-            IButton doorbellButton = sensoRepository.FindDeviceOfTypeByName<IButton>("Doorbell");
+			logger.InfoFormat ("Initializing action {0}", this);
+			IButton doorbellButton = sensoRepository.FindDeviceOfTypeByName<IButton>("Doorbell");
             doorbellButton.ButtonPressed += doorbellButton_ButtonPressed;
         }
 

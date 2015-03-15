@@ -1,7 +1,7 @@
 #!/bin/sh
 ### BEGIN INIT INFO
 # Provides:          fruithap
-# Required-Start:    $local_fs $network $named $time $syslog rabbitmq-server
+# Required-Start:    $local_fs $network $named $time $syslog
 # Required-Stop:     $local_fs $network $named $time $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
@@ -9,11 +9,11 @@
 ### END INIT INFO
 
 
-RUNAS=maarten
+RUNAS=pi
 NAME=fruithap
 SERVICE_EXECUTABLE_NAME=FruitHAP.Startup.exe
 MONOSERVICERUNNER=$(which mono-service)
-SERVICE_EXECUTABLE_PATH=/home/$RUNAS/fruithap/
+SERVICE_EXECUTABLE_PATH=/home/$RUNAS/fruithap/engine
 PIDFILE=/tmp/$SERVICE_EXECUTABLE_NAME.lock
 
 
@@ -31,7 +31,7 @@ start() {
 
 stop() {
   if [ ! -f "$PIDFILE" ] || ! kill -0 $(cat "$PIDFILE"); then
-    echo 'Service $NAME not running' >&2
+    echo "Service $NAME not running" >&2
     return 1
   fi
   echo "Stopping service $NAME…" >&2

@@ -36,6 +36,7 @@ namespace FruitHAP.Core.Service
 
 
 
+
 			if (!modules.Any())
             {
                 log.Error("No modules loaded. Nothing to do");
@@ -74,12 +75,21 @@ namespace FruitHAP.Core.Service
                 sensorAction.Initialize();
             }
 
+
+			try
+			{
+				mqPublisher.Initialize (mqConnectionString,mqExchangeName);
+			}
+			catch (Exception ex) 
+			{
+				log.ErrorFormat ("Error initializing message queue. Message: {0}", ex.Message);
+				return;
+			}
+
         }
 
         public void Stop()
         {
-			log.Info ("Closing message queue connection");
-			mqPublisher.Dispose ();
 
 			log.Info("Stopping modules..");
 			foreach (var module in modules) {
@@ -88,6 +98,10 @@ namespace FruitHAP.Core.Service
 				}
 			}
 
+			log.Info ("Closing message queue connection");
+			if (mqPublisher.IsIntialized) {
+				mqPublisher.Dispose ();
+			}
         }
     }
 }
