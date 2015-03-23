@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{55D36C92-4F45-4DBC-BC21-FB6A873B7530}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>FruitHap.ConfigurationActions</RootNamespace>
+    <AssemblyName>FruitHap.ConfigurationActions</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\Engine\FruitHAP.Startup\bin\Debug\actions\ConfigurationActions</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\Engine\FruitHAP.Startup\bin\Release\actions\ConfigurationActions</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\..\Engine\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="RabbitMQ.Client">
+      <HintPath>..\..\..\Engine\packages\RabbitMQ.Client.3.4.3\lib\net35\RabbitMQ.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="EasyNetQ">
+      <HintPath>..\..\..\Engine\packages\EasyNetQ.0.43.0.358\lib\net40\EasyNetQ.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentValidation">
+      <HintPath>..\..\..\Engine\packages\FluentValidation.5.5.0.0\lib\Net40\FluentValidation.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Messages\ConfigurationResponse.cs" />
+    <Compile Include="SensorConfigurationAction.cs" />
+    <Compile Include="Messages\GetSensorListRequest.cs" />
+    <Compile Include="Validators\GetSensorListRequestValidator.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Engine\FruitHAP.Common\FruitHAP.Common.csproj">
+      <Project>{179D28CA-9963-44F8-8073-845126C982CA}</Project>
+      <Name>FruitHAP.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Engine\FruitHAP.Core\FruitHAP.Core.csproj">
+      <Project>{EBEF2FB9-9739-4169-9713-7EFC7B2B8E14}</Project>
+      <Name>FruitHAP.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Messages\" />
+    <Folder Include="Validators\" />
+  </ItemGroup>
+</Project>

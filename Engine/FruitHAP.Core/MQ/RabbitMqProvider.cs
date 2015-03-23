@@ -50,6 +50,8 @@ namespace FruitHAP.Core.MQ
 			where TRequest : class  
 			where TResponse : class
 		{
+
+
 			try
 			{
 				messageBus.RespondAsync<TRequest,TResponse> (handler);

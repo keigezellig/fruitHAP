@@ -9,25 +9,19 @@ using FruitHAP.Core.Sensor.SensorTypes;
 
 namespace FruitHAP.MyActions
 {
-    public class DoorbellAction : IAction
+    public class DoorbellAction : ActionBase
     {
-		private readonly ISensorRepository sensoRepository;
-        private readonly ILogger logger;
-		private readonly IMessageQueueProvider mqPublisher;
-
-        public DoorbellAction(ISensorRepository deviceRepository, ILogger logger, IMessageQueueProvider publisher)
-        {
-            this.sensoRepository = deviceRepository;
-            this.logger = logger;
-			this.mqPublisher = publisher;
-            //amqp://userName:password@hostName:portNumber/virtualHost
+		private readonly ISensorRepository sensorRepository;
+        
+		public DoorbellAction(ISensorRepository deviceRepository, ILogger logger, IMessageQueueProvider mqProvider) : base(mqProvider,logger)
+		{
+			this.sensorRepository = deviceRepository;
+		}
             
-        }
-
-        public void Initialize()
+        public override void Initialize()
         {
 			logger.InfoFormat ("Initializing action {0}", this);
-			IButton doorbellButton = sensoRepository.FindDeviceOfTypeByName<IButton>("Doorbell");
+			IButton doorbellButton = sensorRepository.FindDeviceOfTypeByName<IButton>("Doorbell");
             doorbellButton.ButtonPressed += doorbellButton_ButtonPressed;
         }
 
@@ -44,7 +38,7 @@ namespace FruitHAP.MyActions
 			logger.DebugFormat ("Message = {0}", message);
 			try {
 				logger.Info ("Send notification");
-				mqPublisher.Publish (message, "alerts");
+				mqProvider.Publish (message, "alerts");
 			}
 			catch (Exception ex) {
 				logger.Error ("Error sending notification", ex);
@@ -76,7 +70,7 @@ namespace FruitHAP.MyActions
 
         private async Task<byte[]> GetImageFromCamera()
         {
-            ICamera doorCamera = sensoRepository.FindDeviceOfTypeByName<ICamera>("DoorCamera");
+            ICamera doorCamera = sensorRepository.FindDeviceOfTypeByName<ICamera>("DoorCamera");
             return await doorCamera.GetImageAsync();
         }
     }

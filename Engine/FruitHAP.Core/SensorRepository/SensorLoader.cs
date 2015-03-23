@@ -8,6 +8,7 @@ using Castle.Core.Logging;
 using FruitHAP.Common.Helpers;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Common.Configuration;
+using FruitHAP.Core.SensorConfiguration;
 
 namespace FruitHAP.Core.SensorRepository
 {

@@ -51,5 +51,7 @@ namespace FruitHAP.Core.SensorRepository
         {
             return sensors.OfType<T>().SingleOrDefault(f => f.Name == name);
         }
+
+
     }
 }

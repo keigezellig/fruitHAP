@@ -4,11 +4,11 @@ using FruitHAP.Common.Configuration;
 using Castle.Core.Logging;
 using FruitHAP.Common.Helpers;
 
-namespace FruitHAP.Core.SensorRepository
+namespace FruitHAP.Core.SensorConfiguration
 {
-	public class SensorLoaderConfigProvider : ConfigProviderBase<List<SensorDefinition>>
+	public class SensorConfigurationProvider : ConfigProviderBase<List<SensorDefinition>>
 	{
-		public SensorLoaderConfigProvider (ILogger logger) : base (logger)
+		public SensorConfigurationProvider (ILogger logger) : base (logger)
 		{
 		}
 		

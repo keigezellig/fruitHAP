@@ -42,8 +42,7 @@ namespace FruitHAP.Core.Service
                 log.Error("No modules loaded. Nothing to do");
                 return;
             }
-
-				            
+							            
             sensorRepository.Initialize();
 
             log.Info("Starting modules");

@@ -49,6 +49,7 @@
     <Folder Include="Service\" />
     <Folder Include="MQ\" />
     <Folder Include="MQ\Helpers\" />
+    <Folder Include="Sensor\SensorConfiguration\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action\IAction.cs" />
@@ -61,7 +62,6 @@
     <Compile Include="Sensor\SensorTypes\ICamera.cs" />
     <Compile Include="SensorRepository\ISensorLoader.cs" />
     <Compile Include="SensorRepository\ISensorRepository.cs" />
-    <Compile Include="SensorRepository\SensorDefinition.cs" />
     <Compile Include="SensorRepository\SensorLoader.cs" />
     <Compile Include="SensorRepository\SensorRepository.cs" />
     <Compile Include="Service\ISensorProcessingService.cs" />
@@ -69,7 +69,10 @@
     <Compile Include="MQ\RabbitMqProvider.cs" />
     <Compile Include="MQ\IMessageQueueProvider.cs" />
     <Compile Include="MQ\Helpers\TypeNameSerializer.cs" />
-    <Compile Include="SensorRepository\SensorLoaderConfigProvider.cs" />
+    <Compile Include="Sensor\SensorConfiguration\SensorDefinition.cs" />
+    <Compile Include="Sensor\SensorConfiguration\SensorConfigurationProvider.cs" />
+    <Compile Include="Sensor\SensorConfiguration\ISensorConfiguration.cs" />
+    <Compile Include="Action\ActionBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

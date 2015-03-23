@@ -57,7 +57,7 @@ namespace FruitHAP.Startup
             container.Register(
                 Component.For<ISensorLoader>()
                     .ImplementedBy<SensorLoader>()
-                    .LifestyleSingleton());
+					.LifestyleTransient());
 
             container.Register(
                Component.For<ISensorRepository>()
@@ -149,7 +149,7 @@ namespace FruitHAP.Startup
             container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(moduleDirectory))
                 .BasedOn<ISensor>()
                 .WithService.Base()
-                .LifestyleSingleton());
+				.LifestyleTransient());
 
             logger.InfoFormat("Done loading modules from directory {0}", moduleDirectory);
         }

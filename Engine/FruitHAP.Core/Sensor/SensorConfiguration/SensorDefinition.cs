@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace FruitHAP.Core.SensorRepository
+namespace FruitHAP.Core.SensorConfiguration
 {
     public class SensorDefinition
     {

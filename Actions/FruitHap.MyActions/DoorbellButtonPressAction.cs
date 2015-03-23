@@ -7,24 +7,19 @@ using System.Threading.Tasks;
 
 namespace FruitHap.MyActions
 {
-	public class DoorbellButtonPressAction : IAction
+	public class DoorbellButtonPressAction : ActionBase
 	{
+		private readonly ISensorRepository sensorRepository;
 
-		private readonly ISensorRepository sensoRepository;
-		private readonly ILogger logger;
-		private readonly IMessageQueueProvider mqPublisher;
-
-		public DoorbellButtonPressAction(ISensorRepository deviceRepository, ILogger logger, IMessageQueueProvider publisher)
+		public DoorbellButtonPressAction(ISensorRepository deviceRepository, ILogger logger, IMessageQueueProvider mqProvider):base(mqProvider,logger)
 		{
-			this.sensoRepository = deviceRepository;
-			this.logger = logger;
-			this.mqPublisher = publisher;
+			this.sensorRepository = deviceRepository;
 		}
 
 
-		public void Initialize ()
+		public override void Initialize ()
 		{
-			mqPublisher.SubscribeToRequest<ButtonPressRequest,ButtonPressResponse> (HandleButtonPress);
+			mqProvider.SubscribeToRequest<ButtonPressRequest,ButtonPressResponse> (HandleButtonPress);
 		}
 
 		public Task<ButtonPressResponse> HandleButtonPress(ButtonPressRequest request)
@@ -39,7 +34,7 @@ namespace FruitHap.MyActions
 						}
 
 						logger.InfoFormat("Looking for button {0}",request.Name);
-						IButton doorbellButton = sensoRepository.FindDeviceOfTypeByName<IButton>(request.Name);
+						IButton doorbellButton = sensorRepository.FindDeviceOfTypeByName<IButton>(request.Name);
 
 						if (doorbellButton == null)
 						{
