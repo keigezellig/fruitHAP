@@ -70,9 +70,10 @@
     <Compile Include="MQ\IMessageQueueProvider.cs" />
     <Compile Include="MQ\Helpers\TypeNameSerializer.cs" />
     <Compile Include="Sensor\SensorConfiguration\SensorDefinition.cs" />
-    <Compile Include="Sensor\SensorConfiguration\SensorConfigurationProvider.cs" />
-    <Compile Include="Sensor\SensorConfiguration\ISensorConfiguration.cs" />
     <Compile Include="Action\ActionBase.cs" />
+    <Compile Include="Sensor\SensorConfiguration\SensorConfigurationStorageProvider.cs" />
+    <Compile Include="Sensor\SensorConfiguration\ISensorConfigurationRepository.cs" />
+    <Compile Include="Sensor\SensorConfiguration\SensorConfigurationRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

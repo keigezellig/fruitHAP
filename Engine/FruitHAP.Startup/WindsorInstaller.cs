@@ -19,6 +19,7 @@ using Microsoft.Practices.Prism.PubSubEvents;
 using NLog;
 using FruitHAP.Core;
 using FruitHAP.Core.MQ;
+using FruitHAP.Core.SensorConfiguration;
 
 namespace FruitHAP.Startup
 {
@@ -36,9 +37,10 @@ namespace FruitHAP.Startup
             container.Kernel.Resolver.AddSubResolver(new CollectionResolver(container.Kernel, true));
             RegisterLogging(container);            
 			RegisterMQPublisher(container);
+			RegisterSensorConfigurationRepository (container);
 			RegisterEventAggregator(container);            
             RegisterModules(container,moduleDirectory);
-            RegisterDeviceRepository(container);
+            RegisterSensorRepository(container);
             RegisterActions(container,actionDirectory);
             RegisterService(container);
             
@@ -52,7 +54,15 @@ namespace FruitHAP.Startup
 				.LifestyleSingleton());
 		}
 
-        private void RegisterDeviceRepository(IWindsorContainer container)
+		void RegisterSensorConfigurationRepository (IWindsorContainer container)
+		{
+			container.Register(
+				Component.For<ISensorConfigurationRepository>()
+				.ImplementedBy<SensorConfigurationRepository>()
+				.LifestyleSingleton());
+		}
+
+        private void RegisterSensorRepository(IWindsorContainer container)
         {
             container.Register(
                 Component.For<ISensorLoader>()

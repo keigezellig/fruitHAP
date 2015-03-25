@@ -6,9 +6,9 @@ using FruitHAP.Common.Helpers;
 
 namespace FruitHAP.Core.SensorConfiguration
 {
-	public class SensorConfigurationProvider : ConfigProviderBase<List<SensorDefinition>>
+	public class SensorConfigurationStorageProvider : ConfigProviderBase<List<SensorDefinition>>
 	{
-		public SensorConfigurationProvider (ILogger logger) : base (logger)
+		public SensorConfigurationStorageProvider (ILogger logger) : base (logger)
 		{
 		}
 		

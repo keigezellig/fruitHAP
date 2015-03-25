@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace FruitHAP.Core.SensorConfiguration
 {
-	public interface ISensorConfiguration
+	public interface ISensorConfigurationRepository
 	{
 		List<SensorDefinition> GetSensorList();
 		SensorDefinition GetSensorDefinition(string sensorName);

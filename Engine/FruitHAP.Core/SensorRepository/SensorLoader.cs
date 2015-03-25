@@ -16,23 +16,21 @@ namespace FruitHAP.Core.SensorRepository
     {
         private readonly IEnumerable<ISensor> prototypes;
         private readonly ILogger logger;
-		private IConfigProvider<List<SensorDefinition>> configProvider;
+		private ISensorConfigurationRepository sensorConfiguration;
 
-		public SensorLoader(IEnumerable<ISensor> prototypes, ILogger logger, IConfigProvider<List<SensorDefinition>> configProvider )
+		public SensorLoader(IEnumerable<ISensor> prototypes, ILogger logger, ISensorConfigurationRepository sensorConfiguration )
         {
-			this.configProvider = configProvider;
+			this.sensorConfiguration = sensorConfiguration;
             this.prototypes = prototypes;
             this.logger = logger;
         }
 
         public IEnumerable<ISensor> LoadSensors()
         {
-            string sensorFile = ConfigurationManager.AppSettings["SensorFile"] ??
-                                                  Path.Combine(".", "sensors.json");
-
+            
             var result = new List<ISensor>();
 
-			List<SensorDefinition> definitions = configProvider.LoadConfigFromFile (sensorFile);
+			List<SensorDefinition> definitions = sensorConfiguration.GetSensorList ();
 
 			foreach (var definition in definitions)
             {

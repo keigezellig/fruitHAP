@@ -17,9 +17,11 @@ namespace FruitHap.ConfigurationActions
 	public class SensorConfigurationAction : ActionBase
 	{	
 		private IValidator<GetSensorListRequest> getSensorListRequestValidator;
+		private ISensorConfigurationRepository sensorConfigurationRepository;
 
-		public SensorConfigurationAction (IMessageQueueProvider mqProvider, ILogger logger) : base (mqProvider, logger)
+		public SensorConfigurationAction (IMessageQueueProvider mqProvider, ISensorConfigurationRepository sensorConfigurationRepository, ILogger logger) : base (mqProvider, logger)
 		{
+			this.sensorConfigurationRepository = sensorConfigurationRepository;
 			getSensorListRequestValidator = new GetSensorListRequestValidator ();
 		}
 
@@ -42,7 +44,7 @@ namespace FruitHap.ConfigurationActions
 						}
 						else
 						{
-							List<String> sensorList = GetSensorList();
+							var sensorList = sensorConfigurationRepository.GetSensorList();
 							return new ConfigurationResponse {Result = Result.Ok,ResultData = sensorList};
 
 						}
@@ -69,11 +71,6 @@ namespace FruitHap.ConfigurationActions
 					});
 			}
 		}		
-
-		List<string> GetSensorList ()
-		{
-			return new List<string>{ };
-		}
 	}
 }
 
