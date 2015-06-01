@@ -142,7 +142,7 @@ namespace FruitHAP.Startup
                 .LifestyleSingleton());
 
             container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(moduleDirectory))
-                .BasedOn<ISensorModule>()
+                .BasedOn<ISensorController>()
                 .WithService.AllInterfaces()
                 .LifestyleSingleton());
 

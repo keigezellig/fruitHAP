@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FruitHAP.SensorModule.Kaku.Configuration
 {
-    public class KakuConfiguration
+    public class RfxControllerConfiguration
     {
         public string ConnectionString { get; set; }
     }

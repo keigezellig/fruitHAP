@@ -55,7 +55,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sensor\ISensor.cs" />
     <Compile Include="Sensor\ISensorInitializer.cs" />
-    <Compile Include="Sensor\ISensorModule.cs" />
     <Compile Include="Sensor\ISensorProtocol.cs" />
     <Compile Include="Sensor\SensorTypes\IButton.cs" />
     <Compile Include="Sensor\SensorTypes\ICamera.cs" />
@@ -70,6 +69,7 @@
     <Compile Include="MQ\IMessageQueueProvider.cs" />
     <Compile Include="MQ\Helpers\TypeNameSerializer.cs" />
     <Compile Include="SensorRepository\SensorLoaderConfigProvider.cs" />
+    <Compile Include="Sensor\ISensorController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
