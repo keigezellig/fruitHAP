@@ -26,7 +26,7 @@ namespace FruitHAP.Core.SensorRepository
 
         public IEnumerable<ISensor> LoadSensors()
         {
-            string sensorFile = ConfigurationManager.AppSettings["SensorFile"] ??
+			string sensorFile = ConfigurationManager.AppSettings["SensorConfigurationFile"] ??
                                                   Path.Combine(".", "sensors.json");
 
             var result = new List<ISensor>();

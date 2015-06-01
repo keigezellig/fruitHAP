@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Castle.Core.Logging;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Core.Sensor.SensorTypes;
-using FruitHAP.SensorProtocols;
+using FruitHAP.Sensor.KaKu.ACProtocol;
 
-namespace FruitHAP.SensorModule.Kaku.Devices
+namespace FruitHAP.Sensor.KaKu.Devices
 {
 	public class KakuButton : IButton, ISensorInitializer, ICloneable
     {
@@ -50,7 +50,7 @@ namespace FruitHAP.SensorModule.Kaku.Devices
 	            description = parameters["Description"];
 				sensorDefinition.DeviceId = Convert.ToUInt32(parameters["DeviceId"],16);
 				sensorDefinition.UnitCode = Convert.ToByte(parameters["UnitCode"],16);
-	            sensorDefinition.Command = (FruitHAP.SensorProtocols.Command) Enum.Parse(typeof(FruitHAP.SensorProtocols.Command),parameters["Command"]);
+	            sensorDefinition.Command = (Command) Enum.Parse(typeof(Command),parameters["Command"]);
 
 				module.ControllerDataReceived += HandleControllerDataReceived;
 				this.module.Start ();
@@ -76,7 +76,7 @@ namespace FruitHAP.SensorModule.Kaku.Devices
 				}
 
 			}
-			catch (FruitHAP.SensorProtocols.ProtocolException ex) 
+			catch (ProtocolException ex) 
 			{
 				logger.ErrorFormat ("Error decoding received data: {0}", ex.Message);
 			}
