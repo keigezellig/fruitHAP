@@ -33,11 +33,11 @@
       <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
-    <Reference Include="RabbitMQ.Client">
-      <HintPath>..\packages\RabbitMQ.Client.3.4.3\lib\net35\RabbitMQ.Client.dll</HintPath>
-    </Reference>
     <Reference Include="EasyNetQ">
-      <HintPath>..\packages\EasyNetQ.0.44.3.363\lib\net40\EasyNetQ.dll</HintPath>
+      <HintPath>..\packages\EasyNetQ.0.49.3.390\lib\net40\EasyNetQ.dll</HintPath>
+    </Reference>
+    <Reference Include="RabbitMQ.Client">
+      <HintPath>..\packages\RabbitMQ.Client.3.5.3\lib\net40\RabbitMQ.Client.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -70,6 +70,8 @@
     <Compile Include="MQ\Helpers\TypeNameSerializer.cs" />
     <Compile Include="SensorRepository\SensorLoaderConfigProvider.cs" />
     <Compile Include="Sensor\ISensorController.cs" />
+    <Compile Include="Sensor\IRfxController.cs" />
+    <Compile Include="Sensor\ProtocolException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -40,11 +40,11 @@
     <Reference Include="Castle.Core">
       <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="RabbitMQ.Client">
-      <HintPath>..\packages\RabbitMQ.Client.3.4.3\lib\net35\RabbitMQ.Client.dll</HintPath>
-    </Reference>
     <Reference Include="EasyNetQ">
-      <HintPath>..\..\Engine\packages\EasyNetQ.0.44.3.363\lib\net40\EasyNetQ.dll</HintPath>
+      <HintPath>..\..\Engine\packages\EasyNetQ.0.49.3.390\lib\net40\EasyNetQ.dll</HintPath>
+    </Reference>
+    <Reference Include="RabbitMQ.Client">
+      <HintPath>..\..\Engine\packages\RabbitMQ.Client.3.5.3\lib\net40\RabbitMQ.Client.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
