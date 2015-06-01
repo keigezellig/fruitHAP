@@ -52,8 +52,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="rfx.xml">
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="rfx.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
 </Project>
