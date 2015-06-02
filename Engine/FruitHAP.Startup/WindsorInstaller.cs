@@ -41,19 +41,18 @@ namespace FruitHAP.Startup
             container.Kernel.Resolver.AddSubResolver(new CollectionResolver(container.Kernel, true));
             RegisterLogging(container);            
 			RegisterMQPublisher(container);
+			RegisterControllers (container, controllerDirectory);
+			RegisterSensors(container,sensorDirectory);
 			RegisterSensorConfigurationRepository (container);
 			RegisterEventAggregator(container);            
-
-            RegisterSensorRepository(container);
-			RegisterSensors(container,sensorDirectory);
-            
-			RegisterDeviceRepository(container);
+            RegisterSensorRepository(container);           
             RegisterActions(container,actionDirectory);
             RegisterService(container);
             
         }
 
 		void RegisterMQPublisher (IWindsorContainer container)
+
 		{
 			container.Register(
 				Component.For<IMessageQueueProvider>()
