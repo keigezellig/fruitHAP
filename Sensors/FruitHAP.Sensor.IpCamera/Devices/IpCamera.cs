@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Castle.Core.Logging;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Core.Sensor.SensorTypes;
+using FruitHAP.Core.Sensor.SensorTypes;
+using System.Net.Http;
 
 namespace FruitHAP.SensorModule.IpCamera.Devices
 {

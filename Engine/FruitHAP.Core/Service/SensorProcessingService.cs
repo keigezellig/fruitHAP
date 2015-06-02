@@ -11,12 +11,12 @@ namespace FruitHAP.Core.Service
     public class SensorProcessingService : ISensorProcessingService
     {
         private readonly ISensorRepository sensorRepository;
-        private readonly IEnumerable<ISensorModule> modules;
+        private readonly IEnumerable<ISensorController> modules;
         private readonly IEnumerable<IAction> actions;
         private readonly ILogger log;
 		private readonly IMessageQueueProvider mqPublisher;
 
-		public SensorProcessingService(ISensorRepository sensorRepository, IEnumerable<ISensorModule> modules, IEnumerable<IAction> actions, IMessageQueueProvider mqPublisher, ILogger log)
+		public SensorProcessingService(ISensorRepository sensorRepository, IEnumerable<ISensorController> modules, IEnumerable<IAction> actions, IMessageQueueProvider mqPublisher, ILogger log)
         {
 			this.mqPublisher = mqPublisher;
             this.sensorRepository = sensorRepository;
@@ -33,31 +33,9 @@ namespace FruitHAP.Core.Service
 			string mqPubSubExchangeName = ConfigurationManager.AppSettings ["mqPubSubExchangeName"] ?? "FruitHAP_PubSubExchange";
 			string mqRpcExchangeName = ConfigurationManager.AppSettings ["mqRpcExchangeName"] ?? "FruitHAP_RpcExchange";
 			string mqRpcQueueName = ConfigurationManager.AppSettings ["mqRpcQueueName"] ?? "FruitHAP_RpcQueue";
-
-
-
-
-			if (!modules.Any())
-            {
-                log.Error("No modules loaded. Nothing to do");
-                return;
-            }
-							            
+				            
             sensorRepository.Initialize();
-
-            log.Info("Starting modules");
-
-            foreach (var module in modules)
-            {
-                module.Start();
-            }
-
-            if (!actions.Any())
-            {
-                log.Error("No actions loaded. Nothing to do");
-                return;
-            }
-
+           
 			try
 			{
 				log.Info("Connecting to message queue");
@@ -66,6 +44,13 @@ namespace FruitHAP.Core.Service
 			catch (Exception ex) 
 			{
 				log.ErrorFormat ("Error initializing message queue. Message: {0}", ex);
+				return;
+			}
+
+
+			if (!actions.Any())
+			{
+				log.Error("No actions loaded. Nothing to do");
 				return;
 			}
 

@@ -57,18 +57,8 @@ namespace FruitHAP.Common.PhysicalInterfaces.SerialPortInterface
         public void Open()
         {
             if(IsOpen()) return;
-
-            try
-            {
                 log.Info(string.Format("Opening serial port {0} ", serialPort.PortName));
                 serialPort.Open();
-            }
-            catch (IOException ex)
-            {
-                log.Error("Exception occured when opening the serial port", ex);
-                throw;
-            }
-            
         }
 
         public void Close()

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FruitHAP.SensorModule.Kaku.Configuration
+namespace FruitHAP.Controller.Rfx.Configuration
 {
-    public class KakuConfiguration
+    public class RfxControllerConfiguration
     {
         public string ConnectionString { get; set; }
     }
