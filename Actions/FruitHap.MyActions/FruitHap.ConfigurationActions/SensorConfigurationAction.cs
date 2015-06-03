@@ -28,6 +28,7 @@ namespace FruitHap.ConfigurationActions
 		public override void Initialize ()
 		{
 			mqProvider.SubscribeToRequest<GetSensorListRequest,ConfigurationResponse> (HandleGetSensorListRequest);
+			mqProvider.SubscribeToRequest<GetSensorTypesRequest,ConfigurationResponse> (HandleGetSensorTypesRequest);
 		}
 
 
@@ -58,7 +59,27 @@ namespace FruitHap.ConfigurationActions
 			task.Start ();
 			return task;
 		}
-			
+
+		private Task<ConfigurationResponse> HandleGetSensorTypesRequest (GetSensorTypesRequest req)
+		{
+			Task<ConfigurationResponse> task = 
+				new Task<ConfigurationResponse> (() => 
+					{
+						{
+							var sensorTypes = sensorConfigurationRepository.GetSensorTypes();
+							return new ConfigurationResponse {Result = Result.Ok,ResultData = sensorTypes};
+
+						}
+					});
+			task.ContinueWith ((originalTask) => 
+				{
+					//HandleTaskExceptions(originalTask);
+					return new ConfigurationResponse {Result = Result.NotOk, FaultReason = FaultReason.InternalError, FaultMessage = "Internal error while handling request"};
+				},TaskContinuationOptions.OnlyOnFaulted);
+
+			task.Start ();
+			return task;
+		}			
 
 		private void HandleTaskExceptions(Task originalTask)
 		{

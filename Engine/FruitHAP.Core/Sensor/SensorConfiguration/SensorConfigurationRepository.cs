@@ -35,6 +35,12 @@ namespace FruitHAP.Core.SensorConfiguration
 
 		}
 
+		public List<string> GetSensorTypes ()
+		{
+			var sensorList = storageProvider.LoadConfigFromFile (sensorFile);
+			return sensorList.Select (f => f.SensorType).Distinct ().ToList ();
+		}
+
 		public SensorDefinition AddSensorDefinition (string name, string type, System.Collections.Generic.Dictionary<string, string> parameters)
 		{
 			throw new NotImplementedException ();

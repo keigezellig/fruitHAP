@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="rfx.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 </Project>

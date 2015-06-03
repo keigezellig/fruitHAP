@@ -48,6 +48,7 @@
     <Compile Include="SensorConfigurationAction.cs" />
     <Compile Include="Messages\GetSensorListRequest.cs" />
     <Compile Include="Validators\GetSensorListRequestValidator.cs" />
+    <Compile Include="Messages\GetSensorTypesRequest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
