@@ -17,7 +17,7 @@ namespace FruitHap.MyActions
 		}
 
 
-		public override void Initialize ()
+		public override void InitializeFunction ()
 		{
 			mqProvider.SubscribeToRequest<ButtonPressRequest,ButtonPressResponse> (HandleButtonPress);
 		}

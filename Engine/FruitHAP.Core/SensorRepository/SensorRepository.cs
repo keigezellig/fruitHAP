@@ -13,10 +13,13 @@ namespace FruitHAP.Core.SensorRepository
         private readonly ILogger logger;
         private IEnumerable<ISensor> sensors;
 
-        public SensorRepository(ISensorLoader sensorLoader, ILogger logger)
+		IEnumerable<ISensor> sensorTypes;
+
+		public SensorRepository(ISensorLoader sensorLoader, IEnumerable<ISensor> sensorTypes, ILogger logger)
         {
             this.sensorLoader = sensorLoader;
             this.logger = logger;
+			this.sensorTypes = sensorTypes;
         }
 
         public void Initialize()
@@ -51,6 +54,9 @@ namespace FruitHAP.Core.SensorRepository
         {
             return sensors.OfType<T>().SingleOrDefault(f => f.Name == name);
         }
+
+
+
 
 
     }

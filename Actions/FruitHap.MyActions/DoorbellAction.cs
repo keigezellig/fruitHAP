@@ -18,9 +18,8 @@ namespace FruitHAP.MyActions
 			this.sensorRepository = deviceRepository;
 		}
             
-        public override void Initialize()
+        public override void InitializeFunction()
         {
-			logger.InfoFormat ("Initializing action {0}", this);
 			IButton doorbellButton = sensorRepository.FindDeviceOfTypeByName<IButton>("Doorbell");
             doorbellButton.ButtonPressed += doorbellButton_ButtonPressed;
         }

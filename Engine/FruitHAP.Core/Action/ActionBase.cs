@@ -8,7 +8,14 @@ namespace FruitHAP.Core.Action
 		protected IMessageQueueProvider mqProvider;
 		protected ILogger logger;
 
-		public abstract void Initialize ();
+
+		public void Initialize()
+		{
+			logger.Info ("Initializing action..");
+			InitializeFunction ();
+			logger.Info ("Done initializing action..");
+		}
+		public abstract void InitializeFunction ();
 
 
 		protected ActionBase (IMessageQueueProvider mqProvider, ILogger logger)

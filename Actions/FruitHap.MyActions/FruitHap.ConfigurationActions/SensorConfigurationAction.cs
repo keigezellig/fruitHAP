@@ -25,8 +25,9 @@ namespace FruitHap.ConfigurationActions
 			getSensorListRequestValidator = new GetSensorListRequestValidator ();
 		}
 
-		public override void Initialize ()
+		public override void InitializeFunction ()
 		{
+
 			mqProvider.SubscribeToRequest<GetSensorListRequest,ConfigurationResponse> (HandleGetSensorListRequest);
 			mqProvider.SubscribeToRequest<GetSensorTypesRequest,ConfigurationResponse> (HandleGetSensorTypesRequest);
 		}
@@ -34,40 +35,39 @@ namespace FruitHap.ConfigurationActions
 
 		private Task<ConfigurationResponse> HandleGetSensorListRequest (GetSensorListRequest req)
 		{
-			Task<ConfigurationResponse> task = 
-				new Task<ConfigurationResponse> (() => 
-					{
-						var validationResult = getSensorListRequestValidator.Validate(req);
-						if (!validationResult.IsValid)
-						{
-							string err = string.Concat(validationResult.Errors.Select(f=> f.ErrorMessage));
-							return new ConfigurationResponse () {Result = Result.NotOk, FaultReason = FaultReason.ParameterError, FaultMessage=err};
-						}
-						else
-						{
-							var sensorList = sensorConfigurationRepository.GetSensorList();
-							return new ConfigurationResponse {Result = Result.Ok,ResultData = sensorList};
-
-						}
-					});
-			task.ContinueWith ((originalTask) => 
-				{
-					//HandleTaskExceptions(originalTask);
-					return new ConfigurationResponse {Result = Result.NotOk, FaultReason = FaultReason.InternalError, FaultMessage = "Internal error while handling request"};
-				},TaskContinuationOptions.OnlyOnFaulted);
-
-			task.Start ();
-			return task;
+			return HandleConfigurationRequest (req, getSensorListRequestValidator, (request) => sensorConfigurationRepository.GetSensorList ());
 		}
 
 		private Task<ConfigurationResponse> HandleGetSensorTypesRequest (GetSensorTypesRequest req)
 		{
+			return HandleConfigurationRequest (req, null, (request) => sensorConfigurationRepository.GetSensorTypes ());
+		}			
+
+		private Task<ConfigurationResponse> HandleConfigurationRequest<TRequest>(TRequest request, IValidator validator, Func<TRequest, object> processFunction)
+		{
 			Task<ConfigurationResponse> task = 
 				new Task<ConfigurationResponse> (() => 
 					{
+						if (validator != null)
 						{
-							var sensorTypes = sensorConfigurationRepository.GetSensorTypes();
-							return new ConfigurationResponse {Result = Result.Ok,ResultData = sensorTypes};
+							var validationResult = validator.Validate(request);
+							if (!validationResult.IsValid)
+							{
+								string err = string.Concat(validationResult.Errors.Select(f=> f.ErrorMessage));
+								return new ConfigurationResponse () {Result = Result.NotOk, FaultReason = FaultReason.ParameterError, FaultMessage=err};
+							}
+							else
+							{
+								var result = processFunction(request);
+								return new ConfigurationResponse {Result = Result.Ok,ResultData = result};
+							}
+						}
+
+						else
+						{
+							var result = processFunction(request);
+							return new ConfigurationResponse {Result = Result.Ok,ResultData = result};
+
 
 						}
 					});
@@ -79,7 +79,9 @@ namespace FruitHap.ConfigurationActions
 
 			task.Start ();
 			return task;
-		}			
+
+		}
+
 
 		private void HandleTaskExceptions(Task originalTask)
 		{
