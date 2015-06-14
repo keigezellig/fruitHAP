@@ -4,6 +4,7 @@ using Castle.Core.Logging;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Core.Sensor.SensorTypes;
 using FruitHAP.Sensor.KaKu.ACProtocol;
+using FruitHAP.Common.Helpers;
 
 namespace FruitHAP.Sensor.KaKu.Devices
 {
@@ -65,7 +66,7 @@ namespace FruitHAP.Sensor.KaKu.Devices
 
         void HandleControllerDataReceived (object sender, ControllerDataEventArgs e)
         {
-			logger.DebugFormat("Received controller data: {0}", e.Data);
+			logger.DebugFormat("Received controller data: {0}", e.Data.BytesAsString());
 			try
 			{
 				var decodedData = protocol.Decode (e.Data);
@@ -110,7 +111,6 @@ namespace FruitHAP.Sensor.KaKu.Devices
 
         private bool DataReceivedCorrespondsToTheButton(ACProtocolData data)
         {
-			logger.InfoFormat ("Definition={0}\n Data={1}\n", sensorDefinition, data);
 			return (data.DeviceId == sensorDefinition.DeviceId && data.UnitCode == sensorDefinition.UnitCode && data.Command == sensorDefinition.Command);
         }
 
