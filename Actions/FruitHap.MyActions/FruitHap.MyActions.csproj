@@ -54,6 +54,8 @@
     <Compile Include="DoorbellButtonPressAction.cs" />
     <Compile Include="Messages\ButtonPressRequest.cs" />
     <Compile Include="Messages\ButtonPressResponse.cs" />
+    <Compile Include="ProximityDetectionAction.cs" />
+    <Compile Include="Messages\ProximityDetectionMessage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
