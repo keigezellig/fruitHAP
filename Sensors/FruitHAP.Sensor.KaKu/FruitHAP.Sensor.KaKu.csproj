@@ -41,6 +41,7 @@
     <Compile Include="ACProtocol\ACProtocolEventArgs.cs" />
     <Compile Include="ACProtocol\IACProtocol.cs" />
     <Compile Include="Devices\KakuSwitch.cs" />
+    <Compile Include="Devices\KakuDevice.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

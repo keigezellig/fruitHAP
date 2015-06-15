@@ -8,49 +8,23 @@ using FruitHAP.Common.Helpers;
 
 namespace FruitHAP.Sensor.KaKu
 {
-	public class KakuSwitch : IReadOnlySwitch, ISensorInitializer, ICloneable
+	public class KakuSwitch : KakuDevice, IReadOnlySwitch
 	{
-		private IRfxController module;
-		private ILogger logger;
-		private IACProtocol protocol;
-		private string name;
-		private string description;
-		private UInt32 deviceId;
-		private byte unitCode;
 		private Command onCommand;
 		private Command offCommand;
 		private SwitchState state;
 
 
-		public KakuSwitch(IRfxController module, ILogger logger, IACProtocol protocol)
+		public KakuSwitch(IRfxController controller, ILogger logger, IACProtocol protocol) : base(controller,logger,protocol)
 		{
-			this.module = module;
-			this.logger = logger;
-			this.protocol = protocol;
 		}
 
 		#region ISensorInitializer implementation
 
-		public void Initialize (Dictionary<string, string> parameters)
+		protected override void InitializeSpecificDevice (Dictionary<string, string> parameters)
 		{
-			try
-			{								
-				name = parameters["Name"];
-				logger.InfoFormat("Initializing switch {0}",name);
-				description = parameters["Description"];
-				deviceId = Convert.ToUInt32(parameters["DeviceId"],16);
-				unitCode = Convert.ToByte(parameters["UnitCode"],16);
-				onCommand = (Command) Enum.Parse(typeof(Command),parameters["OnCommand"]);
-				offCommand = (Command) Enum.Parse(typeof(Command),parameters["OffCommand"]);
-
-				module.ControllerDataReceived += HandleControllerDataReceived;
-				this.module.Start ();
-				logger.InfoFormat("Initialized switch {0}",name);
-			}
-			catch (Exception ex) 
-			{
-				logger.ErrorFormat("Cannot initialize switch {0}. Reason: {1}",name,ex.Message);
-			}
+			onCommand = (Command) Enum.Parse(typeof(Command),parameters["OnCommand"]);
+			offCommand = (Command) Enum.Parse(typeof(Command),parameters["OffCommand"]);
 		}
 
 		#endregion
@@ -65,58 +39,29 @@ namespace FruitHAP.Sensor.KaKu
 			return state;
 		}
 
-		public string Name
-		{
-			get { return name; }
-		}
-
-		public string Description
-		{
-			get { return description; }
-		}
-
-
 		#endregion
 
 		#region ICloneable implementation
 
-		public object Clone ()
+		public override object Clone ()
 		{
-			return new KakuSwitch(this.module, this.logger, this.protocol);
+			return new KakuSwitch(this.controller, this.logger, this.protocol);
 		}
 
 		#endregion
 
-
-		private void HandleControllerDataReceived (object sender, ControllerDataEventArgs e)
+		protected override void ProcessReceivedACDataForThisDevice (ACProtocolData data)
 		{
-			logger.DebugFormat("Received controller data: {0}", e.Data.BytesAsString());
-			try
-			{
-				var decodedData = protocol.Decode (e.Data);
-				if (DataReceivedCorrespondsToTheSwitch(decodedData))
-				{
-					SwitchState newState = DetermineNewState(decodedData);
-					if (newState != state)
-					{						
-						state = newState;
-						logger.InfoFormat ("State changed to {0}",state);
-						OnStateChanged(state);
-					}
-				}
-
+			SwitchState newState = DetermineNewState(data);
+			if (newState != state)
+			{						
+				state = newState;
+				logger.InfoFormat ("State changed to {0}",state);
+				OnStateChanged(state);
 			}
-			catch (ProtocolException ex) 
-			{
-				logger.ErrorFormat ("Error decoding received data: {0}", ex.Message);
-			}
-		}
 
-		private bool DataReceivedCorrespondsToTheSwitch (ACProtocolData decodedData)
-		{
-			return (decodedData.DeviceId == deviceId) && (decodedData.UnitCode == unitCode);
 		}
-
+			
 		private SwitchState DetermineNewState (ACProtocolData decodedData)
 		{
 			if (decodedData.Command == onCommand) 
