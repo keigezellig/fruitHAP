@@ -30,12 +30,14 @@ io.on('connection', function(connection){
 
         console.log("received alert..");
         var alertObject = JSON.parse(alert);
+        console.log(alert);
+        console.log(alertObject);
         console.log("Sending alert to browser");
         connection.send(alertObject);
 
     });
 
-    sub.connect('FruitHAPExchange','alerts');
+    sub.connect('FruitHAP_PubSubExchange','alerts');
 
 });
 

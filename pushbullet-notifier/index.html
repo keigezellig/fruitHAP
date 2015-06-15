@@ -19,7 +19,7 @@
         var socket = io.connect('http://192.168.1.81:3000');
         socket.on('message', function(msg){
             console.log(msg);
-            $('#messages').append($('<li>').text(msg.Timestamp));
+            $('#messages').append($('<li>').text(msg.Timestamp, msg.DetectorName));
         });
     </script>
 

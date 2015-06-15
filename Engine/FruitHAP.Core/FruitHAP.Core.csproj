@@ -72,6 +72,8 @@
     <Compile Include="Sensor\ISensorController.cs" />
     <Compile Include="Sensor\IRfxController.cs" />
     <Compile Include="Sensor\ProtocolException.cs" />
+    <Compile Include="Sensor\SensorTypes\IReadOnlySwitch.cs" />
+    <Compile Include="Sensor\SensorTypes\ISwitch.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
