@@ -106,7 +106,9 @@ namespace FruitHAP.Controller.Rfx
 
 		public void SendResetCommand()
 		{
-			logger.Warn ("Sending reset command to controller (NOT IMPLEMENTED YET)");
+			logger.Debug ("Sending reset command to controller");
+			var dataToBeSend = new byte[] {0x00,0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+			physicalInterface.Write(dataToBeSend);
 		}
     }
 
