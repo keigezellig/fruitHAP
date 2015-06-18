@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FruitHAP.Sensor.KaKu.ACProtocol
+namespace FruitHAP.Sensor.Protocols.ACProtocol
 {
 	public class ACProtocolData
 	{

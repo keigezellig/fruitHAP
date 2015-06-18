@@ -4,8 +4,9 @@ using System.Linq;
 using FruitHAP.Common.Helpers;
 using System.Collections.Generic;
 using FruitHAP.Core.Sensor;
+using FruitHAP.Sensor.Protocols.ACProtocol;
 
-namespace FruitHAP.Sensor.KaKu.ACProtocol
+namespace Controller.Rfx.ACProtocol
 {
 	/* The protocol used in the KlikAanKlikUit is the AC subpacket in the LIGHTING2 protocol which is a X10 derivative.
      * 

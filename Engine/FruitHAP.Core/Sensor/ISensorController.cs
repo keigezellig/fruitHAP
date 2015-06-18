@@ -8,14 +8,7 @@ namespace FruitHAP.Core.Sensor
         void Start();
         void Stop();
 		bool IsStarted {get;}
-		void SendData (byte[] data);
-
-		event EventHandler<ControllerDataEventArgs> ControllerDataReceived;
-
     }
 
-	public class ControllerDataEventArgs : EventArgs
-	{
-		public byte[] Data { get; set;}
-	}
+
 }

@@ -1,9 +1,10 @@
 ﻿using System;
 using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
-using FruitHAP.Sensor.KaKu.ACProtocol;
 using System.Collections.Generic;
 using FruitHAP.Common.Helpers;
+using FruitHAP.Core.Sensor.Controllers;
+using FruitHAP.Sensor.Protocols.ACProtocol;
 
 namespace FruitHAP.Sensor.KaKu
 {
@@ -13,16 +14,15 @@ namespace FruitHAP.Sensor.KaKu
 		private string description;	
 		protected uint deviceId;
 		protected byte unitCode;
-		protected readonly IRfxController controller;
+		protected readonly IACController controller;
 		protected readonly ILogger logger;
-		protected readonly IACProtocol protocol;
+
 
 		protected abstract void InitializeSpecificDevice (Dictionary<string, string> parameters);
 		protected abstract void ProcessReceivedACDataForThisDevice (ACProtocolData data);
 
-		protected KakuDevice (IRfxController controller, ILogger logger, IACProtocol protocol)
+		protected KakuDevice (IACController controller, ILogger logger)
 		{
-			this.protocol = protocol;
 			this.logger = logger;
 			this.controller = controller;
 		}
@@ -39,7 +39,7 @@ namespace FruitHAP.Sensor.KaKu
 				unitCode = Convert.ToByte(parameters["UnitCode"],16);
 				InitializeSpecificDevice(parameters);
 			
-				controller.ControllerDataReceived += HandleControllerDataReceived;
+				controller.ACDataReceived += HandleControllerDataReceived;
 				this.controller.Start ();
 				logger.InfoFormat("Initialized KaKu device {0}",name);
 			}
@@ -62,16 +62,15 @@ namespace FruitHAP.Sensor.KaKu
 
 		public abstract object Clone ();
 
-		private void HandleControllerDataReceived (object sender, ControllerDataEventArgs e)
+		private void HandleControllerDataReceived (object sender, ACProtocolEventArgs e)
 		{
-			logger.DebugFormat("Received controller data: {0}", e.Data.BytesAsString());
+			logger.DebugFormat("Received controller data: {0}", e.Data);
 			try
 			{
-				var decodedData = protocol.Decode (e.Data);
-				if (DataReceivedCorrespondsToThisDevice(decodedData))
+				if (DataReceivedCorrespondsToThisDevice(e.Data))
 				{
 					logger.Info("Processing data");
-					ProcessReceivedACDataForThisDevice(decodedData);
+					ProcessReceivedACDataForThisDevice(e.Data);
 				}
 				else
 				{

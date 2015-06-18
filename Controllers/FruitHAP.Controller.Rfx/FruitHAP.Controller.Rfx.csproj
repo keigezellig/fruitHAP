@@ -38,6 +38,7 @@
     <Compile Include="Configuration\RfxControllerConfigProvider.cs" />
     <Compile Include="Configuration\RfxControllerConfiguration.cs" />
     <Compile Include="RfxController.cs" />
+    <Compile Include="Protocols\ACProtocol.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -57,5 +58,8 @@
     <Content Include="rfx.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Protocols\" />
   </ItemGroup>
 </Project>

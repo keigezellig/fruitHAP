@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using Castle.Core.Logging;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Core.Sensor.SensorTypes;
-using FruitHAP.Sensor.KaKu.ACProtocol;
 using FruitHAP.Common.Helpers;
+using FruitHAP.Sensor.Protocols.ACProtocol;
+using FruitHAP.Core.Sensor.Controllers;
 
 namespace FruitHAP.Sensor.KaKu.Devices
 {
@@ -12,7 +13,7 @@ namespace FruitHAP.Sensor.KaKu.Devices
     {       
 		private Command command;
 	
-		public KakuButton(IRfxController controller, ILogger logger, IACProtocol protocol) : base(controller,logger,protocol)
+		public KakuButton(IACController controller, ILogger logger) : base(controller,logger)
         {            
         }
 
@@ -39,14 +40,14 @@ namespace FruitHAP.Sensor.KaKu.Devices
 		public void PressButton ()
 		{
 			logger.Debug ("Sending PressButton to module..");
-			var encodedData = protocol.Encode (new ACProtocolData () {
+			controller.SendACData  (new ACProtocolData () {
 				DeviceId = deviceId,
 				UnitCode = unitCode,
 				Command = command,
 				Level = 0
 			});
 
-			controller.SendData (encodedData);
+
 		}
 
         protected virtual void OnButtonPressed()
@@ -62,7 +63,7 @@ namespace FruitHAP.Sensor.KaKu.Devices
 
 		public override object Clone ()
         {
-			return new KakuButton(this.controller, this.logger, this.protocol);
+			return new KakuButton(this.controller, this.logger);
         }
 
 

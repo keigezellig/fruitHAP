@@ -49,6 +49,10 @@
     <Folder Include="Service\" />
     <Folder Include="MQ\" />
     <Folder Include="MQ\Helpers\" />
+    <Folder Include="Sensor\SensorProtocols\" />
+    <Folder Include="Sensor\SensorProtocols\ACProtocol\" />
+    <Folder Include="Sensor\Controllers\" />
+    <Folder Include="Sensor\SensorProtocols\RawProtocol\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action\IAction.cs" />
@@ -70,10 +74,17 @@
     <Compile Include="MQ\Helpers\TypeNameSerializer.cs" />
     <Compile Include="SensorRepository\SensorLoaderConfigProvider.cs" />
     <Compile Include="Sensor\ISensorController.cs" />
-    <Compile Include="Sensor\IRfxController.cs" />
     <Compile Include="Sensor\ProtocolException.cs" />
     <Compile Include="Sensor\SensorTypes\IReadOnlySwitch.cs" />
     <Compile Include="Sensor\SensorTypes\ISwitch.cs" />
+    <Compile Include="Sensor\SensorProtocols\ACProtocol\ACProtocolData.cs" />
+    <Compile Include="Sensor\SensorProtocols\ACProtocol\ACProtocolEventArgs.cs" />
+    <Compile Include="Sensor\SensorProtocols\ACProtocol\IACProtocol.cs" />
+    <Compile Include="Sensor\Controllers\IACController.cs" />
+    <Compile Include="Sensor\Controllers\IDefaultController.cs" />
+    <Compile Include="Sensor\SensorProtocols\RawProtocol\IRawProtocol.cs" />
+    <Compile Include="Sensor\SensorProtocols\RawProtocol\RawProtocolData.cs" />
+    <Compile Include="Sensor\SensorProtocols\RawProtocol\RawProtocolEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
