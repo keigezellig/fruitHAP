@@ -9,14 +9,14 @@ using FruitHAP.Core.Sensor.Controllers;
 
 namespace FruitHAP.Controller.Rfx
 {
-	public class ACPacketHandler : IControllerPacketHandler
+	public class RfxACPacketHandler : IControllerPacketHandler
 	{
 
 		private readonly ILogger logger;
 		private IEventAggregator aggregator;
 
 
-		public ACPacketHandler (ILogger logger, IEventAggregator aggregator)
+		public RfxACPacketHandler (ILogger logger, IEventAggregator aggregator)
 		{
 			this.logger = logger;
 			this.aggregator = aggregator;

@@ -28,7 +28,8 @@ namespace FruitHAP.Controller.Rfx
 		private static byte SequenceNumber = 1;
 		private const string CONFIG_FILENAME = "rfx.xml";
 		private SubscriptionToken acEventSubscriptionToken;
-		private RFXReceivedControllerDataHandlerFactory handlerFactory;
+		private RFXControllerPacketHandlerFactory handlerFactory;
+		private List<RfxPacketInfo> supportedPacketTypes;
 
 		private IEventAggregator aggregator;
 
@@ -38,8 +39,14 @@ namespace FruitHAP.Controller.Rfx
             this.configProvider = configProvider;
             this.physicalInterfaceFactory = physicalInterfaceFactory;
             this.logger = logger;
-			this.handlerFactory = new RFXReceivedControllerDataHandlerFactory (logger, aggregator);
+			this.handlerFactory = new RFXControllerPacketHandlerFactory (logger, aggregator);
+			this.supportedPacketTypes = LoadSupportedPacketTypes ();
         }
+
+		private List<RfxPacketInfo> LoadSupportedPacketTypes ()
+		{
+			
+		}
 
 		void HandleIncomingACMessage (ControllerEventData<ACProtocolData> obj)
 		{			
