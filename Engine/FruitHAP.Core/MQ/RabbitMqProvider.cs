@@ -56,7 +56,7 @@ namespace FruitHAP.Core.MQ
 			}
 			catch (Exception ex) 
 			{
-				logger.ErrorFormat ("Error subscribing to request: ", ex.Message);
+				logger.ErrorFormat ("Error subscribing to request: {0} ", ex);
 			}
 		}
 

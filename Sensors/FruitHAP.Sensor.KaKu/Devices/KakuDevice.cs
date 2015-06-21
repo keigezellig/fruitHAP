@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using FruitHAP.Common.Helpers;
 using FruitHAP.Core.Sensor.Controllers;
 using FruitHAP.Sensor.Protocols.ACProtocol;
+using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace FruitHAP.Sensor.KaKu
 {
@@ -14,17 +15,19 @@ namespace FruitHAP.Sensor.KaKu
 		private string description;	
 		protected uint deviceId;
 		protected byte unitCode;
-		protected readonly IACController controller;
 		protected readonly ILogger logger;
-
+		protected IEventAggregator aggregator;
 
 		protected abstract void InitializeSpecificDevice (Dictionary<string, string> parameters);
 		protected abstract void ProcessReceivedACDataForThisDevice (ACProtocolData data);
 
-		protected KakuDevice (IACController controller, ILogger logger)
+
+
+		protected KakuDevice (IEventAggregator aggregator, ILogger logger)
 		{
+			this.aggregator = aggregator;
 			this.logger = logger;
-			this.controller = controller;
+
 		}
 
 		#region ISensorInitializer implementation
@@ -38,9 +41,8 @@ namespace FruitHAP.Sensor.KaKu
 				deviceId = Convert.ToUInt32(parameters["DeviceId"],16);
 				unitCode = Convert.ToByte(parameters["UnitCode"],16);
 				InitializeSpecificDevice(parameters);
-			
-				controller.ACDataReceived += HandleControllerDataReceived;
-				this.controller.Start ();
+							
+				aggregator.GetEvent<ACProtocolEvent> ().Subscribe (HandleIncomingACMessage, ThreadOption.PublisherThread, false, f => f.Direction == Direction.FromController && DataReceivedCorrespondsToThisDevice(f.Payload));
 				logger.InfoFormat("Initialized KaKu device {0}",name);
 			}
 			catch (Exception ex) 
@@ -62,25 +64,12 @@ namespace FruitHAP.Sensor.KaKu
 
 		public abstract object Clone ();
 
-		private void HandleControllerDataReceived (object sender, ACProtocolEventArgs e)
+
+		void HandleIncomingACMessage (ControllerEventData<ACProtocolData> obj)
 		{
-			logger.DebugFormat("Received controller data: {0}", e.Data);
-			try
-			{
-				if (DataReceivedCorrespondsToThisDevice(e.Data))
-				{
-					logger.Info("Processing data");
-					ProcessReceivedACDataForThisDevice(e.Data);
-				}
-				else
-				{
-					logger.Info("Not for me!");
-				}
-			}
-			catch (ProtocolException ex) 
-			{
-				logger.ErrorFormat ("Error decoding received data: {0}", ex.Message);
-			}
+			logger.DebugFormat("Received controller data: {0}", obj.Payload);
+			logger.Info("Processing data");
+			ProcessReceivedACDataForThisDevice(obj.Payload);
 		}
 
 		private bool DataReceivedCorrespondsToThisDevice (ACProtocolData decodedData)

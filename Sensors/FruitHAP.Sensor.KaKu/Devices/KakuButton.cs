@@ -6,6 +6,7 @@ using FruitHAP.Core.Sensor.SensorTypes;
 using FruitHAP.Common.Helpers;
 using FruitHAP.Sensor.Protocols.ACProtocol;
 using FruitHAP.Core.Sensor.Controllers;
+using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace FruitHAP.Sensor.KaKu.Devices
 {
@@ -13,14 +14,13 @@ namespace FruitHAP.Sensor.KaKu.Devices
     {       
 		private Command command;
 	
-		public KakuButton(IACController controller, ILogger logger) : base(controller,logger)
+		public KakuButton(IEventAggregator aggregator, ILogger logger) : base(aggregator,logger)
         {            
         }
 
 
         protected override void InitializeSpecificDevice (Dictionary<string, string> parameters)
 		{
-
 			command = (Command)Enum.Parse (typeof(Command), parameters ["Command"]);
 		}
 
@@ -40,13 +40,14 @@ namespace FruitHAP.Sensor.KaKu.Devices
 		public void PressButton ()
 		{
 			logger.Debug ("Sending PressButton to module..");
-			controller.SendACData  (new ACProtocolData () {
+			var data = new ACProtocolData () {
 				DeviceId = deviceId,
 				UnitCode = unitCode,
 				Command = command,
 				Level = 0
-			});
+			};
 
+			aggregator.GetEvent<ACProtocolEvent> ().Publish (new ControllerEventData<ACProtocolData> () { Payload = data });
 
 		}
 
@@ -63,7 +64,7 @@ namespace FruitHAP.Sensor.KaKu.Devices
 
 		public override object Clone ()
         {
-			return new KakuButton(this.controller, this.logger);
+			return new KakuButton(this.aggregator, this.logger);
         }
 
 

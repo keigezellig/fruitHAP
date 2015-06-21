@@ -76,7 +76,9 @@ namespace FruitHAP.Common.PhysicalInterfaces.SerialPortInterface
         {
             log.Info("Dispose called");
 
-            Close();
+			if (IsOpen ()) {
+				Close ();
+			}
 
             if(serialPort != null)
             {

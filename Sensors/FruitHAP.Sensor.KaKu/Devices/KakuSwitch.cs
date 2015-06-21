@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using FruitHAP.Common.Helpers;
 using FruitHAP.Sensor.Protocols.ACProtocol;
 using FruitHAP.Core.Sensor.Controllers;
+using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace FruitHAP.Sensor.KaKu
 {
@@ -16,7 +17,7 @@ namespace FruitHAP.Sensor.KaKu
 		private SwitchState state;
 
 
-		public KakuSwitch(IACController controller, ILogger logger) : base(controller,logger)
+		public KakuSwitch(IEventAggregator aggregator, ILogger logger) : base(aggregator,logger)
 		{
 		}
 
@@ -46,7 +47,7 @@ namespace FruitHAP.Sensor.KaKu
 
 		public override object Clone ()
 		{
-			return new KakuSwitch(this.controller, this.logger);
+			return new KakuSwitch(this.aggregator, this.logger);
 		}
 
 		#endregion

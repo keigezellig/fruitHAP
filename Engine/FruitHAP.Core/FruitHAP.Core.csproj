@@ -39,6 +39,9 @@
     <Reference Include="RabbitMQ.Client">
       <HintPath>..\packages\RabbitMQ.Client.3.5.3\lib\net40\RabbitMQ.Client.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.Prism.PubSubEvents">
+      <HintPath>..\packages\Prism.PubSubEvents.1.1.2\lib\portable-sl5+windowsphone8+windows8+net40+wpa81\Microsoft.Practices.Prism.PubSubEvents.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -78,13 +81,12 @@
     <Compile Include="Sensor\SensorTypes\IReadOnlySwitch.cs" />
     <Compile Include="Sensor\SensorTypes\ISwitch.cs" />
     <Compile Include="Sensor\SensorProtocols\ACProtocol\ACProtocolData.cs" />
-    <Compile Include="Sensor\SensorProtocols\ACProtocol\ACProtocolEventArgs.cs" />
-    <Compile Include="Sensor\SensorProtocols\ACProtocol\IACProtocol.cs" />
-    <Compile Include="Sensor\Controllers\IACController.cs" />
-    <Compile Include="Sensor\Controllers\IDefaultController.cs" />
     <Compile Include="Sensor\SensorProtocols\RawProtocol\IRawProtocol.cs" />
     <Compile Include="Sensor\SensorProtocols\RawProtocol\RawProtocolData.cs" />
     <Compile Include="Sensor\SensorProtocols\RawProtocol\RawProtocolEventArgs.cs" />
+    <Compile Include="Sensor\SensorProtocols\ACProtocol\ACProtocolEvent.cs" />
+    <Compile Include="Sensor\Controllers\ControllerEventData.cs" />
+    <Compile Include="Sensor\Controllers\IControllerPacketHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

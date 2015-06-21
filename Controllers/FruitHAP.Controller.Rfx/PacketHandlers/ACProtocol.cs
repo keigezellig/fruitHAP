@@ -27,7 +27,7 @@ namespace Controller.Rfx.ACProtocol
      *         
      */
 
-	public class ACProtocol : IACProtocol
+	public class ACProtocol 
 	{
 		private ILogger logger;
 		private const byte Lighting2ProtocolIndicator = 0x11;
