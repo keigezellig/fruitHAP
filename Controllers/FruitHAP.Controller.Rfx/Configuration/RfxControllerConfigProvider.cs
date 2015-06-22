@@ -18,17 +18,17 @@ namespace FruitHAP.Controller.Rfx.Configuration
 
         protected override RfxControllerConfiguration LoadFromFile(string fileName)
         {
-            return XmlSerializerHelper.Deserialize<RfxControllerConfiguration>(fileName);
+			return JsonSerializerHelper.Deserialize<RfxControllerConfiguration>(fileName);
         }
 
         protected override void SaveToFile(string fileName, RfxControllerConfiguration config)
         {
-            XmlSerializerHelper.Serialize(fileName,config);
+			JsonSerializerHelper.Serialize(fileName,config);
         }
 
         protected override RfxControllerConfiguration LoadDefaultConfig()
         {
-            return new RfxControllerConfiguration() {ConnectionString = "serial:COM4,38400,8,N,1"};
+			return new RfxControllerConfiguration() {ConnectionString = "serial:/dev/ttyUSB0,38400,8,N,1"};
         }
        
     }

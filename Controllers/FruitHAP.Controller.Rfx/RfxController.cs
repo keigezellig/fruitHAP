@@ -26,7 +26,7 @@ namespace FruitHAP.Controller.Rfx
         private IPhysicalInterface physicalInterface;
 		private bool isStarted;
 		private static byte SequenceNumber = 1;
-		private const string CONFIG_FILENAME = "rfx.xml";
+		private const string CONFIG_FILENAME = "rfx.json";
 		private SubscriptionToken acEventSubscriptionToken;
 		private RFXControllerPacketHandlerFactory handlerFactory;
 		private List<RfxPacketInfo> supportedPacketTypes;
