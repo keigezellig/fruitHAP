@@ -1,23 +1,22 @@
 ﻿using System;
-using Castle.Core.Logging;
-using FruitHAP.Common.Configuration;
-using FruitHAP.Common.PhysicalInterfaces;
-using System.Reflection;
-using System.IO;
-using FruitHAP.Core.Sensor;
-using System.Linq;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using Castle.Core.Logging;
+using Controller.Rfx.PacketHandlers;
+using FruitHAP.Common.Configuration;
 using FruitHAP.Common.Helpers;
+using FruitHAP.Common.PhysicalInterfaces;
 using FruitHAP.Controller.Rfx.Configuration;
-using FruitHAP.Core.Sensor.Controllers;
-using FruitHAP.Sensor.Protocols.ACProtocol;
+using FruitHAP.Core.Sensor;
 using Microsoft.Practices.Prism.PubSubEvents;
-using Controller.Rfx.ACProtocol;
-using FruitHAP.Core.Sensor.Controller;
+using FruitHAP.Core.Controller;
+using FruitHAP.Sensor.PacketData.AC;
 
 namespace FruitHAP.Controller.Rfx
 {
-	public class RfxController : ISensorController
+	public class RfxController : IController
     {
         private readonly IConfigProvider<RfxControllerConfiguration> configProvider;
         private readonly IPhysicalInterfaceFactory physicalInterfaceFactory;
@@ -28,7 +27,7 @@ namespace FruitHAP.Controller.Rfx
 		private static byte SequenceNumber = 1;
 		private const string CONFIG_FILENAME = "rfx.json";
 		private SubscriptionToken acEventSubscriptionToken;
-		private RFXControllerPacketHandlerFactory handlerFactory;
+		private RfxControllerPacketHandlerFactory handlerFactory;
 
 
 		private IEventAggregator aggregator;
@@ -39,7 +38,7 @@ namespace FruitHAP.Controller.Rfx
             this.configProvider = configProvider;
             this.physicalInterfaceFactory = physicalInterfaceFactory;
             this.logger = logger;
-			this.handlerFactory = new RFXControllerPacketHandlerFactory (logger, aggregator);
+			this.handlerFactory = new RfxControllerPacketHandlerFactory (logger, aggregator);
 
         }
 
@@ -82,9 +81,9 @@ namespace FruitHAP.Controller.Rfx
 			return packetList;
 		}
 
-		void HandleIncomingACMessage (ControllerEventData<ACProtocolData> obj)
+		void HandleIncomingACMessage (ControllerEventData<ACPacket> obj)
 		{			
-			ACProtocol protocol = new ACProtocol (logger);
+			RfxACProtocol protocol = new RfxACProtocol (logger);
 			byte[] data = protocol.Encode (obj.Payload);
 			SendData (data);
 		}
@@ -112,9 +111,9 @@ namespace FruitHAP.Controller.Rfx
 				ControllerDataReceivedHandler.Handle(e.Data);
 
 			} 
-			catch (ProtocolException ex) 
+			catch (Exception ex) 
 			{
-				logger.ErrorFormat ("Error decoding received data: {0}", ex.Message);
+				logger.ErrorFormat ("Error handling received data: {0}", ex.Message);
 			}
         }
 
@@ -126,7 +125,7 @@ namespace FruitHAP.Controller.Rfx
 				logger.InfoFormat ("Initializing controller {0}", this);
 
 				try {
-					acEventSubscriptionToken = aggregator.GetEvent<ACProtocolEvent> ().Subscribe (HandleIncomingACMessage, ThreadOption.PublisherThread, true, f => f.Direction == Direction.ToController);
+					acEventSubscriptionToken = aggregator.GetEvent<ACPacketEvent> ().Subscribe (HandleIncomingACMessage, ThreadOption.PublisherThread, true, f => f.Direction == Direction.ToController);
 					configuration = configProvider.LoadConfigFromFile (Path.Combine (Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location), CONFIG_FILENAME));
 					var packetTypes = LoadPacketTypes(configuration);
 					handlerFactory.Initialize(packetTypes);
@@ -154,7 +153,7 @@ namespace FruitHAP.Controller.Rfx
         public void Dispose()
         {
             logger.DebugFormat("Dispose module {0}", this);
-			aggregator.GetEvent<ACProtocolEvent> ().Unsubscribe (acEventSubscriptionToken);
+			aggregator.GetEvent<ACPacketEvent> ().Unsubscribe (acEventSubscriptionToken);
             physicalInterface.Dispose();
         }
 

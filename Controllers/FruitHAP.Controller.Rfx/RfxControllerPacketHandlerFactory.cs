@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Linq;
-using FruitHAP.Core.Sensor.Controller;
 using Castle.Core.Logging;
 using Microsoft.Practices.Prism.PubSubEvents;
 using System.Collections.Generic;
 using FruitHAP.Controller.Rfx.Configuration;
 using FruitHAP.Common.Configuration;
+using FruitHAP.Core.Controller;
+using FruitHAP.Controller.Rfx.PacketHandlers;
 
 namespace FruitHAP.Controller.Rfx
 {
-	public class RFXControllerPacketHandlerFactory
+	public class RfxControllerPacketHandlerFactory
 	{
 		private ILogger logger;
 		private IEventAggregator aggregator;
 		private List<RfxPacketInfo> enabledPacketTypes;
 
-		public RFXControllerPacketHandlerFactory (ILogger logger, IEventAggregator aggregator)
+		public RfxControllerPacketHandlerFactory (ILogger logger, IEventAggregator aggregator)
 		{
 			this.aggregator = aggregator;
 			this.logger = logger;
@@ -65,9 +66,6 @@ namespace FruitHAP.Controller.Rfx
 		{
 			return data [2] == type.SubPacketIndicator;
 		}
-		
-
-
 	}
 }
 

@@ -4,6 +4,9 @@ using Castle.Core.Logging;
 using FruitHAP.Core;
 using FruitHAP.Core.Sensor.SensorTypes;
 using System.Threading.Tasks;
+using FruitHAP.Core.SensorRepository;
+using FruitHAP.Core.MQ;
+using FruitHap.MyActions.Messages;
 
 namespace FruitHap.MyActions
 {

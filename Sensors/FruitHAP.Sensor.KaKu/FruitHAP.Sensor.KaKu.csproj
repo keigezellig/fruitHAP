@@ -40,11 +40,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Devices\KakuButton.cs" />
     <Compile Include="Devices\KakuSwitch.cs" />
-    <Compile Include="Devices\KakuDevice.cs" />
+    <Compile Include="Common\KakuDevice.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Devices\" />
+    <Folder Include="Common\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\FruitHAP.Core\FruitHAP.Core.csproj">

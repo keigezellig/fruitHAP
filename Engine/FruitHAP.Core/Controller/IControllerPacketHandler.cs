@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FruitHAP.Core.Sensor.Controller
+namespace FruitHAP.Core.Controller
 {
 	public interface IControllerPacketHandler
 	{

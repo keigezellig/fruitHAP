@@ -52,17 +52,14 @@
     <Folder Include="Service\" />
     <Folder Include="MQ\" />
     <Folder Include="MQ\Helpers\" />
-    <Folder Include="Sensor\SensorProtocols\" />
-    <Folder Include="Sensor\SensorProtocols\ACProtocol\" />
-    <Folder Include="Sensor\Controllers\" />
-    <Folder Include="Sensor\SensorProtocols\RawProtocol\" />
+    <Folder Include="Sensor\PacketData\" />
+    <Folder Include="Sensor\PacketData\AC\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action\IAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sensor\ISensor.cs" />
     <Compile Include="Sensor\ISensorInitializer.cs" />
-    <Compile Include="Sensor\ISensorProtocol.cs" />
     <Compile Include="Sensor\SensorTypes\IButton.cs" />
     <Compile Include="Sensor\SensorTypes\ICamera.cs" />
     <Compile Include="SensorRepository\ISensorLoader.cs" />
@@ -76,17 +73,13 @@
     <Compile Include="MQ\IMessageQueueProvider.cs" />
     <Compile Include="MQ\Helpers\TypeNameSerializer.cs" />
     <Compile Include="SensorRepository\SensorLoaderConfigProvider.cs" />
-    <Compile Include="Sensor\ISensorController.cs" />
-    <Compile Include="Sensor\ProtocolException.cs" />
     <Compile Include="Sensor\SensorTypes\IReadOnlySwitch.cs" />
     <Compile Include="Sensor\SensorTypes\ISwitch.cs" />
-    <Compile Include="Sensor\SensorProtocols\ACProtocol\ACProtocolData.cs" />
-    <Compile Include="Sensor\SensorProtocols\RawProtocol\IRawProtocol.cs" />
-    <Compile Include="Sensor\SensorProtocols\RawProtocol\RawProtocolData.cs" />
-    <Compile Include="Sensor\SensorProtocols\RawProtocol\RawProtocolEventArgs.cs" />
-    <Compile Include="Sensor\SensorProtocols\ACProtocol\ACProtocolEvent.cs" />
-    <Compile Include="Sensor\Controllers\ControllerEventData.cs" />
-    <Compile Include="Sensor\Controllers\IControllerPacketHandler.cs" />
+    <Compile Include="Sensor\PacketData\AC\ACPacketEvent.cs" />
+    <Compile Include="Controller\ControllerEventData.cs" />
+    <Compile Include="Controller\IController.cs" />
+    <Compile Include="Controller\IControllerPacketHandler.cs" />
+    <Compile Include="Sensor\PacketData\AC\ACPacket.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

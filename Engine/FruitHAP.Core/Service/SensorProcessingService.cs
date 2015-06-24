@@ -5,18 +5,21 @@ using FruitHAP.Core.Action;
 using FruitHAP.Core.Sensor;
 using System.Configuration;
 using System;
+using FruitHAP.Core.SensorRepository;
+using FruitHAP.Core.Controller;
+using FruitHAP.Core.MQ;
 
 namespace FruitHAP.Core.Service
 {
     public class SensorProcessingService : ISensorProcessingService
     {
         private readonly ISensorRepository sensorRepository;
-        private readonly IEnumerable<ISensorController> controllers;
+        private readonly IEnumerable<IController> controllers;
         private readonly IEnumerable<IAction> actions;
         private readonly ILogger log;
 		private readonly IMessageQueueProvider mqPublisher;
 
-		public SensorProcessingService(ISensorRepository sensorRepository, IEnumerable<ISensorController> controllers, IEnumerable<IAction> actions, IMessageQueueProvider mqPublisher, ILogger log)
+		public SensorProcessingService(ISensorRepository sensorRepository, IEnumerable<IController> controllers, IEnumerable<IAction> actions, IMessageQueueProvider mqPublisher, ILogger log)
         {
 			this.mqPublisher = mqPublisher;
             this.sensorRepository = sensorRepository;

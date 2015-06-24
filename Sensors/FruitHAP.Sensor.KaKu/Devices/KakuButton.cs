@@ -4,9 +4,10 @@ using Castle.Core.Logging;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Core.Sensor.SensorTypes;
 using FruitHAP.Common.Helpers;
-using FruitHAP.Sensor.Protocols.ACProtocol;
-using FruitHAP.Core.Sensor.Controllers;
 using Microsoft.Practices.Prism.PubSubEvents;
+using FruitHAP.Sensor.KaKu.Common;
+using FruitHAP.Sensor.PacketData.AC;
+using FruitHAP.Core.Controller;
 
 namespace FruitHAP.Sensor.KaKu.Devices
 {
@@ -27,7 +28,7 @@ namespace FruitHAP.Sensor.KaKu.Devices
 
 		public event EventHandler ButtonPressed;
 
-		protected override void ProcessReceivedACDataForThisDevice (ACProtocolData data)
+		protected override void ProcessReceivedACDataForThisDevice (ACPacket data)
 		{
 			if (data.Command == command) 
 			{
@@ -40,14 +41,14 @@ namespace FruitHAP.Sensor.KaKu.Devices
 		public void PressButton ()
 		{
 			logger.Debug ("Sending PressButton to module..");
-			var data = new ACProtocolData () {
+			var data = new ACPacket () {
 				DeviceId = deviceId,
 				UnitCode = unitCode,
 				Command = command,
 				Level = 0
 			};
 
-			aggregator.GetEvent<ACProtocolEvent> ().Publish (new ControllerEventData<ACProtocolData> () { Payload = data });
+			aggregator.GetEvent<ACPacketEvent> ().Publish (new ControllerEventData<ACPacket> () { Payload = data });
 
 		}
 

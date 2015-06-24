@@ -41,11 +41,10 @@
     <Compile Include="Configuration\RfxControllerConfigProvider.cs" />
     <Compile Include="Configuration\RfxControllerConfiguration.cs" />
     <Compile Include="RfxController.cs" />
-    <Compile Include="PacketHandlers\ACProtocol.cs" />
-    <Compile Include="RFXControllerPacketHandlerFactory.cs" />
-    <Compile Include="RfxPacketTypes.cs" />
     <Compile Include="PacketHandlers\RfxACPacketHandler.cs" />
-    <Compile Include="EnabledRfxPacketTypesEvent.cs" />
+    <Compile Include="RfxControllerPacketHandlerFactory.cs" />
+    <Compile Include="PacketHandlers\RfxACProtocol.cs" />
+    <Compile Include="RfxPacketInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

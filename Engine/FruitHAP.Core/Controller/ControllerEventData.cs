@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FruitHAP.Core.Sensor.Controllers
+namespace FruitHAP.Core.Controller
 {
 	public class ControllerEventData<TPayload>
 	{

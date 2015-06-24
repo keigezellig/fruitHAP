@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using FruitHAP.Core.Sensor;
 
-namespace FruitHAP.Core.Sensor
+namespace FruitHAP.Core.SensorRepository
 {
     public interface ISensorRepository
     {

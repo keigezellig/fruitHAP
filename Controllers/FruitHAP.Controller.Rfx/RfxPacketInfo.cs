@@ -1,14 +1,7 @@
-﻿using System;
+using System;
 
 namespace FruitHAP.Controller.Rfx
 {
-	public enum RfxPacketType
-	{
-		Unknown,
-		AC
-
-	}
-
 	public class RfxPacketInfo
 	{
 		public RfxPacketType PacketType { get; set; }
@@ -17,5 +10,11 @@ namespace FruitHAP.Controller.Rfx
 		public byte SubPacketIndicator {get; set;}
 	}
 
-}
+	public enum RfxPacketType
+	{
+		Unknown,
+		AC
+	}
 
+
+}

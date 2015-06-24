@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace FruitHAP.Core.Sensor
+namespace FruitHAP.Core.Controller
 {
-    public interface ISensorController : IDisposable
+    public interface IController : IDisposable
     {
         string Name { get; }
         void Start();
