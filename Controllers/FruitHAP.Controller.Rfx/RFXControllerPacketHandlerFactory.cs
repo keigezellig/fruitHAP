@@ -4,6 +4,8 @@ using FruitHAP.Core.Sensor.Controller;
 using Castle.Core.Logging;
 using Microsoft.Practices.Prism.PubSubEvents;
 using System.Collections.Generic;
+using FruitHAP.Controller.Rfx.Configuration;
+using FruitHAP.Common.Configuration;
 
 namespace FruitHAP.Controller.Rfx
 {
@@ -13,17 +15,15 @@ namespace FruitHAP.Controller.Rfx
 		private IEventAggregator aggregator;
 		private List<RfxPacketInfo> enabledPacketTypes;
 
-
 		public RFXControllerPacketHandlerFactory (ILogger logger, IEventAggregator aggregator)
 		{
 			this.aggregator = aggregator;
 			this.logger = logger;
-
 		}
 		
 		public IControllerPacketHandler CreateHandler(byte[] data)
 		{
-			var packetType = GetPacketType (data, enabledPacketTypes);
+			var packetType = GetPacketType (data);
 
 			switch (packetType) 
 			{
@@ -34,9 +34,9 @@ namespace FruitHAP.Controller.Rfx
 			}
 		}
 
-		public void Initialize()
+		public void Initialize(List<RfxPacketInfo> enabledPacketTypes)
 		{
-			aggregator.GetEvent<EnabledRfxPacketTypesEvent> ().Subscribe (list => this.enabledPacketTypes = list);
+			this.enabledPacketTypes = enabledPacketTypes;
 		}
 
 		private RfxPacketType GetPacketType(byte[] data)
@@ -49,12 +49,12 @@ namespace FruitHAP.Controller.Rfx
 				}
 			}
 
-			return RfxPacketType.Off;
+			return RfxPacketType.Unknown;
 		}
 
 		private bool IsCorrectLength (byte[] data, RfxPacketInfo type)
 		{
-			return (data [0] == type.LengthByte) && (data.Count == type.LengthByte + 1);
+			return (data [0] == type.LengthByte) && (data.Count() == type.LengthByte + 1);
 		}	
 		private bool IsCorrectPacketIndicator (byte[] data, RfxPacketInfo type)
 		{

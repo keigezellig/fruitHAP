@@ -29,7 +29,7 @@ namespace FruitHAP.Controller.Rfx
 		private const string CONFIG_FILENAME = "rfx.json";
 		private SubscriptionToken acEventSubscriptionToken;
 		private RFXControllerPacketHandlerFactory handlerFactory;
-		private List<RfxPacketInfo> supportedPacketTypes;
+
 
 		private IEventAggregator aggregator;
 
@@ -40,12 +40,46 @@ namespace FruitHAP.Controller.Rfx
             this.physicalInterfaceFactory = physicalInterfaceFactory;
             this.logger = logger;
 			this.handlerFactory = new RFXControllerPacketHandlerFactory (logger, aggregator);
-			this.supportedPacketTypes = LoadSupportedPacketTypes ();
+
         }
 
-		private List<RfxPacketInfo> LoadSupportedPacketTypes ()
+		private List<RfxPacketInfo> LoadPacketTypes (RfxControllerConfiguration configuration)
 		{
 			
+			List<RfxPacketInfo> packetList = new List<RfxPacketInfo> ();
+			string logLineTemplate = "{0}..............................................{1}";
+
+			foreach (var packetType in configuration.PacketTypes) {
+				foreach (var subPacketType in packetType.SubTypes) {
+					RfxPacketType rfxPacketType;
+
+					bool isSupported = RfxPacketType.TryParse (subPacketType.Name, out rfxPacketType);
+					bool isEnabled = subPacketType.IsEnabled;
+
+					if (!isSupported || rfxPacketType == RfxPacketType.Unknown) {
+						logger.WarnFormat (logLineTemplate, subPacketType.Name, "NOT SUPPORTED");
+						continue;
+					}
+
+					if (!isEnabled) {
+						logger.InfoFormat (logLineTemplate, subPacketType.Name, "DISABLED");
+						continue;
+					}
+
+					logger.InfoFormat (logLineTemplate, subPacketType.Name, "ENABLED");
+
+					packetList.Add (new RfxPacketInfo () {
+						PacketType = rfxPacketType,
+						PacketIndicator = packetType.Id,
+						SubPacketIndicator = subPacketType.Id,
+						LengthByte = packetType.Length
+					});
+
+				}
+			}
+
+
+			return packetList;
 		}
 
 		void HandleIncomingACMessage (ControllerEventData<ACProtocolData> obj)
@@ -94,9 +128,10 @@ namespace FruitHAP.Controller.Rfx
 				try {
 					acEventSubscriptionToken = aggregator.GetEvent<ACProtocolEvent> ().Subscribe (HandleIncomingACMessage, ThreadOption.PublisherThread, true, f => f.Direction == Direction.ToController);
 					configuration = configProvider.LoadConfigFromFile (Path.Combine (Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location), CONFIG_FILENAME));
+					var packetTypes = LoadPacketTypes(configuration);
+					handlerFactory.Initialize(packetTypes);
 					physicalInterface = physicalInterfaceFactory.GetPhysicalInterface (configuration.ConnectionString);
 					physicalInterface.DataReceived += PhysicalInterfaceDataReceived;
-
 					physicalInterface.Open ();
 					physicalInterface.StartReading ();
 					SendResetCommand();
