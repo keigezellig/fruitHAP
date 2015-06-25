@@ -16,6 +16,8 @@ namespace FruitHAP.Controller.Rfx
 		private IEventAggregator aggregator;
 		private List<RfxPacketInfo> enabledPacketTypes;
 
+
+
 		public RfxControllerPacketHandlerFactory (ILogger logger, IEventAggregator aggregator)
 		{
 			this.aggregator = aggregator;
@@ -24,6 +26,8 @@ namespace FruitHAP.Controller.Rfx
 		
 		public IControllerPacketHandler CreateHandler(byte[] data)
 		{
+
+
 			var packetType = GetPacketType (data);
 
 			switch (packetType) 
@@ -42,6 +46,7 @@ namespace FruitHAP.Controller.Rfx
 
 		private RfxPacketType GetPacketType(byte[] data)
 		{
+
 			foreach (var type in enabledPacketTypes) 
 			{
 				if (IsCorrectLength (data, type) && IsCorrectPacketIndicator (data, type) && IsCorrectSubPacketIndicator (data, type)) 

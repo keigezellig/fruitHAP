@@ -77,8 +77,21 @@ namespace FruitHAP.Controller.Rfx
 				}
 			}
 
+			RfxPacketInfo interfacePacket = GetInterfacePacket ();
+			packetList.Add (interfacePacket);
 
 			return packetList;
+		}
+
+
+		private RfxPacketInfo GetInterfacePacket ()
+		{
+			return new RfxPacketInfo () {
+				LengthByte = 0x0D,
+				PacketType = RfxPacketType.Interface,
+				PacketIndicator = 0x01,
+				SubPacketIndicator = 0x00
+			};
 		}
 
 		void HandleIncomingACMessage (ControllerEventData<ACPacket> obj)
@@ -107,8 +120,12 @@ namespace FruitHAP.Controller.Rfx
 			logger.DebugFormat("Received controller data: {0}", e.Data.BytesAsString());
 			try
 			{
-				IControllerPacketHandler ControllerDataReceivedHandler = handlerFactory.CreateHandler(e.Data);
-				ControllerDataReceivedHandler.Handle(e.Data);
+				IControllerPacketHandler controllerPacketdHandler = handlerFactory.CreateHandler(e.Data);
+				if (controllerPacketdHandler == null)
+				{
+					logger.Warn("Ignoring received data. Controller can't handle this.");
+				}
+				controllerPacketdHandler.Handle(e.Data);
 
 			} 
 			catch (Exception ex) 
@@ -160,23 +177,70 @@ namespace FruitHAP.Controller.Rfx
 		
 
 		public void SendData (byte[] data)
-		{
-			List<byte> dataToBeSend = new List<byte> (data);
-			dataToBeSend.Insert (3, SequenceNumber);
-			var array = dataToBeSend.ToArray ();
-			logger.DebugFormat ("Sending bytes {0} to controller", array.BytesAsString ());
-			physicalInterface.Write(array);
+		{			
+			data[3] = SequenceNumber;
+			logger.DebugFormat ("Sending bytes {0} to controller", data.BytesAsString ());
+			physicalInterface.Write(data);
 
 			SequenceNumber++;
 		}
 
+		//0D 00 00 00 00 00 00 00 00 00 00 00 00 00 
 		public void SendResetCommand()
 		{
 			logger.Debug ("Sending reset command to controller");
-			var dataToBeSend = new byte[] {0x00,0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+			var dataToBeSend = new byte[] {0x0d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 			physicalInterface.Write(dataToBeSend);
+		}
+
+		//0D 00 00 SEQ 03 53 00 SB1 SB2 SB3 00 00 00 00
+		private void SendModeCommand(ProtocolReceiverSensitivityFlags protocolReceiverSensitivity)
+		{
+			byte[] sensitivityBytes = GetSensitivityBytes (protocolReceiverSensitivity);
+			List<byte> dataToBeSend = new List<byte> ();
+			dataToBeSend.AddRange(new byte[] {0x0D,0x00,0x00,0x04,0x03,0x53,0x00});
+			dataToBeSend.AddRange (sensitivityBytes);
+			dataToBeSend.AddRange (new byte[] { 0x00, 0x00, 0x00, 0x00 });
+			SendData (dataToBeSend.ToArray);
+		}
+
+
+		byte[] GetSensitivityBytes (ProtocolReceiverSensitivityFlags protocolReceiverSensitivityFlags)
+		{
+			uint intvalue = (uint) protocolReceiverSensitivityFlags;
+			return BitConverter.GetBytes(intvalue).Reverse().Skip(1).ToArray();
 		}
     }
 
    
+	[Flags]
+	public enum ProtocolReceiverSensitivityFlags
+	{
+		Off = 0x00,
+		X10 = 0x01,
+		ARC = 0x02,
+		AC = 0x04,
+		HomeEasyEU = 0x08,
+		MeianTech = 0x10,
+		OregonScientific = 0x20,
+		AtiRemote = 0x40,
+		Visonic = 0x80,
+		Mertik = 0x100,
+		ADLightwaveRF = 0x200,
+		HidekiUPM = 0x400,
+		LaCrosse = 0x800,
+		FS20 = 0x1000,
+		ProGuard = 0x2000,
+		BlindT0 = 0x4000,
+		BlindT1T2T3T4 = 0x8000,
+		AEBlyss = 0x10000,
+		Rubicson = 0x20000,
+		FineOffsetViking = 0x40000,
+		Lighting4 = 0x80000,
+		RSL2Revolt = 0x100000,
+		ByronSX = 0x200000,
+		RFU = 0x400000,
+		Undecoded= 0x800000		
+	}
+
 }

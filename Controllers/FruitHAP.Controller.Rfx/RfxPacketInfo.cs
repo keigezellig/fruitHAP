@@ -13,6 +13,7 @@ namespace FruitHAP.Controller.Rfx
 	public enum RfxPacketType
 	{
 		Unknown,
+		Interface,
 		AC
 	}
 

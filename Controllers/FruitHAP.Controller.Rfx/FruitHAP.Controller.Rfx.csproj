@@ -45,6 +45,10 @@
     <Compile Include="RfxControllerPacketHandlerFactory.cs" />
     <Compile Include="PacketHandlers\RfxACProtocol.cs" />
     <Compile Include="RfxPacketInfo.cs" />
+    <Compile Include="PacketHandlers\RfxInterfacePacketHandler.cs" />
+    <Compile Include="InternalPacketData\StatusPacket.cs" />
+    <Compile Include="InternalPacketData\SetModeResponsePacketEvent.cs" />
+    <Compile Include="InternalPacketData\StatusResponsePacketEvent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -62,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PacketHandlers\" />
+    <Folder Include="InternalPacketData\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="rfx.json">
