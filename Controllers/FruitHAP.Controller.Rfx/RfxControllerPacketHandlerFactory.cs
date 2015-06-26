@@ -26,14 +26,16 @@ namespace FruitHAP.Controller.Rfx
 		
 		public IControllerPacketHandler CreateHandler(byte[] data)
 		{
-
-
 			var packetType = GetPacketType (data);
 
 			switch (packetType) 
 			{
 			case RfxPacketType.AC:
+				logger.Debug ("AC packet received");
 				return new RfxACPacketHandler (logger, aggregator);
+			case RfxPacketType.Interface:
+				logger.Debug ("Interface packet received");
+				return new RfxInterfacePacketHandler (logger, aggregator);
 			default:
 				return null;
 			}

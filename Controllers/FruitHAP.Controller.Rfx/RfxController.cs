@@ -69,7 +69,10 @@ namespace FruitHAP.Controller.Rfx
 				{
 					logger.Warn("Ignoring received data. Controller can't handle this.");
 				}
-				controllerPacketdHandler.Handle(e.Data);
+				else
+				{
+					controllerPacketdHandler.Handle(e.Data);
+				}
 
 			} 
 			catch (Exception ex) 
