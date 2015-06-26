@@ -26,6 +26,7 @@ namespace FruitHAP.Controller.Rfx.Configuration
 		public string Name { get; set; }
 		public byte Id {get; set;}
 		public bool IsEnabled{ get; set; }
+		public string SensitivityFlag {get; set;}
 
 	}
 }

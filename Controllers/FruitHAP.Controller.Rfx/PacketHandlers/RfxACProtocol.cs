@@ -31,10 +31,7 @@ namespace Controller.Rfx.PacketHandlers
 	{
 		private ILogger logger;
 		private const byte Lighting2ProtocolIndicator = 0x11;
-		private const byte ACPacketLength = 0x0B;
 		private const byte ACPacketIndicator = 0x00;
-		private const byte ClosingByte = 0x00;
-
 
 		public RfxACProtocol(ILogger logger)
 		{
@@ -44,15 +41,14 @@ namespace Controller.Rfx.PacketHandlers
 		public byte[] Encode(ACPacket protocolData)
 		{
 			List<byte> result = new List<byte> ();
-			result.Insert (0, ACPacketLength);
-			result.Insert (1, Lighting2ProtocolIndicator);
-			result.Insert (2, ACPacketIndicator);
-			result.Insert (3, byte.MaxValue);
-			result.InsertRange (4, BitConverter.GetBytes (protocolData.DeviceId).Reverse());
-			result.Insert (8, protocolData.UnitCode);
-			result.Insert (9, (byte)protocolData.Command);
-			result.Insert (10, byte.MaxValue);
-			result.Insert (11, (byte)(protocolData.Level << 4));
+			result.Insert (0, Lighting2ProtocolIndicator);
+			result.Insert (1, ACPacketIndicator);
+			result.Insert (2, byte.MaxValue);
+			result.InsertRange (3, BitConverter.GetBytes (protocolData.DeviceId).Reverse());
+			result.Insert (7, protocolData.UnitCode);
+			result.Insert (8, (byte)protocolData.Command);
+			result.Insert (9, byte.MaxValue);
+			result.Insert (10, (byte)(protocolData.Level << 4));
 			return result.ToArray ();
 		}
 	}

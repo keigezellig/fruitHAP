@@ -13,6 +13,7 @@ using FruitHAP.Core.Sensor;
 using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Core.Controller;
 using FruitHAP.Sensor.PacketData.AC;
+using FruitHAP.Controller.Rfx.InternalPacketData;
 
 namespace FruitHAP.Controller.Rfx
 {
@@ -27,8 +28,12 @@ namespace FruitHAP.Controller.Rfx
 		private static byte SequenceNumber = 1;
 		private const string CONFIG_FILENAME = "rfx.json";
 		private SubscriptionToken acEventSubscriptionToken;
+		private SubscriptionToken setModeEventSubscriptionToken;
 		private RfxControllerPacketHandlerFactory handlerFactory;
 
+		List<RfxPacketInfo> packetTypes;
+
+		byte usedSequenceNumber;
 
 		private IEventAggregator aggregator;
 
@@ -55,6 +60,8 @@ namespace FruitHAP.Controller.Rfx
 					bool isSupported = RfxPacketType.TryParse (subPacketType.Name, out rfxPacketType);
 					bool isEnabled = subPacketType.IsEnabled;
 
+
+
 					if (!isSupported || rfxPacketType == RfxPacketType.Unknown) {
 						logger.WarnFormat (logLineTemplate, subPacketType.Name, "NOT SUPPORTED");
 						continue;
@@ -71,7 +78,8 @@ namespace FruitHAP.Controller.Rfx
 						PacketType = rfxPacketType,
 						PacketIndicator = packetType.Id,
 						SubPacketIndicator = subPacketType.Id,
-						LengthByte = packetType.Length
+						LengthByte = packetType.Length,
+						ProtocolReceiverSensitivityFlag = (ProtocolReceiverSensitivityFlags)Enum.Parse(typeof(ProtocolReceiverSensitivityFlags),subPacketType.SensitivityFlag)
 					});
 
 				}
@@ -83,6 +91,20 @@ namespace FruitHAP.Controller.Rfx
 			return packetList;
 		}
 
+		private ProtocolReceiverSensitivityFlags GetSensitivityFlags (List<RfxPacketInfo> packetTypes )
+		{
+			ProtocolReceiverSensitivityFlags result = ProtocolReceiverSensitivityFlags.Off;
+
+			foreach (var packetType in packetTypes) 
+			{
+				if (packetType.PacketType != RfxPacketType.Interface) 
+				{
+					result |= packetType.ProtocolReceiverSensitivityFlag;
+				}
+			}
+
+			return result;
+		}
 
 		private RfxPacketInfo GetInterfacePacket ()
 		{
@@ -99,6 +121,21 @@ namespace FruitHAP.Controller.Rfx
 			RfxACProtocol protocol = new RfxACProtocol (logger);
 			byte[] data = protocol.Encode (obj.Payload);
 			SendData (data);
+		}
+
+		void HandleIncomingSetModeResponse (ControllerEventData<StatusPacket> obj)
+		{
+			var responsePacket = obj.Payload;
+			if (responsePacket.SequenceNumber == this.usedSequenceNumber) 
+			{
+				logger.Debug ("Received mode command response from controller");
+				foreach (var packetType in this.packetTypes) {
+					if (!responsePacket.ReceiverSensitivity.HasFlag (packetType.ProtocolReceiverSensitivityFlag)) {
+						logger.WarnFormat ("Controller is not enabled to receive packets of type {0}. These packets will be ignored", packetType.PacketType);
+					}
+				}
+			}
+
 		}
 
         public string Name
@@ -143,14 +180,17 @@ namespace FruitHAP.Controller.Rfx
 
 				try {
 					acEventSubscriptionToken = aggregator.GetEvent<ACPacketEvent> ().Subscribe (HandleIncomingACMessage, ThreadOption.PublisherThread, true, f => f.Direction == Direction.ToController);
+					setModeEventSubscriptionToken = aggregator.GetEvent<SetModeResponsePacketEvent> ().Subscribe (HandleIncomingSetModeResponse, ThreadOption.PublisherThread, true, f => f.Direction == Direction.FromController);
 					configuration = configProvider.LoadConfigFromFile (Path.Combine (Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location), CONFIG_FILENAME));
-					var packetTypes = LoadPacketTypes(configuration);
+					packetTypes = LoadPacketTypes(configuration);
 					handlerFactory.Initialize(packetTypes);
 					physicalInterface = physicalInterfaceFactory.GetPhysicalInterface (configuration.ConnectionString);
 					physicalInterface.DataReceived += PhysicalInterfaceDataReceived;
 					physicalInterface.Open ();
 					physicalInterface.StartReading ();
 					SendResetCommand();
+					ProtocolReceiverSensitivityFlags sensitivityFlags = GetSensitivityFlags(packetTypes);
+					SendModeCommand(sensitivityFlags);
 					isStarted = true;
 				} catch (Exception ex) {
 					isStarted = false;
@@ -171,6 +211,7 @@ namespace FruitHAP.Controller.Rfx
         {
             logger.DebugFormat("Dispose module {0}", this);
 			aggregator.GetEvent<ACPacketEvent> ().Unsubscribe (acEventSubscriptionToken);
+			aggregator.GetEvent<SetModeResponsePacketEvent> ().Unsubscribe (setModeEventSubscriptionToken);
             physicalInterface.Dispose();
         }
 
@@ -178,10 +219,12 @@ namespace FruitHAP.Controller.Rfx
 
 		public void SendData (byte[] data)
 		{			
-			data[3] = SequenceNumber;
+			List<byte> bytesToBeSend = new List<byte> (data);
+			bytesToBeSend.Insert (0, (byte)data.Count ());
+			bytesToBeSend[3] = SequenceNumber;
 			logger.DebugFormat ("Sending bytes {0} to controller", data.BytesAsString ());
-			physicalInterface.Write(data);
-
+			physicalInterface.Write(bytesToBeSend.ToArray());
+			usedSequenceNumber = SequenceNumber;
 			SequenceNumber++;
 		}
 
@@ -189,19 +232,20 @@ namespace FruitHAP.Controller.Rfx
 		public void SendResetCommand()
 		{
 			logger.Debug ("Sending reset command to controller");
-			var dataToBeSend = new byte[] {0x0d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+			var dataToBeSend = new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 			physicalInterface.Write(dataToBeSend);
 		}
 
 		//0D 00 00 SEQ 03 53 00 SB1 SB2 SB3 00 00 00 00
 		private void SendModeCommand(ProtocolReceiverSensitivityFlags protocolReceiverSensitivity)
 		{
+			logger.Debug ("Sending mode command to controller");
 			byte[] sensitivityBytes = GetSensitivityBytes (protocolReceiverSensitivity);
 			List<byte> dataToBeSend = new List<byte> ();
-			dataToBeSend.AddRange(new byte[] {0x0D,0x00,0x00,0x04,0x03,0x53,0x00});
+			dataToBeSend.AddRange(new byte[] {0x00,0x00,0xFF,0x03,0x53,0x00});
 			dataToBeSend.AddRange (sensitivityBytes);
 			dataToBeSend.AddRange (new byte[] { 0x00, 0x00, 0x00, 0x00 });
-			SendData (dataToBeSend.ToArray);
+			SendData (dataToBeSend.ToArray());
 		}
 
 

@@ -8,6 +8,7 @@ namespace FruitHAP.Controller.Rfx
 		public byte LengthByte {get; set;}
 		public byte PacketIndicator { get; set; }
 		public byte SubPacketIndicator {get; set;}
+		public ProtocolReceiverSensitivityFlags ProtocolReceiverSensitivityFlag { get; set; }
 	}
 
 	public enum RfxPacketType

@@ -16,7 +16,7 @@ namespace FruitHAP.Controller.Rfx.PacketHandlers
 		private readonly ILogger logger;
 		private IEventAggregator aggregator;
 		private const byte STATUSCOMMAND = 0x02;
-		private const byte SETMODECOMMAND = 0x02;
+		private const byte SETMODECOMMAND = 0x03;
 		private const byte COMMANDBYTE = 4;
 
 		public RfxInterfacePacketHandler (ILogger logger, IEventAggregator aggregator)
@@ -34,17 +34,39 @@ namespace FruitHAP.Controller.Rfx.PacketHandlers
 		public void Handle (byte[] data)
 		{
 			StatusPacket decodedPacket = new StatusPacket ();
-			decodedPacket.SequenceNumber = (DeviceType)data [3];
+			decodedPacket.SequenceNumber = data [3];
 			decodedPacket.DeviceType = (DeviceType)data [5];
 			decodedPacket.FirmwareVersion = data [6];
 			decodedPacket.HardwareVersion = string.Format ("{0}.{1}", data [10], data [11]);
 			decodedPacket.ReceiverSensitivity = DecodeReceiverSensitivity (data);
+
+			if (data [COMMANDBYTE] == STATUSCOMMAND) 
+			{
+				aggregator.GetEvent<StatusResponsePacketEvent> ().Publish (new ControllerEventData<StatusPacket> () {
+					Direction = Direction.FromController,
+					Payload = decodedPacket
+				});
+			}
+
+			if (data [COMMANDBYTE] == SETMODECOMMAND) 
+			{
+				aggregator.GetEvent<SetModeResponsePacketEvent> ().Publish (new ControllerEventData<StatusPacket> () {
+					Direction = Direction.FromController,
+					Payload = decodedPacket
+				});
+
+			}
+				
 		}
 		#endregion
 
 		private ProtocolReceiverSensitivityFlags DecodeReceiverSensitivity (byte[] data)
 		{
-			throw new NotImplementedException ();
+			var dataBytes = data.ToList();
+			dataBytes.Insert(0, 0);
+			var intValue = BitConverter.ToUInt32(dataBytes.AsEnumerable().Reverse().ToArray(), 0);
+			ProtocolReceiverSensitivityFlags result = (ProtocolReceiverSensitivityFlags) intValue;
+			return result;
 		}
 	}
 
