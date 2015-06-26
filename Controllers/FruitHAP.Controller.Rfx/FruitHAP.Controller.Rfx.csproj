@@ -49,6 +49,7 @@
     <Compile Include="InternalPacketData\StatusPacket.cs" />
     <Compile Include="InternalPacketData\SetModeResponsePacketEvent.cs" />
     <Compile Include="InternalPacketData\StatusResponsePacketEvent.cs" />
+    <Compile Include="RfxDevice.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
