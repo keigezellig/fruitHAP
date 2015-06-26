@@ -12,10 +12,10 @@ namespace FruitHAP.Startup
     class Program
     {
         static void Main(string[] args)
-        {
-            var container = new WindsorContainer().Install(FromAssembly.This());
-            var serviceHostConfigurator = new ServiceHostConfigurator(container);
-            HostFactory.Run(serviceHostConfigurator.Configure);
-        }
+		{
+			var container = new WindsorContainer ().Install (FromAssembly.This ());
+			var serviceHostConfigurator = new ServiceHostConfigurator (container);
+			HostFactory.Run (serviceHostConfigurator.Configure);
+		}
     }
 }

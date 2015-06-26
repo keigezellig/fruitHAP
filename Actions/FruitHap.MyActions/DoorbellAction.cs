@@ -6,6 +6,8 @@ using FruitHAP.Core;
 using System.Threading.Tasks;
 using FruitHap.MyActions.Messages;
 using FruitHAP.Core.Sensor.SensorTypes;
+using FruitHAP.Core.SensorRepository;
+using FruitHAP.Core.MQ;
 
 namespace FruitHAP.MyActions
 {

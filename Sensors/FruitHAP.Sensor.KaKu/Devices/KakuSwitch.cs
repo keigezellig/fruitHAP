@@ -2,9 +2,12 @@
 using FruitHAP.Core;
 using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
-using FruitHAP.Sensor.KaKu.ACProtocol;
 using System.Collections.Generic;
 using FruitHAP.Common.Helpers;
+using Microsoft.Practices.Prism.PubSubEvents;
+using FruitHAP.Sensor.KaKu.Common;
+using FruitHAP.Core.Sensor.SensorTypes;
+using FruitHAP.Sensor.PacketData.AC;
 
 namespace FruitHAP.Sensor.KaKu
 {
@@ -15,7 +18,7 @@ namespace FruitHAP.Sensor.KaKu
 		private SwitchState state;
 
 
-		public KakuSwitch(IRfxController controller, ILogger logger, IACProtocol protocol) : base(controller,logger,protocol)
+		public KakuSwitch(IEventAggregator aggregator, ILogger logger) : base(aggregator,logger)
 		{
 		}
 
@@ -45,12 +48,12 @@ namespace FruitHAP.Sensor.KaKu
 
 		public override object Clone ()
 		{
-			return new KakuSwitch(this.controller, this.logger, this.protocol);
+			return new KakuSwitch(this.aggregator, this.logger);
 		}
 
 		#endregion
 
-		protected override void ProcessReceivedACDataForThisDevice (ACProtocolData data)
+		protected override void ProcessReceivedACDataForThisDevice (ACPacket data)
 		{
 			SwitchState newState = DetermineNewState(data);
 			if (newState != state)
@@ -62,7 +65,7 @@ namespace FruitHAP.Sensor.KaKu
 
 		}
 			
-		private SwitchState DetermineNewState (ACProtocolData decodedData)
+		private SwitchState DetermineNewState (ACPacket decodedData)
 		{
 			if (decodedData.Command == onCommand) 
 			{

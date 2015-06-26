@@ -10,7 +10,7 @@ using FruitHAP.Core.Sensor.SensorTypes;
 using FruitHAP.Core.Sensor.SensorTypes;
 using System.Net.Http;
 
-namespace FruitHAP.SensorModule.IpCamera.Devices
+namespace FruitHAP.Sensor.IpCamera.Devices
 {
     public class IpCamera : ICamera, ISensorInitializer, ICloneable
     {

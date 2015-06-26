@@ -19,6 +19,7 @@ using Microsoft.Practices.Prism.PubSubEvents;
 using NLog;
 using FruitHAP.Core;
 using FruitHAP.Core.MQ;
+using FruitHAP.Core.Controller;
 
 namespace FruitHAP.Startup
 {
@@ -157,7 +158,7 @@ namespace FruitHAP.Startup
 				.LifestyleSingleton());
 
 			container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(controllerDirectory))
-				.BasedOn<ISensorController>()
+				.BasedOn<IController>()
 				.WithService.AllInterfaces()
 				.LifestyleSingleton());
 
@@ -170,11 +171,6 @@ namespace FruitHAP.Startup
 			var logger = container.Resolve<ILogger>();
 
 			logger.InfoFormat("Loading sensors from directory {0}", sensorDirectory);
-			container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(sensorDirectory))
-				.BasedOn(typeof (ISensorProtocol<>))
-				.WithService.AllInterfaces()
-				.LifestyleSingleton());
-
 
 			container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(sensorDirectory))
 				.BasedOn<ISensor>()

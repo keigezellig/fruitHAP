@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace FruitHAP.Core
+namespace FruitHAP.Core.MQ
 {
 	public interface IMessageQueueProvider : IDisposable
 	{

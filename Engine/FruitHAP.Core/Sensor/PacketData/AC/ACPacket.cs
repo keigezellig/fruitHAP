@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace FruitHAP.Sensor.KaKu.ACProtocol
+namespace FruitHAP.Sensor.PacketData.AC
 {
-	public class ACProtocolData
+	public class ACPacket
 	{
 		public uint DeviceId { get; set; }
 		public byte UnitCode { get; set; }

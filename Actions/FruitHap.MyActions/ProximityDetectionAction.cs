@@ -3,6 +3,10 @@ using FruitHAP.Core.Action;
 using FruitHAP.Core;
 using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
+using FruitHAP.Core.SensorRepository;
+using FruitHAP.Core.MQ;
+using FruitHAP.Core.Sensor.SensorTypes;
+using FruitHap.MyActions.Messages;
 
 namespace FruitHap.MyActions
 {

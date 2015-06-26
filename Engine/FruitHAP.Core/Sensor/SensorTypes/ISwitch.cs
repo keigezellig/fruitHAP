@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FruitHAP.Core
+namespace FruitHAP.Core.Sensor.SensorTypes
 {
 	public interface ISwitch : IReadOnlySwitch
 	{

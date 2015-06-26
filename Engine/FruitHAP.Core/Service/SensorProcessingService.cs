@@ -5,22 +5,25 @@ using FruitHAP.Core.Action;
 using FruitHAP.Core.Sensor;
 using System.Configuration;
 using System;
+using FruitHAP.Core.SensorRepository;
+using FruitHAP.Core.Controller;
+using FruitHAP.Core.MQ;
 
 namespace FruitHAP.Core.Service
 {
     public class SensorProcessingService : ISensorProcessingService
     {
         private readonly ISensorRepository sensorRepository;
-        private readonly IEnumerable<ISensorController> modules;
+        private readonly IEnumerable<IController> controllers;
         private readonly IEnumerable<IAction> actions;
         private readonly ILogger log;
 		private readonly IMessageQueueProvider mqPublisher;
 
-		public SensorProcessingService(ISensorRepository sensorRepository, IEnumerable<ISensorController> modules, IEnumerable<IAction> actions, IMessageQueueProvider mqPublisher, ILogger log)
+		public SensorProcessingService(ISensorRepository sensorRepository, IEnumerable<IController> controllers, IEnumerable<IAction> actions, IMessageQueueProvider mqPublisher, ILogger log)
         {
 			this.mqPublisher = mqPublisher;
             this.sensorRepository = sensorRepository;
-            this.modules = modules;
+			this.controllers = controllers;
             this.actions = actions;
             this.log = log;
 			this.mqPublisher = mqPublisher;
@@ -34,8 +37,24 @@ namespace FruitHAP.Core.Service
 			string mqRpcExchangeName = ConfigurationManager.AppSettings ["mqRpcExchangeName"] ?? "FruitHAP_RpcExchange";
 			string mqRpcQueueName = ConfigurationManager.AppSettings ["mqRpcQueueName"] ?? "FruitHAP_RpcQueue";
 				            
-            sensorRepository.Initialize();
-           
+			try
+			{
+			if (!controllers.Any())
+			{
+				log.Error("No controllers loaded. Nothing to do");
+				return;
+			}
+
+			log.Info ("Initialize controllers");
+			foreach (var controller in controllers)
+			{
+				controller.Start ();
+		
+			}
+
+			sensorRepository.Initialize();
+
+		   
 			try
 			{
 				log.Info("Connecting to message queue");
@@ -60,16 +79,20 @@ namespace FruitHAP.Core.Service
                 sensorAction.Initialize();
             }
 
-
+			}
+			catch (Exception ex) 
+			{
+				log.ErrorFormat ("Error starting service. Message: {0}", ex);
+				throw;
+			}
 
 
         }
 
         public void Stop()
         {
-
 			log.Info("Stopping modules..");
-			foreach (var module in modules) {
+			foreach (var module in controllers) {
 				if (module.IsStarted) {
 					module.Stop ();
 				}

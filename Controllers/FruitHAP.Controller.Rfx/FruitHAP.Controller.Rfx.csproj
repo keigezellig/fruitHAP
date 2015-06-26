@@ -32,12 +32,24 @@
     <Reference Include="Castle.Core">
       <HintPath>..\..\Engine\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.Prism.PubSubEvents">
+      <HintPath>..\..\Engine\packages\Prism.PubSubEvents.1.1.2\lib\portable-sl5+windowsphone8+windows8+net40+wpa81\Microsoft.Practices.Prism.PubSubEvents.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\RfxControllerConfigProvider.cs" />
     <Compile Include="Configuration\RfxControllerConfiguration.cs" />
     <Compile Include="RfxController.cs" />
+    <Compile Include="PacketHandlers\RfxACPacketHandler.cs" />
+    <Compile Include="RfxControllerPacketHandlerFactory.cs" />
+    <Compile Include="PacketHandlers\RfxACProtocol.cs" />
+    <Compile Include="RfxPacketInfo.cs" />
+    <Compile Include="PacketHandlers\RfxInterfacePacketHandler.cs" />
+    <Compile Include="InternalPacketData\StatusPacket.cs" />
+    <Compile Include="InternalPacketData\SetModeResponsePacketEvent.cs" />
+    <Compile Include="InternalPacketData\StatusResponsePacketEvent.cs" />
+    <Compile Include="RfxDevice.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -54,8 +66,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="rfx.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Folder Include="PacketHandlers\" />
+    <Folder Include="InternalPacketData\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="rfx.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 </Project>

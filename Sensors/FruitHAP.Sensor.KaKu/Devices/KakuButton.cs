@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using Castle.Core.Logging;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Core.Sensor.SensorTypes;
-using FruitHAP.Sensor.KaKu.ACProtocol;
 using FruitHAP.Common.Helpers;
+using Microsoft.Practices.Prism.PubSubEvents;
+using FruitHAP.Sensor.KaKu.Common;
+using FruitHAP.Sensor.PacketData.AC;
+using FruitHAP.Core.Controller;
 
 namespace FruitHAP.Sensor.KaKu.Devices
 {
@@ -12,21 +15,20 @@ namespace FruitHAP.Sensor.KaKu.Devices
     {       
 		private Command command;
 	
-		public KakuButton(IRfxController controller, ILogger logger, IACProtocol protocol) : base(controller,logger,protocol)
+		public KakuButton(IEventAggregator aggregator, ILogger logger) : base(aggregator,logger)
         {            
         }
 
 
         protected override void InitializeSpecificDevice (Dictionary<string, string> parameters)
 		{
-
 			command = (Command)Enum.Parse (typeof(Command), parameters ["Command"]);
 		}
 
 
 		public event EventHandler ButtonPressed;
 
-		protected override void ProcessReceivedACDataForThisDevice (ACProtocolData data)
+		protected override void ProcessReceivedACDataForThisDevice (ACPacket data)
 		{
 			if (data.Command == command) 
 			{
@@ -39,14 +41,15 @@ namespace FruitHAP.Sensor.KaKu.Devices
 		public void PressButton ()
 		{
 			logger.Debug ("Sending PressButton to module..");
-			var encodedData = protocol.Encode (new ACProtocolData () {
+			var data = new ACPacket () {
 				DeviceId = deviceId,
 				UnitCode = unitCode,
 				Command = command,
 				Level = 0
-			});
+			};
 
-			controller.SendData (encodedData);
+			aggregator.GetEvent<ACPacketEvent> ().Publish (new ControllerEventData<ACPacket> () { Payload = data });
+
 		}
 
         protected virtual void OnButtonPressed()
@@ -62,7 +65,7 @@ namespace FruitHAP.Sensor.KaKu.Devices
 
 		public override object Clone ()
         {
-			return new KakuButton(this.controller, this.logger, this.protocol);
+			return new KakuButton(this.aggregator, this.logger);
         }
 
 

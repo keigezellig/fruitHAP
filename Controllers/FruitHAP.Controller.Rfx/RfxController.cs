@@ -1,35 +1,49 @@
 ﻿using System;
-using Castle.Core.Logging;
-using FruitHAP.Common.Configuration;
-using FruitHAP.Common.PhysicalInterfaces;
-using System.Reflection;
-using System.IO;
-using FruitHAP.Core.Sensor;
-using System.Linq;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using Castle.Core.Logging;
+using Controller.Rfx.PacketHandlers;
+using FruitHAP.Common.Configuration;
 using FruitHAP.Common.Helpers;
+using FruitHAP.Common.PhysicalInterfaces;
 using FruitHAP.Controller.Rfx.Configuration;
+using FruitHAP.Core.Sensor;
+using Microsoft.Practices.Prism.PubSubEvents;
+using FruitHAP.Core.Controller;
+using FruitHAP.Sensor.PacketData.AC;
+using FruitHAP.Controller.Rfx.InternalPacketData;
 
 namespace FruitHAP.Controller.Rfx
 {
-	public class RfxController : IRfxController
+	public class RfxController : IController
     {
-        private readonly IConfigProvider<RfxControllerConfiguration> configProvider;
+        
+		private const string CONFIG_FILENAME = "rfx.json";
+
+		private readonly IConfigProvider<RfxControllerConfiguration> configProvider;
         private readonly IPhysicalInterfaceFactory physicalInterfaceFactory;
         private readonly ILogger logger;
         private RfxControllerConfiguration configuration;
-        private IPhysicalInterface physicalInterface;
 		private bool isStarted;
-		private static byte SequenceNumber = 1;
+		private SubscriptionToken acEventSubscriptionToken;
+		private SubscriptionToken setModeEventSubscriptionToken;
+		private RfxControllerPacketHandlerFactory handlerFactory;
+		private List<RfxPacketInfo> packetTypes;
+		private RfxDevice rfxDevice;
+		private IEventAggregator aggregator;
 
-		private const string CONFIG_FILENAME = "rfx.xml";
-
-        public RfxController(IConfigProvider<RfxControllerConfiguration> configProvider, IPhysicalInterfaceFactory physicalInterfaceFactory, ILogger logger)
+		public RfxController(IConfigProvider<RfxControllerConfiguration> configProvider, IPhysicalInterfaceFactory physicalInterfaceFactory, ILogger logger, IEventAggregator aggregator)
         {
+			this.aggregator = aggregator;
             this.configProvider = configProvider;
             this.physicalInterfaceFactory = physicalInterfaceFactory;
             this.logger = logger;
-        }
+			this.handlerFactory = new RfxControllerPacketHandlerFactory (logger, aggregator);
+			this.rfxDevice = new RfxDevice (logger);
+		}
+
 
         public string Name
         {
@@ -44,17 +58,28 @@ namespace FruitHAP.Controller.Rfx
 			}
 		}
 
-        void PhysicalInterfaceDataReceived(object sender, ExternalDataReceivedEventArgs e)
+        private void RfxDataReceived(object sender, ExternalDataReceivedEventArgs e)
         {
             
-			if (ControllerDataReceived != null)
+			logger.DebugFormat("Received controller data: {0}", e.Data.BytesAsString());
+			try
 			{
-				var localEvent = ControllerDataReceived;
-				localEvent(this,new ControllerDataEventArgs() {Data = e.Data});
+				IControllerPacketHandler controllerPacketdHandler = handlerFactory.CreateHandler(e.Data);
+				if (controllerPacketdHandler == null)
+				{
+					logger.Warn("Ignoring received data. Controller can't handle this.");
+				}
+				else
+				{
+					controllerPacketdHandler.Handle(e.Data);
+				}
+
+			} 
+			catch (Exception ex) 
+			{
+				logger.ErrorFormat ("Error handling received data: {0}", ex.Message);
 			}
         }
-
-       
 
         public void Start()
         {
@@ -62,13 +87,9 @@ namespace FruitHAP.Controller.Rfx
 				logger.InfoFormat ("Initializing controller {0}", this);
 
 				try {
-					configuration = configProvider.LoadConfigFromFile (Path.Combine (Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location), CONFIG_FILENAME));
-					physicalInterface = physicalInterfaceFactory.GetPhysicalInterface (configuration.ConnectionString);
-					physicalInterface.DataReceived += PhysicalInterfaceDataReceived;
-
-					physicalInterface.Open ();
-					physicalInterface.StartReading ();
-					SendResetCommand();
+					SetSubscriptionTokens ();
+					LoadConfiguration ();
+					OpenRfxDevice ();
 					isStarted = true;
 				} catch (Exception ex) {
 					isStarted = false;
@@ -81,36 +102,135 @@ namespace FruitHAP.Controller.Rfx
         public void Stop()
         {
             logger.InfoFormat("Stopping module {0}", this);
-            physicalInterface.StopReading();
-            physicalInterface.Close();
+			rfxDevice.Close ();
         }
 
         public void Dispose()
         {
             logger.DebugFormat("Dispose module {0}", this);
-            physicalInterface.Dispose();
+			aggregator.GetEvent<ACPacketEvent> ().Unsubscribe (acEventSubscriptionToken);
+			aggregator.GetEvent<SetModeResponsePacketEvent> ().Unsubscribe (setModeEventSubscriptionToken);
+			rfxDevice.Dispose();
+
         }
 
-		public event EventHandler<ControllerDataEventArgs> ControllerDataReceived;
 
-		public void SendData (byte[] data)
+
+
+		private List<RfxPacketInfo> LoadPacketTypes (RfxControllerConfiguration configuration)
 		{
-			List<byte> dataToBeSend = new List<byte> (data);
-			dataToBeSend.Insert (3, SequenceNumber);
-			var array = dataToBeSend.ToArray ();
-			logger.DebugFormat ("Sending bytes {0} to controller", array.BytesAsString ());
-			physicalInterface.Write(array);
 
-			SequenceNumber++;
+			List<RfxPacketInfo> packetList = new List<RfxPacketInfo> ();
+			string logLineTemplate = "{0}..............................................{1}";
+
+			foreach (var packetType in configuration.PacketTypes) {
+				foreach (var subPacketType in packetType.SubTypes) {
+					RfxPacketType rfxPacketType;
+
+					bool isSupported = RfxPacketType.TryParse (subPacketType.Name, out rfxPacketType);
+					bool isEnabled = subPacketType.IsEnabled;
+
+					if (!isSupported || rfxPacketType == RfxPacketType.Unknown) {
+						logger.WarnFormat (logLineTemplate, subPacketType.Name, "NOT SUPPORTED");
+						continue;
+					}
+
+					if (!isEnabled) {
+						logger.InfoFormat (logLineTemplate, subPacketType.Name, "DISABLED");
+						continue;
+					}
+
+					logger.InfoFormat (logLineTemplate, subPacketType.Name, "ENABLED");
+
+					packetList.Add (new RfxPacketInfo () {
+						PacketType = rfxPacketType,
+						PacketIndicator = packetType.Id,
+						SubPacketIndicator = subPacketType.Id,
+						LengthByte = packetType.Length,
+						ProtocolReceiverSensitivityFlag = (ProtocolReceiverSensitivityFlags)Enum.Parse(typeof(ProtocolReceiverSensitivityFlags),subPacketType.SensitivityFlag)
+					});
+
+				}
+			}
+
+			RfxPacketInfo interfacePacket = GetInterfacePacket ();
+			packetList.Add (interfacePacket);
+
+			return packetList;
 		}
 
-		public void SendResetCommand()
+		private ProtocolReceiverSensitivityFlags GetSensitivityFlags (List<RfxPacketInfo> packetTypes )
 		{
-			logger.Debug ("Sending reset command to controller");
-			var dataToBeSend = new byte[] {0x00,0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-			physicalInterface.Write(dataToBeSend);
-		}
-    }
+			ProtocolReceiverSensitivityFlags result = ProtocolReceiverSensitivityFlags.Off;
 
-   
+			foreach (var packetType in packetTypes) 
+			{
+				if (packetType.PacketType != RfxPacketType.Interface) 
+				{
+					result |= packetType.ProtocolReceiverSensitivityFlag;
+				}
+			}
+
+			return result;
+		}
+
+		private RfxPacketInfo GetInterfacePacket ()
+		{
+			return new RfxPacketInfo () {
+				LengthByte = 0x0D,
+				PacketType = RfxPacketType.Interface,
+				PacketIndicator = 0x01,
+				SubPacketIndicator = 0x00
+			};
+		}
+
+		private void HandleIncomingACMessage (ControllerEventData<ACPacket> obj)
+		{			
+			RfxACProtocol protocol = new RfxACProtocol (logger);
+			byte[] data = protocol.Encode (obj.Payload);
+			rfxDevice.SendData(data);
+		}
+
+		private void HandleIncomingSetModeResponse (ControllerEventData<StatusPacket> obj)
+		{
+			var responsePacket = obj.Payload;
+			if (responsePacket.SequenceNumber == rfxDevice.PreviousSequenceNumber) 
+			{
+				logger.Debug ("Received mode command response from controller");
+				foreach (var packetType in this.packetTypes) {
+					if (!responsePacket.ReceiverSensitivity.HasFlag (packetType.ProtocolReceiverSensitivityFlag)) {
+						logger.WarnFormat ("Controller is not enabled to receive packets of type {0}. These packets will be ignored", packetType.PacketType);
+					}
+				}
+			}
+		}
+
+
+		private void LoadConfiguration ()
+		{
+			configuration = configProvider.LoadConfigFromFile (Path.Combine (Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location), CONFIG_FILENAME));
+			packetTypes = LoadPacketTypes (configuration);
+			handlerFactory.Initialize (packetTypes);
+		}
+
+		private void SetSubscriptionTokens ()
+		{
+			acEventSubscriptionToken = aggregator.GetEvent<ACPacketEvent> ().Subscribe (HandleIncomingACMessage, ThreadOption.PublisherThread, true, f => f.Direction == Direction.ToController);
+			setModeEventSubscriptionToken = aggregator.GetEvent<SetModeResponsePacketEvent> ().Subscribe (HandleIncomingSetModeResponse, ThreadOption.PublisherThread, true, f => f.Direction == Direction.FromController);
+		} 
+
+		private void OpenRfxDevice ()
+		{
+			this.rfxDevice.RfxDataReceived += RfxDataReceived;
+			var physicalInterface = physicalInterfaceFactory.GetPhysicalInterface (configuration.ConnectionString);
+			ProtocolReceiverSensitivityFlags sensitivityFlags = GetSensitivityFlags (packetTypes);
+			rfxDevice.Open (physicalInterface, sensitivityFlags);
+		}
+
+	}
+
+		
+
+
+
 }

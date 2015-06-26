@@ -4,6 +4,7 @@ using FruitHAP.Core.Service;
 using NLog;
 using Topshelf;
 using Topshelf.HostConfigurators;
+using System;
 
 namespace FruitHAP.Startup
 {
@@ -18,7 +19,8 @@ namespace FruitHAP.Startup
 
         public void Configure(HostConfigurator configuration)
         {
-            
+			try
+			{
             configuration.Service<ISensorProcessingService>(s =>
             {
                 s.ConstructUsing(name => container.Resolve<ISensorProcessingService>());
@@ -38,7 +40,13 @@ namespace FruitHAP.Startup
             configuration.SetDescription("Sensor processing service.");
             configuration.SetDisplayName("SensorProcessing.Service");
             configuration.SetServiceName("SensorProcessing.Service");
+			}
+			catch (Exception ex) 
+			{
+				Console.WriteLine (ex.Message);
+			}
         }
+		
 
 
         public static LogFactory CreateLogFactoryForServiceHost()

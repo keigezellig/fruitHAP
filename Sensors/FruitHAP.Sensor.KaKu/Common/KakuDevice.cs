@@ -1,11 +1,13 @@
 ﻿using System;
 using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
-using FruitHAP.Sensor.KaKu.ACProtocol;
 using System.Collections.Generic;
 using FruitHAP.Common.Helpers;
+using Microsoft.Practices.Prism.PubSubEvents;
+using FruitHAP.Sensor.PacketData.AC;
+using FruitHAP.Core.Controller;
 
-namespace FruitHAP.Sensor.KaKu
+namespace FruitHAP.Sensor.KaKu.Common
 {
 	public abstract class KakuDevice : ISensor, ISensorInitializer, ICloneable
 	{
@@ -13,18 +15,19 @@ namespace FruitHAP.Sensor.KaKu
 		private string description;	
 		protected uint deviceId;
 		protected byte unitCode;
-		protected readonly IRfxController controller;
 		protected readonly ILogger logger;
-		protected readonly IACProtocol protocol;
+		protected IEventAggregator aggregator;
 
 		protected abstract void InitializeSpecificDevice (Dictionary<string, string> parameters);
-		protected abstract void ProcessReceivedACDataForThisDevice (ACProtocolData data);
+		protected abstract void ProcessReceivedACDataForThisDevice (ACPacket data);
 
-		protected KakuDevice (IRfxController controller, ILogger logger, IACProtocol protocol)
+
+
+		protected KakuDevice (IEventAggregator aggregator, ILogger logger)
 		{
-			this.protocol = protocol;
+			this.aggregator = aggregator;
 			this.logger = logger;
-			this.controller = controller;
+
 		}
 
 		#region ISensorInitializer implementation
@@ -38,9 +41,8 @@ namespace FruitHAP.Sensor.KaKu
 				deviceId = Convert.ToUInt32(parameters["DeviceId"],16);
 				unitCode = Convert.ToByte(parameters["UnitCode"],16);
 				InitializeSpecificDevice(parameters);
-			
-				controller.ControllerDataReceived += HandleControllerDataReceived;
-				this.controller.Start ();
+							
+				aggregator.GetEvent<ACPacketEvent> ().Subscribe (HandleIncomingACMessage, ThreadOption.PublisherThread, false, f => f.Direction == Direction.FromController && DataReceivedCorrespondsToThisDevice(f.Payload));
 				logger.InfoFormat("Initialized KaKu device {0}",name);
 			}
 			catch (Exception ex) 
@@ -62,29 +64,15 @@ namespace FruitHAP.Sensor.KaKu
 
 		public abstract object Clone ();
 
-		private void HandleControllerDataReceived (object sender, ControllerDataEventArgs e)
+
+		void HandleIncomingACMessage (ControllerEventData<ACPacket> obj)
 		{
-			logger.DebugFormat("Received controller data: {0}", e.Data.BytesAsString());
-			try
-			{
-				var decodedData = protocol.Decode (e.Data);
-				if (DataReceivedCorrespondsToThisDevice(decodedData))
-				{
-					logger.Info("Processing data");
-					ProcessReceivedACDataForThisDevice(decodedData);
-				}
-				else
-				{
-					logger.Info("Not for me!");
-				}
-			}
-			catch (ProtocolException ex) 
-			{
-				logger.ErrorFormat ("Error decoding received data: {0}", ex.Message);
-			}
+			logger.DebugFormat("Received controller data: {0}", obj.Payload);
+			logger.Info("Processing data");
+			ProcessReceivedACDataForThisDevice(obj.Payload);
 		}
 
-		private bool DataReceivedCorrespondsToThisDevice (ACProtocolData decodedData)
+		private bool DataReceivedCorrespondsToThisDevice (ACPacket decodedData)
 		{
 			return (decodedData.DeviceId == deviceId) && (decodedData.UnitCode == unitCode);
 		}
