@@ -10,7 +10,7 @@ using FruitHap.MyActions.Messages;
 
 namespace FruitHap.MyActions
 {
-	public class ProximityDetectionAction : IAction
+	public class ProximityDetectionAction
 	{
 		private readonly ISensorRepository sensoRepository;
 		private readonly ILogger logger;
@@ -22,7 +22,7 @@ namespace FruitHap.MyActions
 		public void Initialize ()
 		{
 			logger.InfoFormat ("Initializing action {0}", this);
-			var proximityDetector = sensoRepository.FindDeviceOfTypeByName<IReadOnlySwitch>("ProximityDetector");
+			var proximityDetector = sensoRepository.FindDeviceOfTypeByName<ISwitch>("ProximityDetector");
 			proximityDetector.StateChanged += ProximityDetector_StateChanged;
 		}
 

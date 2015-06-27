@@ -1,11 +1,22 @@
 ﻿using System;
+using FruitHAP.Core.Sensor;
 
 namespace FruitHAP.Core.Sensor.SensorTypes
 {
-	public interface ISwitch : IReadOnlySwitch
+	public interface ISwitch : ISensor
 	{
-		void TurnOn();
-		void TurnOff();
+		SwitchState GetState();
+		event EventHandler<SwitchEventArgs> StateChanged;
+	}
+
+	public enum SwitchState
+	{
+		Undefined,On,Off
+	}
+
+	public class SwitchEventArgs : EventArgs
+	{
+		public SwitchState NewState { get; set;}
 	}
 }
 

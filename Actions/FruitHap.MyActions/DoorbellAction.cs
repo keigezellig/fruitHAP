@@ -11,7 +11,7 @@ using FruitHAP.Core.MQ;
 
 namespace FruitHAP.MyActions
 {
-    public class DoorbellAction : IAction
+    public class DoorbellAction 
     {
 		private readonly ISensorRepository sensoRepository;
         private readonly ILogger logger;

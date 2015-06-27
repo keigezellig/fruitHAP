@@ -10,7 +10,7 @@ using FruitHap.MyActions.Messages;
 
 namespace FruitHap.MyActions
 {
-	public class DoorbellButtonPressAction : IAction
+	public class DoorbellButtonPressAction 
 	{
 
 		private readonly ISensorRepository sensoRepository;

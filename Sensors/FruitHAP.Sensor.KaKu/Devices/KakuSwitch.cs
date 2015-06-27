@@ -11,7 +11,7 @@ using FruitHAP.Sensor.PacketData.AC;
 
 namespace FruitHAP.Sensor.KaKu
 {
-	public class KakuSwitch : KakuDevice, IReadOnlySwitch
+	public class KakuSwitch : KakuDevice, ISwitch
 	{
 		private Command onCommand;
 		private Command offCommand;
