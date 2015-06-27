@@ -28,6 +28,7 @@ namespace FruitHap.StandardActions
 
 		public void Initialize ()
 		{
+			logger.InfoFormat ("Initializing action {0}", this);
 			mqProvider.SubscribeToRequest<SensorMessage, SensorMessage> (HandleIncomingRequest);
 		}
 
@@ -62,14 +63,14 @@ namespace FruitHap.StandardActions
 							return new SensorMessage() {TimeStamp = DateTime.Now, SensorName = sensor.Name, Data = "This sensor has no support for polling"};
 						}
 
-						return new SensorMessage() {TimeStamp = DateTime.Now, SensorName = sensor.Name, SensorType = GetSensorType(sensor), DataType = DataType.Measurement.ToString(), Data=value };
+						return new SensorMessage() {TimeStamp = DateTime.Now, SensorName = sensor.Name, SensorType = sensor.GetTypeString(), DataType = DataType.Measurement.ToString(), Data=value };
 
 					});
 			task.Start ();
 			return task;
 		}
 
-		object GetValue (ISensor sensor)
+		private object GetValue (ISensor sensor)
 		{
 			if (sensor is ISwitch) 
 			{
@@ -85,26 +86,6 @@ namespace FruitHap.StandardActions
 
 		}
 
-		string GetSensorType (ISensor sensor)
-		{
-			if (sensor is ISwitch) 
-			{
-				return "Switch";
-			}
-
-			if (sensor is IButton) 
-			{
-				return "Button";
-			}
-
-			if (sensor is ICamera) 
-			{
-				return "Camera";
-			}
-
-			throw new NotSupportedException ("Sensor is of a non supported type");
-
-		}
 	}
 }
 

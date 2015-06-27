@@ -47,7 +47,7 @@ namespace FruitHap.StandardActions
 			var sensorMessage = new SensorMessage () {
 				TimeStamp = DateTime.Now,
 				SensorName = sensorName,
-				SensorType = "Switch",
+				SensorType = (sender as ISensor).GetTypeString(),
 				Data = e.NewState.ToString(),
 				DataType = DataType.Event.ToString()
 			};
@@ -62,7 +62,7 @@ namespace FruitHap.StandardActions
 				TimeStamp = DateTime.Now,
 				SensorName = sensorName,
 				Data = null,
-				SensorType = "Button",
+				SensorType = (sender as ISensor).GetTypeString(),
 				DataType = DataType.Event.ToString()
 			};
 			logger.InfoFormat ("Message sent {0}", sensorMessage);
