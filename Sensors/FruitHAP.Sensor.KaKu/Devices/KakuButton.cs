@@ -48,7 +48,7 @@ namespace FruitHAP.Sensor.KaKu.Devices
 				Level = 0
 			};
 
-			aggregator.GetEvent<ACPacketEvent> ().Publish (new ControllerEventData<ACPacket> () { Payload = data });
+			aggregator.GetEvent<ACPacketEvent> ().Publish (new ControllerEventData<ACPacket> () { Direction = Direction.ToController, Payload = data });
 
 		}
 
