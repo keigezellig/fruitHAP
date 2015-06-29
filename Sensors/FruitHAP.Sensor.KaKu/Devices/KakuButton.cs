@@ -40,7 +40,7 @@ namespace FruitHAP.Sensor.KaKu.Devices
 
 		public void PressButton ()
 		{
-			logger.Debug ("Sending PressButton to module..");
+			logger.Debug ("Sending PressButton to controller..");
 			var data = new ACPacket () {
 				DeviceId = deviceId,
 				UnitCode = unitCode,

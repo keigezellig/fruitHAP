@@ -3,7 +3,7 @@ using FruitHAP.Core.Sensor;
 
 namespace FruitHAP.Core.Sensor.SensorTypes
 {
-	public interface ISwitch : ISensor
+	public interface ISwitch : IValueSensor
 	{
 		SwitchState GetState();
 		event EventHandler<SwitchEventArgs> StateChanged;

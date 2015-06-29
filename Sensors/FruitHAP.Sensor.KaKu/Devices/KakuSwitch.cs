@@ -44,6 +44,11 @@ namespace FruitHAP.Sensor.KaKu
 
 		#endregion
 
+		public object GetValue ()
+		{
+			return state;
+		}
+
 		#region ICloneable implementation
 
 		public override object Clone ()

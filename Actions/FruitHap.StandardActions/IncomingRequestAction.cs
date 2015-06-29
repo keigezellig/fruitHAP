@@ -41,38 +41,29 @@ namespace FruitHap.StandardActions
 			Task<SensorMessage> task = 
 				new Task<SensorMessage> (() => 
 					{
+						var result = HandleUnknownRequestType(request);
 						logger.DebugFormat("Handling GetValue(). Request = {0}",request);
 						if (request == null || string.IsNullOrEmpty(request.SensorName))
 						{
-							return new SensorMessage() {TimeStamp = DateTime.Now, Data = "Invalid request", DataType = DataType.ErrorMessage.ToString()};
+							result = new SensorMessage() {TimeStamp = DateTime.Now, Data = "Invalid request", DataType = DataType.ErrorMessage.ToString()};
 						}
-
-						logger.InfoFormat("Looking for sensor {0}",request.SensorName);
-						ISensor sensor = sensorRepository.FindDeviceOfTypeByName<ISensor>(request.SensorName);
-
-						if (sensor == null)
+						else
 						{
-							logger.ErrorFormat("Sensor {0} not found in repository", request.SensorName);
-							return new SensorMessage() {TimeStamp = DateTime.Now, SensorName = request.SensorName, Data = "Sensor is not defined", DataType = DataType.ErrorMessage.ToString()};
+							if (request.DataType == DataType.GetValue.ToString())
+							{
+								result = HandleGetValue (request);
+							}
+							else
+							{
+								if (request.DataType == DataType.Command.ToString())
+								{
+									result = HandleCommand (request);
+								}
+							}
 						}
 
-						logger.InfoFormat("Found sensor: {0}",sensor.Name);
-
-						if (request.DataType == DataType.GetValue.ToString())
-						{
-							return HandleGetValue (sensor);
-						}
-
-						if (request.DataType == DataType.Command.ToString())
-						{
-							return HandleCommand (sensor, request);
-						}
-
-
-						return HandleUnknownRequestType(request);
-
-
-
+						logger.InfoFormat("Sending message {0}",result);
+						return result;
 					});
 			task.Start ();
 			return task;
@@ -80,8 +71,19 @@ namespace FruitHap.StandardActions
 
 
 
-		SensorMessage HandleCommand (ISensor sensor, SensorMessage request)
+		SensorMessage HandleCommand (SensorMessage request)
 		{
+			logger.InfoFormat("Looking for sensor {0}",request.SensorName);
+			ISensor sensor = sensorRepository.FindDeviceOfTypeByName<ISensor>(request.SensorName);
+
+			if (sensor == null)
+			{
+				logger.ErrorFormat("Sensor {0} not found in repository", request.SensorName);
+				return new SensorMessage() {TimeStamp = DateTime.Now, SensorName = request.SensorName, Data = "Sensor is not defined", DataType = DataType.ErrorMessage.ToString()};
+			}
+
+			logger.InfoFormat("Found sensor: {0}",sensor.Name);
+
 			var requestData = request.Data.ToString ();
 			CommandObject command = requestData.ParseJsonString<CommandObject> ();
 			var type = sensor.GetType ();
@@ -148,42 +150,27 @@ namespace FruitHap.StandardActions
 			};
 		}
 
-		SensorMessage HandleGetValue (ISensor sensor)
+		SensorMessage HandleGetValue (SensorMessage request)
 		{
-			object value = GetValue (sensor);
-			if (value == null) {
-				logger.ErrorFormat ("This sensor has no support for polling");
-				return new SensorMessage () {
-					TimeStamp = DateTime.Now,
-					SensorName = sensor.Name,
-					Data = "This sensor has no support for polling"
-				};
+			logger.InfoFormat("Looking for sensor {0}",request.SensorName);
+			IValueSensor sensor = sensorRepository.FindDeviceOfTypeByName<IValueSensor>(request.SensorName);
+
+			if (sensor == null)
+			{
+				logger.ErrorFormat("Sensor {0} not found in repository or no support for polling", request.SensorName);
+				return new SensorMessage() {TimeStamp = DateTime.Now, SensorName = request.SensorName, Data = "Sensor is not defined or has no support for polling", DataType = DataType.ErrorMessage.ToString()};
 			}
+
+			logger.InfoFormat("Found sensor: {0}",sensor.Name);
+
 			return new SensorMessage () {
 				TimeStamp = DateTime.Now,
 				SensorName = sensor.Name,
 				SensorType = sensor.GetTypeString (),
 				DataType = DataType.Measurement.ToString (),
-				Data = value
+				Data = sensor.GetValue()
 			};
 		}
-
-		private object GetValue (ISensor sensor)
-		{
-			if (sensor is ISwitch) 
-			{
-				return (sensor as ISwitch).GetState ().ToString ();
-			}
-
-			if (sensor is ICamera) 
-			{
-				return (sensor as ICamera).GetImageAsync ().Result;
-			}
-
-			return null;
-
-		}
-
 	}
 
 

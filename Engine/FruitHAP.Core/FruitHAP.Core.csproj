@@ -80,6 +80,7 @@
     <Compile Include="Sensor\PacketData\AC\ACPacket.cs" />
     <Compile Include="Sensor\SensorTypes\ITwoWaySwitch.cs" />
     <Compile Include="Sensor\SensorTypes\ISwitch.cs" />
+    <Compile Include="Sensor\IValueSensor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
