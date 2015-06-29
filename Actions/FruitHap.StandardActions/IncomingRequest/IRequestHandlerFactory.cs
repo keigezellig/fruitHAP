@@ -8,14 +8,13 @@ using System.Threading.Tasks;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Core.Sensor.SensorTypes;
 using FruitHAP.Common.Helpers;
-using System.Collections.Generic;
+using System.Linq;
 
-namespace FruitHap.StandardActions
+namespace FruitHap.StandardActions.IncomingRequest
 {
-	public class CommandObject
+	interface IRequestHandlerFactory
 	{
-		public string OperationName { get; set; }
-		public Dictionary<string,string> Parameters {get; set;}
+		IRequestHandler GetRequestHandler (SensorMessage request);
 	}
 
 

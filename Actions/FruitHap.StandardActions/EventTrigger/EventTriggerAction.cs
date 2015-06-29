@@ -8,7 +8,7 @@ using FruitHAP.Core.Action;
 using FruitHAP.Core.SensorRepository;
 using FruitHAP.Core.MQ;
 
-namespace FruitHap.StandardActions
+namespace FruitHap.StandardActions.EventTrigger
 {
 	public class EventTriggerAction : IAction
 	{

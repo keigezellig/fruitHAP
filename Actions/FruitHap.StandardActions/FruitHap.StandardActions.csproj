@@ -42,15 +42,25 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Messages\Outbound\SensorMessage.cs" />
-    <Compile Include="EventTriggerAction.cs" />
     <Compile Include="Helpers.cs" />
-    <Compile Include="IncomingRequestAction.cs" />
-    <Compile Include="CommandObject.cs" />
+    <Compile Include="IncomingRequest\IRequestHandler.cs" />
+    <Compile Include="IncomingRequest\IncomingRequestAction.cs" />
+    <Compile Include="EventTrigger\EventTriggerAction.cs" />
+    <Compile Include="IncomingRequest\RequestHandlers\EmptyRequestHandler.cs" />
+    <Compile Include="IncomingRequest\RequestHandlers\UnknownRequestTypeHandler.cs" />
+    <Compile Include="IncomingRequest\RequestHandlers\GetValueHandler.cs" />
+    <Compile Include="IncomingRequest\RequestHandlers\CommandHandler.cs" />
+    <Compile Include="IncomingRequest\RequestHandlers\CommandObject.cs" />
+    <Compile Include="IncomingRequest\RequestHandlerFactory.cs" />
+    <Compile Include="IncomingRequest\IRequestHandlerFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Messages\" />
     <Folder Include="Messages\Outbound\" />
+    <Folder Include="IncomingRequest\" />
+    <Folder Include="EventTrigger\" />
+    <Folder Include="IncomingRequest\RequestHandlers\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

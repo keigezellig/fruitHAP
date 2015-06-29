@@ -22,10 +22,9 @@ namespace FruitHap.StandardActions.Messages.Outbound
 
 	public enum DataType
 	{
+		Undefined,
 		Command,
-
 		GetValue,
-
 		ErrorMessage,
 		Event,
 		Measurement
