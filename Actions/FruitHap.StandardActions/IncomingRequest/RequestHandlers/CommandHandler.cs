@@ -28,7 +28,7 @@ namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 		{
 			logger.DebugFormat("Handling Command request. Request = {0}",request);
 			logger.InfoFormat("Looking for sensor {0}",request.SensorName);
-			ISensor sensor = sensorRepository.FindDeviceOfTypeByName<ISensor>(request.SensorName);
+			ISensor sensor = sensorRepository.FindSensorOfTypeByName<ISensor>(request.SensorName);
 
 			if (sensor == null)
 			{

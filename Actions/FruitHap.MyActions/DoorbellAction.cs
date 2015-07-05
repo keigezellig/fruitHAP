@@ -29,7 +29,7 @@ namespace FruitHAP.MyActions
         public void Initialize()
         {
 			logger.InfoFormat ("Initializing action {0}", this);
-			IButton doorbellButton = sensoRepository.FindDeviceOfTypeByName<IButton>("Doorbell");
+			IButton doorbellButton = sensoRepository.FindSensorOfTypeByName<IButton>("Doorbell");
             doorbellButton.ButtonPressed += doorbellButton_ButtonPressed;
         }
 
@@ -78,7 +78,7 @@ namespace FruitHAP.MyActions
 
         private async Task<byte[]> GetImageFromCamera()
         {
-            ICamera doorCamera = sensoRepository.FindDeviceOfTypeByName<ICamera>("DoorCamera");
+			ICamera doorCamera = sensoRepository.FindSensorOfTypeByName<ICamera>("DoorCamera");
             return await doorCamera.GetImageAsync();
         }
     }

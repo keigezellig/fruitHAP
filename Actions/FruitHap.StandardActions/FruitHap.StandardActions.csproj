@@ -53,6 +53,8 @@
     <Compile Include="IncomingRequest\RequestHandlers\CommandObject.cs" />
     <Compile Include="IncomingRequest\RequestHandlerFactory.cs" />
     <Compile Include="IncomingRequest\IRequestHandlerFactory.cs" />
+    <Compile Include="EventTrigger\Configuration\EventTriggerActionConfiguration.cs" />
+    <Compile Include="EventTrigger\Configuration\EventTriggerActionConfigurationProvider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -61,6 +63,7 @@
     <Folder Include="IncomingRequest\" />
     <Folder Include="EventTrigger\" />
     <Folder Include="IncomingRequest\RequestHandlers\" />
+    <Folder Include="EventTrigger\Configuration\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -74,5 +77,10 @@
       <Project>{EBEF2FB9-9739-4169-9713-7EFC7B2B8E14}</Project>
       <Name>FruitHAP.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="event_trigger_action.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

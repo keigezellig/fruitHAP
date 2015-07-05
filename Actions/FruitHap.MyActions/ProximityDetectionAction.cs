@@ -22,7 +22,7 @@ namespace FruitHap.MyActions
 		public void Initialize ()
 		{
 			logger.InfoFormat ("Initializing action {0}", this);
-			var proximityDetector = sensoRepository.FindDeviceOfTypeByName<ISwitch>("ProximityDetector");
+			var proximityDetector = sensoRepository.FindSensorOfTypeByName<ISwitch>("ProximityDetector");
 			proximityDetector.StateChanged += ProximityDetector_StateChanged;
 		}
 

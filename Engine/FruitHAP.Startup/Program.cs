@@ -13,9 +13,16 @@ namespace FruitHAP.Startup
     {
         static void Main(string[] args)
 		{
+			try
+			{
 			var container = new WindsorContainer ().Install (FromAssembly.This ());
 			var serviceHostConfigurator = new ServiceHostConfigurator (container);
 			HostFactory.Run (serviceHostConfigurator.Configure);
+			}
+			catch (Exception ex) 
+			{
+				Console.WriteLine ("Exception during main(): {0}", ex);
+			}
 		}
     }
 }

@@ -7,6 +7,11 @@ using FruitHap.StandardActions.Messages.Outbound;
 using FruitHAP.Core.Action;
 using FruitHAP.Core.SensorRepository;
 using FruitHAP.Core.MQ;
+using FruitHAP.Common.Configuration;
+using FruitHap.StandardActions.EventTrigger.Configuration;
+using System.Linq;
+using System.IO;
+using System.Reflection;
 
 namespace FruitHap.StandardActions.EventTrigger
 {
@@ -15,28 +20,41 @@ namespace FruitHap.StandardActions.EventTrigger
 		private readonly ISensorRepository sensorRepository;
 		private readonly ILogger logger;
 		private readonly IMessageQueueProvider mqProvider;
-		private const string ROUTINGKEY = "alerts";
+		private IConfigProvider<EventTriggerActionConfiguration> configurationProvider;
+		private const string CONFIG_FILENAME = "event_trigger_action.json";
+		private EventTriggerActionConfiguration configuration;
 
-		public EventTriggerAction(ISensorRepository sensorRepository, ILogger logger, IMessageQueueProvider publisher)
+		public EventTriggerAction(ISensorRepository sensorRepository, ILogger logger, IConfigProvider<EventTriggerActionConfiguration> configurationProvider, IMessageQueueProvider publisher)
 		{
 			this.sensorRepository = sensorRepository;
 			this.logger = logger;
 			this.mqProvider = publisher;
+			this.configurationProvider = configurationProvider;
 		}
 
 		public void Initialize()
 		{
 			logger.InfoFormat ("Initializing action {0}", this);
-			var buttons = sensorRepository.FindAllDevicesOfType<IButton> ();
-			var switches = sensorRepository.FindAllDevicesOfType<ISwitch> ();
-			foreach (var button in buttons) 
+			logger.InfoFormat ("Loading configuration");
+			configuration = configurationProvider.LoadConfigFromFile (Path.Combine (Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location), CONFIG_FILENAME));
+
+			var sensors = sensorRepository.GetSensors ().Where (sns => this.configuration.Sensors.Contains (sns.Name));
+			if (sensors.Count() == 0) 
 			{
-				button.ButtonPressed += Button_ButtonPressed;
+				logger.Warn ("This action will never be triggered. If this isn't correct, please check your configuration");
 			}
-			 
-			foreach (var @switch in switches) 
+			foreach (var sensor in sensors) 
 			{
-				@switch.StateChanged += Switch_StateChanged;
+				if (sensor is IButton) 
+				{
+					(sensor as IButton).ButtonPressed += Button_ButtonPressed;
+				}
+
+				if (sensor is ISwitch) 
+				{
+					(sensor as ISwitch).StateChanged += Switch_StateChanged;
+				}
+				logger.InfoFormat ("Sensor {0} will trigger this action", sensor.Name);
 			}
 
 		}
@@ -52,7 +70,7 @@ namespace FruitHap.StandardActions.EventTrigger
 				DataType = DataType.Event.ToString()
 			};
 			logger.InfoFormat ("Message sent {0}", sensorMessage);
-			mqProvider.Publish (sensorMessage, ROUTINGKEY);
+			mqProvider.Publish (sensorMessage, configuration.RoutingKey);
 		}
 
 		void Button_ButtonPressed (object sender, EventArgs e)
@@ -66,7 +84,7 @@ namespace FruitHap.StandardActions.EventTrigger
 				DataType = DataType.Event.ToString()
 			};
 			logger.InfoFormat ("Message sent {0}", sensorMessage);
-			mqProvider.Publish (sensorMessage, ROUTINGKEY);
+			mqProvider.Publish (sensorMessage, configuration.RoutingKey);
 		}
 
 	}

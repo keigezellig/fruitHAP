@@ -42,14 +42,19 @@ namespace FruitHAP.Core.SensorRepository
             
         }
         
-        public IEnumerable<T> FindAllDevicesOfType<T>() where T : ISensor
+        public IEnumerable<T> FindAllSensorsOfType<T>() where T : ISensor
         {
             return sensors.OfType<T>();
         }
 
-        public T FindDeviceOfTypeByName<T>(string name) where T : ISensor
+        public T FindSensorOfTypeByName<T>(string name) where T : ISensor
         {
             return sensors.OfType<T>().SingleOrDefault(f => f.Name == name);
         }
+
+		public IEnumerable<ISensor> GetSensors ()
+    	{
+			return sensors;
+    	}
     }
 }

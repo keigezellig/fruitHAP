@@ -42,7 +42,7 @@ namespace FruitHap.MyActions
 						}
 
 						logger.InfoFormat("Looking for button {0}",request.Name);
-						IButton doorbellButton = sensoRepository.FindDeviceOfTypeByName<IButton>(request.Name);
+						IButton doorbellButton = sensoRepository.FindSensorOfTypeByName<IButton>(request.Name);
 
 						if (doorbellButton == null)
 						{

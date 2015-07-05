@@ -17,7 +17,7 @@ namespace FruitHap.StandardActions
 		{
 			logger.DebugFormat("Handling GetValue request. Request = {0}",request);
 			logger.InfoFormat("Looking for sensor {0}",request.SensorName);
-			IValueSensor sensor = sensorRepository.FindDeviceOfTypeByName<IValueSensor>(request.SensorName);
+			IValueSensor sensor = sensorRepository.FindSensorOfTypeByName<IValueSensor>(request.SensorName);
 
 			if (sensor == null)
 			{

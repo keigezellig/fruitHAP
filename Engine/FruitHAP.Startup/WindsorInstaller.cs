@@ -96,6 +96,12 @@ namespace FruitHAP.Startup
                 .WithService.FromInterface()
                 .LifestyleSingleton());
 
+			container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(actionDirectory))
+				.BasedOn(typeof (IConfigProvider<>))
+				.WithService.Base()
+				.LifestyleSingleton());
+			
+
             logger.InfoFormat("Done loading actions from directory {0}", actionDirectory);
 
             

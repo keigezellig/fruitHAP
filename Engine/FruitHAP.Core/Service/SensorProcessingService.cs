@@ -45,12 +45,13 @@ namespace FruitHAP.Core.Service
 				return;
 			}
 
-			log.Info ("Initialize controllers");
+			log.Info ("Starting controllers");
 			foreach (var controller in controllers)
 			{
 				controller.Start ();
 		
 			}
+			log.Info ("Started controllers");
 
 			sensorRepository.Initialize();
 
@@ -59,6 +60,7 @@ namespace FruitHAP.Core.Service
 			{
 				log.Info("Connecting to message queue");
 				mqPublisher.Initialize (mqConnectionString,mqPubSubExchangeName,mqRpcExchangeName, mqRpcQueueName);
+				log.Info("Connected to message queue");	
 			}
 			catch (Exception ex) 
 			{
@@ -78,6 +80,7 @@ namespace FruitHAP.Core.Service
             {
                 sensorAction.Initialize();
             }
+			log.Info("Actions initialized");
 
 			}
 			catch (Exception ex) 
