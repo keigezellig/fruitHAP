@@ -81,6 +81,8 @@
     <Compile Include="Sensor\SensorTypes\ITwoWaySwitch.cs" />
     <Compile Include="Sensor\SensorTypes\ISwitch.cs" />
     <Compile Include="Sensor\IValueSensor.cs" />
+    <Compile Include="Sensor\SensorTypes\IButtonWithCameraSensor.cs" />
+    <Compile Include="Sensor\IAggregatedSensor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
