@@ -9,5 +9,6 @@ namespace FruitHAP.Core.SensorRepository
         public string Description { get; set; }
         public string SensorType { get; set; }
         public Dictionary<string, string> Parameters { get; set; }
+		public bool IsAggregate { get; set; }
     }
 }

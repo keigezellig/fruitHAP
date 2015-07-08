@@ -45,6 +45,8 @@ namespace FruitHAP.Core.Service
 				return;
 			}
 
+			sensorRepository.Initialize();
+
 			log.Info ("Starting controllers");
 			foreach (var controller in controllers)
 			{
@@ -53,7 +55,7 @@ namespace FruitHAP.Core.Service
 			}
 			log.Info ("Started controllers");
 
-			sensorRepository.Initialize();
+			
 
 		   
 			try

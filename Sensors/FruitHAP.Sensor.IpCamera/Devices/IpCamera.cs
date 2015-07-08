@@ -12,7 +12,7 @@ using System.Net.Http;
 
 namespace FruitHAP.Sensor.IpCamera.Devices
 {
-	public class IpCamera : ICamera, ISensorInitializer, ICloneable
+	public class IpCamera : ICamera, ICloneable
     {
         private readonly ILogger logger;
         private Uri url;

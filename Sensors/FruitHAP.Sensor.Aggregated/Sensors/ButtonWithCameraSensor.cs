@@ -9,7 +9,7 @@ using FruitHAP.Core.SensorTypes;
 
 namespace FruitHAP.Sensor.Aggregated.Sensors
 {
-	public class ButtonWithCameraSensor : IButtonWithCameraSensor, ISensorInitializer, ICloneable
+	public class ButtonWithCameraSensor : IButtonWithCameraSensor, ICloneable
 	{
 		private IButton button;
 		private ICamera camera;
@@ -45,15 +45,13 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 		public event EventHandler<ButtonWithCameraSensorEventArgs> DataChanged;
 
 
-		#endregion
 
-		#region ISensorInitializer implementation
 		public void Initialize (Dictionary<string, string> parameters)
 		{
 			this.name = parameters ["Name"];
 			this.description = parameters ["Description"];
 			this.button = repository.FindSensorOfTypeByName<IButton> (parameters ["ButtonName"]);
-			this.camera = repository.FindSensorOfTypeByName<IButton> (parameters ["CameraName"]);
+			this.camera = repository.FindSensorOfTypeByName<ICamera> (parameters ["CameraName"]);
 			if (this.button == null) 
 			{
 				throw new Exception (string.Format ("No button with name {0} is defined", parameters ["ButtonName"]));
@@ -87,7 +85,7 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 			var localEvent = DataChanged;
 			if (localEvent != null) 
 			{
-				localEvent.Invoke(this,new ButtonWithCameraSensorEventArgs() { CameraImage = image};
+				localEvent.Invoke(this,new ButtonWithCameraSensorEventArgs() { CameraImage = image});
 			}
 		}
 

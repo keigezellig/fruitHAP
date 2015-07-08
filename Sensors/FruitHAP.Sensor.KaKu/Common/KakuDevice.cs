@@ -9,7 +9,7 @@ using FruitHAP.Core.Controller;
 
 namespace FruitHAP.Sensor.KaKu.Common
 {
-	public abstract class KakuDevice : ISensor, ISensorInitializer, ICloneable
+	public abstract class KakuDevice : ISensor, ICloneable
 	{
 		private string name;
 		private string description;	
@@ -20,8 +20,6 @@ namespace FruitHAP.Sensor.KaKu.Common
 
 		protected abstract void InitializeSpecificDevice (Dictionary<string, string> parameters);
 		protected abstract void ProcessReceivedACDataForThisDevice (ACPacket data);
-
-
 
 		protected KakuDevice (IEventAggregator aggregator, ILogger logger)
 		{

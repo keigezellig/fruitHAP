@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Castle.Core.Logging;
 using FruitHAP.Core.Sensor;
+using FruitHAP.Common.Helpers;
 
 namespace FruitHAP.Core.SensorRepository
 {
@@ -25,6 +26,7 @@ namespace FruitHAP.Core.SensorRepository
             {
                 logger.Info("Loading sensors");
                 sensors = sensorLoader.LoadSensors();
+
 				if (sensors.Any())
 				{
 					logger.InfoFormat("{0} sensors loaded",sensors.Count());
@@ -56,5 +58,7 @@ namespace FruitHAP.Core.SensorRepository
     	{
 			return sensors;
     	}
+
+
     }
 }

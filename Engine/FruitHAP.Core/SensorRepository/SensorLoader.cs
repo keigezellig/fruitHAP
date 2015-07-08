@@ -24,6 +24,29 @@ namespace FruitHAP.Core.SensorRepository
             this.logger = logger;
         }
 
+		void LoadDefinitions (List<ISensor> sensorList, IEnumerable<SensorDefinition> sensorDefinitions)
+		{
+			foreach (var definition in sensorDefinitions) {
+				try {
+					ISensor prototype = prototypes.SingleOrDefault (f => f.GetType ().Name.Contains (definition.SensorType));
+					if (prototype != null) {
+						var instance = GetInstance (prototype);
+						Dictionary<string, string> parameters = new Dictionary<string, string> (definition.Parameters);
+						parameters ["Name"] = definition.Name;
+						parameters ["Description"] = definition.Description;
+						instance.Initialize (parameters);
+						sensorList.Add (instance);
+					}
+					else {
+						logger.ErrorFormat ("Cannot load sensor {0}. Check your configuration!", definition.SensorType);
+					}
+				}
+				catch (Exception exception) {
+					logger.ErrorFormat ("Cannot load sensor {0}. Check your configuration! Error message={1}", definition.SensorType, exception.Message);
+				}
+			}
+		}
+
         public IEnumerable<ISensor> LoadSensors()
         {
 			string sensorFile = ConfigurationManager.AppSettings["SensorConfigurationFile"] ??
@@ -32,39 +55,18 @@ namespace FruitHAP.Core.SensorRepository
             var result = new List<ISensor>();
 
 			List<SensorDefinition> definitions = configProvider.LoadConfigFromFile (sensorFile);
+			var nonAggregateDefinitions = definitions.Where (f => f.IsAggregate == false);
+			var aggregateDefinitions = definitions.Where (f => f.IsAggregate == true);
 
-			foreach (var definition in definitions)
-            {
-                try
-                {
-                    ISensor prototype = prototypes.SingleOrDefault(f => f.GetType().Name.Contains(definition.SensorType));
-
-                    if (prototype != null)
-                    {
-                        var instance = GetInstance(prototype);
-                        Dictionary<string, string> parameters = new Dictionary<string, string>(definition.Parameters);
-                        parameters["Name"] = definition.Name;
-                        parameters["Description"] = definition.Description;
-                        instance.Initialize(parameters);
-                        result.Add(instance as ISensor);
-                    }
-                    else
-                    {
-                        logger.ErrorFormat("Cannot load sensor {0}. Check your configuration!", definition.SensorType);
-                    }
-                }
-                catch (Exception exception)
-                {
-                    logger.ErrorFormat("Cannot load sensor {0}. Check your configuration! Error message={1}", definition.SensorType, exception.Message);
-                }
-            }
+			LoadDefinitions (result, nonAggregateDefinitions);
+			LoadDefinitions (result, aggregateDefinitions);
             return result;
         }
 
-        private ISensorInitializer GetInstance(object prototype)
+        private ISensor GetInstance(object prototype)
         {
             var clonableType = prototype as ICloneable;            
-            return clonableType.Clone() as ISensorInitializer;
+            return clonableType.Clone() as ISensor;
         }
     }
 }
