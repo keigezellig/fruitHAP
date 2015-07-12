@@ -6,7 +6,6 @@ namespace FruitHAP.Core.Sensor
     {
         string Name { get; }
         string Description { get; }
-		void Initialize(Dictionary<string, string> parameters);
 
     }
 }

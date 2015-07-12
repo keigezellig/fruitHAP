@@ -6,39 +6,35 @@ using FruitHAP.Core.Sensor;
 using System.Collections.Generic;
 using FruitHAP.Core.SensorRepository;
 using FruitHAP.Core.SensorTypes;
+using System.Linq;
 
 namespace FruitHAP.Sensor.Aggregated.Sensors
 {
-	public class ButtonWithCameraSensor : ICloneable
+	public class ButtonWithCameraSensor : IAggregatedSensor, ICloneable
 	{
 		private IButton button;
 		private ICamera camera;
 		private ILogger logger;
 		private IEventAggregator aggregator;
-		private ISensorRepository repository;
-		private string name;	
-		private string description;
+		private List<ISensor> inputs;
 
-		public ButtonWithCameraSensor (IEventAggregator aggregator, ILogger logger, ISensorRepository repository)
+		public ButtonWithCameraSensor (IEventAggregator aggregator, ILogger logger)
 		{
 			this.aggregator = aggregator;
 			this.logger = logger;
-			this.repository = repository;
 		}
 
 		#region ISensor implementation
 
-		public string Name {
-			get 
-			{
-				return this.name;
-			}
-		}
+		public string Name { get; set; }
 
-		public string Description {
+		public string Description { get; set; }
+			
+
+		public List<ISensor> Inputs {
 			get 
 			{
-				return this.description;
+				return inputs;
 			}
 		}
 
@@ -46,20 +42,22 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 
 
 
-		public void Initialize (Dictionary<string, string> parameters)
+		public void Initialize (List<ISensor> inputs)
 		{
-			this.name = parameters ["Name"];
-			this.description = parameters ["Description"];
-			this.button = repository.FindSensorOfTypeByName<IButton> (parameters ["ButtonName"]);
-			this.camera = repository.FindSensorOfTypeByName<ICamera> (parameters ["CameraName"]);
-			if (this.button == null) 
+
+			if (inputs.Count != 2) 
 			{
-				throw new Exception (string.Format ("No button with name {0} is defined", parameters ["ButtonName"]));
+				throw new ArgumentException ("This aggregated sensor needs exactly 2 sensor inputs");
 			}
-			if (this.camera == null) 
+
+			if ( (!inputs.Any(input => input is IButton)) && (!inputs.Any(input => input is ICamera)) ) 
 			{
-				throw new Exception (string.Format ("No camera with name {0} is defined", parameters ["CameraName"]));
+				throw new ArgumentException ("This aggregated sensor needs a button type input and a camera type inputs");
 			}
+
+			this.inputs = inputs;
+			this.button = inputs.Single (f => f is IButton) as IButton;
+			this.camera = inputs.Single (f => f is ICamera) as ICamera;
 
 			this.button.ButtonPressed += Button_ButtonPressed;
 		}
@@ -75,7 +73,7 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 
 		public object Clone ()
 		{
-			return new ButtonWithCameraSensor (aggregator, logger, repository);
+			return new ButtonWithCameraSensor (aggregator, logger);
 		}
 
 		#endregion

@@ -64,11 +64,6 @@ namespace FruitHAP.Startup
         private void RegisterDeviceRepository(IWindsorContainer container)
         {
             container.Register(
-                Component.For<ISensorLoader>()
-                    .ImplementedBy<SensorLoader>()
-                    .LifestyleSingleton());
-
-            container.Register(
                Component.For<ISensorRepository>()
                    .ImplementedBy<SensorRepository>()
                    .LifestyleSingleton());

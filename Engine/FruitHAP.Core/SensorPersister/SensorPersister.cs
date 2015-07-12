@@ -42,18 +42,24 @@ namespace FruitHAP.Core.SensorPersister
 
 		public void SaveSensors (IEnumerable<ISensor> sensorList)
 		{
-			
-
 			List<SensorConfigurationEntry> entries = new List<SensorConfigurationEntry> ();
 			foreach (var sensor in sensorList) 
 			{
 				string type = sensor.GetType ().Name;
 				bool isAggregate = sensor is IAggregatedSensor;
+				object parameters = sensor;
+
+				if (isAggregate) 
+				{
+					var aggregatedSensor = sensor as IAggregatedSensor;
+					parameters = new AggregatedSensorParameters() {Name = aggregatedSensor.Name, Description = aggregatedSensor.Description, Inputs = aggregatedSensor.Inputs.Select(f => f.Name).ToList()};
+				} 
+
 
 				SensorConfigurationEntry entry = new SensorConfigurationEntry () {
 					Type = type,
 					IsAggegrate = isAggregate,
-					Parameters = sensor
+					Parameters = parameters
 				};
 
 				entries.Add (entry);
@@ -74,7 +80,10 @@ namespace FruitHAP.Core.SensorPersister
 					logger.WarnFormat ("Ignoring sensor type {0} because it is not supported. Check your sensor configuration ", entry.Type);
 				} 
 				else 
-				{					
+				{	
+					var copy = (prototype as ICloneable).Clone ();
+					dynamic pla = Convert.ChangeType(copy, prototype.GetType());
+					pla ["jj"] = "jj";
 					string parametersInJson = entry.Parameters.ToJsonString ();
 					object instance = parametersInJson.ParseJsonString (prototype.GetType ());
 					logger.InfoFormat ("Loaded sensor {0} with parameters {1}", instance.GetType ().Name, parametersInJson);
@@ -86,10 +95,36 @@ namespace FruitHAP.Core.SensorPersister
 		}
 
 
-		List<ISensor> LoadAggregateSensors (IEnumerable<SensorConfigurationEntry> sensors)
+		List<ISensor> LoadAggregateSensors (IEnumerable<SensorConfigurationEntry> configurationEntries)
 		{
-			return new List<ISensor> ();
+			var result = new List<ISensor> ();
+//			foreach (var entry in configurationEntries) 
+//			{
+//				ISensor prototype = prototypes.SingleOrDefault (f => f.GetType ().Name.Contains (entry.Type));
+//				if (prototype == null) {
+//					logger.WarnFormat ("Ignoring sensor type {0} because it is not supported. Check your sensor configuration ", entry.Type);
+//				} 
+//				else 
+//				{										
+//					AggregatedSensorParameters parameters = entry.Parameters.ToJsonString ().ParseJsonString<AggregatedSensorParameters>();
+//
+//
+//
+//					logger.InfoFormat ("Loaded sensor {0} with parameters {1}", instance.GetType ().Name, parametersInJson);
+//					result.Add (instance as ISensor);
+//				}
+//			}
+
+			return result;
 		}
+	}
+
+
+	public class AggregatedSensorParameters
+	{
+		public string Name { get; set; }
+		public string Description { get; set; }
+		public List<string> Inputs {get; set;}
 	}
 }
 

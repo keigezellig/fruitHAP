@@ -11,14 +11,12 @@ namespace FruitHAP.Core.SensorRepository
 {
     public class SensorRepository : ISensorRepository
     {
-        private readonly ISensorLoader sensorLoader;
         private readonly ILogger logger;
 		private IEnumerable<ISensor> sensors;
 		ISensorPersister persister;
 
-        public SensorRepository(ISensorLoader sensorLoader, ILogger logger, ISensorPersister persister)
+        public SensorRepository(ILogger logger, ISensorPersister persister)
         {
-            this.sensorLoader = sensorLoader;
             this.logger = logger;
 			this.persister = persister;
         }
@@ -28,7 +26,9 @@ namespace FruitHAP.Core.SensorRepository
             try
             {
                 logger.Info("Loading sensors");
-				sensors = persister.LoadSensors();
+				var sensors = persister.LoadSensors().ToList();
+
+
 
 				if (sensors.Any())
 				{

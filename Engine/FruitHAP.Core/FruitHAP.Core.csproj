@@ -62,17 +62,13 @@
     <Compile Include="Sensor\ISensor.cs" />
     <Compile Include="Sensor\SensorTypes\IButton.cs" />
     <Compile Include="Sensor\SensorTypes\ICamera.cs" />
-    <Compile Include="SensorRepository\ISensorLoader.cs" />
     <Compile Include="SensorRepository\ISensorRepository.cs" />
-    <Compile Include="SensorRepository\SensorDefinition.cs" />
-    <Compile Include="SensorRepository\SensorLoader.cs" />
     <Compile Include="SensorRepository\SensorRepository.cs" />
     <Compile Include="Service\ISensorProcessingService.cs" />
     <Compile Include="Service\SensorProcessingService.cs" />
     <Compile Include="MQ\RabbitMqProvider.cs" />
     <Compile Include="MQ\IMessageQueueProvider.cs" />
     <Compile Include="MQ\Helpers\TypeNameSerializer.cs" />
-    <Compile Include="SensorRepository\SensorLoaderConfigProvider.cs" />
     <Compile Include="Sensor\PacketData\AC\ACPacketEvent.cs" />
     <Compile Include="Controller\ControllerEventData.cs" />
     <Compile Include="Controller\IController.cs" />
