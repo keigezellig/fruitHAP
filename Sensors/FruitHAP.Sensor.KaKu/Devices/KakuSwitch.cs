@@ -22,6 +22,23 @@ namespace FruitHAP.Sensor.KaKu
 		{
 		}
 
+		public Command OnCommand {
+			get {
+				return this.onCommand;
+			}
+			set {
+				onCommand = value;
+			}
+		}
+
+		public Command OffCommand {
+			get {
+				return this.offCommand;
+			}
+			set {
+				offCommand = value;
+			}
+		}
 		#region ISensorInitializer implementation
 
 		protected override void InitializeSpecificDevice (Dictionary<string, string> parameters)

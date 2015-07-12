@@ -20,6 +20,7 @@ using NLog;
 using FruitHAP.Core;
 using FruitHAP.Core.MQ;
 using FruitHAP.Core.Controller;
+using FruitHAP.Core.SensorPersister;
 
 namespace FruitHAP.Startup
 {
@@ -71,6 +72,12 @@ namespace FruitHAP.Startup
                Component.For<ISensorRepository>()
                    .ImplementedBy<SensorRepository>()
                    .LifestyleSingleton());
+
+			container.Register(
+				Component.For<ISensorPersister>()
+				.ImplementedBy<SensorPersister>()
+				.LifestyleSingleton());
+			
 
             
         }

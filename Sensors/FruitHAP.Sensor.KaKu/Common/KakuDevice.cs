@@ -53,11 +53,31 @@ namespace FruitHAP.Sensor.KaKu.Common
 		public string Name
 		{
 			get { return name; }
+			set { name = value; }
 		}
 
 		public string Description
 		{
 			get { return description; }
+			set { description = value; }
+		}
+
+		public uint DeviceId {
+			get {
+				return this.deviceId;
+			}
+			set {
+				deviceId = value;
+			}
+		}
+
+		public byte UnitCode {
+			get {
+				return this.unitCode;
+			}
+			set {
+				unitCode = value;
+			}
 		}
 
 		public abstract object Clone ();

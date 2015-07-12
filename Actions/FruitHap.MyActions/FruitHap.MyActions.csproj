@@ -37,9 +37,6 @@
     <Reference Include="FruitHAP.Common">
       <HintPath>..\..\Engine\FruitHAP.Common\bin\Debug\FruitHAP.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Core">
-      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="RabbitMQ.Client">
       <HintPath>..\..\Engine\packages\RabbitMQ.Client.3.5.3\lib\net40\RabbitMQ.Client.dll</HintPath>
     </Reference>

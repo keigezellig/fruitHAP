@@ -54,6 +54,7 @@
     <Folder Include="MQ\Helpers\" />
     <Folder Include="Sensor\PacketData\" />
     <Folder Include="Sensor\PacketData\AC\" />
+    <Folder Include="SensorPersister\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action\IAction.cs" />
@@ -82,6 +83,10 @@
     <Compile Include="Sensor\IValueSensor.cs" />
     <Compile Include="Sensor\SensorTypes\IButtonWithCameraSensor.cs" />
     <Compile Include="Sensor\IAggregatedSensor.cs" />
+    <Compile Include="SensorPersister\ISensorPersister.cs" />
+    <Compile Include="SensorPersister\SensorConfigurationEntry.cs" />
+    <Compile Include="SensorPersister\SensorConfigurationProvider.cs" />
+    <Compile Include="SensorPersister\SensorPersister.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

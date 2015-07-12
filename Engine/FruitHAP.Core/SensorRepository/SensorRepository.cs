@@ -5,6 +5,7 @@ using System.Text;
 using Castle.Core.Logging;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Common.Helpers;
+using FruitHAP.Core.SensorPersister;
 
 namespace FruitHAP.Core.SensorRepository
 {
@@ -12,12 +13,14 @@ namespace FruitHAP.Core.SensorRepository
     {
         private readonly ISensorLoader sensorLoader;
         private readonly ILogger logger;
-        private IEnumerable<ISensor> sensors;
+		private IEnumerable<ISensor> sensors;
+		ISensorPersister persister;
 
-        public SensorRepository(ISensorLoader sensorLoader, ILogger logger)
+        public SensorRepository(ISensorLoader sensorLoader, ILogger logger, ISensorPersister persister)
         {
             this.sensorLoader = sensorLoader;
             this.logger = logger;
+			this.persister = persister;
         }
 
         public void Initialize()
@@ -25,7 +28,7 @@ namespace FruitHAP.Core.SensorRepository
             try
             {
                 logger.Info("Loading sensors");
-                sensors = sensorLoader.LoadSensors();
+				sensors = persister.LoadSensors();
 
 				if (sensors.Any())
 				{
@@ -57,6 +60,11 @@ namespace FruitHAP.Core.SensorRepository
 		public IEnumerable<ISensor> GetSensors ()
     	{
 			return sensors;
+    	}
+
+		public void SaveSensors (IEnumerable<ISensor> sensors)
+    	{
+			persister.SaveSensors (sensors);			
     	}
 
 

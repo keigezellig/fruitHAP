@@ -19,6 +19,15 @@ namespace FruitHAP.Sensor.KaKu.Devices
         {            
         }
 
+		public Command Command {
+			get {
+				return this.command;
+			}
+			set {
+				command = value;
+			}
+		}
+
 
         protected override void InitializeSpecificDevice (Dictionary<string, string> parameters)
 		{
@@ -67,7 +76,6 @@ namespace FruitHAP.Sensor.KaKu.Devices
         {
 			return new KakuButton(this.aggregator, this.logger);
         }
-
 
     }
 }

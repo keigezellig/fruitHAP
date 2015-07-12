@@ -9,7 +9,7 @@ using FruitHAP.Core.SensorTypes;
 
 namespace FruitHAP.Sensor.Aggregated.Sensors
 {
-	public class ButtonWithCameraSensor : IButtonWithCameraSensor, ICloneable
+	public class ButtonWithCameraSensor : ICloneable
 	{
 		private IButton button;
 		private ICamera camera;

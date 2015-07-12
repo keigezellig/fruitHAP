@@ -15,12 +15,9 @@ namespace FruitHAP.Sensor.IpCamera.Devices
 	public class IpCamera : ICamera, ICloneable
     {
         private readonly ILogger logger;
-        private Uri url;
-        private string username;
-        private string password;
 
-        public string Name { get; private set; }
-        public string Description { get; private set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
 
         public IpCamera()
         {
@@ -35,12 +32,27 @@ namespace FruitHAP.Sensor.IpCamera.Devices
         {
             Name = parameters["Name"];
             Description = parameters["Description"];
-            username = parameters["Username"];
-            password = parameters["Password"];
-            url = new Uri(parameters["Url"]);
+            Username = parameters["Username"];
+            Password = parameters["Password"];
+            Url = new Uri(parameters["Url"]);
             
-            logger.InfoFormat("Initialized camera {0}, {1}, {2}, {3}", Name, Description, username, password);
+            logger.InfoFormat("Initialized camera {0}, {1}, {2}, {3}", Name, Description, Username, Password);
         }
+
+		public Uri Url {
+			get;
+			set;
+		}
+
+		public string Username {
+			get;
+			set;
+		}
+
+		public string Password {
+			get;
+			set;
+		}
 
         private async Task<byte[]> GetImageAsync(Uri url, string username, string password)
         {
@@ -65,7 +77,7 @@ namespace FruitHAP.Sensor.IpCamera.Devices
 
         public async Task<byte[]> GetImageAsync()
         {
-            return await GetImageAsync(url, username, password);
+            return await GetImageAsync(Url, Username, Password);
         }
 
 
