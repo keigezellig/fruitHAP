@@ -77,5 +77,11 @@ namespace FruitHAP.Sensor.KaKu.Devices
 			return new KakuButton(this.aggregator, this.logger);
         }
 
+		public override string ToString ()
+		{
+			return string.Format ("[KakuButton: {0}, Command={1}]", base.ToString(), Command);
+		}
+		
+
     }
 }

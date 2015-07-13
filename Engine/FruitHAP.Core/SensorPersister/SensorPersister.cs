@@ -7,6 +7,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using FruitHAP.Common.Helpers;
+using FruitHAP.Common;
 
 namespace FruitHAP.Core.SensorPersister
 {
@@ -33,8 +34,8 @@ namespace FruitHAP.Core.SensorPersister
 			logger.InfoFormat ("Loading sensors from {0}", sensorFile);
 			var configuration = configProvider.LoadConfigFromFile (sensorFile); 
 			List<ISensor> nonAggregateSensors = LoadNonAggregateSensors (configuration.Where (f => !f.IsAggegrate));
-			List<ISensor> aggregateSensors = LoadAggregateSensors (configuration.Where (f => f.IsAggegrate));
 			result.AddRange (nonAggregateSensors);
+			List<ISensor> aggregateSensors = LoadAggregateSensors (configuration.Where (f => f.IsAggegrate),result);
 			result.AddRange (aggregateSensors);
 
 			return result;
@@ -81,12 +82,14 @@ namespace FruitHAP.Core.SensorPersister
 				} 
 				else 
 				{	
-					var copy = (prototype as ICloneable).Clone ();
-					dynamic pla = Convert.ChangeType(copy, prototype.GetType());
-					pla ["jj"] = "jj";
+					var instance = (prototype as ICloneable).Clone ();
 					string parametersInJson = entry.Parameters.ToJsonString ();
-					object instance = parametersInJson.ParseJsonString (prototype.GetType ());
-					logger.InfoFormat ("Loaded sensor {0} with parameters {1}", instance.GetType ().Name, parametersInJson);
+					Dictionary<string,object> parameters = parametersInJson.ParseJsonString<Dictionary<string,object>> ();
+					foreach (var parameter in parameters) 
+					{
+						instance.SetProperty (parameter.Key, parameter.Value);
+					}
+					logger.InfoFormat ("Loaded sensor {0}", instance);
 					result.Add (instance as ISensor);
 				}
 			}
@@ -95,25 +98,41 @@ namespace FruitHAP.Core.SensorPersister
 		}
 
 
-		List<ISensor> LoadAggregateSensors (IEnumerable<SensorConfigurationEntry> configurationEntries)
+		List<ISensor> LoadAggregateSensors (IEnumerable<SensorConfigurationEntry> configurationEntries, List<ISensor> loadedSensors)
 		{
 			var result = new List<ISensor> ();
-//			foreach (var entry in configurationEntries) 
-//			{
-//				ISensor prototype = prototypes.SingleOrDefault (f => f.GetType ().Name.Contains (entry.Type));
-//				if (prototype == null) {
-//					logger.WarnFormat ("Ignoring sensor type {0} because it is not supported. Check your sensor configuration ", entry.Type);
-//				} 
-//				else 
-//				{										
-//					AggregatedSensorParameters parameters = entry.Parameters.ToJsonString ().ParseJsonString<AggregatedSensorParameters>();
-//
-//
-//
-//					logger.InfoFormat ("Loaded sensor {0} with parameters {1}", instance.GetType ().Name, parametersInJson);
-//					result.Add (instance as ISensor);
-//				}
-//			}
+			foreach (var entry in configurationEntries) 
+			{
+				ISensor prototype = prototypes.SingleOrDefault (f => f.GetType ().Name.Contains (entry.Type));
+				if (prototype == null) {
+					logger.WarnFormat ("Ignoring sensor type {0} because it is not supported. Check your sensor configuration ", entry.Type);
+				} 
+				else 
+				{										
+					var instance = (prototype as ICloneable).Clone () as IAggregatedSensor;
+					AggregatedSensorParameters parameters = entry.Parameters.ToJsonString ().ParseJsonString<AggregatedSensorParameters>();
+					instance.SetProperty ("Name", parameters.Name);
+					instance.SetProperty ("Description", parameters.Description);
+
+					List<ISensor> inputs = new List<ISensor> ();
+					foreach (var inputName in parameters.Inputs) 
+					{
+						var inputSensor = loadedSensors.SingleOrDefault(f => f.Name == inputName);
+						if (inputSensor != null) 
+						{
+							inputs.Add (inputSensor);
+						} 
+						else 
+						{
+							throw new ArgumentException (string.Format ("Cannot find input sensor {0} for aggregate sensor {1}. Check your configuration",inputName,prototype.GetType().Name));
+						}
+
+					}
+					instance.Initialize (inputs);
+					logger.InfoFormat ("Loaded aggregated sensor {0}", instance);
+					result.Add (instance as ISensor);
+				}
+			}
 
 			return result;
 		}
@@ -125,6 +144,6 @@ namespace FruitHAP.Core.SensorPersister
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public List<string> Inputs {get; set;}
-	}
+	}		
 }
 

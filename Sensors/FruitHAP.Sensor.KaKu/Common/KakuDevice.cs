@@ -95,6 +95,12 @@ namespace FruitHAP.Sensor.KaKu.Common
 			return (decodedData.DeviceId == deviceId) && (decodedData.UnitCode == unitCode);
 		}
 
+		public override string ToString ()
+		{
+			return string.Format ("Name={0}, Description={1}, DeviceId={2}, UnitCode={3}", Name, Description, DeviceId, UnitCode);
+		}
+		
+
 
 	}
 }

@@ -19,6 +19,8 @@ namespace FruitHAP.Sensor.IpCamera.Devices
         public string Name { get; set; }
         public string Description { get; set; }
 
+		private Uri uri;
+
         public IpCamera()
         {
             
@@ -28,20 +30,16 @@ namespace FruitHAP.Sensor.IpCamera.Devices
             this.logger = logger;
         }
 
-        public void Initialize(Dictionary<string, string> parameters)
-        {
-            Name = parameters["Name"];
-            Description = parameters["Description"];
-            Username = parameters["Username"];
-            Password = parameters["Password"];
-            Url = new Uri(parameters["Url"]);
-            
-            logger.InfoFormat("Initialized camera {0}, {1}, {2}, {3}", Name, Description, Username, Password);
-        }
-
-		public Uri Url {
-			get;
-			set;
+       
+		public string Url {
+			get 
+			{
+				return uri.ToString ();
+			}
+			set 
+			{
+				uri = new Uri (value);
+			}
 		}
 
 		public string Username {
@@ -77,7 +75,7 @@ namespace FruitHAP.Sensor.IpCamera.Devices
 
         public async Task<byte[]> GetImageAsync()
         {
-            return await GetImageAsync(Url, Username, Password);
+            return await GetImageAsync(uri, Username, Password);
         }
 
 
@@ -90,5 +88,12 @@ namespace FruitHAP.Sensor.IpCamera.Devices
 		{
 			return GetImageAsync ().Result;
 		}
+
+
+		public override string ToString ()
+		{
+			return string.Format ("[IpCamera: Name={0}, Description={1}, Url={2}, Username={3}, Password={4}]", Name, Description, Url, Username, Password);
+		}
+		
     }
 }

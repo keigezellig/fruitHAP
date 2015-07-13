@@ -1,1 +1,1 @@
-{"RoutingKey":"alerts","Sensors":["Doorbell","ProximityDetector"]}
+{"RoutingKey":"alerts","Sensors":["Doorbell","ProximityDetector","DoorbellMonitor"]}

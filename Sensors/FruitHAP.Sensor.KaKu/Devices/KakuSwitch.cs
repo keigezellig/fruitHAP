@@ -113,6 +113,11 @@ namespace FruitHAP.Sensor.KaKu
 			}
 		}
 
+		public override string ToString ()
+		{
+			return string.Format ("[KakuSwitch: {0}, OnCommand={1}, OffCommand={2}]", base.ToString(), OnCommand, OffCommand);
+		}
+		
 
 	}
 }

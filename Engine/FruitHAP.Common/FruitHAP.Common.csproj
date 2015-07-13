@@ -58,6 +58,7 @@
     <Compile Include="PhysicalInterfaces\SerialPortInterface\SerialPortPhysicalInterface.cs" />
     <Compile Include="PhysicalInterfaces\SerialPortInterface\SerialPortWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Helpers\ReflectionHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
