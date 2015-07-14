@@ -26,10 +26,7 @@ namespace FruitHAP.Core.SensorRepository
             try
             {
                 logger.Info("Loading sensors");
-				var sensors = persister.LoadSensors().ToList();
-
-
-
+				sensors = persister.LoadSensors().ToList();
 				if (sensors.Any())
 				{
 					logger.InfoFormat("{0} sensors loaded",sensors.Count());

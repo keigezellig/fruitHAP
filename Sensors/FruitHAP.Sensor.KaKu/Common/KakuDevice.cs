@@ -25,31 +25,10 @@ namespace FruitHAP.Sensor.KaKu.Common
 		{
 			this.aggregator = aggregator;
 			this.logger = logger;
+			aggregator.GetEvent<ACPacketEvent> ().Subscribe (HandleIncomingACMessage, ThreadOption.PublisherThread, false, f => f.Direction == Direction.FromController && DataReceivedCorrespondsToThisDevice(f.Payload));
 
 		}
-
-		#region ISensorInitializer implementation
-
-		public void Initialize (Dictionary<string, string> parameters)
-		{
-			try
-			{								
-				name = parameters["Name"];
-				description = parameters["Description"];
-				deviceId = Convert.ToUInt32(parameters["DeviceId"],16);
-				unitCode = Convert.ToByte(parameters["UnitCode"],16);
-				InitializeSpecificDevice(parameters);
-							
-				aggregator.GetEvent<ACPacketEvent> ().Subscribe (HandleIncomingACMessage, ThreadOption.PublisherThread, false, f => f.Direction == Direction.FromController && DataReceivedCorrespondsToThisDevice(f.Payload));
-				logger.InfoFormat("Initialized KaKu device {0}",name);
-			}
-			catch (Exception ex) 
-			{
-				logger.ErrorFormat("Cannot initialize device {0}. Reason: {1}",name,ex.Message);
-			}
-		}
-		#endregion
-
+			
 		public string Name
 		{
 			get { return name; }

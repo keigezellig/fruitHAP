@@ -1,16 +1,15 @@
 ﻿using System;
-using FruitHAP.Core.Sensor.SensorTypes;
 using Castle.Core.Logging;
 using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Core.Sensor;
 using System.Collections.Generic;
 using FruitHAP.Core.SensorRepository;
-using FruitHAP.Core.SensorTypes;
+using FruitHAP.Core.Sensor.SensorTypes;
 using System.Linq;
 
 namespace FruitHAP.Sensor.Aggregated.Sensors
 {
-	public class ButtonWithCameraSensor : IAggregatedSensor, ICloneable
+	public class ButtonWithCameraSensor : IButtonWithCameraSensor, ICloneable
 	{
 		private IButton button;
 		private ICamera camera;
