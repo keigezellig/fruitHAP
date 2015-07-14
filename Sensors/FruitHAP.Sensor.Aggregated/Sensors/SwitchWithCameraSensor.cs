@@ -1,23 +1,22 @@
 ﻿using System;
+using FruitHAP.Core.Sensor.SensorTypes;
 using Castle.Core.Logging;
 using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Core.Sensor;
 using System.Collections.Generic;
-using FruitHAP.Core.SensorRepository;
-using FruitHAP.Core.Sensor.SensorTypes;
 using System.Linq;
 
-namespace FruitHAP.Sensor.Aggregated.Sensors
+namespace FruitHAP.Sensor.Aggregated
 {
-	public class ButtonWithCameraSensor : IButtonWithCameraSensor, ICloneable
+	public class SwitchWithCameraSensor : ISwitchWithCameraSensor, ICloneable
 	{
-		private IButton button;
+		private ISwitch @switch;
 		private ICamera camera;
 		private ILogger logger;
 		private IEventAggregator aggregator;
 		private List<ISensor> inputs;
 
-		public ButtonWithCameraSensor (IEventAggregator aggregator, ILogger logger)
+		public SwitchWithCameraSensor (IEventAggregator aggregator, ILogger logger)
 		{
 			this.aggregator = aggregator;
 			this.logger = logger;
@@ -28,7 +27,7 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 		public string Name { get; set; }
 
 		public string Description { get; set; }
-			
+
 
 		public List<ISensor> Inputs {
 			get 
@@ -49,30 +48,31 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 				throw new ArgumentException ("This aggregated sensor needs exactly 2 sensor inputs");
 			}
 
-			if ( (!inputs.Any(input => input is IButton)) && (!inputs.Any(input => input is ICamera)) ) 
+			if ( (!inputs.Any(input => input is ISwitch)) && (!inputs.Any(input => input is ICamera)) ) 
 			{
-				throw new ArgumentException ("This aggregated sensor needs a button type input and a camera type inputs");
+				throw new ArgumentException ("This aggregated sensor needs a button type input and a switch type inputs");
 			}
 
 			this.inputs = inputs;
-			this.button = inputs.Single (f => f is IButton) as IButton;
+			this.@switch = inputs.Single (f => f is ISwitch) as ISwitch;
 			this.camera = inputs.Single (f => f is ICamera) as ICamera;
 
-			this.button.ButtonPressed += Button_ButtonPressed;
+			this.@switch.StateChanged += Switch_StateChanged;
 		}
 
-		void Button_ButtonPressed (object sender, EventArgs e)
+		void Switch_StateChanged (object sender, SwitchEventArgs e)
 		{
 			var image = this.camera.GetImageAsync ().Result;
 			OnDataChanged (image);
 		}
+			
 		#endregion
 
 		#region ICloneable implementation
 
 		public object Clone ()
 		{
-			return new ButtonWithCameraSensor (aggregator, logger);
+			return new SwitchWithCameraSensor (aggregator, logger);
 		}
 
 		#endregion
@@ -90,10 +90,6 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 		{
 			return string.Format ("[ButtonWithCameraSensor: Name={0}, Description={1}, Inputs={2}]", Name, Description, string.Join(",",Inputs.Select(i => i.Name)));
 		}
-		
-
-
-
 
 	}
 }

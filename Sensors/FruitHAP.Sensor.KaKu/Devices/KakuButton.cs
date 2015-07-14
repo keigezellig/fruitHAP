@@ -27,14 +27,7 @@ namespace FruitHAP.Sensor.KaKu.Devices
 				command = value;
 			}
 		}
-
-
-        protected override void InitializeSpecificDevice (Dictionary<string, string> parameters)
-		{
-			command = (Command)Enum.Parse (typeof(Command), parameters ["Command"]);
-		}
-
-
+        
 		public event EventHandler ButtonPressed;
 
 		protected override void ProcessReceivedACDataForThisDevice (ACPacket data)

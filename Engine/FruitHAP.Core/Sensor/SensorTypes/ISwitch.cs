@@ -7,12 +7,20 @@ namespace FruitHAP.Core.Sensor.SensorTypes
 	{
 		SwitchState GetState();
 		event EventHandler<SwitchEventArgs> StateChanged;
+
+
 	}
 
 	public enum SwitchState
 	{
 		Undefined,On,Off
 	}
+
+	public enum Trigger
+	{
+		Both, On, Off
+	}
+
 
 	public class SwitchEventArgs : EventArgs
 	{

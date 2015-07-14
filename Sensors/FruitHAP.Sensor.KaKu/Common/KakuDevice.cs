@@ -18,7 +18,6 @@ namespace FruitHAP.Sensor.KaKu.Common
 		protected readonly ILogger logger;
 		protected IEventAggregator aggregator;
 
-		protected abstract void InitializeSpecificDevice (Dictionary<string, string> parameters);
 		protected abstract void ProcessReceivedACDataForThisDevice (ACPacket data);
 
 		protected KakuDevice (IEventAggregator aggregator, ILogger logger)

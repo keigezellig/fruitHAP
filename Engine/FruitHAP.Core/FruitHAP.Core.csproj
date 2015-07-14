@@ -83,6 +83,7 @@
     <Compile Include="SensorPersister\SensorConfigurationEntry.cs" />
     <Compile Include="SensorPersister\SensorConfigurationProvider.cs" />
     <Compile Include="SensorPersister\SensorPersister.cs" />
+    <Compile Include="Sensor\SensorTypes\ISwitchWithCameraSensor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

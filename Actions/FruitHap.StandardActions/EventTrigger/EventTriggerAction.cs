@@ -64,11 +64,18 @@ namespace FruitHap.StandardActions.EventTrigger
 					logger.InfoFormat ("Sensor {0} will trigger this action", sensor.Name);
 				}
 
+				if (sensor is ISwitchWithCameraSensor) 
+				{
+					(sensor as ISwitchWithCameraSensor).DataChanged += ButtonWithCameraSensor_DataChanged;
+					logger.InfoFormat ("Sensor {0} will trigger this action", sensor.Name);
+				}
+
+
 			}
 
 		}
 
-		void ButtonWithCameraSensor_DataChanged (object sender, ButtonWithCameraSensorEventArgs e)
+		void ButtonWithCameraSensor_DataChanged (object sender, CameraImageEventArgs e)
 		{
 			var sensorName = (sender as ISensor).Name;
 			var sensorMessage = new SensorMessage () 

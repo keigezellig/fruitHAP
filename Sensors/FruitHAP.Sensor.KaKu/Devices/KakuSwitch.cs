@@ -16,7 +16,7 @@ namespace FruitHAP.Sensor.KaKu
 		private Command onCommand;
 		private Command offCommand;
 		private SwitchState state;
-
+		private Trigger trigger;
 
 		public KakuSwitch(IEventAggregator aggregator, ILogger logger) : base(aggregator,logger)
 		{
@@ -39,18 +39,17 @@ namespace FruitHAP.Sensor.KaKu
 				offCommand = value;
 			}
 		}
-		#region ISensorInitializer implementation
-
-		protected override void InitializeSpecificDevice (Dictionary<string, string> parameters)
-		{
-			onCommand = (Command) Enum.Parse(typeof(Command),parameters["OnCommand"]);
-			offCommand = (Command) Enum.Parse(typeof(Command),parameters["OffCommand"]);
+		public Trigger Trigger {
+			get {
+				return this.trigger;
+			}
+			set {
+				trigger = value;
+			}
 		}
+			
 
-		#endregion
-
-
-		#region IReadOnlySwitch implementation
+		#region ISwitch implementation
 
 		public event EventHandler<SwitchEventArgs> StateChanged;
 
@@ -79,10 +78,10 @@ namespace FruitHAP.Sensor.KaKu
 		{
 			SwitchState newState = DetermineNewState(data);
 			if (newState != state)
-			{						
+			{										
 				state = newState;
 				logger.InfoFormat ("State changed to {0}",state);
-				OnStateChanged(state);
+				OnStateChanged(newState);
 			}
 
 		}
@@ -105,8 +104,20 @@ namespace FruitHAP.Sensor.KaKu
 
 		protected virtual void OnStateChanged(SwitchState newState)
 		{
+			bool fireEvent = true;
+			switch (trigger) 
+			{
+			case Trigger.On:
+				fireEvent = (newState == SwitchState.On);
+				break;
+			case Trigger.Off:
+				fireEvent = (newState == SwitchState.Off);
+				break;			
+			}
 
-			if (StateChanged != null) 
+			logger.DebugFormat("Trigger: {2}, New: {0}, FireEvent: {1}",newState,fireEvent, trigger);
+
+			if ( (fireEvent) && (StateChanged != null))
 			{
 				var localEvent = StateChanged;
 				localEvent.Invoke (this, new SwitchEventArgs () { NewState = newState });
@@ -115,10 +126,13 @@ namespace FruitHAP.Sensor.KaKu
 
 		public override string ToString ()
 		{
-			return string.Format ("[KakuSwitch: {0}, OnCommand={1}, OffCommand={2}]", base.ToString(), OnCommand, OffCommand);
+			return string.Format ("[KakuSwitch: {0}, OnCommand={1}, OffCommand={2}, Trigger={3}]", base.ToString(), OnCommand, OffCommand,Trigger);
 		}
 		
 
 	}
+
+
+
 }
 

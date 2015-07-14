@@ -23,6 +23,11 @@ namespace FruitHap.StandardActions
 				return "Camera";
 			}
 
+			if (sensor is IAggregatedSensor) 
+			{
+				return sensor.GetType ().Name;
+			}
+
 			throw new NotSupportedException ("Sensor is of a non supported type");
 		}
 	}
