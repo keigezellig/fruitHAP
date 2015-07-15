@@ -8,15 +8,18 @@ using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Sensor.KaKu.Common;
 using FruitHAP.Sensor.PacketData.AC;
 using FruitHAP.Core.Controller;
+using FruitHAP.Core.SensorEventPublisher;
 
 namespace FruitHAP.Sensor.KaKu.Devices
 {
 	public class KakuButton : KakuDevice, IButton
     {       
 		private Command command;
+		private ISensorEventPublisher sensorEventPublisher;
 	
-		public KakuButton(IEventAggregator aggregator, ILogger logger) : base(aggregator,logger)
-        {            
+		public KakuButton(IEventAggregator aggregator, ILogger logger, ISensorEventPublisher sensorEventPublisher) : base(aggregator,logger)
+        {
+			this.sensorEventPublisher = sensorEventPublisher;            
         }
 
 		public Command Command {
@@ -28,17 +31,15 @@ namespace FruitHAP.Sensor.KaKu.Devices
 			}
 		}
         
-		public event EventHandler ButtonPressed;
+
 
 		protected override void ProcessReceivedACDataForThisDevice (ACPacket data)
 		{
 			if (data.Command == command) 
-			{
-				logger.Debug ("About to Fire event");
-				OnButtonPressed();
+			{				
+				sensorEventPublisher.Publish<SensorEvent> (this, null);
 			}
 		}
-			        
 
 		public void PressButton ()
 		{
@@ -54,20 +55,12 @@ namespace FruitHAP.Sensor.KaKu.Devices
 
 		}
 
-        protected virtual void OnButtonPressed()
-        {
-            if (ButtonPressed != null)
-            {
-				logger.Debug ("Firing event");
-				var localEvent = ButtonPressed;
-                localEvent(this, null);
-            }
-        }
+       
 			       
 
 		public override object Clone ()
         {
-			return new KakuButton(this.aggregator, this.logger);
+			return new KakuButton(this.aggregator, this.logger, this.sensorEventPublisher);
         }
 
 		public override string ToString ()

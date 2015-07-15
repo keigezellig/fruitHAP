@@ -1,5 +1,5 @@
 ﻿using System;
-using FruitHap.StandardActions.Messages.Outbound;
+using FruitHap.StandardActions.Messages;
 
 namespace FruitHap.StandardActions
 {

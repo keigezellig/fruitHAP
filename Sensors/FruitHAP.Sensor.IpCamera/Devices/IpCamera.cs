@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Castle.Core.Logging;
-using FruitHAP.Core.Sensor;
 using FruitHAP.Core.Sensor.SensorTypes;
-using FruitHAP.Core.Sensor.SensorTypes;
-using System.Net.Http;
 
 namespace FruitHAP.Sensor.IpCamera.Devices
 {

@@ -6,20 +6,21 @@ using System.Collections.Generic;
 using FruitHAP.Core.SensorRepository;
 using FruitHAP.Core.Sensor.SensorTypes;
 using System.Linq;
+using FruitHAP.Core.SensorEventPublisher;
 
 namespace FruitHAP.Sensor.Aggregated.Sensors
 {
-	public class ButtonWithCameraSensor : IButtonWithCameraSensor, ICloneable
+	public class ButtonWithCameraSensor : IAggregatedSensor, ICloneable
 	{
 		private IButton button;
 		private ICamera camera;
 		private ILogger logger;
-		private IEventAggregator aggregator;
 		private List<ISensor> inputs;
+		private ISensorEventPublisher sensorEventPublisher;
 
-		public ButtonWithCameraSensor (IEventAggregator aggregator, ILogger logger)
+		public ButtonWithCameraSensor (ISensorEventPublisher sensorEventPublisher, ILogger logger)
 		{
-			this.aggregator = aggregator;
+			this.sensorEventPublisher = sensorEventPublisher;
 			this.logger = logger;
 		}
 
@@ -36,9 +37,6 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 				return inputs;
 			}
 		}
-
-		public event EventHandler<CameraImageEventArgs> DataChanged;
-
 
 
 		public void Initialize (List<ISensor> inputs)
@@ -58,13 +56,13 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 			this.button = inputs.Single (f => f is IButton) as IButton;
 			this.camera = inputs.Single (f => f is ICamera) as ICamera;
 
-			this.button.ButtonPressed += Button_ButtonPressed;
+			sensorEventPublisher.Subscribe<SensorEvent> (OnButtonPressed, f => f.Sender == this.button);
 		}
 
-		void Button_ButtonPressed (object sender, EventArgs e)
+		void OnButtonPressed (EventData data)
 		{
 			var image = this.camera.GetImageAsync ().Result;
-			OnDataChanged (image);
+			sensorEventPublisher.Publish<SensorEvent> (this, image);
 		}
 		#endregion
 
@@ -72,29 +70,23 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 
 		public object Clone ()
 		{
-			return new ButtonWithCameraSensor (aggregator, logger);
+			return new ButtonWithCameraSensor (sensorEventPublisher, logger);
 		}
 
 		#endregion
 
-		protected void OnDataChanged (byte[] image)
-		{
-			var localEvent = DataChanged;
-			if (localEvent != null) 
-			{
-				localEvent.Invoke(this,new CameraImageEventArgs() { CameraImage = image});
-			}
-		}
+
 
 		public override string ToString ()
 		{
 			return string.Format ("[ButtonWithCameraSensor: Name={0}, Description={1}, Inputs={2}]", Name, Description, string.Join(",",Inputs.Select(i => i.Name)));
 		}
-		
 
-
-
-
+		public void Dispose ()
+		{
+			logger.Debug ("Unsubscribing from events");
+			sensorEventPublisher.Unsubscribe<SensorEvent> (OnButtonPressed);
+		}
 	}
 }
 

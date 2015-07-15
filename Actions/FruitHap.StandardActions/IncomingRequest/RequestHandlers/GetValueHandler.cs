@@ -1,10 +1,11 @@
 ﻿using System;
-using FruitHap.StandardActions.Messages.Outbound;
 using Castle.Core.Logging;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Core.SensorRepository;
+using FruitHap.StandardActions.IncomingRequest;
+using FruitHap.StandardActions.Messages;
 
-namespace FruitHap.StandardActions
+namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 {
 	public class GetValueHandler : IRequestHandler
 	{
@@ -22,7 +23,7 @@ namespace FruitHap.StandardActions
 			if (sensor == null)
 			{
 				logger.ErrorFormat("Sensor {0} not found in repository or no support for polling", request.SensorName);
-				return new SensorMessage() {TimeStamp = DateTime.Now, SensorName = request.SensorName, Data = "Sensor is not defined or has no support for polling", DataType = DataType.ErrorMessage.ToString()};
+				return new SensorMessage() {TimeStamp = DateTime.Now, SensorName = request.SensorName, Data = "Sensor is not defined or has no support for polling", EventType = RequestDataType.ErrorMessage.ToString()};
 			}
 
 			logger.InfoFormat("Found sensor: {0}",sensor.Name);
@@ -30,8 +31,7 @@ namespace FruitHap.StandardActions
 			return new SensorMessage () {
 				TimeStamp = DateTime.Now,
 				SensorName = sensor.Name,
-				SensorType = sensor.GetTypeString (),
-				DataType = DataType.Measurement.ToString (),
+				EventType = RequestDataType.GetValue.ToString(),
 				Data = sensor.GetValue()
 			};
 		}

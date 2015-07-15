@@ -1,5 +1,5 @@
 ﻿using System;
-using FruitHap.StandardActions.Messages.Outbound;
+using FruitHap.StandardActions.Messages;
 
 namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 {
@@ -9,7 +9,7 @@ namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 
 		public SensorMessage HandleRequest (SensorMessage request)
 		{
-			return new SensorMessage() {TimeStamp = DateTime.Now, Data = "Invalid request", DataType = DataType.ErrorMessage.ToString()};
+			return new SensorMessage() {TimeStamp = DateTime.Now, Data = "Invalid request", EventType = RequestDataType.ErrorMessage.ToString()};
 		}
 
 		#endregion

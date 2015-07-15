@@ -1,8 +1,8 @@
 ﻿using System;
-using FruitHap.StandardActions.Messages.Outbound;
 using FruitHap.StandardActions.IncomingRequest.RequestHandlers;
 using FruitHAP.Core.SensorRepository;
 using Castle.Core.Logging;
+using FruitHap.StandardActions.Messages;
 
 namespace FruitHap.StandardActions.IncomingRequest
 {
@@ -20,8 +20,8 @@ namespace FruitHap.StandardActions.IncomingRequest
 				return new EmptyRequestHandler ();
 			}
 
-			DataType requestType = DataType.Undefined;
-			bool isValidRequestType = DataType.TryParse (request.DataType, out requestType);
+			RequestDataType requestType = RequestDataType.Undefined;
+			bool isValidRequestType = RequestDataType.TryParse (request.EventType, out requestType);
 			if (!isValidRequestType)
 			{
 				return new UnknownRequestTypeHandler();
@@ -29,9 +29,9 @@ namespace FruitHap.StandardActions.IncomingRequest
 
 			switch (requestType) 
 			{
-			case DataType.Command:
+			case RequestDataType.Command:
 				return new CommandHandler (logger, sensorRepository);
-			case DataType.GetValue:
+			case RequestDataType.GetValue:
 				return new GetValueHandler (logger, sensorRepository);
 			default:
 				return new UnknownRequestTypeHandler();

@@ -55,6 +55,7 @@
     <Folder Include="Sensor\PacketData\" />
     <Folder Include="Sensor\PacketData\AC\" />
     <Folder Include="SensorPersister\" />
+    <Folder Include="SensorEventPublisher\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action\IAction.cs" />
@@ -77,13 +78,13 @@
     <Compile Include="Sensor\SensorTypes\ITwoWaySwitch.cs" />
     <Compile Include="Sensor\SensorTypes\ISwitch.cs" />
     <Compile Include="Sensor\IValueSensor.cs" />
-    <Compile Include="Sensor\SensorTypes\IButtonWithCameraSensor.cs" />
     <Compile Include="Sensor\IAggregatedSensor.cs" />
     <Compile Include="SensorPersister\ISensorPersister.cs" />
     <Compile Include="SensorPersister\SensorConfigurationEntry.cs" />
     <Compile Include="SensorPersister\SensorConfigurationProvider.cs" />
     <Compile Include="SensorPersister\SensorPersister.cs" />
-    <Compile Include="Sensor\SensorTypes\ISwitchWithCameraSensor.cs" />
+    <Compile Include="SensorEventPublisher\ISensorEventPublisher.cs" />
+    <Compile Include="SensorEventPublisher\SensorEventPublisher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -38,10 +38,12 @@
     <Reference Include="EasyNetQ">
       <HintPath>..\..\Engine\packages\EasyNetQ.0.50.1.392\lib\net40\EasyNetQ.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.Prism.PubSubEvents">
+      <HintPath>..\..\Engine\packages\Prism.PubSubEvents.1.1.2\lib\portable-sl5+windowsphone8+windows8+net40+wpa81\Microsoft.Practices.Prism.PubSubEvents.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Messages\Outbound\SensorMessage.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="IncomingRequest\IRequestHandler.cs" />
     <Compile Include="IncomingRequest\IncomingRequestAction.cs" />
@@ -55,11 +57,12 @@
     <Compile Include="IncomingRequest\IRequestHandlerFactory.cs" />
     <Compile Include="EventTrigger\Configuration\EventTriggerActionConfiguration.cs" />
     <Compile Include="EventTrigger\Configuration\EventTriggerActionConfigurationProvider.cs" />
+    <Compile Include="IncomingRequest\RequestDataType.cs" />
+    <Compile Include="Messages\SensorMessage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Messages\" />
-    <Folder Include="Messages\Outbound\" />
     <Folder Include="IncomingRequest\" />
     <Folder Include="EventTrigger\" />
     <Folder Include="IncomingRequest\RequestHandlers\" />

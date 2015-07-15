@@ -1,11 +1,11 @@
 ﻿using System;
-using FruitHap.StandardActions.Messages.Outbound;
 using Castle.Core.Logging;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Core.SensorRepository;
 using FruitHAP.Common.Helpers;
 using System.Linq;
 using System.Collections;
+using FruitHap.StandardActions.Messages;
 
 namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 {
@@ -33,7 +33,7 @@ namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 			if (sensor == null)
 			{
 				logger.ErrorFormat("Sensor {0} not found in repository", request.SensorName);
-				return new SensorMessage() {TimeStamp = DateTime.Now, SensorName = request.SensorName, Data = "Sensor is not defined", DataType = DataType.ErrorMessage.ToString()};
+				return new SensorMessage() {TimeStamp = DateTime.Now, SensorName = request.SensorName, Data = "Sensor is not defined", EventType = RequestDataType.ErrorMessage.ToString()};
 			}
 
 			logger.InfoFormat("Found sensor: {0}",sensor.Name);
@@ -70,7 +70,7 @@ namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 							TimeStamp = DateTime.Now,
 							SensorName = request.SensorName,
 							Data = string.Format("Argument {0} is not of the correct type for parameter {1} in operation {2} which should be {3}",actualArgument, methodParameter.Name, command.OperationName, methodParameter.ParameterType.GetType().Name ),
-							DataType = DataType.ErrorMessage.ToString ()
+							EventType = RequestDataType.ErrorMessage.ToString ()
 						};
 					}
 
@@ -84,7 +84,7 @@ namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 							TimeStamp = DateTime.Now,
 							SensorName = request.SensorName,
 							Data = "One or more arguments are not in the correct format",
-							DataType = DataType.ErrorMessage.ToString ()
+							EventType = RequestDataType.ErrorMessage.ToString ()
 						};
 					} 
 					else 
@@ -108,8 +108,7 @@ namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 				TimeStamp = DateTime.Now,
 				Data = callResult,
 				SensorName = sensor.Name,
-				SensorType = sensor.GetTypeString (),
-				DataType = DataType.Command.ToString ()
+				EventType = RequestDataType.Command.ToString ()
 			};
 		}
 
@@ -119,8 +118,7 @@ namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 				TimeStamp = DateTime.Now,
 				Data = string.Format("Operation {0} is not defined",operationName),
 				SensorName = sensor.Name,
-				SensorType = sensor.GetTypeString(),
-				DataType = DataType.ErrorMessage.ToString ()
+				EventType = RequestDataType.ErrorMessage.ToString ()
 			};
 		}
 
@@ -130,8 +128,7 @@ namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 				TimeStamp = DateTime.Now,
 				Data = string.Format("Not all required parameters are specified for operation {0} ",operationName),
 				SensorName = sensor.Name,
-				SensorType = sensor.GetTypeString(),
-				DataType = DataType.ErrorMessage.ToString ()
+				EventType = RequestDataType.ErrorMessage.ToString ()
 			};
 		}
 

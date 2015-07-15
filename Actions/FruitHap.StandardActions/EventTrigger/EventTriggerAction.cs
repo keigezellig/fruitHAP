@@ -3,7 +3,6 @@ using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
 using FruitHAP.Core;
 using FruitHAP.Core.Sensor.SensorTypes;
-using FruitHap.StandardActions.Messages.Outbound;
 using FruitHAP.Core.Action;
 using FruitHAP.Core.SensorRepository;
 using FruitHAP.Core.MQ;
@@ -12,6 +11,10 @@ using FruitHap.StandardActions.EventTrigger.Configuration;
 using System.Linq;
 using System.IO;
 using System.Reflection;
+using Microsoft.Practices.Prism.PubSubEvents;
+using System.Collections.Generic;
+using FruitHap.StandardActions.Messages;
+using FruitHAP.Core.SensorEventPublisher;
 
 namespace FruitHap.StandardActions.EventTrigger
 {
@@ -23,10 +26,22 @@ namespace FruitHap.StandardActions.EventTrigger
 		private IConfigProvider<EventTriggerActionConfiguration> configurationProvider;
 		private const string CONFIG_FILENAME = "event_trigger_action.json";
 		private EventTriggerActionConfiguration configuration;
-		private System.Collections.Generic.IEnumerable<ISensor> sensors;
 
-		public EventTriggerAction(ISensorRepository sensorRepository, ILogger logger, IConfigProvider<EventTriggerActionConfiguration> configurationProvider, IMessageQueueProvider publisher)
+		private SubscriptionToken switchEventSubscriptionToken;
+		private SubscriptionToken buttonEventSubscriptionToken;
+		private SubscriptionToken cameraEventSubscriptionToken;
+
+		private List<SubscriptionToken> tokens;
+
+
+		private ISensorEventPublisher eventPublisher;
+
+		public EventTriggerAction(ISensorRepository sensorRepository, 
+								  ILogger logger, IConfigProvider<EventTriggerActionConfiguration> configurationProvider, 
+								  IMessageQueueProvider publisher,
+			ISensorEventPublisher eventPublisher)
 		{
+			this.eventPublisher = eventPublisher;
 			this.sensorRepository = sensorRepository;
 			this.logger = logger;
 			this.mqProvider = publisher;
@@ -39,87 +54,57 @@ namespace FruitHap.StandardActions.EventTrigger
 			logger.InfoFormat ("Loading configuration");
 			configuration = configurationProvider.LoadConfigFromFile (Path.Combine (Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location), CONFIG_FILENAME));
 
-			sensors = sensorRepository.GetSensors ().Where (sns => this.configuration.Sensors.Contains (sns.Name));
-			if (sensors.Count() == 0) 
+			bool isAnyActionTriggered = sensorRepository.GetSensors ().Any (sns => this.configuration.Sensors.Contains (sns.Name));
+			if (!isAnyActionTriggered) 
 			{
 				logger.Warn ("This action will never be triggered. If this isn't correct, please check your configuration");
 			}
-			foreach (var sensor in sensors) 
+
+			Subscribe (this.configuration.Sensors);
+		}
+
+		 void Subscribe (List<string> sensorNames)
+		{
+			tokens = new List<SubscriptionToken> ();
+			logger.Debug ("Subscribing to sensor events");
+			foreach (string name in sensorNames) 
 			{
-				if (sensor is IButton) 
-				{
-					(sensor as IButton).ButtonPressed += Button_ButtonPressed;
-					logger.InfoFormat ("Sensor {0} will trigger this action", sensor.Name);
-				}
-
-				if (sensor is ISwitch) 
-				{
-					(sensor as ISwitch).StateChanged += Switch_StateChanged;
-					logger.InfoFormat ("Sensor {0} will trigger this action", sensor.Name);
-				}
-
-				if (sensor is IButtonWithCameraSensor) 
-				{
-					(sensor as IButtonWithCameraSensor).DataChanged += ButtonWithCameraSensor_DataChanged;
-					logger.InfoFormat ("Sensor {0} will trigger this action", sensor.Name);
-				}
-
-				if (sensor is ISwitchWithCameraSensor) 
-				{
-					(sensor as ISwitchWithCameraSensor).DataChanged += ButtonWithCameraSensor_DataChanged;
-					logger.InfoFormat ("Sensor {0} will trigger this action", sensor.Name);
-				}
+				tokens.Add (eventPublisher.SubscribeWithToken<SensorEvent> (HandleSensorMessage, f => f.Sender.Name == name));
+			}
 
 
+		} 
+
+		void UnSubscribe ()
+		{
+			logger.Debug ("Unsubscribing from sensor events");
+			foreach (var token in tokens) 
+			{
+				eventPublisher.Unsubscribe<SensorEvent> (token);
 			}
 
 		}
 
-		void ButtonWithCameraSensor_DataChanged (object sender, CameraImageEventArgs e)
-		{
-			var sensorName = (sender as ISensor).Name;
+		void HandleSensorMessage (EventData data)
+		{			
 			var sensorMessage = new SensorMessage () 
 			{
 				TimeStamp = DateTime.Now,
-				SensorName = sensorName,
-				SensorType = (sender as ISensor).GetTypeString(),
-				Data = e.CameraImage,
-				DataType = DataType.Event.ToString()
+				SensorName = data.Sender.Name,
+				Data = data.OptionalData,
+				EventType = data.EventName
 			};
 			logger.InfoFormat ("Message sent {0}", sensorMessage);
 			mqProvider.Publish (sensorMessage, configuration.RoutingKey);
 		}
+			
 
-
-		void Switch_StateChanged (object sender, SwitchEventArgs e)
+		public void Dispose ()
 		{
-			var sensorName = (sender as ISensor).Name;
-			var sensorMessage = new SensorMessage () 
-			{
-				TimeStamp = DateTime.Now,
-				SensorName = sensorName,
-				SensorType = (sender as ISensor).GetTypeString(),
-				Data = e.NewState.ToString(),
-				DataType = DataType.Event.ToString()
-			};
-			logger.InfoFormat ("Message sent {0}", sensorMessage);
-			mqProvider.Publish (sensorMessage, configuration.RoutingKey);
-		}
+			logger.DebugFormat("Dispose action {0}", this);
+			UnSubscribe ();
 
-		void Button_ButtonPressed (object sender, EventArgs e)
-		{
-			var sensorName = (sender as ISensor).Name;
-			var sensorMessage = new SensorMessage () {
-				TimeStamp = DateTime.Now,
-				SensorName = sensorName,
-				Data = null,
-				SensorType = (sender as ISensor).GetTypeString(),
-				DataType = DataType.Event.ToString()
-			};
-			logger.InfoFormat ("Message sent {0}", sensorMessage);
-			mqProvider.Publish (sensorMessage, configuration.RoutingKey);
 		}
-
 	}
 }
 

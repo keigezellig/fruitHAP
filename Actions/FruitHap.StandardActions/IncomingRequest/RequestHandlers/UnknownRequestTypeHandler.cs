@@ -1,5 +1,5 @@
 ﻿using System;
-using FruitHap.StandardActions.Messages.Outbound;
+using FruitHap.StandardActions.Messages;
 
 namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 {
@@ -13,8 +13,7 @@ namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 				TimeStamp = DateTime.Now,
 				Data = "Unknown data type in request",
 				SensorName = request.SensorName,
-				SensorType = request.SensorType,
-				DataType = DataType.ErrorMessage.ToString ()
+				EventType = RequestDataType.ErrorMessage.ToString ()
 			};
 		}
 

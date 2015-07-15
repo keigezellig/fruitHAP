@@ -21,6 +21,7 @@ using FruitHAP.Core;
 using FruitHAP.Core.MQ;
 using FruitHAP.Core.Controller;
 using FruitHAP.Core.SensorPersister;
+using FruitHAP.Core.SensorEventPublisher;
 
 namespace FruitHAP.Startup
 {
@@ -115,6 +116,11 @@ namespace FruitHAP.Startup
                Component.For<IEventAggregator>()
                    .ImplementedBy<EventAggregator>()
                    .LifestyleSingleton());
+
+			container.Register(
+				Component.For<ISensorEventPublisher>()
+				.ImplementedBy<SensorEventPublisher>()
+				.LifestyleSingleton());
         }
 
         private void RegisterService(IWindsorContainer container)

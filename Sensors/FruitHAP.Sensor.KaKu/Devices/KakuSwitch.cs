@@ -8,6 +8,7 @@ using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Sensor.KaKu.Common;
 using FruitHAP.Core.Sensor.SensorTypes;
 using FruitHAP.Sensor.PacketData.AC;
+using FruitHAP.Core.SensorEventPublisher;
 
 namespace FruitHAP.Sensor.KaKu
 {
@@ -17,9 +18,11 @@ namespace FruitHAP.Sensor.KaKu
 		private Command offCommand;
 		private SwitchState state;
 		private Trigger trigger;
+		private ISensorEventPublisher sensorEventPublisher;
 
-		public KakuSwitch(IEventAggregator aggregator, ILogger logger) : base(aggregator,logger)
+		public KakuSwitch(IEventAggregator aggregator, ILogger logger, ISensorEventPublisher sensorEventPublisher) : base(aggregator,logger)
 		{
+			this.sensorEventPublisher = sensorEventPublisher;
 		}
 
 		public Command OnCommand {
@@ -47,18 +50,12 @@ namespace FruitHAP.Sensor.KaKu
 				trigger = value;
 			}
 		}
-			
-
-		#region ISwitch implementation
-
-		public event EventHandler<SwitchEventArgs> StateChanged;
 
 		public SwitchState GetState ()
 		{
 			return state;
 		}
 
-		#endregion
 
 		public object GetValue ()
 		{
@@ -69,7 +66,7 @@ namespace FruitHAP.Sensor.KaKu
 
 		public override object Clone ()
 		{
-			return new KakuSwitch(this.aggregator, this.logger);
+			return new KakuSwitch(this.aggregator, this.logger, this.sensorEventPublisher);
 		}
 
 		#endregion
@@ -81,7 +78,25 @@ namespace FruitHAP.Sensor.KaKu
 			{										
 				state = newState;
 				logger.InfoFormat ("State changed to {0}",state);
-				OnStateChanged(newState);
+
+				bool fireEvent = true;
+				switch (trigger) 
+				{
+				case Trigger.On:
+					fireEvent = (state == SwitchState.On);
+					break;
+				case Trigger.Off:
+					fireEvent = (state == SwitchState.Off);
+					break;			
+				}
+
+				logger.DebugFormat("Trigger: {2}, New: {0}, FireEvent: {1}",state,fireEvent, trigger);
+
+				if (fireEvent) 
+				{
+					sensorEventPublisher.Publish<SensorEvent> (this, state.ToString ());
+				}
+
 			}
 
 		}
@@ -99,31 +114,7 @@ namespace FruitHAP.Sensor.KaKu
 			}
 
 			return SwitchState.Undefined;
-
 		}
-
-		protected virtual void OnStateChanged(SwitchState newState)
-		{
-			bool fireEvent = true;
-			switch (trigger) 
-			{
-			case Trigger.On:
-				fireEvent = (newState == SwitchState.On);
-				break;
-			case Trigger.Off:
-				fireEvent = (newState == SwitchState.Off);
-				break;			
-			}
-
-			logger.DebugFormat("Trigger: {2}, New: {0}, FireEvent: {1}",newState,fireEvent, trigger);
-
-			if ( (fireEvent) && (StateChanged != null))
-			{
-				var localEvent = StateChanged;
-				localEvent.Invoke (this, new SwitchEventArgs () { NewState = newState });
-			}
-		}
-
 		public override string ToString ()
 		{
 			return string.Format ("[KakuSwitch: {0}, OnCommand={1}, OffCommand={2}, Trigger={3}]", base.ToString(), OnCommand, OffCommand,Trigger);

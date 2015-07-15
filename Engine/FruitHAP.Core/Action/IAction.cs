@@ -1,6 +1,8 @@
-﻿namespace FruitHAP.Core.Action
+﻿using System;
+
+namespace FruitHAP.Core.Action
 {
-    public interface IAction
+    public interface IAction : IDisposable
     {
         void Initialize();
     }
