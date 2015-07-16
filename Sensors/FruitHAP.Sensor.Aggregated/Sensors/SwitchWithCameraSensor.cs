@@ -6,6 +6,7 @@ using FruitHAP.Core.Sensor;
 using System.Collections.Generic;
 using System.Linq;
 using FruitHAP.Core.SensorEventPublisher;
+using FruitHAP.Common.Helpers;
 
 namespace FruitHAP.Sensor.Aggregated
 {
@@ -57,7 +58,7 @@ namespace FruitHAP.Sensor.Aggregated
 		void OnSwitchStateChanged (EventData data)
 		{
 			var image = this.camera.GetImageAsync ().Result;
-			sensorEventPublisher.Publish<SensorEvent> (this, image);
+			sensorEventPublisher.Publish<SensorEvent> (this, Convert.ToBase64String(image));
 		}
 			
 		#endregion

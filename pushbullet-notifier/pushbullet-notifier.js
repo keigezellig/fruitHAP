@@ -4,6 +4,7 @@ var PushBullet = require('pushbullet');
 var pusher = new PushBullet(config.pushbullet.apikey);
 var context = new require('rabbit.js').createContext(config.mq.connection_string);
 var moment = require('moment');
+moment.locale('nl')
 
 var deviceParams = {channel_tag: config.pushbullet.channel};
 var imgPath = __dirname + "/image.jpg";
@@ -16,14 +17,14 @@ sub.on('data', function(alert)
   var alertObject = JSON.parse(alert);
   if (alertObject.SensorName == 'DoorbellMonitor')
 	  {
-	  var timestamp = new Date(alertObject.Timestamp);
+	  var timestamp = new Date(alertObject.TimeStamp);
+          console.log(timestamp);
+	  var formatted = moment(timestamp).format('LLLL');
+	  console.log(formatted);
 
-	  if (alertObject.Data != null && alertObject.Data != "" )
-	  {
-	      base64_decode(alertObject.Data, imgPath);
-	  }
 
-	    var noteBody = config.pushbullet.note_text+" "+moment(timestamp).format('LLLL');
+
+	    var noteBody = config.pushbullet.note_text+" "+formatted;
 
 	    console.log("Sending note");
 	    pusher.note(deviceParams, config.pushbullet.note_title, noteBody, function(error, response)
@@ -35,18 +36,27 @@ sub.on('data', function(alert)
 	    }
 	  
   	    });
-  }
+  
 
+  	  if (alertObject.Data != null && alertObject.Data != "" )
+	  {
+	      console.log("Image data found, decoding");
+	      base64_decode(alertObject.Data, imgPath);
+	  
   console.log("Sending image");
   pusher.file(deviceParams, imgPath, 'Camera image', function(error, response)
   {
       if (error)
       {
-          console.log("Error while sending image to push bullet: "+error.message);
+          console.log("Error while sending image to push bullet: "+error);
+	  console.log(response);
+	  
       }
-      console.log("Deleting temp image file");
-      fs.unlinkSync(imgPath);
+      //console.log("Deleting temp image file");
+      //fs.unlinkSync(imgPath);
   });
+}
+}
  
 });
 
