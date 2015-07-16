@@ -27,6 +27,8 @@ namespace FruitHAP.Controller.Rfx.PacketHandlers
 		{
 			var decodedData = GetData (data);
 			aggregator.GetEvent<ACPacketEvent>().Publish(new ControllerEventData<ACPacket>() { Direction = Direction.FromController, Payload = decodedData});
+			logger.Debug ("Published event");
+
 		}
 		#endregion
 
@@ -40,6 +42,8 @@ namespace FruitHAP.Controller.Rfx.PacketHandlers
 			pdu.UnitCode = rawData[8];
 			pdu.Command = (Command)rawData[9];
 			pdu.Level = (byte)(rawData [11] >> 4);
+
+			logger.DebugFormat("Decoded packet: {0}", pdu);
 
 			return pdu;
 		}

@@ -20,6 +20,8 @@ using NLog;
 using FruitHAP.Core;
 using FruitHAP.Core.MQ;
 using FruitHAP.Core.Controller;
+using FruitHAP.Core.SensorPersister;
+using FruitHAP.Core.SensorEventPublisher;
 
 namespace FruitHAP.Startup
 {
@@ -63,14 +65,15 @@ namespace FruitHAP.Startup
         private void RegisterDeviceRepository(IWindsorContainer container)
         {
             container.Register(
-                Component.For<ISensorLoader>()
-                    .ImplementedBy<SensorLoader>()
-                    .LifestyleSingleton());
-
-            container.Register(
                Component.For<ISensorRepository>()
                    .ImplementedBy<SensorRepository>()
                    .LifestyleSingleton());
+
+			container.Register(
+				Component.For<ISensorPersister>()
+				.ImplementedBy<SensorPersister>()
+				.LifestyleSingleton());
+			
 
             
         }
@@ -87,7 +90,7 @@ namespace FruitHAP.Startup
 
         private void LoadActionFromDirectory(IWindsorContainer container, string actionDirectory)
         {
-            var logger = container.Resolve<ILogger>();
+            var logger = container.Resolve<Castle.Core.Logging.ILogger>();
 
             logger.InfoFormat("Loading actions from directory {0}", actionDirectory);
             
@@ -95,6 +98,12 @@ namespace FruitHAP.Startup
                 .BasedOn<IAction>()
                 .WithService.FromInterface()
                 .LifestyleSingleton());
+
+			container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(actionDirectory))
+				.BasedOn(typeof (IConfigProvider<>))
+				.WithService.Base()
+				.LifestyleSingleton());
+			
 
             logger.InfoFormat("Done loading actions from directory {0}", actionDirectory);
 
@@ -107,6 +116,11 @@ namespace FruitHAP.Startup
                Component.For<IEventAggregator>()
                    .ImplementedBy<EventAggregator>()
                    .LifestyleSingleton());
+
+			container.Register(
+				Component.For<ISensorEventPublisher>()
+				.ImplementedBy<SensorEventPublisher>()
+				.LifestyleSingleton());
         }
 
         private void RegisterService(IWindsorContainer container)
@@ -143,7 +157,7 @@ namespace FruitHAP.Startup
 
 		void LoadControllersFromDirectory (IWindsorContainer container, string controllerDirectory)
 		{
-			var logger = container.Resolve<ILogger>();
+			var logger = container.Resolve<Castle.Core.Logging.ILogger>();
 
 			logger.InfoFormat("Loading controllers from directory {0}", controllerDirectory);
 
@@ -168,7 +182,7 @@ namespace FruitHAP.Startup
 
 		void LoadSensorsFromDirectory (IWindsorContainer container, string sensorDirectory)
 		{
-			var logger = container.Resolve<ILogger>();
+			var logger = container.Resolve<Castle.Core.Logging.ILogger>();
 
 			logger.InfoFormat("Loading sensors from directory {0}", sensorDirectory);
 

@@ -1,3 +1,8 @@
- [{"Name":"Doorbell","Description":"My doorbell","SensorType":"KakuButton","Parameters":{"DeviceId":"0x00E41822","UnitCode":"0x01","Command":"4"}},
-  {"Name":"DoorCamera","Description":"My doorcam","SensorType":"IpCamera","Parameters":{"Username":"visitor","Password":"visitor","Url":"http://bihac/snapshot.cgi"}},
-  {"Name":"ProximityDetector","Description":"My proximity detector","SensorType":"KakuSwitch","Parameters":{"DeviceId":"0x00D9D6Da","UnitCode":"0x0A","OffCommand":"0","OnCommand":"1"}}]
+[{"Type":"KakuButton","IsAggegrate":false,"Parameters":{"Command":4,"Name":"DoorbellButton","Description":"My doorbell","DeviceId":14948386,"UnitCode":1}},
+ {"Type":"IpCamera","IsAggegrate":false,"Parameters":{"Name":"DoorCamera","Description":"My doorcam","Url":"http://bihac/snapshot.cgi","Username":"visitor","Password":"visitor"}},
+ {"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"ProximityDetector","Description":"My proximity detector","DeviceId":0xD9D6DA,"UnitCode":10}},
+ {"Type":"ButtonWithCameraSensor","IsAggegrate":true,"Parameters":{"Name":"DoorbellMonitor","Description":"My doorbell monitor","Inputs":["DoorbellButton","DoorCamera"]}},
+ {"Type":"SwitchWithCameraSensor","IsAggegrate":true,"Parameters":{"Name":"TestAggregate","Description":"My doorbell monitor","Inputs":["ProximityDetector","DoorCamera"]}},
+ {"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"ProximityDetectorOn","Description":"My proximity detector","DeviceId":0xD9D6DA,"UnitCode":10,"Trigger":"On"}},
+ {"Type":"SwitchWithCameraSensor","IsAggegrate":true,"Parameters":{"Name":"CameraOnOnly","Description":"My doorbell monitor","Inputs":["ProximityDetectorOn","DoorCamera"]}},
+]

@@ -91,7 +91,7 @@ namespace FruitHAP.Controller.Rfx
 					LoadConfiguration ();
 					OpenRfxDevice ();
 					isStarted = true;
-				} catch (Exception ex) {
+				} catch (Exception) {
 					isStarted = false;
 					throw;
 				}
@@ -225,6 +225,7 @@ namespace FruitHAP.Controller.Rfx
 			var physicalInterface = physicalInterfaceFactory.GetPhysicalInterface (configuration.ConnectionString);
 			ProtocolReceiverSensitivityFlags sensitivityFlags = GetSensitivityFlags (packetTypes);
 			rfxDevice.Open (physicalInterface, sensitivityFlags);
+			System.Threading.Thread.Sleep (1000);
 		}
 
 	}

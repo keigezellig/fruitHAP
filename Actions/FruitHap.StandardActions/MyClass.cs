@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FruitHap.MyActions
+namespace FruitHap.StandardActions
 {
 	public class MyClass
 	{

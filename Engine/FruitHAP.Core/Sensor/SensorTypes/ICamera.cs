@@ -2,7 +2,7 @@
 
 namespace FruitHAP.Core.Sensor.SensorTypes
 {
-    public interface ICamera : ISensor
+    public interface ICamera : IValueSensor
     {
         Task<byte[]> GetImageAsync();
     }

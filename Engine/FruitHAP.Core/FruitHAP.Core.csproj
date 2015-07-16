@@ -33,14 +33,14 @@
       <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
-    <Reference Include="EasyNetQ">
-      <HintPath>..\packages\EasyNetQ.0.49.3.390\lib\net40\EasyNetQ.dll</HintPath>
-    </Reference>
     <Reference Include="RabbitMQ.Client">
       <HintPath>..\packages\RabbitMQ.Client.3.5.3\lib\net40\RabbitMQ.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism.PubSubEvents">
       <HintPath>..\packages\Prism.PubSubEvents.1.1.2\lib\portable-sl5+windowsphone8+windows8+net40+wpa81\Microsoft.Practices.Prism.PubSubEvents.dll</HintPath>
+    </Reference>
+    <Reference Include="EasyNetQ">
+      <HintPath>..\packages\EasyNetQ.0.50.1.392\lib\net40\EasyNetQ.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -54,32 +54,37 @@
     <Folder Include="MQ\Helpers\" />
     <Folder Include="Sensor\PacketData\" />
     <Folder Include="Sensor\PacketData\AC\" />
+    <Folder Include="SensorPersister\" />
+    <Folder Include="SensorEventPublisher\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action\IAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sensor\ISensor.cs" />
-    <Compile Include="Sensor\ISensorInitializer.cs" />
     <Compile Include="Sensor\SensorTypes\IButton.cs" />
     <Compile Include="Sensor\SensorTypes\ICamera.cs" />
-    <Compile Include="SensorRepository\ISensorLoader.cs" />
     <Compile Include="SensorRepository\ISensorRepository.cs" />
-    <Compile Include="SensorRepository\SensorDefinition.cs" />
-    <Compile Include="SensorRepository\SensorLoader.cs" />
     <Compile Include="SensorRepository\SensorRepository.cs" />
     <Compile Include="Service\ISensorProcessingService.cs" />
     <Compile Include="Service\SensorProcessingService.cs" />
     <Compile Include="MQ\RabbitMqProvider.cs" />
     <Compile Include="MQ\IMessageQueueProvider.cs" />
     <Compile Include="MQ\Helpers\TypeNameSerializer.cs" />
-    <Compile Include="SensorRepository\SensorLoaderConfigProvider.cs" />
-    <Compile Include="Sensor\SensorTypes\IReadOnlySwitch.cs" />
-    <Compile Include="Sensor\SensorTypes\ISwitch.cs" />
     <Compile Include="Sensor\PacketData\AC\ACPacketEvent.cs" />
     <Compile Include="Controller\ControllerEventData.cs" />
     <Compile Include="Controller\IController.cs" />
     <Compile Include="Controller\IControllerPacketHandler.cs" />
     <Compile Include="Sensor\PacketData\AC\ACPacket.cs" />
+    <Compile Include="Sensor\SensorTypes\ITwoWaySwitch.cs" />
+    <Compile Include="Sensor\SensorTypes\ISwitch.cs" />
+    <Compile Include="Sensor\IValueSensor.cs" />
+    <Compile Include="Sensor\IAggregatedSensor.cs" />
+    <Compile Include="SensorPersister\ISensorPersister.cs" />
+    <Compile Include="SensorPersister\SensorConfigurationEntry.cs" />
+    <Compile Include="SensorPersister\SensorConfigurationProvider.cs" />
+    <Compile Include="SensorPersister\SensorPersister.cs" />
+    <Compile Include="SensorEventPublisher\ISensorEventPublisher.cs" />
+    <Compile Include="SensorEventPublisher\SensorEventPublisher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

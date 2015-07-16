@@ -8,39 +8,42 @@ using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Sensor.KaKu.Common;
 using FruitHAP.Sensor.PacketData.AC;
 using FruitHAP.Core.Controller;
+using FruitHAP.Core.SensorEventPublisher;
 
 namespace FruitHAP.Sensor.KaKu.Devices
 {
 	public class KakuButton : KakuDevice, IButton
     {       
 		private Command command;
+		private ISensorEventPublisher sensorEventPublisher;
 	
-		public KakuButton(IEventAggregator aggregator, ILogger logger) : base(aggregator,logger)
-        {            
+		public KakuButton(IEventAggregator aggregator, ILogger logger, ISensorEventPublisher sensorEventPublisher) : base(aggregator,logger)
+        {
+			this.sensorEventPublisher = sensorEventPublisher;            
         }
 
-
-        protected override void InitializeSpecificDevice (Dictionary<string, string> parameters)
-		{
-			command = (Command)Enum.Parse (typeof(Command), parameters ["Command"]);
+		public Command Command {
+			get {
+				return this.command;
+			}
+			set {
+				command = value;
+			}
 		}
+        
 
-
-		public event EventHandler ButtonPressed;
 
 		protected override void ProcessReceivedACDataForThisDevice (ACPacket data)
 		{
 			if (data.Command == command) 
-			{
-				logger.Debug ("About to Fire event");
-				OnButtonPressed();
+			{				
+				sensorEventPublisher.Publish<SensorEvent> (this, null);
 			}
 		}
-			        
 
 		public void PressButton ()
 		{
-			logger.Debug ("Sending PressButton to module..");
+			logger.Debug ("Sending PressButton to controller..");
 			var data = new ACPacket () {
 				DeviceId = deviceId,
 				UnitCode = unitCode,
@@ -48,26 +51,23 @@ namespace FruitHAP.Sensor.KaKu.Devices
 				Level = 0
 			};
 
-			aggregator.GetEvent<ACPacketEvent> ().Publish (new ControllerEventData<ACPacket> () { Payload = data });
+			aggregator.GetEvent<ACPacketEvent> ().Publish (new ControllerEventData<ACPacket> () { Direction = Direction.ToController, Payload = data });
 
 		}
 
-        protected virtual void OnButtonPressed()
-        {
-            if (ButtonPressed != null)
-            {
-				logger.Debug ("Firing event");
-				var localEvent = ButtonPressed;
-                localEvent(this, null);
-            }
-        }
+       
 			       
 
 		public override object Clone ()
         {
-			return new KakuButton(this.aggregator, this.logger);
+			return new KakuButton(this.aggregator, this.logger, this.sensorEventPublisher);
         }
 
+		public override string ToString ()
+		{
+			return string.Format ("[KakuButton: {0}, Command={1}]", base.ToString(), Command);
+		}
+		
 
     }
 }
