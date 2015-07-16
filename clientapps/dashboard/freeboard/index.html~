@@ -17,39 +17,7 @@
                     $(function()
                     { //DOM Ready
                         freeboard.initialize(true);
-			freeboard.loadDashboard(
-			{
-{"version":1,"allow_edit":true,"plugins":[],"panes":[{"title":"Vandaag","width":1,"row":{"3":1,"4":1,"5":1},"col":{"3":1,"4":1,"5":1},"col_width":5,"widgets":[{"type":"text_widget","settings":{"size":"regular","value":"datasources[\"Clock\"][\"full_string_value\"]","animate":true}}]},{"title":"Voor","width":1,"row":{"3":5,"4":5,"5":5},"col":{"3":1,"4":2,"5":1},"col_width":2,"widgets":[{"type":"text_widget","settings":{"title":"Laatste keer aangebeld","size":"regular","value":"16-7-2015 13:44","animate":true}},{"type":"picture","settings":{"src":"http://bihac/snapshot.cgi","refresh":0}},{"type":"text_widget","settings":{"title":"Live feed","size":"regular","value":"datasources[\"Clock\"][\"time_string_value\"]","animate":true}},{"type":"picture","settings":{"src":"http://bihac/snapshot.cgi","refresh":5}}]},{"title":"Opzij","width":1,"row":{"3":27,"4":27,"5":5},"col":{"3":1,"4":2,"5":3},"col_width":2,"widgets":[{"type":"text_widget","settings":{"title":"Laatste activiteit op","size":"regular","value":"12-01-2015 15:00","animate":true}},{"type":"picture","settings":{"src":"http://bihac/snapshot.cgi","refresh":0}},{"type":"text_widget","settings":{"title":"Live feed","size":"regular","value":"datasources[\"Clock\"][\"time_string_value\"]","animate":true}},{"type":"picture","settings":{"src":"http://bihac/snapshot.cgi","refresh":10}}]},{"title":"Buitentemperatuur","width":1,"row":{"3":5,"4":5,"5":27},"col":{"3":3,"4":4,"5":1},"col_width":1,"widgets":[{"type":"gauge","settings":{"title":"","value":"25","units":"C","min_value":"-30","max_value":"40"}},{"type":"sparkline","settings":{"title":"","value":"25"}}]},{"title":"Windkracht","width":1,"row":{"3":17,"4":5,"5":27},"col":{"3":3,"4":1,"5":2},"col_width":1,"widgets":[{"type":"gauge","settings":{"title":"","value":"4","units":"bft","min_value":"1","max_value":"12"}},{"type":"sparkline","settings":{"title":"","value":"4"}}]},{"title":"Luchtdruk","width":1,"row":{"3":29,"4":17,"5":39},"col":{"3":3,"4":4,"5":2},"col_width":1,"widgets":[{"type":"gauge","settings":{"value":"1020","units":"hPa","min_value":"700","max_value":"1100"}},{"type":"sparkline","settings":{"title":"","value":"1020"}}]},{"title":"Windrichting","width":1,"row":{"3":41,"4":17,"5":27},"col":{"3":3,"4":1,"5":3},"col_width":2,"widgets":[{"type":"text_widget","settings":{"size":"regular","value":"O","animate":true}},{"type":"pointer","settings":{"direction":"90"}}]},{"title":"Luchtvochtigheid","width":1,"row":{"3":49,"4":49,"5":39},"col":{"3":1,"4":2,"5":1},"col_width":1,"widgets":[{"type":"gauge","settings":{"value":"45","units":"%","min_value":0,"max_value":100}},{"type":"sparkline","settings":{"value":"45"}}]},{"title":"Lichten","width":1,"row":{"5":5},"col":{"5":5},"col_width":1,"widgets":[{"type":"indicator","settings":{"title":"Voordeur"}},{"type":"indicator","settings":{"title":"Opzij"}},{"type":"indicator","settings":{"title":"Achterdeur"}},{"type":"indicator","settings":{"title":"Schuurdeur","value":"1=1"}}]}],"datasources":[{"name":"Clock","type":"clock","settings":{"refresh":1}},
-{
-            "name": "Jon",
-            "type": "node_js",
-            "settings": {
-                "url": "http://localhost:8989/shows",
-                "eventName": "house.stark.jon",
-                "rooms": [
-                    {
-                        "roomName": "got",
-                        "roomEvent": "subscribe"
-                    }
-                ]
-            }
-        },
-        {
-            "name": "Tyrion",
-            "type": "node_js",
-            "settings": {
-                "url": "http://localhost:8989/shows",
-                "eventName": "house.lannister.tyrion",
-                "rooms": [
-                    {
-                        "roomName": "got",
-                        "roomEvent": "subscribe"
-                    }
-                ]
-            }
-        }
-],"columns":5}
-			});
+			freeboard.loadDashboard(data, function()
 
                         var hashpattern = window.location.hash.match(/(&|#)source=([^&]+)/);
                         if (hashpattern !== null) {
