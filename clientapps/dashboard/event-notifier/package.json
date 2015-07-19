@@ -1,0 +1,13 @@
+{
+  "name": "event-notifier",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "socket.io": "",
+    "rabbit.js": "",
+    "moment":""
+  }
+}
