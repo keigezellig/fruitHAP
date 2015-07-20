@@ -101,6 +101,7 @@ window.dyngaugeID = 0;
             }
         ],
         newInstance: function (settings, newInstanceCallback) {
+            console.log("Creating instance of plugin");
             newInstanceCallback(new dynamicGaugeWidget(settings));
         }
     });
