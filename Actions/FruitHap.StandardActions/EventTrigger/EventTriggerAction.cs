@@ -1,8 +1,5 @@
 ﻿using System;
-using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
-using FruitHAP.Core;
-using FruitHAP.Core.Sensor.SensorTypes;
 using FruitHAP.Core.Action;
 using FruitHAP.Core.SensorRepository;
 using FruitHAP.Core.MQ;
@@ -18,7 +15,7 @@ using FruitHAP.Core.SensorEventPublisher;
 
 namespace FruitHap.StandardActions.EventTrigger
 {
-	public class EventTriggerAction : IAction
+    public class EventTriggerAction : IAction
 	{
 		private readonly ISensorRepository sensorRepository;
 		private readonly ILogger logger;
@@ -26,11 +23,7 @@ namespace FruitHap.StandardActions.EventTrigger
 		private IConfigProvider<EventTriggerActionConfiguration> configurationProvider;
 		private const string CONFIG_FILENAME = "event_trigger_action.json";
 		private EventTriggerActionConfiguration configuration;
-
-		private SubscriptionToken switchEventSubscriptionToken;
-		private SubscriptionToken buttonEventSubscriptionToken;
-		private SubscriptionToken cameraEventSubscriptionToken;
-
+        
 		private List<SubscriptionToken> tokens;
 
 
@@ -86,13 +79,14 @@ namespace FruitHap.StandardActions.EventTrigger
 		}
 
 		void HandleSensorMessage (EventData data)
-		{			
-			var sensorMessage = new SensorMessage () 
+		{
+            var sensorMessage = new SensorMessage () 
 			{
 				TimeStamp = DateTime.Now,
 				SensorName = data.Sender.Name,
 				Data = data.OptionalData,
-				EventType = data.EventName
+                DataType = data.DataType.ToString(),
+				EventType = data.EventType
 			};
 			logger.InfoFormat ("Message sent {0}", sensorMessage);
 			mqProvider.Publish (sensorMessage, configuration.RoutingKey);

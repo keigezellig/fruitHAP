@@ -37,7 +37,7 @@ namespace FruitHAP.Sensor.KaKu.Devices
 		{
 			if (data.Command == command) 
 			{				
-				sensorEventPublisher.Publish<SensorEvent> (this, null);
+				sensorEventPublisher.Publish<SensorEvent> (this);
 			}
 		}
 
