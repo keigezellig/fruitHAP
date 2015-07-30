@@ -9,6 +9,7 @@ namespace FruitHap.StandardActions.Messages
 		public DateTime TimeStamp {get; set;}
 		public string SensorName { get; set;}
 		public object Data {get; set;}
+        public string DataType { get; set; }
 		public string EventType {get; set;}
 
 		public override string ToString ()

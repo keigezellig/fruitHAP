@@ -1,1 +1,4 @@
-{"RoutingKey":"alerts","Sensors":["DoorbellMonitor"]}
+{
+  "RoutingKey": "alerts",
+  "Sensors": [ "DoorbellMonitor" ]
+}

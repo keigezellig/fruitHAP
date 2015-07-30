@@ -16,12 +16,13 @@ namespace FruitHAP.Core.SensorEventPublisher
 
 		#region ISensorEventPublisher implementation
 
-		public void Publish<TEventType> (ISensor sender, object optionalData) where TEventType : PubSubEvent<EventData>, new()
+		public void Publish<TEventType> (ISensor sender, object optionalData = null, DataType dataType = DataType.NoData) where TEventType : PubSubEvent<EventData>, new()
 		{
 			var data = new EventData () {TimeStamp = DateTime.Now, 
-				EventName = typeof(TEventType).Name,
+				EventType = typeof(TEventType).Name,
 				Sender = sender,
-				OptionalData = optionalData 
+				OptionalData = optionalData,
+                DataType = dataType
 			};
 
 			aggregator.GetEvent<TEventType> ().Publish (data);
