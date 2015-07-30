@@ -46,7 +46,7 @@ namespace FruitHAP.Sensor.Aggregated
 			}
 
 			if ((!inputs.Any (input => input is ISwitch)) && (!inputs.Any (input => input is ICamera))) {
-				throw new ArgumentException ("This aggregated sensor needs a button type input and a switch type inputs");
+				throw new ArgumentException ("This aggregated sensor needs a camera input and a switch type input");
 			}
 
 			this.inputs = inputs;

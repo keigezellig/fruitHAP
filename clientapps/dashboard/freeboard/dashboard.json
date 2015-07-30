@@ -84,18 +84,17 @@
       "col_width": 2,
       "widgets": [
         {
-          "type": "text_widget",
+          "type": "dateformatter",
           "settings": {
-            "title": "Laatste keer aangebeld",
-            "size": "regular",
-            "value": "datasources[\"Doorbell\"][\"TimeStamp\"]",
-            "animate": true
+            "date": "datasources[\"Doorbell\"][\"TimeStamp\"]",
+            "format": "nl"
           }
         },
         {
           "type": "base64image",
           "settings": {
-            "img_data": "datasources[\"Doorbell\"][\"Data\"]"
+            "img_data": "datasources[\"Doorbell\"][\"Data\"]",
+            "height": 25
           }
         },
         {
