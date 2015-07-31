@@ -1,0 +1,13 @@
+﻿{
+  "fruitHAPSettings": {
+    "connectionString": "amqp://guest:guest@localhost",
+    "exchange": "FruitHAP_PubSubExchange",
+    "topic": "alerts"
+  },
+  "serverPort": 9999,
+  "namespace": "/sensoralerts",
+  "rooms": [
+    {"name": "outside", "sensors": ["DoorbellMonitor"]}
+  ]
+
+}
