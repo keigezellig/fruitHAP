@@ -4,21 +4,19 @@ A Home Automation Platform designed to run on a Raspberry Pi with extensibility 
 
 ### What is this all about? ###
 
-This first version (1.0) contains a sample setup which is used in my home to control the front doorbell and contains the following components:
+This version (2.0) contains a sample setup which is used in my home to control the front doorbell and contains the following components:
 
 * The Engine (the main component)
-* A module for the KlikAanKlikUit (KaKu) system (which is a 433 Mhz based X10 derivative system)
-* A module for an IP Camera
-* Support for the following sensor types: Button, Camera
-* Sample sensor configuration that defines one ip camera and one button (which are placed above my front door)
-* Sample action that sends an alert to the message queue when the button is pressed (when someone is at the door) containing a snapshot of the camera
-* A notifier script that monitors the message queue for alerts and send it through Pushbullet to another device
+* A controller for the KlikAanKlikUit (KaKu) system (which is a 433 Mhz based X10 derivative system)
+* A contoller for an IP Camera
+* Support for the following sensor types: Button, Camera, Switch, Button+Camera, Switch+Camera
+* A notifier script that monitors the message queue for alerts and send it through Pushbullet to another device (pushbullet-notifier)
 
-For more info about modules, sensors, actions and notifiers and general architecture see the Wiki
+For more in depth info about controllers, sensors, actions and general see my blog
 
-### How do I get set up? ###
+### Quick setup ###
 
-To get up and running with my sample setup, you need the following ingredients:
+Needed stuff:
 
 * A Raspberry PI (i use a Model B+, it should also work on other models, but i haven't tested it) 
 * A network connection for the Raspberry PI (either wired or wireless, I use a wireless dongle from Edimax)
@@ -45,7 +43,7 @@ Preparation:
 
 Sensor configuration:
 
-FruitHAP configuration resides in a couple of configuration files. For more detailed information see the Wiki.
+FruitHAP configuration resides in a couple of configuration files. 
 First you have to configure your sensors (i.e your doorbell and your ip camera).
 For your KaKu doorbell you have to find out which Device Id, Unit code and Command your **BUTTON** generates. If you use a RFXtrx433E like I do, you can use the RFXmngr program which comes with the device.
 Just connect your RFX to a USB port of your pc and run the program. Make sure the 'AC' checkbox is checked before connecting to the device (see the RFX user guide for more information for the right settings)
