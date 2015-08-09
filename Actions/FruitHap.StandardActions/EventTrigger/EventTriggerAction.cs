@@ -27,10 +27,6 @@ namespace FruitHap.StandardActions.EventTrigger
 		private const string CONFIG_FILENAME = "event_trigger_action.json";
 		private EventTriggerActionConfiguration configuration;
 
-		private SubscriptionToken switchEventSubscriptionToken;
-		private SubscriptionToken buttonEventSubscriptionToken;
-		private SubscriptionToken cameraEventSubscriptionToken;
-
 		private List<SubscriptionToken> tokens;
 
 

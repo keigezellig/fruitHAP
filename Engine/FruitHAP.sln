@@ -2,9 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{1D1CDC74-59E8-4B2F-A5FD-4780ACCD5E44}"
-	ProjectSection(SolutionItems) = preProject
-		SharedAssemblyInfo.cs = SharedAssemblyInfo.cs
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitHAP.Common", "FruitHAP.Common\FruitHAP.Common.csproj", "{179D28CA-9963-44F8-8073-845126C982CA}"
 EndProject
