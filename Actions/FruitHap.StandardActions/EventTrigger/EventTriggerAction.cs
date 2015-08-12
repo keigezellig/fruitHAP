@@ -90,7 +90,8 @@ namespace FruitHap.StandardActions.EventTrigger
 				Data = data.OptionalData,
 				EventType = data.EventName
 			};
-			logger.InfoFormat ("Message sent {0}", sensorMessage);
+			logger.Info ("Message sent to MQ");
+			logger.DebugFormat ("Message sent {0}", sensorMessage);
 			mqProvider.Publish (sensorMessage, configuration.RoutingKey);
 		}
 			
