@@ -18,18 +18,13 @@ sub.on('data', function(alert)
   if (alertObject.SensorName == 'DoorbellMonitor')
 	  {
 	  var timestamp = new Date(alertObject.TimeStamp);
-          console.log(timestamp);
 	  var formatted = moment(timestamp).format('LLLL');
-	  console.log(formatted);
-
-
 
 	    var noteBody = config.pushbullet.note_text+" "+formatted;
 
 	    console.log("Sending note");
 	    pusher.note(deviceParams, config.pushbullet.note_title, noteBody, function(error, response)
 	  {
-	    console.log("Response: "+JSON.stringify(response));
 	    if (error)
 	    {
 		console.log("Error while sending to push bullet: "+error.message);
@@ -52,8 +47,8 @@ sub.on('data', function(alert)
 	  console.log(response);
 	  
       }
-      //console.log("Deleting temp image file");
-      //fs.unlinkSync(imgPath);
+      console.log("Deleting temp image file");
+      fs.unlinkSync(imgPath);
   });
 }
 }
