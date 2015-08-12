@@ -4,7 +4,7 @@ A Home Automation Platform designed to run on a Raspberry Pi with extensibility 
 
 ### What is this all about? ###
 
-This version (2.0) contains a sample setup which is used in my home to control the front doorbell and contains the following components:
+This version contains a sample setup which is used in my home to control the front doorbell and contains the following components:
 
 * The Engine (the main component)
 * A controller for the KlikAanKlikUit (KaKu) system (which is a 433 Mhz based X10 derivative system)
@@ -29,7 +29,7 @@ Needed stuff:
 
 Preparation:
 
-* Download and unzip the Raspbian image to a temporary directory
+* Download and unzip the latest FruitHAP image (see [here](http://joosten-industries.nl/files/fruithap_images/) to a temporary directory
 * Put the image onto a flash card (i used one with 8GB) as follows (on linux)
 
   `dd bs=4M if=<path/to/raspbian_image> of=/dev/<flashcarddrive>`
