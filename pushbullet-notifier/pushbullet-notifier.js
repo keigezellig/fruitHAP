@@ -3,6 +3,8 @@ var config = get_config(__dirname + "/config.json");
 var PushBullet = require('pushbullet');
 var pusher = new PushBullet(config.pushbullet.apikey);
 var context = new require('rabbit.js').createContext(config.mq.connection_string);
+var moment = require('moment');
+moment.locale('nl')
 
 var deviceParams = {channel_tag: config.pushbullet.channel};
 var imgPath = __dirname + "/image.jpg";
@@ -13,35 +15,43 @@ sub.on('data', function(alert)
 { 
     console.log("Received alert!");
   var alertObject = JSON.parse(alert);
-  var timestamp = new Date(alertObject.Timestamp);
+  if (alertObject.SensorName == 'DoorbellMonitor')
+	  {
+	  var timestamp = new Date(alertObject.TimeStamp);
+	  var formatted = moment(timestamp).format('LLLL');
 
-  if (alertObject.EncodedImage != null && alertObject.EncodedImage != "" )
-  {
-      base64_decode(alertObject['EncodedImage'], imgPath);
-  }
+	    var noteBody = config.pushbullet.note_text+" "+formatted;
 
-    var noteBody = config.pushbullet.note_text+" "+timestamp;
+	    console.log("Sending note");
+	    pusher.note(deviceParams, config.pushbullet.note_title, noteBody, function(error, response)
+	  {
+	    if (error)
+	    {
+		console.log("Error while sending to push bullet: "+error.message);
+	    }
+	  
+  	    });
+  
 
-    console.log("Sending note");
-    pusher.note(deviceParams, config.pushbullet.note_title, noteBody, function(error, response)
-  {
-    console.log("Response: "+JSON.stringify(response));
-    if (error)
-    {
-        console.log("Error while sending to push bullet: "+error.message);
-    }
-  });
-
+  	  if (alertObject.Data != null && alertObject.Data != "" )
+	  {
+	      console.log("Image data found, decoding");
+	      base64_decode(alertObject.Data, imgPath);
+	  
   console.log("Sending image");
   pusher.file(deviceParams, imgPath, 'Camera image', function(error, response)
   {
       if (error)
       {
-          console.log("Error while sending image to push bullet: "+error.message);
+          console.log("Error while sending image to push bullet: "+error);
+	  console.log(response);
+	  
       }
       console.log("Deleting temp image file");
       fs.unlinkSync(imgPath);
   });
+}
+}
  
 });
 

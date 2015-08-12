@@ -5,22 +5,25 @@ using FruitHAP.Core.Action;
 using FruitHAP.Core.Sensor;
 using System.Configuration;
 using System;
+using FruitHAP.Core.SensorRepository;
+using FruitHAP.Core.Controller;
+using FruitHAP.Core.MQ;
 
 namespace FruitHAP.Core.Service
 {
     public class SensorProcessingService : ISensorProcessingService
     {
         private readonly ISensorRepository sensorRepository;
-        private readonly IEnumerable<ISensorModule> modules;
+        private readonly IEnumerable<IController> controllers;
         private readonly IEnumerable<IAction> actions;
         private readonly ILogger log;
 		private readonly IMessageQueueProvider mqPublisher;
 
-		public SensorProcessingService(ISensorRepository sensorRepository, IEnumerable<ISensorModule> modules, IEnumerable<IAction> actions, IMessageQueueProvider mqPublisher, ILogger log)
+		public SensorProcessingService(ISensorRepository sensorRepository, IEnumerable<IController> controllers, IEnumerable<IAction> actions, IMessageQueueProvider mqPublisher, ILogger log)
         {
 			this.mqPublisher = mqPublisher;
             this.sensorRepository = sensorRepository;
-            this.modules = modules;
+			this.controllers = controllers;
             this.actions = actions;
             this.log = log;
 			this.mqPublisher = mqPublisher;
@@ -30,57 +33,71 @@ namespace FruitHAP.Core.Service
         public void Start()
         {
 			string mqConnectionString = ConfigurationManager.AppSettings ["mqConnectionString"] ?? "";
-			string mqExchangeName = ConfigurationManager.AppSettings ["mqExchangeName"] ?? "";
-
-
-
-			if (!modules.Any())
-            {
-                log.Error("No modules loaded. Nothing to do");
-                return;
-            }
-
+			string mqPubSubExchangeName = ConfigurationManager.AppSettings ["mqPubSubExchangeName"] ?? "FruitHAP_PubSubExchange";
+			string mqRpcExchangeName = ConfigurationManager.AppSettings ["mqRpcExchangeName"] ?? "FruitHAP_RpcExchange";
+			string mqRpcQueueName = ConfigurationManager.AppSettings ["mqRpcQueueName"] ?? "FruitHAP_RpcQueue";
 				            
-            sensorRepository.Initialize();
+			try
+			{
+			if (!controllers.Any())
+			{
+				log.Error("No controllers loaded. Nothing to do");
+				return;
+			}
 
-            log.Info("Starting modules");
+			sensorRepository.Initialize();
 
-            foreach (var module in modules)
-            {
-                module.Start();
-            }
+			log.Info ("Starting controllers");
+			foreach (var controller in controllers)
+			{
+				controller.Start ();
+		
+			}
+			log.Info ("Started controllers");
 
-            if (!actions.Any())
-            {
-                log.Error("No actions loaded. Nothing to do");
-                return;
-            }
+			
 
+		   
+			try
+			{
+				log.Info("Connecting to message queue");
+				mqPublisher.Initialize (mqConnectionString,mqPubSubExchangeName,mqRpcExchangeName, mqRpcQueueName);
+				log.Info("Connected to message queue");	
+			}
+			catch (Exception ex) 
+			{
+				log.ErrorFormat ("Error initializing message queue. Message: {0}", ex);
+				return;
+			}
+
+
+			if (!actions.Any())
+			{
+				log.Error("No actions loaded. Nothing to do");
+				return;
+			}
 
             log.Info("Initialize actions");
             foreach (var sensorAction in actions)
             {
                 sensorAction.Initialize();
             }
+			log.Info("Actions initialized");
 
-
-			try
-			{
-				mqPublisher.Initialize (mqConnectionString,mqExchangeName);
 			}
 			catch (Exception ex) 
 			{
-				log.ErrorFormat ("Error initializing message queue. Message: {0}", ex.Message);
-				return;
+				log.ErrorFormat ("Error starting service. Message: {0}", ex);
+				throw;
 			}
+
 
         }
 
         public void Stop()
         {
-
 			log.Info("Stopping modules..");
-			foreach (var module in modules) {
+			foreach (var module in controllers) {
 				if (module.IsStarted) {
 					module.Stop ();
 				}

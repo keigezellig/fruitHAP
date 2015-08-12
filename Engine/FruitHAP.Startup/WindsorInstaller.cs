@@ -19,6 +19,9 @@ using Microsoft.Practices.Prism.PubSubEvents;
 using NLog;
 using FruitHAP.Core;
 using FruitHAP.Core.MQ;
+using FruitHAP.Core.Controller;
+using FruitHAP.Core.SensorPersister;
+using FruitHAP.Core.SensorEventPublisher;
 
 namespace FruitHAP.Startup
 {
@@ -26,8 +29,12 @@ namespace FruitHAP.Startup
     {
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
-            string moduleDirectory = ConfigurationManager.AppSettings["ModuleDirectory"] ??
-                                     Path.Combine(".", "modules");
+
+			string controllerDirectory = ConfigurationManager.AppSettings["ControllerDirectory"] ??
+                                     Path.Combine(".", "controllers");
+
+			string sensorDirectory = ConfigurationManager.AppSettings["SensorDirectory"] ??
+				Path.Combine(".", "sensors");
 
             string actionDirectory = ConfigurationManager.AppSettings["ActionDirectory"] ??
                                      Path.Combine(".", "actions");
@@ -37,8 +44,11 @@ namespace FruitHAP.Startup
             RegisterLogging(container);            
 			RegisterMQPublisher(container);
 			RegisterEventAggregator(container);            
-            RegisterModules(container,moduleDirectory);
-            RegisterDeviceRepository(container);
+
+			RegisterControllers(container,controllerDirectory);
+			RegisterSensors(container,sensorDirectory);
+            
+			RegisterDeviceRepository(container);
             RegisterActions(container,actionDirectory);
             RegisterService(container);
             
@@ -55,14 +65,15 @@ namespace FruitHAP.Startup
         private void RegisterDeviceRepository(IWindsorContainer container)
         {
             container.Register(
-                Component.For<ISensorLoader>()
-                    .ImplementedBy<SensorLoader>()
-                    .LifestyleSingleton());
-
-            container.Register(
                Component.For<ISensorRepository>()
                    .ImplementedBy<SensorRepository>()
                    .LifestyleSingleton());
+
+			container.Register(
+				Component.For<ISensorPersister>()
+				.ImplementedBy<SensorPersister>()
+				.LifestyleSingleton());
+			
 
             
         }
@@ -79,7 +90,7 @@ namespace FruitHAP.Startup
 
         private void LoadActionFromDirectory(IWindsorContainer container, string actionDirectory)
         {
-            var logger = container.Resolve<ILogger>();
+            var logger = container.Resolve<Castle.Core.Logging.ILogger>();
 
             logger.InfoFormat("Loading actions from directory {0}", actionDirectory);
             
@@ -87,6 +98,12 @@ namespace FruitHAP.Startup
                 .BasedOn<IAction>()
                 .WithService.FromInterface()
                 .LifestyleSingleton());
+
+			container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(actionDirectory))
+				.BasedOn(typeof (IConfigProvider<>))
+				.WithService.Base()
+				.LifestyleSingleton());
+			
 
             logger.InfoFormat("Done loading actions from directory {0}", actionDirectory);
 
@@ -99,6 +116,11 @@ namespace FruitHAP.Startup
                Component.For<IEventAggregator>()
                    .ImplementedBy<EventAggregator>()
                    .LifestyleSingleton());
+
+			container.Register(
+				Component.For<ISensorEventPublisher>()
+				.ImplementedBy<SensorEventPublisher>()
+				.LifestyleSingleton());
         }
 
         private void RegisterService(IWindsorContainer container)
@@ -110,50 +132,67 @@ namespace FruitHAP.Startup
 
         }
 
-        private void RegisterModules(IWindsorContainer container, string baseDirectory)
-        {
-            DirectoryInfo directoryInfo = new DirectoryInfo(baseDirectory);
 
-            foreach (var directory in directoryInfo.GetDirectories())
-            {
-                LoadModuleFromDirectory(container, directory.FullName);    
-            }
-            
-        }
+		void RegisterControllers (IWindsorContainer container, string baseDirectory)
+		{
+			DirectoryInfo directoryInfo = new DirectoryInfo(baseDirectory);
 
-        private void LoadModuleFromDirectory(IWindsorContainer container, string moduleDirectory)
-        {
-            var logger = container.Resolve<ILogger>();
+			foreach (var directory in directoryInfo.GetDirectories())
+			{
+				LoadControllersFromDirectory(container, directory.FullName);    
+			}
+		}
 
-            logger.InfoFormat("Loading modules from directory {0}", moduleDirectory);
-            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(moduleDirectory))
-                .BasedOn(typeof (ISensorProtocol<>))
-                .WithService.AllInterfaces()
-                .LifestyleSingleton());
 
-            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(moduleDirectory))
-                .BasedOn(typeof (IConfigProvider<>))
-                .WithService.Base()
-                .LifestyleSingleton());
+		void RegisterSensors (IWindsorContainer container, string baseDirectory)
+		{
+			DirectoryInfo directoryInfo = new DirectoryInfo(baseDirectory);
 
-            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(moduleDirectory))
-                .BasedOn<IPhysicalInterfaceFactory>()
-                .WithService.FromInterface()
-                .LifestyleSingleton());
+			foreach (var directory in directoryInfo.GetDirectories())
+			{
+				LoadSensorsFromDirectory(container, directory.FullName);    
+			}
+		} 
 
-            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(moduleDirectory))
-                .BasedOn<ISensorModule>()
-                .WithService.AllInterfaces()
-                .LifestyleSingleton());
 
-            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(moduleDirectory))
-                .BasedOn<ISensor>()
-                .WithService.Base()
-                .LifestyleSingleton());
+		void LoadControllersFromDirectory (IWindsorContainer container, string controllerDirectory)
+		{
+			var logger = container.Resolve<Castle.Core.Logging.ILogger>();
 
-            logger.InfoFormat("Done loading modules from directory {0}", moduleDirectory);
-        }
+			logger.InfoFormat("Loading controllers from directory {0}", controllerDirectory);
 
+			container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(controllerDirectory))
+				.BasedOn(typeof (IConfigProvider<>))
+				.WithService.Base()
+				.LifestyleSingleton());
+
+			container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(controllerDirectory))
+				.BasedOn<IPhysicalInterfaceFactory>()
+				.WithService.FromInterface()
+				.LifestyleSingleton());
+
+			container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(controllerDirectory))
+				.BasedOn<IController>()
+				.WithService.AllInterfaces()
+				.LifestyleSingleton());
+
+			logger.InfoFormat("Done loading controllers from directory {0}", controllerDirectory);
+
+		}
+
+		void LoadSensorsFromDirectory (IWindsorContainer container, string sensorDirectory)
+		{
+			var logger = container.Resolve<Castle.Core.Logging.ILogger>();
+
+			logger.InfoFormat("Loading sensors from directory {0}", sensorDirectory);
+
+			container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(sensorDirectory))
+				.BasedOn<ISensor>()
+				.WithService.Base()
+				.LifestyleSingleton());
+
+			logger.InfoFormat("Done loading sensors from directory {0}", sensorDirectory);
+		}
 
         private void RegisterLogging(IWindsorContainer container)
         {

@@ -24,7 +24,7 @@ namespace FruitHAP.Startup
         private static void AddConsoleTarget(LogLevel minimumLogLevel, LoggingConfiguration config)
         {
             var consoleTarget = new ColoredConsoleTarget();
-            //consoleTarget.Layout = new SimpleLayout("${longdate} ${message}\n${exception:format=message}");
+			consoleTarget.Layout = new SimpleLayout("${longdate}|${level:uppercase=true}|${logger}|${message}|${exception:format=tostring}");
             config.AddTarget("file", consoleTarget);
             var consoleRule = new LoggingRule("*", minimumLogLevel, consoleTarget);
             config.LoggingRules.Add(consoleRule);
@@ -44,7 +44,8 @@ namespace FruitHAP.Startup
                 ConcurrentWrites = true,
                 KeepFileOpen = false
             };
-            config.AddTarget("file", fileTarget);
+			fileTarget.Layout = new SimpleLayout("${longdate}|${level:uppercase=true}|${logger}|${message}|${exception:format=tostring}");
+			config.AddTarget("file", fileTarget);
 
             var fileRule = new LoggingRule("*", minimumLogLevel, fileTarget);
             config.LoggingRules.Add(fileRule);

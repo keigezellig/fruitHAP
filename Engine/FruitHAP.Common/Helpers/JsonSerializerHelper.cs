@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
+using System;
 
 namespace FruitHAP.Common.Helpers
 {
@@ -44,6 +45,21 @@ namespace FruitHAP.Common.Helpers
 			}
 			return result;
 		}
+
+		public static object ParseJsonString(this string input, Type type) 
+		{
+			object result = null;
+			using (StringReader sr = new StringReader(input))
+			{
+				using (JsonReader tr = new JsonTextReader(sr))
+				{
+					Newtonsoft.Json.JsonSerializer serializer = new Newtonsoft.Json.JsonSerializer();
+					result = serializer.Deserialize (tr, type);
+				}
+			}
+			return result;
+		}
+
 
 		public static string ToJsonString<T>(this T obj) where T: class
 		{
