@@ -29,7 +29,7 @@ Needed stuff:
 
 Preparation:
 
-* Download and unzip the latest FruitHAP image (see [here](http://joosten-industries.nl/files/fruithap_images/) to a temporary directory
+* Download and unzip the latest FruitHAP image (see [here](http://joosten-industries.nl/files/fruithap_images/)) to a temporary directory
 * Put the image onto a flash card (i used one with 8GB) as follows (on linux)
 
   `dd bs=4M if=<path/to/raspbian_image> of=/dev/<flashcarddrive>`
