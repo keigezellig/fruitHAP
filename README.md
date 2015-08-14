@@ -14,6 +14,10 @@ A Home Automation Platform designed to run on a Raspberry Pi with extensibility 
 * Other: IpCamera
 * Aggregated sensors: Button+Camera, Switch+Camera
 
+**Actions**
+
+* 
+
 **Client programs**
 
 * A notifier script that monitors the message queue for alerts and send it through Pushbullet to another device (pushbullet-notifier)
