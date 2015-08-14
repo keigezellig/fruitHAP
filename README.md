@@ -16,7 +16,7 @@ A Home Automation Platform designed to run on a Raspberry Pi with extensibility 
 
 **Actions**
 
-* 
+* EventTriggerAction: A message is sent to the message queue when a sensor event occurs (e.g. button is pressed, switch is flipped)
 
 **Client programs**
 
