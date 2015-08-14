@@ -2,14 +2,20 @@
 
 A Home Automation Platform designed to run on a Raspberry Pi with extensibility in mind.
 
-### What is this all about? ###
+### Features in this version ###
 
-This version contains a sample setup which is used in my home to control the front doorbell and contains the following components:
+**Controllers**
 
-* The Engine (the main component)
-* A controller for the KlikAanKlikUit (KaKu) system (which is a 433 Mhz based X10 derivative system)
-* A contoller for an IP Camera
-* Support for the following sensor types: Button, Camera, Switch, Button+Camera, Switch+Camera
+* RfxController, support for the RFXtrx433E 433 MHz transceiver
+
+**Sensor types**
+
+* Klik-aan-klik-uit: KakuButton, KakuSwitch
+* Other: IpCamera
+* Aggregated sensors: Button+Camera, Switch+Camera
+
+**Client programs**
+
 * A notifier script that monitors the message queue for alerts and send it through Pushbullet to another device (pushbullet-notifier)
 
 For more in depth info about controllers, sensors, actions and general see my blog
