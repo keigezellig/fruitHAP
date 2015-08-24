@@ -68,7 +68,6 @@ namespace FruitHap.StandardActions.EventTrigger
 				tokens.Add (eventPublisher.SubscribeWithToken<SensorEvent> (HandleSensorMessage, f => f.Sender.Name == name));
 			}
 
-
 		} 
 
 		void UnSubscribe ()
@@ -94,12 +93,15 @@ namespace FruitHap.StandardActions.EventTrigger
 			logger.DebugFormat ("Message sent {0}", sensorMessage);
 			mqProvider.Publish (sensorMessage, configuration.RoutingKey);
 		}
-			
 
-		public void Dispose ()
-		{
-			logger.DebugFormat("Dispose action {0}", this);
-			UnSubscribe ();
+
+        public void Dispose()
+        {
+            logger.DebugFormat("Dispose action {0}", this);
+            if (tokens != null)
+            {
+                UnSubscribe();
+            }
 
 		}
 	}

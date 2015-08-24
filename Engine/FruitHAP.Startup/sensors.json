@@ -1,4 +1,4 @@
-[{"Type":"KakuButton","IsAggegrate":false,"Parameters":{"Command":4,"Name":"DoorbellButton","Description":"My doorbell","DeviceId":<deviceId>,"UnitCode":<unitcode>}},
+[{"Type":"KakuButton","IsAggegrate":false,"Parameters":{"Command":4,"Name":"DoorbellButton","Description":"My doorbell","DeviceId":123,"UnitCode":10}},
  {"Type":"IpCamera","IsAggegrate":false,"Parameters":{"Name":"DoorCamera","Description":"My doorcam","Url":"http://fill.in.url","Username":"name","Password":"pwd"}},
  {"Type":"ButtonWithCameraSensor","IsAggegrate":true,"Parameters":{"Name":"DoorbellMonitor","Description":"My doorbell monitor","Inputs":["DoorbellButton","DoorCamera"]}}
 ]

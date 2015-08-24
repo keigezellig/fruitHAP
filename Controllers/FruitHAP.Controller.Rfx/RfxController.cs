@@ -17,46 +17,57 @@ using FruitHAP.Controller.Rfx.InternalPacketData;
 
 namespace FruitHAP.Controller.Rfx
 {
-	public class RfxController : IController
+	public class RfxController : BaseController
     {
         
 		private const string CONFIG_FILENAME = "rfx.json";
 
 		private readonly IConfigProvider<RfxControllerConfiguration> configProvider;
         private readonly IPhysicalInterfaceFactory physicalInterfaceFactory;
-        private readonly ILogger logger;
         private RfxControllerConfiguration configuration;
-		private bool isStarted;
 		private SubscriptionToken acEventSubscriptionToken;
 		private SubscriptionToken setModeEventSubscriptionToken;
 		private RfxControllerPacketHandlerFactory handlerFactory;
 		private List<RfxPacketInfo> packetTypes;
 		private RfxDevice rfxDevice;
-		private IEventAggregator aggregator;
 
-		public RfxController(IConfigProvider<RfxControllerConfiguration> configProvider, IPhysicalInterfaceFactory physicalInterfaceFactory, ILogger logger, IEventAggregator aggregator)
+        public override string Name
         {
-			this.aggregator = aggregator;
-            this.configProvider = configProvider;
-            this.physicalInterfaceFactory = physicalInterfaceFactory;
-            this.logger = logger;
-			this.handlerFactory = new RfxControllerPacketHandlerFactory (logger, aggregator);
-			this.rfxDevice = new RfxDevice (logger);
-		}
-
-
-        public string Name
-        {
-            get { return "RFX Controller"; }
+            get
+            {
+                return "RFX Controller";
+            }
         }
 
-		public bool IsStarted
-		{
-			get
-			{
-				return isStarted; 
-			}
-		}
+        public RfxController(ILogger logger, IEventAggregator aggregator, IConfigProvider<RfxControllerConfiguration> configProvider,
+                            IPhysicalInterfaceFactory physicalInterfaceFactory) : base(logger, aggregator)
+
+        {            
+            this.configProvider = configProvider;
+            this.physicalInterfaceFactory = physicalInterfaceFactory;
+			this.handlerFactory = new RfxControllerPacketHandlerFactory (logger, aggregator);
+			this.rfxDevice = new RfxDevice (logger);
+        }
+
+
+        protected override void StartController()
+        {
+            SetSubscriptionTokens();
+            LoadConfiguration();
+            OpenRfxDevice();
+        }
+
+        protected override void StopController()
+        {
+            rfxDevice.Close();
+        }
+
+        protected override void DisposeController()
+        {
+            aggregator.GetEvent<ACPacketEvent>().Unsubscribe(acEventSubscriptionToken);
+            aggregator.GetEvent<SetModeResponsePacketEvent>().Unsubscribe(setModeEventSubscriptionToken);
+            rfxDevice.Dispose();
+        }
 
         private void RfxDataReceived(object sender, ExternalDataReceivedEventArgs e)
         {
@@ -80,42 +91,6 @@ namespace FruitHAP.Controller.Rfx
 				logger.ErrorFormat ("Error handling received data: {0}", ex.Message);
 			}
         }
-
-        public void Start()
-        {
-			if (!IsStarted) {
-				logger.InfoFormat ("Initializing controller {0}", this);
-
-				try {
-					SetSubscriptionTokens ();
-					LoadConfiguration ();
-					OpenRfxDevice ();
-					isStarted = true;
-				} catch (Exception) {
-					isStarted = false;
-					throw;
-				}
-			}
-
-        }
-
-        public void Stop()
-        {
-            logger.InfoFormat("Stopping module {0}", this);
-			rfxDevice.Close ();
-        }
-
-        public void Dispose()
-        {
-            logger.DebugFormat("Dispose module {0}", this);
-			aggregator.GetEvent<ACPacketEvent> ().Unsubscribe (acEventSubscriptionToken);
-			aggregator.GetEvent<SetModeResponsePacketEvent> ().Unsubscribe (setModeEventSubscriptionToken);
-			rfxDevice.Dispose();
-
-        }
-
-
-
 
 		private List<RfxPacketInfo> LoadPacketTypes (RfxControllerConfiguration configuration)
 		{
@@ -228,7 +203,8 @@ namespace FruitHAP.Controller.Rfx
 			System.Threading.Thread.Sleep (1000);
 		}
 
-	}
+        
+    }
 
 		
 

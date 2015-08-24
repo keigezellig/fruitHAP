@@ -4,5 +4,6 @@
     {
         TConfig LoadConfigFromFile(string fileName);
         void SaveConfigToFile(TConfig config, string fileName);
+        bool IsConfigurationCorrect(TConfig configuration)
     }
 }
