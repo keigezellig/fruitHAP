@@ -30,7 +30,7 @@ namespace FruitHAP.Controllers.ImageCaptureController
         {
             get
             {
-                throw new NotImplementedException();
+                return "Local image capture controller";
             }
         }
 
@@ -63,7 +63,8 @@ namespace FruitHAP.Controllers.ImageCaptureController
 
         private void HandleImageRequestPacket(ControllerEventData<ImageRequestPacket> request)
         {
-            throw new NotImplementedException();
+            var tempFileName = Path.GetRandomFileName();
+
 
             //aggregator.GetEvent<ImageResponsePacketEvent>().Publish(new ControllerEventData<ImageResponsePacketEvent>())
         }

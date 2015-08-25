@@ -28,22 +28,27 @@ namespace FruitHAP.Controllers.ImageCaptureController.Configuration
 
         protected override LocalImageCaptureControllerConfiguration LoadDefaultConfig()
         {
-            return new LocalImageCaptureControllerConfiguration() { TempPath = Path.GetTempFileName() };
+            return new LocalImageCaptureControllerConfiguration() { TempPath = Path.GetTempPath(), PathToMPlayer = "/sbin/mplayer" };
         }
 
         public override bool IsConfigurationCorrect(LocalImageCaptureControllerConfiguration configuration)
         {
-            return AreConfigurationItemsNotEmpty(configuration) && DoesCaptureCommandContainsCorrectItems(configuration.CaptureCommand);
+            return AreConfigurationItemsNotEmpty(configuration) && IsPathToMPlayerCorrect(configuration.PathToMPlayer) && DoCommandLineOptionsContainCorrectItems(configuration.CommandlineOptions);
         }
 
-        private bool DoesCaptureCommandContainsCorrectItems(string captureCommand)
+        private bool IsPathToMPlayerCorrect(string pathToMPlayer)
         {
-            return (captureCommand.Contains("${resolution)") && captureCommand.Contains("${source)"));
+            return File.Exists(pathToMPlayer);
+        }
+
+        private bool DoCommandLineOptionsContainCorrectItems(string commandLineOptions)
+        {
+            return (commandLineOptions.Contains("${resolution)") && commandLineOptions.Contains("${source)") && commandLineOptions.Contains("${output)"));
         }
 
         private bool AreConfigurationItemsNotEmpty(LocalImageCaptureControllerConfiguration configuration)
         {
-            return !string.IsNullOrEmpty(configuration.CaptureCommand) && !string.IsNullOrEmpty(configuration.TempPath);
+            return !string.IsNullOrEmpty(configuration.PathToMPlayer) && !string.IsNullOrEmpty(configuration.CommandlineOptions) && !string.IsNullOrEmpty(configuration.TempPath);
         }
     }
 }
