@@ -58,7 +58,15 @@ namespace FruitHAP.Sensor.Aggregated
 		void OnSwitchStateChanged (EventData data)
 		{
 			var image = this.camera.GetImageAsync ().Result;
-			sensorEventPublisher.Publish<SensorEvent> (this, Convert.ToBase64String(image));
+			if (image != null) {
+				sensorEventPublisher.Publish<SensorEvent> (this, Convert.ToBase64String (image));
+			} 
+			else 
+			{
+				sensorEventPublisher.Publish<SensorEvent> (this, null);
+			}
+
+				
 		}
 			
 		#endregion

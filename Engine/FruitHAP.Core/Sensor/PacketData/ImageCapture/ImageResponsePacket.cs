@@ -8,7 +8,7 @@ namespace FruitHAP.Core.Sensor.PacketData.ImageCapture
 {
     public class ImageResponsePacket
     {
-        public string Destination { get; set; }
+        public string DestinationSensor { get; set; }
         public byte[] ImageData { get; set; }
     }
 }

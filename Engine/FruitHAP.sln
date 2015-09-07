@@ -27,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controllers", "Controllers"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitHAP.Controller.Rfx", "..\Controllers\FruitHAP.Controller.Rfx\FruitHAP.Controller.Rfx.csproj", "{BDCC7DF3-7089-4361-AAA4-0290DC5C4315}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitHAP.Controllers.ImageCaptureController", "FruitHAP.Controllers.ImageCaptureController\FruitHAP.Controllers.ImageCaptureController.csproj", "{9EA9D7B3-B3C3-4E57-914C-E1F35982AE11}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitHAP.Controllers.ImageCaptureController", "..\Controllers\FruitHAP.Controller.ImageCaptureController\FruitHAP.Controller.ImageCaptureController.csproj", "{9EA9D7B3-B3C3-4E57-914C-E1F35982AE11}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

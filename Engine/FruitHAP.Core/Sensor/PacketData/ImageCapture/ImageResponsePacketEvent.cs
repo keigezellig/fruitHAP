@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FruitHAP.Core.Sensor.PacketData.ImageCapture
 {
-    public class ImageResponsePacketEvent : PubSubEvent<ControllerEventData<ImageResponsePacketEvent>>
+    public class ImageResponsePacketEvent : PubSubEvent<ControllerEventData<ImageResponsePacket>>
     {
     }
 }
