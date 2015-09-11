@@ -20,6 +20,7 @@ namespace FruitHAP.Controllers.ImageCaptureController
     {
         private SubscriptionToken subscriptionToken;
 
+
 		private const string URIPREFIX = "local://";
 
         public LocalImageCaptureController(ILogger logger, IEventAggregator aggregator) : base(logger, aggregator)
@@ -61,8 +62,8 @@ namespace FruitHAP.Controllers.ImageCaptureController
 
 		private byte[] CaptureImage(string source, string resolution)
 		{
-			string output = "";
-			string error = "";
+			string stdOutput = "";
+			string stdError = "";
 			string tmpFile = string.Format ("{0}.jpeg", Guid.NewGuid ());
 
 			string command = "/usr/bin/streamer";
@@ -72,22 +73,24 @@ namespace FruitHAP.Controllers.ImageCaptureController
 
 
 			Process processToBeExecuted = new Process ();
-			processToBeExecuted.EnableRaisingEvents = true;
-			processToBeExecuted.StartInfo.RedirectStandardOutput = false;
-			processToBeExecuted.StartInfo.RedirectStandardError = false;
-			processToBeExecuted.OutputDataReceived += (object sender, DataReceivedEventArgs e) => output += e.Data;
-			processToBeExecuted.ErrorDataReceived += (object sender, DataReceivedEventArgs e) => error += e.Data;
+
+			processToBeExecuted.StartInfo.RedirectStandardOutput = true;
+			processToBeExecuted.StartInfo.RedirectStandardError = true;
+			processToBeExecuted.OutputDataReceived += (object sender, DataReceivedEventArgs e) => stdOutput += e.Data;
+			processToBeExecuted.ErrorDataReceived += (object sender, DataReceivedEventArgs e) => stdError += e.Data;
 			processToBeExecuted.StartInfo.FileName = command;
 			processToBeExecuted.StartInfo.Arguments = commandArguments;
 			processToBeExecuted.StartInfo.UseShellExecute = false;
 			processToBeExecuted.Start ();
+			processToBeExecuted.BeginErrorReadLine();
+			processToBeExecuted.BeginOutputReadLine();
 			processToBeExecuted.WaitForExit();
 			processToBeExecuted.Close ();
 			logger.Debug ("Command STDOUT");
-			logger.Debug (output);
+			logger.Debug (stdOutput);
 
 			logger.Debug ("Command STDERR");
-			logger.Debug (error);
+			logger.Debug (stdError);
 
 			if (!File.Exists (tmpFile))
 			{
