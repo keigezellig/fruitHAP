@@ -5,91 +5,101 @@ using System.Text;
 using System.Threading.Tasks;
 using Castle.Core.Logging;
 using FruitHAP.Core.Sensor.SensorTypes;
+using FruitHAP.Common.Helpers;
+using FruitHAP.Core.Sensor.PacketData.ImageCapture;
+using FruitHAP.Core.Controller;
+using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace FruitHAP.Sensor.IpCamera.Devices
 {
 	public class IpCamera : ICamera, ICloneable
     {
         private readonly ILogger logger;
+        private readonly IEventAggregator aggregator;
+        private byte[] receivedImageData;
+        private bool isReceived;
+
+        private Uri uri;
+
 
         public string Name { get; set; }
         public string Description { get; set; }
-
-		private Uri uri;
-
-        public IpCamera()
+        public string Resolution { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string Url
         {
-            
-        }
-        public IpCamera(ILogger logger)
-        {
-            this.logger = logger;
-        }
-
-       
-		public string Url {
-			get 
-			{
-				return uri.ToString ();
-			}
-			set 
-			{
-				uri = new Uri (value);
-			}
-		}
-
-		public string Username {
-			get;
-			set;
-		}
-
-		public string Password {
-			get;
-			set;
-		}
-
-        private async Task<byte[]> GetImageAsync(Uri url, string username, string password)
-        {
-            using (HttpClient client = new HttpClient())
+            get
             {
-                if (!(string.IsNullOrEmpty(username)) || !(string.IsNullOrEmpty(password)))
-                {
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
-                        Convert.ToBase64String(
-                            Encoding.ASCII.GetBytes(
-                                string.Format("{0}:{1}", username, password))));
-                }
-
-                var response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-
-                return await response.Content.ReadAsByteArrayAsync();
+                return uri.ToString();
+            }
+            set
+            {
+                uri = new Uri(value);
             }
         }
 
-        
+
+        public IpCamera(ILogger logger, IEventAggregator aggregator)
+        {
+            this.logger = logger;
+            this.aggregator = aggregator;
+            aggregator.GetEvent<ImageResponsePacketEvent>().Subscribe(HandleIncomingResponse, ThreadOption.PublisherThread, false, f => f.Direction == Direction.FromController && f.Payload.DestinationSensor == Name);
+        }
+
+
+        void HandleIncomingResponse(ControllerEventData<ImageResponsePacket> response)
+        {
+            this.isReceived = true;
+            this.receivedImageData = response.Payload.ImageData;
+        }
+
+
 
         public async Task<byte[]> GetImageAsync()
         {
-            return await GetImageAsync(uri, Username, Password);
+            aggregator.GetEvent<ImageRequestPacketEvent>().Publish(new ControllerEventData<ImageRequestPacket>()
+            {
+                Direction = Direction.ToController,
+                Payload = new ImageRequestPacket()
+                {
+                    Username = this.Username,
+                    Password = this.Password,
+                    Sender = this.Name,
+                    Resolution = this.Resolution,                    
+                    Uri = this.Url
+                }
+            });
+
+            Task<byte[]> workerTask = new Task<byte[]>(() => {
+                while (!isReceived)
+                {
+                }
+                this.isReceived = false;
+                return this.receivedImageData;
+            });
+
+            workerTask.Start();
+
+            return await workerTask.TimeoutAfter(TimeSpan.FromSeconds(5));
+
         }
 
 
         public object Clone()
         {
-            return new IpCamera(this.logger);
+            return new IpCamera(this.logger, this.aggregator);
         }
 
-		public object GetValue ()
-		{
-			return GetImageAsync ().Result;
-		}
+        public object GetValue()
+        {
+            return GetImageAsync().Result;
+        }
 
 
-		public override string ToString ()
-		{
-			return string.Format ("[IpCamera: Name={0}, Description={1}, Url={2}, Username={3}, Password={4}]", Name, Description, Url, Username, Password);
-		}
-		
+        public override string ToString()
+        {
+            return string.Format("[IpCamera: Name={0}, Description={1}, Url={2}, UserName={3}, Password={4}]", Name, Description, Url, Username, Password);
+        }
     }
 }
