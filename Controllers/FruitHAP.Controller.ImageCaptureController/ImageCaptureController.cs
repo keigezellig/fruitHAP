@@ -1,18 +1,8 @@
 ﻿using Castle.Core.Logging;
-using FruitHAP.Common.Configuration;
-using FruitHAP.Controllers.ImageCaptureController.Configuration;
 using FruitHAP.Core.Controller;
 using FruitHAP.Core.Sensor.PacketData.ImageCapture;
 using Microsoft.Practices.Prism.PubSubEvents;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using FruitHAP.Common;
 
 namespace FruitHAP.Controllers.ImageCaptureController
 {
@@ -70,10 +60,10 @@ namespace FruitHAP.Controllers.ImageCaptureController
 
             try
             {
-                if (imageCapturer.IsRequestOk(request.Payload))
+                if (!imageCapturer.IsRequestOk(request.Payload))
                 {
                     //TODO: Introduce validator class
-                    logger.Error("Invalid request");
+					logger.ErrorFormat("Invalid request for {0}",imageCapturer.GetType().Name);
                     return;
                 }
 

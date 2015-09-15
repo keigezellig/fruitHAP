@@ -47,8 +47,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\LocalImageCaptureControllerConfiguration.cs" />
-    <Compile Include="Configuration\LocalImageCaptureControllerConfigurationProvider.cs" />
     <Compile Include="HttpImageCapturer.cs" />
     <Compile Include="IImageCapturer.cs" />
     <Compile Include="ImageCaptureController.cs" />

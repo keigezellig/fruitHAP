@@ -10,9 +10,9 @@ using FruitHAP.Core.Sensor.PacketData.ImageCapture;
 using FruitHAP.Core.Controller;
 using Microsoft.Practices.Prism.PubSubEvents;
 
-namespace FruitHAP.Sensor.IpCamera.Devices
+namespace FruitHAP.Sensor.Camera.Devices
 {
-	public class IpCamera : ICamera, ICloneable
+	public class Camera : ICamera, ICloneable
     {
         private readonly ILogger logger;
         private readonly IEventAggregator aggregator;
@@ -40,7 +40,7 @@ namespace FruitHAP.Sensor.IpCamera.Devices
         }
 
 
-        public IpCamera(ILogger logger, IEventAggregator aggregator)
+        public Camera(ILogger logger, IEventAggregator aggregator)
         {
             this.logger = logger;
             this.aggregator = aggregator;
@@ -88,7 +88,7 @@ namespace FruitHAP.Sensor.IpCamera.Devices
 
         public object Clone()
         {
-            return new IpCamera(this.logger, this.aggregator);
+            return new Camera(this.logger, this.aggregator);
         }
 
         public object GetValue()
