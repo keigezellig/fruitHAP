@@ -76,21 +76,25 @@ namespace FruitHAP.Core.SensorPersister
 			var result = new List<ISensor> ();
 			foreach (var entry in configurationEntries) 
 			{
-				ISensor prototype = prototypes.SingleOrDefault (f => f.GetType ().Name.Contains (entry.Type));
-				if (prototype == null) {
+				var prototypeList = prototypes.Where (f => f.GetType ().Name.Contains (entry.Type));
+
+				if (prototypeList.Count() == 0) {
 					logger.WarnFormat ("Ignoring sensor type {0} because it is not supported. Check your sensor configuration ", entry.Type);
 				} 
 				else 
-				{	
-					var instance = (prototype as ICloneable).Clone ();
-					string parametersInJson = entry.Parameters.ToJsonString ();
-					Dictionary<string,object> parameters = parametersInJson.ParseJsonString<Dictionary<string,object>> ();
-					foreach (var parameter in parameters) 
-					{
-						instance.SetProperty (parameter.Key, parameter.Value);
-					}
-					logger.InfoFormat ("Loaded sensor {0}", instance);
-					result.Add (instance as ISensor);
+				{
+                    foreach (var prototype in prototypeList)
+                    {
+                        var instance = (prototype as ICloneable).Clone();
+                        string parametersInJson = entry.Parameters.ToJsonString();
+                        Dictionary<string, object> parameters = parametersInJson.ParseJsonString<Dictionary<string, object>>();
+                        foreach (var parameter in parameters)
+                        {
+                            instance.SetProperty(parameter.Key, parameter.Value);
+                        }
+                        logger.InfoFormat("Loaded sensor {0}", instance);
+                        result.Add(instance as ISensor);
+                    }
 				}
 			}
 

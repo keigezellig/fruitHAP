@@ -19,6 +19,11 @@ namespace FruitHAP.Common.Configuration
             return default(TConfig);
         }
 
+        public virtual bool IsConfigurationCorrect(TConfig configuration)
+        {
+            return true;
+        }
+
         public TConfig LoadConfigFromFile(string fileName)
         {
             var result = default(TConfig);
