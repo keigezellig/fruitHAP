@@ -68,7 +68,6 @@
     <Compile Include="Controller\IController.cs" />
     <Compile Include="Controller\IControllerPacketHandler.cs" />
     <Compile Include="Sensor\PacketData\AC\ACPacket.cs" />
-    <Compile Include="Sensor\SensorTypes\ITwoWaySwitch.cs" />
     <Compile Include="Sensor\SensorTypes\ISwitch.cs" />
     <Compile Include="Sensor\IValueSensor.cs" />
     <Compile Include="Sensor\IAggregatedSensor.cs" />

@@ -16,8 +16,9 @@ namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 
 		private CommandObject GetCommand (SensorMessage request)
 		{
-			var requestData = request.Data.ToString ();
-			CommandObject command = requestData.ParseJsonString<CommandObject> ();
+			var requestData = request.Data.ToString ().Trim();
+
+			CommandObject command = requestData.ParseJsonString (typeof(CommandObject)) as CommandObject;
 			return command;
 		}
 
