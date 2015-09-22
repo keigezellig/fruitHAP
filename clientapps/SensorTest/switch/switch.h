@@ -19,6 +19,7 @@ public:
 private:
     std::string m_name;
     SwitchState m_state;
+
 };
 
 #endif // SWITCH_H

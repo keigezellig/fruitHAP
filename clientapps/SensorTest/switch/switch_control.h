@@ -6,10 +6,10 @@
 
 
 
-class BasicSwitchControl
+class SwitchControl
 {
 public:
-    BasicSwitchControl();
+    SwitchControl();
     void turnOn(const std::string &sensorName);
     void turnOff(const std::string &sensorName);
     SwitchState getState(const std::string &sensorName) const;
