@@ -37,6 +37,11 @@ void MainWindow::on_cmbSwitchList_currentIndexChanged(int index)
     ui->lbState->setText(convertEnumToString(state));
 }
 
+void MainWindow::on_switchControl_switchStateChanged(const std::string switchName, const SwitchState newState)
+{
+    ui->lbState->setText(convertEnumToString(newState));
+}
+
 
 void MainWindow::on_btnOn_clicked()
 {

@@ -25,6 +25,7 @@ private slots:
     void on_btnOn_clicked();
     void on_btnOff_clicked();
     void on_cmbSwitchList_currentIndexChanged(int index);
+    void on_switchControl_switchStateChanged(const std::string switchName, const SwitchState newState);
 };
 
 #endif // MAINWINDOW_H
