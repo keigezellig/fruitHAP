@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,13 +13,45 @@ TEMPLATE = app
 CONFIG += c++11
 
 
+
 SOURCES += main.cpp\
         mainwindow.cpp \
     switch/switch.cpp \
-    switch/switch_control.cpp
+    switch/switch_control.cpp \
+    switch/qswitch.cpp \
+    qfruithapclient.cpp \
+    libs/qamqp/source/qamqpauthenticator.cpp \
+    libs/qamqp/source/qamqpchannel.cpp \
+    libs/qamqp/source/qamqpchannelhash.cpp \
+    libs/qamqp/source/qamqpclient.cpp \
+    libs/qamqp/source/qamqpexchange.cpp \
+    libs/qamqp/source/qamqpframe.cpp \
+    libs/qamqp/source/qamqpmessage.cpp \
+    libs/qamqp/source/qamqpqueue.cpp \
+    libs/qamqp/source/qamqptable.cpp \
+
 
 HEADERS  += mainwindow.h \
     switch/switch_control.h \
-    switch/switch.h
+    switch/switch.h \
+    switch/qswitch.h \
+    qfruithapclient.h \    
+    libs/qamqp/source/qamqpauthenticator.h \
+    libs/qamqp/source/qamqpchannel.h \
+    libs/qamqp/source/qamqpchannel_p.h \
+    libs/qamqp/source/qamqpchannelhash_p.h \
+    libs/qamqp/source/qamqpclient.h \
+    libs/qamqp/source/qamqpclient_p.h \
+    libs/qamqp/source/qamqpexchange.h \
+    libs/qamqp/source/qamqpexchange_p.h \
+    libs/qamqp/source/qamqpframe_p.h \
+    libs/qamqp/source/qamqpglobal.h \
+    libs/qamqp/source/qamqpmessage.h \
+    libs/qamqp/source/qamqpmessage_p.h \
+    libs/qamqp/source/qamqpqueue.h \
+    libs/qamqp/source/qamqpqueue_p.h \
+    libs/qamqp/source/qamqptable.h \
+
 
 FORMS    += mainwindow.ui
+

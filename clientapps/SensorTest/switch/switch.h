@@ -4,6 +4,7 @@
 #include <string>
 #include <QObject>
 
+
 enum class SwitchState
 {
     Undefined, On, Off
@@ -21,7 +22,7 @@ public:
     SwitchState getState() const;
 private:
     std::string m_name;
-    SwitchState m_state;
+    SwitchState m_state;    
 signals:
     void stateChanged(const std::string switchName, const SwitchState newState);
 
