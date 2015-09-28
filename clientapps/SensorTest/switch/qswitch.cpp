@@ -25,3 +25,12 @@ SwitchState QSwitch::getState() const
     return m_state;
 }
 
+void QSwitch::onMessageReceived(const QJsonDocument message)
+{
+    if (!message.isEmpty())
+    {
+        QJsonObject& obj = message.object();
+
+    }
+}
+

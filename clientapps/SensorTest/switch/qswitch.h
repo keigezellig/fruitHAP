@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QJsonDocument>
 
 enum class SwitchState
 {
@@ -23,7 +24,8 @@ private:
     SwitchState m_state;
 signals:
     void stateChanged(const QString switchName, const SwitchState newState);
-public slots:
+private slots:
+    void onMessageReceived(const QJsonDocument message);
 };
 
 #endif // QSWITCH_H
