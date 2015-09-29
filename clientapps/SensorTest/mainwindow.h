@@ -18,14 +18,16 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QSwitchControl m_switchControl;
+    QSwitchControl *m_switchControl;
 
 private slots:
     void on_btnGetSwitchList_clicked();
     void on_btnOn_clicked();
     void on_btnOff_clicked();
     void on_cmbSwitchList_currentIndexChanged(int index);
-    void on_switchControl_switchStateChanged(const std::string switchName, const SwitchState newState);
+    void on_btnGetState_clicked();
+    void onSwitchStateReceived(const QString name, SwitchState state);
+
 };
 
 #endif // MAINWINDOW_H

@@ -5,6 +5,7 @@
 QSwitchControl::QSwitchControl(std::shared_ptr<QFruitHapClient> client, QObject *parent):
    QObject(parent), m_isBusy(false), m_isConnected(false), m_client(std::move(client))
 {
+    connect(m_client.get(),&QFruitHapClient::responseReceived,this,&QSwitchControl::onClientResponseReceived);
 
 }
 
@@ -12,6 +13,7 @@ void QSwitchControl::turnOn(const QString &name)
 {
     if (!m_isConnected || m_isBusy)
     {
+        qCritical() << "QSwitchControl::turnOn| Not connected or busy";
         return;
     }
 
@@ -21,7 +23,7 @@ void QSwitchControl::turnOn(const QString &name)
 
     commandObject["OperationName"] = "TurnOn";
     commandObject["Parameters"] = QJsonValue::Null;
-    obj["TimeStamp"] = QDateTime::currentMSecsSinceEpoch();
+
     obj["SensorName"] = name;
     obj["EventType"] = "Command";
     obj["Data"] = commandObject;
@@ -35,6 +37,7 @@ void QSwitchControl::turnOff(const QString &name)
 {
     if (!m_isConnected || m_isBusy)
     {
+        qCritical() << "QSwitchControl::turnOff| Not connected or busy";
         return;
     }
 
@@ -42,9 +45,8 @@ void QSwitchControl::turnOff(const QString &name)
     QJsonObject obj;
     QJsonObject commandObject;
 
-    commandObject["OperationName"] = "TurnOn";
+    commandObject["OperationName"] = "TurnOff";
     commandObject["Parameters"] = QJsonValue::Null;
-    obj["TimeStamp"] = QDateTime::currentMSecsSinceEpoch();
     obj["SensorName"] = name;
     obj["EventType"] = "Command";
     obj["Data"] = commandObject;
@@ -53,7 +55,7 @@ void QSwitchControl::turnOff(const QString &name)
     m_client->sendMessage(message);
 }
 
-void QSwitchControl::connect(const QString &uri)
+void QSwitchControl::connectToServer(const QString &uri)
 {
     if (!m_isConnected)
     {
@@ -63,42 +65,40 @@ void QSwitchControl::connect(const QString &uri)
     m_isConnected = m_client->connectToServer(uri);
 }
 
-SwitchState QSwitchControl::getState(const QString &name)
+void QSwitchControl::getState(const QString &name)
 {
     if (!m_isConnected || m_isBusy)
     {
-        return SwitchState::Undefined;
+        qCritical() << "QSwitchControl::getState| Not connected or busy";
+        return;
     }
 
     m_isBusy = true;
+    m_currentName = name;
+
     QJsonObject obj;
 
-    obj["TimeStamp"] = QDateTime::currentMSecsSinceEpoch();
     obj["SensorName"] = name;
     obj["EventType"] = "GetValue";
 
     QJsonDocument message(obj);
     m_client->sendMessage(message);
-    while (m_isBusy)
-    {
-
-    }
-
-    return m_state;
 }
 
 void QSwitchControl::getNames(std::vector<QString> &list)
 {
     list.clear();
-    list.push_back("Een");
-    list.push_back("Twee");
+    list.push_back("SingleSocket");
+    list.push_back("MultipleSocket");
 }
 
 
 void QSwitchControl::onClientResponseReceived(const QJsonDocument response)
 {
+    qDebug() << "QSwitchControl::onClientResponseReceived| Response received";
     if (response.isNull() || response.isEmpty())
     {
+        qCritical() << "QSwitchControl::onClientResponseReceived| Response is empty";
         m_isBusy = false;
         return;
     }
@@ -106,23 +106,28 @@ void QSwitchControl::onClientResponseReceived(const QJsonDocument response)
     QJsonObject responseObject = response.object();
     if (response.isNull() || response.isEmpty())
     {
+        qCritical() << "QSwitchControl::onClientResponseReceived| Response object is empty";
         m_isBusy = false;
         return;
     }
 
     if (responseObject["EventType"] == "ErrorMessage")
     {
+        QString message(responseObject["Data"].toString());
+        qCritical() << "Error response received " << message;
         m_isBusy = false;
         return;
     }
 
-    if (responseObject["EventType"] == "GetValue")
-    {
+    if (responseObject["EventType"] == "GetValue" && responseObject["SensorName"] == m_currentName)
+    {        
         int state = responseObject["Data"].toInt();
-        m_state = static_cast<SwitchState>(state);
+        m_state = static_cast<SwitchState>(state);        
+        emit switchStateReceived(m_currentName,m_state);
+        m_currentName.clear();
     }
 
-    m_isBusy = true;
+    m_isBusy = false;
 
 
 }

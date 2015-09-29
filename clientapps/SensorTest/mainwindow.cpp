@@ -4,11 +4,24 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    m_switchControl(parent)
+    ui(new Ui::MainWindow)
+
+
+    //m_switchControl(
 {
+    QString exchangeName("FruitHAP_RpcExchange");
+    QString routingKey("FruitHAP_RpcQueue.FruitHap.Core.Action.SensorMessage");
+    QString uri("");
+
     ui->setupUi(this);
-    m_switchControl.init();
+
+    auto client = std::make_shared<QFruitHapClient>(exchangeName,routingKey,parent);
+    m_switchControl = new QSwitchControl(client,parent);
+    m_switchControl->connectToServer(uri);
+    connect(m_switchControl,&QSwitchControl::switchStateReceived,this,&MainWindow::onSwitchStateReceived);
+
+
+
 
 }
 
@@ -36,32 +49,42 @@ QString convertEnumToString(const SwitchState& state )
 void MainWindow::on_cmbSwitchList_currentIndexChanged(int index)
 {
     QString selectedItem = ui->cmbSwitchList->itemText(index);
-    SwitchState state = m_switchControl.getState(selectedItem);
-    ui->lbState->setText(convertEnumToString(state));
+    m_switchControl->getState(selectedItem);
 }
 
-void MainWindow::on_switchControl_switchStateChanged(const std::string switchName, const SwitchState newState)
+void MainWindow::on_btnGetState_clicked()
 {
-    ui->lbState->setText(convertEnumToString(newState));
+
 }
+
+void MainWindow::onSwitchStateReceived(const QString name, SwitchState state)
+{
+  QString selectedItem = ui->cmbSwitchList->currentText();
+  if (selectedItem == name)
+  {
+      ui->lbState->setText(convertEnumToString(state));
+  }
+}
+
 
 
 void MainWindow::on_btnOn_clicked()
 {
     QString selectedItem = ui->cmbSwitchList->itemText(ui->cmbSwitchList->currentIndex());
-    m_switchControl.turnOn(selectedItem);
+    m_switchControl->turnOn(selectedItem);
 }
 
 void MainWindow::on_btnOff_clicked()
 {
     QString selectedItem = ui->cmbSwitchList->itemText(ui->cmbSwitchList->currentIndex());
-    m_switchControl.turnOff(selectedItem);
+    m_switchControl->turnOff(selectedItem);
 }
 
 void MainWindow::on_btnGetSwitchList_clicked()
 {
     QStringList list;
-    std::vector<QString> items = m_switchControl.getSwitchNames();
+    std::vector<QString> items;
+    m_switchControl->getNames(items);
     for(uint i = 0; i < items.size();i++)
     {
         list.push_back(items[i]);
