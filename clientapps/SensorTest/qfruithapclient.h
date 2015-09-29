@@ -13,14 +13,14 @@ class QFruitHapClient : public QObject
 {
     Q_OBJECT
 public:
-    QFruitHapClient(QString exchangeName, QString routingKey, QObject *parent = 0);
-    ~QFruitHapClient();
+    QFruitHapClient(QString &exchangeName, QString &routingKey, QObject *parent = 0);
 signals:
     void connected();
     void responseReceived(const QJsonDocument response);
 
 public slots:
     bool connectToServer(const QString &uri);
+    void disconnectFromServer();
     void sendMessage(const QJsonDocument &message);
 
 private slots:

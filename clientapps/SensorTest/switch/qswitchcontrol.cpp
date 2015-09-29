@@ -1,151 +1,129 @@
 #include "qswitchcontrol.h"
-#include <stdexcept>
+#include <QJsonObject>
+#include <QDateTime>
 
-QSwitchControl::QSwitchControl(QObject *parent) : m_client(QString("FruitHAP_RpcExchange"),QString("FruitHAP_RpcQueue.FruitHap.Core.Action.SensorMessage"),this), QObject(parent)
+QSwitchControl::QSwitchControl(std::shared_ptr<QFruitHapClient> client, QObject *parent):
+   QObject(parent), m_isBusy(false), m_isConnected(false), m_client(std::move(client))
 {
-    setObjectName("switchControl");
 
-    QSwitch switch1("SingleSocket",&m_client,this);
-    QSwitch switch2("MultipleSocket",&m_client,this);
-
-    connect(&switch1, &QSwitch::stateChanged, this, &QSwitchControl::switchStateChanged);
-    connect(&switch2, &QSwitch::stateChanged, this, &QSwitchControl::switchStateChanged);
-
-    m_switches.push_back(switch1);
-    m_switches.push_back(switch2);
 }
 
-void QSwitchControl::init()
+void QSwitchControl::turnOn(const QString &name)
 {
-    bool isConnected = m_client.connectToServer(QString("amqp://admin:admin@ljubljana"));
-//    if (!isConnected)
-//    {
-//        throw std::domain_error("Cannot connect");
-//    }
-}
-
-void QSwitchControl::turnOn(const QString &switchName)
-{
-    std::vector<QSwitch>::iterator it = std::find_if(m_switches.begin(),m_switches.end(),[&](QSwitch& sw) {return sw.getName() == switchName;});
-    if (it != m_switches.end())
+    if (!m_isConnected || m_isBusy)
     {
-        it->turnOn();
-    }
-}
-
-void QSwitchControl::turnOff(const QString &switchName)
-{
-    std::vector<QSwitch>::iterator it = std::find_if(m_switches.begin(),m_switches.end(),[&](QSwitch sw) {return sw.getName() == switchName;});
-    if (it != m_switches.end())
-    {
-        it->turnOff();
-    }
-}
-
-SwitchState QSwitchControl::getState(const QString &switchName) const
-{
-    std::vector<QSwitch>::const_iterator it = std::find_if(m_switches.begin(),m_switches.end(),[&](QSwitch sw) {return sw.getName() == switchName;});
-    if (it != m_switches.end())
-    {
-        it->getState();
+        return;
     }
 
-    return SwitchState::Undefined;
+    m_isBusy = true;
+    QJsonObject obj;
+    QJsonObject commandObject;
+
+    commandObject["OperationName"] = "TurnOn";
+    commandObject["Parameters"] = QJsonValue::Null;
+    obj["TimeStamp"] = QDateTime::currentMSecsSinceEpoch();
+    obj["SensorName"] = name;
+    obj["EventType"] = "Command";
+    obj["Data"] = commandObject;
+
+    QJsonDocument message(obj);
+    m_client->sendMessage(message);
+
 }
 
-std::vector<QString> QSwitchControl::getSwitchNames() const
+void QSwitchControl::turnOff(const QString &name)
 {
-    std::vector<QString> result;
-    for(const QSwitch& s : m_switches)
+    if (!m_isConnected || m_isBusy)
     {
-        result.push_back(s.getName());
+        return;
     }
 
-    return result;
+    m_isBusy = true;
+    QJsonObject obj;
+    QJsonObject commandObject;
+
+    commandObject["OperationName"] = "TurnOn";
+    commandObject["Parameters"] = QJsonValue::Null;
+    obj["TimeStamp"] = QDateTime::currentMSecsSinceEpoch();
+    obj["SensorName"] = name;
+    obj["EventType"] = "Command";
+    obj["Data"] = commandObject;
+
+    QJsonDocument message(obj);
+    m_client->sendMessage(message);
 }
 
-QSwitchControl::~QSwitchControl()
+void QSwitchControl::connect(const QString &uri)
 {
-
-}
-
-void QSwitchControl::switchStateChanged(const QString switchName, const SwitchState newState)
-{
-    emit stateChanged(switchName,newState);
-}
-
-
-/*#include "switch_control.h"
-#include <algorithm>
-
-SwitchControl::SwitchControl()
-{
-    setObjectName("switchControl");
-    Switch* switch1 = new Switch("Single");
-    Switch* switch2 = new Switch("Double");
-    connect(switch1, &Switch::stateChanged, this, &SwitchControl::switchStateChanged);
-    connect(switch2, &Switch::stateChanged, this, &SwitchControl::switchStateChanged);
-
-    m_switches.push_back(switch1);
-    m_switches.push_back(switch2);
-
-}
-
-
-
-
-
-void SwitchControl::turnOn(const std::string &sensorName)
-{
-    std::vector<Switch*>::iterator it = std::find_if(m_switches.begin(),m_switches.end(),[&](Switch* sw) {return sw->getName() == sensorName;});
-    if (it != m_switches.end())
+    if (!m_isConnected)
     {
-        (*it)->turnOn();
-    }
-}
-
-void SwitchControl::turnOff(const std::string &sensorName)
-{
-    std::vector<Switch*>::iterator it = std::find_if(m_switches.begin(),m_switches.end(),[&](Switch* sw) {return sw->getName() == sensorName;});
-    if (it != m_switches.end())
-    {
-        (*it)->turnOff();
-    }
-}
-
-SwitchState SwitchControl::getState(const std::string &sensorName) const
-{
-     std::vector<Switch*>::const_iterator it = std::find_if(m_switches.begin(),m_switches.end(),[&](const Switch* sw) {return sw->getName() == sensorName;});
-     if (it != m_switches.end())
-     {
-        return (*it)->getState();
-     }
-
-     return SwitchState::Undefined;
-
-}FruitHap.Core.Action
-
-std::vector<std::string> SwitchControl::getSwitchNames() const
-{
-    std::vector<std::string> result;
-    for(const Switch* s : m_switches)
-    {
-        result.push_back(s->getName());
+        m_client->disconnectFromServer();
     }
 
-    return result;
+    m_isConnected = m_client->connectToServer(uri);
 }
 
-
-SwitchControl::~SwitchControl()
+SwitchState QSwitchControl::getState(const QString &name)
 {
-    for(Switch* s : m_switches)
+    if (!m_isConnected || m_isBusy)
     {
-        delete s;
+        return SwitchState::Undefined;
     }
+
+    m_isBusy = true;
+    QJsonObject obj;
+
+    obj["TimeStamp"] = QDateTime::currentMSecsSinceEpoch();
+    obj["SensorName"] = name;
+    obj["EventType"] = "GetValue";
+
+    QJsonDocument message(obj);
+    m_client->sendMessage(message);
+    while (m_isBusy)
+    {
+
+    }
+
+    return m_state;
 }
 
-void SwitchControl::switchStateChanged(const std::string switchName, const SwitchState newState)
+void QSwitchControl::getNames(std::vector<QString> &list)
 {
-    emit stateChanged(switchName,newState);
-}*/
+    list.clear();
+    list.push_back("Een");
+    list.push_back("Twee");
+}
+
+
+void QSwitchControl::onClientResponseReceived(const QJsonDocument response)
+{
+    if (response.isNull() || response.isEmpty())
+    {
+        m_isBusy = false;
+        return;
+    }
+
+    QJsonObject responseObject = response.object();
+    if (response.isNull() || response.isEmpty())
+    {
+        m_isBusy = false;
+        return;
+    }
+
+    if (responseObject["EventType"] == "ErrorMessage")
+    {
+        m_isBusy = false;
+        return;
+    }
+
+    if (responseObject["EventType"] == "GetValue")
+    {
+        int state = responseObject["Data"].toInt();
+        m_state = static_cast<SwitchState>(state);
+    }
+
+    m_isBusy = true;
+
+
+}
+

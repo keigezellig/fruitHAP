@@ -2,7 +2,7 @@
 #include <QEventLoop>
 #include <QUuid>
 
-QFruitHapClient::QFruitHapClient(QString exchangeName, QString routingKey, QObject *parent):
+QFruitHapClient::QFruitHapClient(QString &exchangeName, QString &routingKey, QObject *parent):
     QObject(parent),
     m_exchangeName(exchangeName),
     m_routingKey(routingKey),
@@ -12,24 +12,7 @@ QFruitHapClient::QFruitHapClient(QString exchangeName, QString routingKey, QObje
 {
   m_client = new QAmqpClient(this);
   connect(m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
-}
 
-QFruitHapClient::~QFruitHapClient()
-{
-   if (m_defaultExchange != nullptr)
-   {
-    delete m_defaultExchange;
-   }
-
-   if (m_responseQueue != nullptr)
-   {
-       delete m_responseQueue;
-   }
-
-   if (m_client != nullptr)
-   {
-      delete m_client;
-   }
 }
 
 
@@ -37,13 +20,15 @@ bool QFruitHapClient::connectToServer(const QString &uri)
 {
     QEventLoop loop;
     connect(this, SIGNAL(connected()), &loop, SLOT(quit()));
-    if (uri.isEmpty())
-        m_client->connectToHost();
-    else
-        m_client->connectToHost(uri);
+    m_client->connectToHost(uri);
     loop.exec();
 
     return m_client->isConnected();
+}
+
+void QFruitHapClient::disconnectFromServer()
+{
+    m_client->disconnectFromHost();
 }
 
 void QFruitHapClient::sendMessage(const QJsonDocument &message)
@@ -83,7 +68,7 @@ void QFruitHapClient::responseFromMQReceived()
         m_responseQueue->reject(message, true);
         return;
     }
-    if (message.payload().count() > 0)
+    if (!message.payload().isEmpty())
     {
        decodedMessage = QJsonDocument::fromJson(message.payload());
     }
