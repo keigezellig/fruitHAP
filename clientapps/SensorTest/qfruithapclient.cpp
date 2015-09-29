@@ -14,18 +14,39 @@ QFruitHapClient::QFruitHapClient(QString exchangeName, QString routingKey, QObje
   connect(m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
 }
 
+QFruitHapClient::~QFruitHapClient()
+{
+   if (m_defaultExchange != nullptr)
+   {
+    delete m_defaultExchange;
+   }
 
-bool QFruitHapClient::connectToServer(const QString uri)
+   if (m_responseQueue != nullptr)
+   {
+       delete m_responseQueue;
+   }
+
+   if (m_client != nullptr)
+   {
+      delete m_client;
+   }
+}
+
+
+bool QFruitHapClient::connectToServer(const QString &uri)
 {
     QEventLoop loop;
     connect(this, SIGNAL(connected()), &loop, SLOT(quit()));
-    m_client->connectToHost(uri);
+    if (uri.isEmpty())
+        m_client->connectToHost();
+    else
+        m_client->connectToHost(uri);
     loop.exec();
 
     return m_client->isConnected();
 }
 
-void QFruitHapClient::sendMessage(const QJsonDocument message)
+void QFruitHapClient::sendMessage(const QJsonDocument &message)
 {
     m_correlationId = QUuid::createUuid().toString();
     QAmqpMessage::PropertyHash properties;

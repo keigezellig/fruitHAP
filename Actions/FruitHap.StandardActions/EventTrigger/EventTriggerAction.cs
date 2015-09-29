@@ -13,8 +13,8 @@ using System.IO;
 using System.Reflection;
 using Microsoft.Practices.Prism.PubSubEvents;
 using System.Collections.Generic;
-using FruitHap.StandardActions.Messages;
 using FruitHAP.Core.SensorEventPublisher;
+using FruitHap.Core.Action;
 
 namespace FruitHap.StandardActions.EventTrigger
 {

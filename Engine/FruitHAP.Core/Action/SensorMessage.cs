@@ -1,7 +1,7 @@
 ﻿using System;
 using EasyNetQ;
 
-namespace FruitHap.StandardActions.Messages
+namespace FruitHap.Core.Action
 {	
 	[Queue("FruitHAPQueue", ExchangeName = "FruitHAPExchange")]
 	public class SensorMessage

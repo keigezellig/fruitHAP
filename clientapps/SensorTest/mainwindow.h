@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "switch/switch_control.h"
+#include "switch/qswitchcontrol.h"
 
 namespace Ui {
 class MainWindow;
@@ -18,7 +18,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    SwitchControl m_switchControl;
+    QSwitchControl m_switchControl;
 
 private slots:
     void on_btnGetSwitchList_clicked();

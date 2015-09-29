@@ -4,9 +4,12 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_switchControl(parent)
 {
-    ui->setupUi(this);   
+    ui->setupUi(this);
+    m_switchControl.init();
+
 }
 
 MainWindow::~MainWindow()
@@ -33,7 +36,7 @@ QString convertEnumToString(const SwitchState& state )
 void MainWindow::on_cmbSwitchList_currentIndexChanged(int index)
 {
     QString selectedItem = ui->cmbSwitchList->itemText(index);
-    SwitchState state = m_switchControl.getState(selectedItem.toStdString());
+    SwitchState state = m_switchControl.getState(selectedItem);
     ui->lbState->setText(convertEnumToString(state));
 }
 
@@ -46,22 +49,22 @@ void MainWindow::on_switchControl_switchStateChanged(const std::string switchNam
 void MainWindow::on_btnOn_clicked()
 {
     QString selectedItem = ui->cmbSwitchList->itemText(ui->cmbSwitchList->currentIndex());
-    m_switchControl.turnOn(selectedItem.toStdString());
+    m_switchControl.turnOn(selectedItem);
 }
 
 void MainWindow::on_btnOff_clicked()
 {
     QString selectedItem = ui->cmbSwitchList->itemText(ui->cmbSwitchList->currentIndex());
-    m_switchControl.turnOff(selectedItem.toStdString());
+    m_switchControl.turnOff(selectedItem);
 }
 
 void MainWindow::on_btnGetSwitchList_clicked()
 {
     QStringList list;
-    std::vector<std::string> items = m_switchControl.getSwitchNames();
+    std::vector<QString> items = m_switchControl.getSwitchNames();
     for(uint i = 0; i < items.size();i++)
     {
-        list.push_back(QString::fromStdString(items[i]));
+        list.push_back(items[i]);
     }
     ui->cmbSwitchList->clear();
     ui->cmbSwitchList->addItems(list);

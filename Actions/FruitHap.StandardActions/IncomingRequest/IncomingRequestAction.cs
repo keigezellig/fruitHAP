@@ -3,7 +3,7 @@ using FruitHAP.Core.SensorRepository;
 using Castle.Core.Logging;
 using FruitHAP.Core.MQ;
 using System.Threading.Tasks;
-using FruitHap.StandardActions.Messages;
+using FruitHap.Core.Action;
 
 namespace FruitHap.StandardActions.IncomingRequest
 {
