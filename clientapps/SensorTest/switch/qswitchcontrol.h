@@ -5,7 +5,7 @@
 #include <memory>
 #include <QJsonDocument>
 #include <vector>
-#include "qfruithapclient.h"
+#include "qfruithaprpcclient.h"
 
 enum class SwitchState
 {
@@ -16,7 +16,7 @@ class QSwitchControl : public QObject
 {
     Q_OBJECT
 public:
-    QSwitchControl(std::shared_ptr<QFruitHapClient> client,QObject *parent = 0);
+    QSwitchControl(QFruitHapRPCClient &client,QObject *parent = 0);
     void turnOn(const QString &name);
     void turnOff(const QString &name);
     void connectToServer(const QString &uri);
@@ -27,7 +27,7 @@ private:
     bool m_isConnected;
     QString m_currentName;
     SwitchState m_state;
-    std::shared_ptr<QFruitHapClient> m_client;
+    QFruitHapRPCClient &m_client;
 signals:
     void switchStateReceived(const QString name, SwitchState state);
 private slots:

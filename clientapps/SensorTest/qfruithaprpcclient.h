@@ -9,11 +9,12 @@
 
 
 
-class QFruitHapClient : public QObject
+class QFruitHapRPCClient : public QObject
 {
     Q_OBJECT
 public:
-    QFruitHapClient(QString &exchangeName, QString &routingKey, QObject *parent = 0);
+    QFruitHapRPCClient(QString exchangeName, QString routingKey, QObject *parent = 0);
+    ~QFruitHapRPCClient();
 signals:
     void connected();
     void responseReceived(const QJsonDocument response);

@@ -1,9 +1,9 @@
-#include "qfruithapclient.h"
+#include "qfruithaprpcclient.h"
 #include <QEventLoop>
 #include <QUuid>
 #include <QDebug>
 
-QFruitHapClient::QFruitHapClient(QString &exchangeName, QString &routingKey, QObject *parent):
+QFruitHapRPCClient::QFruitHapRPCClient(QString exchangeName, QString routingKey, QObject *parent):
     QObject(parent),
     m_exchangeName(exchangeName),
     m_routingKey(routingKey),
@@ -16,8 +16,31 @@ QFruitHapClient::QFruitHapClient(QString &exchangeName, QString &routingKey, QOb
 
 }
 
+QFruitHapRPCClient::~QFruitHapRPCClient()
+{
+    if (m_defaultExchange != nullptr)
+    {
+        delete m_defaultExchange;
+    }
+    if (m_responseQueue != nullptr)
+    {
+        delete m_responseQueue;
+    }
 
-bool QFruitHapClient::connectToServer(const QString &uri)
+    if (m_client != nullptr)
+    {
+        if (m_client->isConnected())
+        {
+            m_client->disconnectFromHost();
+        }
+        delete m_client;
+    }
+
+
+}
+
+
+bool QFruitHapRPCClient::connectToServer(const QString &uri)
 {
     QEventLoop loop;
     connect(this, SIGNAL(connected()), &loop, SLOT(quit()));
@@ -34,12 +57,12 @@ bool QFruitHapClient::connectToServer(const QString &uri)
     return m_client->isConnected();
 }
 
-void QFruitHapClient::disconnectFromServer()
+void QFruitHapRPCClient::disconnectFromServer()
 {
     m_client->disconnectFromHost();
 }
 
-void QFruitHapClient::sendMessage(const QJsonDocument &message)
+void QFruitHapRPCClient::sendMessage(const QJsonDocument &message)
 {
     qDebug() << "Sending message";
     m_correlationId = QUuid::createUuid().toString();
@@ -51,7 +74,7 @@ void QFruitHapClient::sendMessage(const QJsonDocument &message)
     m_defaultExchange->publish(message.toJson(), m_routingKey, properties);
 }
 
-void QFruitHapClient::clientConnected()
+void QFruitHapRPCClient::clientConnected()
 {
     qDebug() << "QFruitHapClient::clientConnected| Connected to MQ server";
     m_responseQueue = m_client->createQueue();
@@ -61,14 +84,14 @@ void QFruitHapClient::clientConnected()
     m_defaultExchange = m_client->createExchange(m_exchangeName);
 }
 
-void QFruitHapClient::queueDeclared()
+void QFruitHapRPCClient::queueDeclared()
 {
     m_responseQueue->consume();
     emit connected();
 }
 
 
-void QFruitHapClient::responseFromMQReceived()
+void QFruitHapRPCClient::responseFromMQReceived()
 {
     qDebug() << "QFruitHapClient::responseFromMQReceived| Response received";
     QAmqpMessage message = m_responseQueue->dequeue();

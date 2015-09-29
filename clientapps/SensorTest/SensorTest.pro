@@ -16,7 +16,6 @@ CONFIG += c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    qfruithapclient.cpp \
     libs/qamqp/source/qamqpauthenticator.cpp \
     libs/qamqp/source/qamqpchannel.cpp \
     libs/qamqp/source/qamqpchannelhash.cpp \
@@ -26,11 +25,11 @@ SOURCES += main.cpp\
     libs/qamqp/source/qamqpmessage.cpp \
     libs/qamqp/source/qamqpqueue.cpp \
     libs/qamqp/source/qamqptable.cpp \
-    switch/qswitchcontrol.cpp
+    switch/qswitchcontrol.cpp \
+    qfruithaprpcclient.cpp
 
 
 HEADERS  += mainwindow.h \
-    qfruithapclient.h \    
     libs/qamqp/source/qamqpauthenticator.h \
     libs/qamqp/source/qamqpchannel.h \
     libs/qamqp/source/qamqpchannel_p.h \
@@ -46,7 +45,8 @@ HEADERS  += mainwindow.h \
     libs/qamqp/source/qamqpqueue.h \
     libs/qamqp/source/qamqpqueue_p.h \
     libs/qamqp/source/qamqptable.h \
-    switch/qswitchcontrol.h
+    switch/qswitchcontrol.h \
+    qfruithaprpcclient.h
 
 
 FORMS    += mainwindow.ui

@@ -18,7 +18,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QSwitchControl *m_switchControl;
+    QFruitHapRPCClient m_client;
+    QSwitchControl m_switchControl;
+
 
 private slots:
     void on_btnGetSwitchList_clicked();

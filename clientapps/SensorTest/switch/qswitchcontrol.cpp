@@ -2,10 +2,10 @@
 #include <QJsonObject>
 #include <QDateTime>
 
-QSwitchControl::QSwitchControl(std::shared_ptr<QFruitHapClient> client, QObject *parent):
-   QObject(parent), m_isBusy(false), m_isConnected(false), m_client(std::move(client))
+QSwitchControl::QSwitchControl(QFruitHapRPCClient &client, QObject *parent):
+   QObject(parent), m_isBusy(false), m_isConnected(false), m_client(client)
 {
-    connect(m_client.get(),&QFruitHapClient::responseReceived,this,&QSwitchControl::onClientResponseReceived);
+    connect(&m_client,&QFruitHapRPCClient::responseReceived,this,&QSwitchControl::onClientResponseReceived);
 
 }
 
@@ -29,7 +29,7 @@ void QSwitchControl::turnOn(const QString &name)
     obj["Data"] = commandObject;
 
     QJsonDocument message(obj);
-    m_client->sendMessage(message);
+    m_client.sendMessage(message);
 
 }
 
@@ -52,17 +52,17 @@ void QSwitchControl::turnOff(const QString &name)
     obj["Data"] = commandObject;
 
     QJsonDocument message(obj);
-    m_client->sendMessage(message);
+    m_client.sendMessage(message);
 }
 
 void QSwitchControl::connectToServer(const QString &uri)
 {
     if (!m_isConnected)
     {
-        m_client->disconnectFromServer();
+        m_client.disconnectFromServer();
     }
 
-    m_isConnected = m_client->connectToServer(uri);
+    m_isConnected = m_client.connectToServer(uri);
 }
 
 void QSwitchControl::getState(const QString &name)
@@ -82,7 +82,7 @@ void QSwitchControl::getState(const QString &name)
     obj["EventType"] = "GetValue";
 
     QJsonDocument message(obj);
-    m_client->sendMessage(message);
+    m_client.sendMessage(message);
 }
 
 void QSwitchControl::getNames(std::vector<QString> &list)
