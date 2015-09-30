@@ -26,7 +26,7 @@ SOURCES += main.cpp\
     libs/qamqp/source/qamqpqueue.cpp \
     libs/qamqp/source/qamqptable.cpp \
     switch/qswitchcontrol.cpp \
-    qfruithaprpcclient.cpp
+    qfruithapclient.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -46,7 +46,7 @@ HEADERS  += mainwindow.h \
     libs/qamqp/source/qamqpqueue_p.h \
     libs/qamqp/source/qamqptable.h \
     switch/qswitchcontrol.h \
-    qfruithaprpcclient.h
+    qfruithapclient.h
 
 
 FORMS    += mainwindow.ui

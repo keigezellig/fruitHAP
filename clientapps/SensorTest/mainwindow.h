@@ -18,7 +18,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QFruitHapRPCClient m_client;
+    QFruitHapClient m_client;
     QSwitchControl m_switchControl;
 
 

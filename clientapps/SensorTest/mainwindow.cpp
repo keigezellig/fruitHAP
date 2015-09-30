@@ -5,14 +5,17 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_client(QString("FruitHAP_RpcExchange"), QString("FruitHAP_RpcQueue.FruitHap.Core.Action.SensorMessage"),parent),
+    m_client(QString("FruitHAP_RpcExchange"), QString("FruitHAP_RpcQueue.FruitHap.Core.Action.SensorMessage"),QString("FruitHAP_PubSubExchange"),parent),
     m_switchControl(m_client,parent)
 {
-    QString uri("");
 
     ui->setupUi(this);
 
-    //m_switchControl = new QSwitchControl(m_client,parent);
+    QString uri("");
+    QStringList bindingKeys;
+    bindingKeys.push_back("alerts");
+    m_client.setBindingKeys(bindingKeys);
+
     m_switchControl.connectToServer(uri);
     connect(&m_switchControl,&QSwitchControl::switchStateReceived,this,&MainWindow::onSwitchStateReceived);
 

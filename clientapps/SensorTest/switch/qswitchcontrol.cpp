@@ -2,10 +2,10 @@
 #include <QJsonObject>
 #include <QDateTime>
 
-QSwitchControl::QSwitchControl(QFruitHapRPCClient &client, QObject *parent):
+QSwitchControl::QSwitchControl(QFruitHapClient &client, QObject *parent):
    QObject(parent), m_isBusy(false), m_isConnected(false), m_client(client)
 {
-    connect(&m_client,&QFruitHapRPCClient::responseReceived,this,&QSwitchControl::onClientResponseReceived);
+    connect(&m_client,&QFruitHapClient::responseReceived,this,&QSwitchControl::onClientResponseReceived);
 
 }
 
@@ -119,12 +119,21 @@ void QSwitchControl::onClientResponseReceived(const QJsonDocument response)
         return;
     }
 
-    if (responseObject["EventType"] == "GetValue" && responseObject["SensorName"] == m_currentName)
+    if ( (responseObject["EventType"] == "GetValue" || responseObject["EventType"] == "SensorEvent"))
     {        
         int state = responseObject["Data"].toInt();
-        m_state = static_cast<SwitchState>(state);        
-        emit switchStateReceived(m_currentName,m_state);
-        m_currentName.clear();
+        m_state = static_cast<SwitchState>(state);
+
+        if (responseObject["EventType"] == "GetValue" && responseObject["SensorName"] == m_currentName)
+        {
+            emit switchStateReceived(m_currentName,m_state);
+            m_currentName.clear();
+        }
+
+        if (responseObject["EventType"] == "SensorEvent")
+        {
+            emit switchStateReceived(responseObject["SensorName"].toString(),m_state);
+        }
     }
 
     m_isBusy = false;
