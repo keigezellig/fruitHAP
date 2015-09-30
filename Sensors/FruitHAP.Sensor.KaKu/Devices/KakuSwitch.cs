@@ -138,7 +138,7 @@ namespace FruitHAP.Sensor.KaKu
 
 			if (fireEvent) 
 			{
-				sensorEventPublisher.Publish<SensorEvent> (this, state.ToString ());
+				sensorEventPublisher.Publish<SensorEvent> (this, state);
 			}
 		}
 
