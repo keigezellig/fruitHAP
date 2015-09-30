@@ -57,7 +57,12 @@ void QFruitHapClient::setBindingKeys(const QStringList &bindingKeys)
 
 bool QFruitHapClient::connectToServer(const QString &uri)
 {
-    QEventLoop loop;    
+    if (m_client->isConnected())
+    {
+        disconnectFromServer();
+    }
+
+    QEventLoop loop;
     connect(this, SIGNAL(connected()), &loop, SLOT(quit()));
     if (uri.isNull() || uri.isEmpty() )
     {
@@ -67,7 +72,6 @@ bool QFruitHapClient::connectToServer(const QString &uri)
     {
         m_client->connectToHost(uri);
     }
-    loop.exec();
 
     return m_client->isConnected();
 }
@@ -76,10 +80,16 @@ void QFruitHapClient::disconnectFromServer()
 {
     qDebug() << "Disconnect from server";
     m_client->disconnectFromHost();
+    emit disconnected();
 }
 
 void QFruitHapClient::sendMessage(const QJsonDocument &message)
 {
+    if (!m_client->isConnected())
+    {
+        qDebug() << "Cannot send message, not connected";
+        return;
+    }
     qDebug() << "Sending message";
     m_correlationId = QUuid::createUuid().toString();
     QAmqpMessage::PropertyHash properties;
@@ -103,6 +113,9 @@ void QFruitHapClient::clientConnected()
     m_pubsubExchange = m_client->createExchange(m_pubSubExchangeName);
     connect(m_pubsubExchange, SIGNAL(declared()), this, SLOT(pubSubExchangeDeclared()));
     m_pubsubExchange->declare(QAmqpExchange::Topic);
+    emit connected();
+
+
 }
 
 void QFruitHapClient::pubSubExchangeDeclared()
@@ -147,8 +160,10 @@ void QFruitHapClient::messageReceived() {
 
 void QFruitHapClient::rpcQueueDeclared()
 {
+    qDebug() << "Rpc queue ready";
     m_rpcResponseQueue->consume();
-    emit connected();
+
+    emit rpcQueueReady();
 }
 
 

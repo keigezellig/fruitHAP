@@ -3,20 +3,24 @@
 #include <QDateTime>
 
 QSwitchControl::QSwitchControl(QFruitHapClient &client, QObject *parent):
-   QObject(parent), m_isBusy(false), m_isConnected(false), m_client(client)
+   QObject(parent), m_isBusy(false), m_client(client)
 {
+    m_requestTimer = new QTimer(this);
+    m_requestTimer->setSingleShot(true);
+    connect(m_requestTimer,&QTimer::timeout, this, &QSwitchControl::requestTimeout);
     connect(&m_client,&QFruitHapClient::responseReceived,this,&QSwitchControl::onClientResponseReceived);
+
 
 }
 
 void QSwitchControl::turnOn(const QString &name)
 {
-    if (!m_isConnected || m_isBusy)
+    if (m_isBusy)
     {
-        qCritical() << "QSwitchControl::turnOn| Not connected or busy";
+        qCritical() << "QSwitchControl::turnOn| Busy";
         return;
     }
-
+    m_requestTimer->start(2000);
     m_isBusy = true;
     QJsonObject obj;
     QJsonObject commandObject;
@@ -29,18 +33,19 @@ void QSwitchControl::turnOn(const QString &name)
     obj["Data"] = commandObject;
 
     QJsonDocument message(obj);
+
     m_client.sendMessage(message);
 
 }
 
 void QSwitchControl::turnOff(const QString &name)
 {
-    if (!m_isConnected || m_isBusy)
+    if (m_isBusy)
     {
-        qCritical() << "QSwitchControl::turnOff| Not connected or busy";
+        qCritical() << "QSwitchControl::turnOff| busy";
         return;
     }
-
+    m_requestTimer->start(2000);
     m_isBusy = true;
     QJsonObject obj;
     QJsonObject commandObject;
@@ -55,24 +60,15 @@ void QSwitchControl::turnOff(const QString &name)
     m_client.sendMessage(message);
 }
 
-void QSwitchControl::connectToServer(const QString &uri)
-{
-    if (!m_isConnected)
-    {
-        m_client.disconnectFromServer();
-    }
-
-    m_isConnected = m_client.connectToServer(uri);
-}
-
 void QSwitchControl::getState(const QString &name)
 {
-    if (!m_isConnected || m_isBusy)
+    if (m_isBusy)
     {
-        qCritical() << "QSwitchControl::getState| Not connected or busy";
+        qCritical() << "QSwitchControl::getState| Busy";
         return;
     }
 
+    m_requestTimer->start(2000);
     m_isBusy = true;
     m_currentName = name;
 
@@ -87,6 +83,7 @@ void QSwitchControl::getState(const QString &name)
 
 void QSwitchControl::getNames(std::vector<QString> &list)
 {
+    qDebug() << "Get switch list";
     list.clear();
     list.push_back("SingleSocket");
     list.push_back("MultipleSocket");
@@ -94,8 +91,9 @@ void QSwitchControl::getNames(std::vector<QString> &list)
 
 
 void QSwitchControl::onClientResponseReceived(const QJsonDocument response)
-{
+{    
     qDebug() << "QSwitchControl::onClientResponseReceived| Response received";
+    m_requestTimer->stop();
     if (response.isNull() || response.isEmpty())
     {
         qCritical() << "QSwitchControl::onClientResponseReceived| Response is empty";
@@ -139,5 +137,11 @@ void QSwitchControl::onClientResponseReceived(const QJsonDocument response)
     m_isBusy = false;
 
 
+}
+
+void QSwitchControl::requestTimeout()
+{
+    qCritical() << "Request timeout. Check your connection";
+    m_isBusy = false;
 }
 

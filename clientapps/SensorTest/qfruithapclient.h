@@ -18,6 +18,8 @@ public:
     void setBindingKeys(const QStringList &bindingKeys);
 signals:
     void connected();
+    void disconnected();
+    void rpcQueueReady();
     void responseReceived(const QJsonDocument response);
 
 public slots:

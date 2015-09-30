@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>517</width>
+    <width>284</width>
     <height>397</height>
    </rect>
   </property>
@@ -25,8 +25,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>511</width>
-      <height>341</height>
+      <width>281</width>
+      <height>361</height>
      </rect>
     </property>
     <property name="tabShape">
@@ -65,24 +65,6 @@
         <width>141</width>
         <height>22</height>
        </rect>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btnGetSwitchList">
-      <property name="geometry">
-       <rect>
-        <x>180</x>
-        <y>30</y>
-        <width>151</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>11</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Get switch list</string>
       </property>
      </widget>
      <widget class="QLabel" name="lbState">
@@ -141,24 +123,6 @@
        <string>Turn off</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="btnGetState">
-      <property name="geometry">
-       <rect>
-        <x>190</x>
-        <y>170</y>
-        <width>81</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Get state</string>
-      </property>
-     </widget>
     </widget>
    </widget>
   </widget>
@@ -167,14 +131,17 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>517</width>
-     <height>27</height>
+     <width>284</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <addaction name="actionConnect"/>
+    <addaction name="actionDisconnect"/>
+    <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -206,6 +173,22 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionConnect">
+   <property name="text">
+    <string>Connect to server...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionDisconnect">
+   <property name="text">
+    <string>Disconnect</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D, Enter</string>
    </property>
   </action>
  </widget>

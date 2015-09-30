@@ -23,13 +23,18 @@ private:
 
 
 private slots:
-    void on_btnGetSwitchList_clicked();
+    void loadSwitches();
     void on_btnOn_clicked();
     void on_btnOff_clicked();
     void on_cmbSwitchList_currentIndexChanged(int index);
-    void on_btnGetState_clicked();
     void onSwitchStateReceived(const QString name, SwitchState state);
+    void on_actionConnect_triggered();
 
+    void connectToMQ(const QStringList &bindingKeys, const QString &uri);
+    void onConnected();
+    void on_actionDisconnect_triggered();
+    void onDisconnected();
+    void onRpcQueueReady();
 };
 
 #endif // MAINWINDOW_H

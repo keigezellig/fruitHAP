@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QInputDialog>
+
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -11,14 +13,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
 
-    QString uri("");
-    QStringList bindingKeys;
-    bindingKeys.push_back("alerts");
-    m_client.setBindingKeys(bindingKeys);
-
-    m_switchControl.connectToServer(uri);
     connect(&m_switchControl,&QSwitchControl::switchStateReceived,this,&MainWindow::onSwitchStateReceived);
-
+    connect(&m_client,&QFruitHapClient::connected,this,&MainWindow::onConnected);
+    connect(&m_client,&QFruitHapClient::disconnected,this,&MainWindow::onDisconnected);
+    connect(&m_client,&QFruitHapClient::rpcQueueReady,this,&MainWindow::onRpcQueueReady);
 }
 
 MainWindow::~MainWindow()
@@ -42,16 +40,38 @@ QString convertEnumToString(const SwitchState& state )
 }
 
 
+void MainWindow::connectToMQ(const QStringList &bindingKeys, const QString &uri)
+{
+    m_client.setBindingKeys(bindingKeys);
+    m_client.connectToServer(uri);
+
+}
+
+void MainWindow::onConnected()
+{
+    ui->actionConnect->setEnabled(false);
+    ui->actionDisconnect->setEnabled(true);
+}
+
+void MainWindow::onDisconnected()
+{
+    ui->actionConnect->setEnabled(true);
+    ui->actionDisconnect->setEnabled(false);
+}
+
+void MainWindow::onRpcQueueReady()
+{
+    loadSwitches();
+}
+
+
+
 void MainWindow::on_cmbSwitchList_currentIndexChanged(int index)
 {
     QString selectedItem = ui->cmbSwitchList->itemText(index);
     m_switchControl.getState(selectedItem);
 }
 
-void MainWindow::on_btnGetState_clicked()
-{
-
-}
 
 void MainWindow::onSwitchStateReceived(const QString name, SwitchState state)
 {
@@ -62,6 +82,27 @@ void MainWindow::onSwitchStateReceived(const QString name, SwitchState state)
   }
 }
 
+void MainWindow::on_actionConnect_triggered()
+{
+    bool ok;
+    QString uri = QInputDialog::getText(this,"Connect to MQ server",
+                                            "Enter AMQ connection string (default is amqp://guest:guest@localhost)", QLineEdit::Normal,
+                                            "", &ok);
+    if (ok)
+    {
+            QStringList bindingKeys;
+            bindingKeys.push_back("alerts");
+
+            connectToMQ(bindingKeys, uri);
+
+    }
+
+}
+
+void MainWindow::on_actionDisconnect_triggered()
+{
+    m_client.disconnectFromServer();
+}
 
 
 void MainWindow::on_btnOn_clicked()
@@ -76,7 +117,7 @@ void MainWindow::on_btnOff_clicked()
     m_switchControl.turnOff(selectedItem);
 }
 
-void MainWindow::on_btnGetSwitchList_clicked()
+void MainWindow::loadSwitches()
 {
     QStringList list;
     std::vector<QString> items;
