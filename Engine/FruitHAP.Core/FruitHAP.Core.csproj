@@ -78,6 +78,8 @@
     <Compile Include="SensorEventPublisher\ISensorEventPublisher.cs" />
     <Compile Include="SensorEventPublisher\SensorEventPublisher.cs" />
     <Compile Include="Action\SensorMessage.cs" />
+    <Compile Include="Action\ConfigurationMessage.cs" />
+    <Compile Include="Action\RpcAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
