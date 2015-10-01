@@ -6,6 +6,7 @@ using Castle.Core.Logging;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Common.Helpers;
 using FruitHAP.Core.SensorPersister;
+using System.Collections;
 
 namespace FruitHAP.Core.SensorRepository
 {
@@ -43,7 +44,11 @@ namespace FruitHAP.Core.SensorRepository
             }
             
         }
-        
+
+        public IEnumerable<ISensor> FindAllSensorsOfTypeByTypeName(string typeName)
+        {
+            return sensors.Where(f => f.GetType().Name.Contains(typeName));
+        }
         public IEnumerable<T> FindAllSensorsOfType<T>() where T : ISensor
         {
             return sensors.OfType<T>();

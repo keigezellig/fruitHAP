@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FruitHAP.Core
+namespace FruitHAP.Core.Action
 {
 	public class ConfigurationMessage
 	{
@@ -9,6 +9,14 @@ namespace FruitHAP.Core
 		public string OperationName { get; set;}
 		public Dictionary<string,string> Parameters {get; set;}
 		public object Data {get;set;}
+        public ConfigurationMessageType MessageType { get; set; }
 	}
+
+    public enum ConfigurationMessageType
+    {
+        Request,
+        Response,
+        ErrorResponse
+    }
 }
 

@@ -41,32 +41,43 @@ namespace FruitHAP.Core.SensorPersister
 			return result;
 		}
 
-		public void SaveSensors (IEnumerable<ISensor> sensorList)
+        private IEnumerable<SensorConfigurationEntry> BuildConfigurationEntriesList(IEnumerable<ISensor> sensorList)
+        {
+            List<SensorConfigurationEntry> entries = new List<SensorConfigurationEntry>();
+            foreach (var sensor in sensorList)
+            {
+                string type = sensor.GetType().Name;
+                bool isAggregate = sensor is IAggregatedSensor;
+                object parameters = sensor;
+
+                if (isAggregate)
+                {
+                    var aggregatedSensor = sensor as IAggregatedSensor;
+                    parameters = new AggregatedSensorParameters() { Name = aggregatedSensor.Name, Description = aggregatedSensor.Description, Inputs = aggregatedSensor.Inputs.Select(f => f.Name).ToList() };
+                }
+
+
+                SensorConfigurationEntry entry = new SensorConfigurationEntry()
+                {
+                    Type = type,
+                    IsAggegrate = isAggregate,
+                    Parameters = parameters
+                };
+
+                entries.Add(entry);
+            }
+
+            return entries;
+        }
+
+        public IEnumerable<SensorConfigurationEntry> GetSensorConfiguration(IEnumerable<ISensor> sensorList)
+        {
+            return BuildConfigurationEntriesList(sensorList);
+        }
+        public void SaveSensors (IEnumerable<ISensor> sensorList)
 		{
-			List<SensorConfigurationEntry> entries = new List<SensorConfigurationEntry> ();
-			foreach (var sensor in sensorList) 
-			{
-				string type = sensor.GetType ().Name;
-				bool isAggregate = sensor is IAggregatedSensor;
-				object parameters = sensor;
-
-				if (isAggregate) 
-				{
-					var aggregatedSensor = sensor as IAggregatedSensor;
-					parameters = new AggregatedSensorParameters() {Name = aggregatedSensor.Name, Description = aggregatedSensor.Description, Inputs = aggregatedSensor.Inputs.Select(f => f.Name).ToList()};
-				} 
-
-
-				SensorConfigurationEntry entry = new SensorConfigurationEntry () {
-					Type = type,
-					IsAggegrate = isAggregate,
-					Parameters = parameters
-				};
-
-				entries.Add (entry);
-			}
-
-			configProvider.SaveConfigToFile (entries, sensorFile);
+            var configurationEntries = BuildConfigurationEntriesList(sensorList);
+			configProvider.SaveConfigToFile (configurationEntries.ToList(), sensorFile);
 		}
 
 		#endregion

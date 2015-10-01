@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace FruitHAP.Core.Action
 {
-	public abstract class RpcAction<TRequest, TResponse> : IAction
+	public abstract class RpcAction<TRequest, TResponse> : IAction where TRequest : class 
+                                                                   where TResponse : class
 	{
 		protected readonly ILogger logger;
 		private readonly IMessageQueueProvider mqProvider;
