@@ -1,10 +1,11 @@
 #include "qswitchcontrol.h"
 #include <QJsonObject>
 #include <QDateTime>
+#include <QJsonArray>
 
 QSwitchControl::QSwitchControl(QFruitHapClient &client, QObject *parent):
    QObject(parent), m_isBusy(false), m_client(client)
-{
+{    
     m_requestTimer = new QTimer(this);
     m_requestTimer->setSingleShot(true);
     connect(m_requestTimer,&QTimer::timeout, this, &QSwitchControl::requestTimeout);
@@ -34,7 +35,9 @@ void QSwitchControl::turnOn(const QString &name)
 
     QJsonDocument message(obj);
 
-    m_client.sendMessage(message);
+    QString routingKey("FruitHAP_RpcQueue.FruitHAP.Core.Action.SensorMessage");
+    QString messageType("FruitHAP.Core.Action.SensorMessage:FruitHAP.Core");
+    m_client.sendMessage(message,routingKey,messageType);
 
 }
 
@@ -57,7 +60,9 @@ void QSwitchControl::turnOff(const QString &name)
     obj["Data"] = commandObject;
 
     QJsonDocument message(obj);
-    m_client.sendMessage(message);
+    QString routingKey("FruitHAP_RpcQueue.FruitHAP.Core.Action.SensorMessage");
+    QString messageType("FruitHAP.Core.Action.SensorMessage:FruitHAP.Core");
+    m_client.sendMessage(message,routingKey,messageType);
 }
 
 void QSwitchControl::getState(const QString &name)
@@ -78,20 +83,78 @@ void QSwitchControl::getState(const QString &name)
     obj["EventType"] = "GetValue";
 
     QJsonDocument message(obj);
-    m_client.sendMessage(message);
+    QString routingKey("FruitHAP_RpcQueue.FruitHAP.Core.Action.SensorMessage");
+    QString messageType("FruitHAP.Core.Action.SensorMessage:FruitHAP.Core");
+    m_client.sendMessage(message,routingKey,messageType);
 }
 
-void QSwitchControl::getNames(std::vector<QString> &list)
+void QSwitchControl::getNames()
 {
     qDebug() << "Get switch list";
-    list.clear();
-    list.push_back("SingleSocket");
-    list.push_back("MultipleSocket");
+
+    if (m_isBusy)
+    {
+        qCritical() << "QSwitchControl::getNames| Busy";
+        return;
+    }
+
+    m_requestTimer->start(2000);
+    m_isBusy = true;
+
+    QJsonObject obj;
+    QJsonObject paramObj;
+
+    paramObj["Category"] = "Switch";
+
+    obj["OperationName"] = "GetAllSensorsByCategory";
+    obj["Parameters"] = paramObj;
+    obj["MessageType"] = 0;
+
+    QJsonDocument message(obj);
+    QString routingKey("FruitHAP_RpcQueue.FruitHAP.Core.Action.ConfigurationMessage");
+    QString messageType("FruitHAP.Core.Action.ConfigurationMessage:FruitHAP.Core");
+    m_client.sendMessage(message,routingKey,messageType);
 }
 
+//    list.clear();
+//    list.push_back("SingleSocket");
+//    list.push_back("MultipleSocket");
 
-void QSwitchControl::onClientResponseReceived(const QJsonDocument response)
+
+
+
+void QSwitchControl::handleSensorMessage(QJsonObject responseObject)
+{
+    if (responseObject["EventType"] == "ErrorMessage")
+    {
+        QString message(responseObject["Data"].toString());
+        qCritical() << "Error response received " << message;
+        return;
+    }
+
+    if ( (responseObject["EventType"] == "GetValue" || responseObject["EventType"] == "SensorEvent"))
+    {
+        int state = responseObject["Data"].toInt();
+        m_state = static_cast<SwitchState>(state);
+
+        if (responseObject["EventType"] == "GetValue" && responseObject["SensorName"] == m_currentName)
+        {
+            emit switchStateReceived(m_currentName,m_state);
+            m_currentName.clear();
+        }
+
+        if (responseObject["EventType"] == "SensorEvent")
+        {
+            emit switchStateReceived(responseObject["SensorName"].toString(),m_state);
+        }
+    }
+
+
+}
+
+void QSwitchControl::onClientResponseReceived(const QJsonDocument response, const QString messageType)
 {    
+
     qDebug() << "QSwitchControl::onClientResponseReceived| Response received";
     m_requestTimer->stop();
     if (response.isNull() || response.isEmpty())
@@ -109,30 +172,42 @@ void QSwitchControl::onClientResponseReceived(const QJsonDocument response)
         return;
     }
 
-    if (responseObject["EventType"] == "ErrorMessage")
+
+    if (messageType.contains("SensorMessage"))
     {
-        QString message(responseObject["Data"].toString());
-        qCritical() << "Error response received " << message;
-        m_isBusy = false;
-        return;
+        handleSensorMessage(responseObject);
     }
 
-    if ( (responseObject["EventType"] == "GetValue" || responseObject["EventType"] == "SensorEvent"))
-    {        
-        int state = responseObject["Data"].toInt();
-        m_state = static_cast<SwitchState>(state);
 
-        if (responseObject["EventType"] == "GetValue" && responseObject["SensorName"] == m_currentName)
+
+    if (messageType.contains("ConfigurationMessage"))
+    {
+        if (responseObject["MessageType"] == 2)
         {
-            emit switchStateReceived(m_currentName,m_state);
-            m_currentName.clear();
+            QString message(responseObject["Data"].toString());
+            qCritical() << "Error response received " << message;
+            return;
         }
 
-        if (responseObject["EventType"] == "SensorEvent")
+        if (responseObject["OperationName"] == "GetAllSensorsByCategory")
         {
-            emit switchStateReceived(responseObject["SensorName"].toString(),m_state);
+            QStringList nameList;
+            QJsonObject dataObject = responseObject["Data"].toObject();
+            QJsonArray sensorList = dataObject["$values"].toArray();
+            foreach(auto sensor, sensorList)
+            {
+                QJsonObject sensorObject = sensor.toObject();
+                QJsonObject parameters = sensorObject["Parameters"].toObject();
+                nameList.append(parameters["Name"].toString());
+
+            }
+
+            emit switchListReceived(nameList);
+
         }
+
     }
+
 
     m_isBusy = false;
 

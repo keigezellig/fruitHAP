@@ -14,9 +14,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     connect(&m_switchControl,&QSwitchControl::switchStateReceived,this,&MainWindow::onSwitchStateReceived);
+    connect(&m_switchControl,&QSwitchControl::switchListReceived,this,&MainWindow::onSwitchListReceived);
     connect(&m_client,&QFruitHapClient::connected,this,&MainWindow::onConnected);
     connect(&m_client,&QFruitHapClient::disconnected,this,&MainWindow::onDisconnected);
     connect(&m_client,&QFruitHapClient::rpcQueueReady,this,&MainWindow::onRpcQueueReady);
+
 }
 
 MainWindow::~MainWindow()
@@ -42,7 +44,7 @@ QString convertEnumToString(const SwitchState& state )
 
 void MainWindow::connectToMQ(const QStringList &bindingKeys, const QString &uri)
 {
-    m_client.setBindingKeys(bindingKeys);
+    m_client.setPubSubTopics(bindingKeys);
     m_client.connectToServer(uri);
 
 }
@@ -80,6 +82,12 @@ void MainWindow::onSwitchStateReceived(const QString name, SwitchState state)
   {
       ui->lbState->setText(convertEnumToString(state));
   }
+}
+
+void MainWindow::onSwitchListReceived(const QStringList list)
+{
+    ui->cmbSwitchList->clear();
+    ui->cmbSwitchList->addItems(list);
 }
 
 void MainWindow::on_actionConnect_triggered()
@@ -121,12 +129,12 @@ void MainWindow::loadSwitches()
 {
     QStringList list;
     std::vector<QString> items;
-    m_switchControl.getNames(items);
-    for(uint i = 0; i < items.size();i++)
-    {
-        list.push_back(items[i]);
-    }
-    ui->cmbSwitchList->clear();
-    ui->cmbSwitchList->addItems(list);
+    m_switchControl.getNames();
+//    for(uint i = 0; i < items.size();i++)
+//    {
+//        list.push_back(items[i]);
+//    }
+//    ui->cmbSwitchList->clear();
+//    ui->cmbSwitchList->addItems(list);
 
 }

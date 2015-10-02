@@ -21,7 +21,9 @@ public:
     void turnOn(const QString &name);
     void turnOff(const QString &name);    
     void getState (const QString &name);
-    void getNames(std::vector<QString> &list);
+    void getNames();
+    void handleSensorMessage(QJsonObject responseObject);
+
 private:
     bool m_isBusy;    
     QString m_currentName;
@@ -30,8 +32,9 @@ private:
     QTimer *m_requestTimer;
 signals:
     void switchStateReceived(const QString name, SwitchState state);
+    void switchListReceived(const QStringList list);
 private slots:
-    void onClientResponseReceived(const QJsonDocument response);
+    void onClientResponseReceived(const QJsonDocument response, const QString messageType);
     void requestTimeout();
 
 };

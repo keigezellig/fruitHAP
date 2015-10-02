@@ -15,17 +15,17 @@ class QFruitHapClient : public QObject
 public:
     QFruitHapClient(QString rpcExchangeName, QString rpcRoutingKey, QString pubSubExchangeName, QObject *parent = 0);
     ~QFruitHapClient();
-    void setBindingKeys(const QStringList &bindingKeys);
+    void setPubSubTopics(const QStringList &topics);
 signals:
     void connected();
     void disconnected();
     void rpcQueueReady();
-    void responseReceived(const QJsonDocument response);
+    void responseReceived(const QJsonDocument response, const QString responseType);
 
 public slots:
     bool connectToServer(const QString &uri);
     void disconnectFromServer();
-    void sendMessage(const QJsonDocument &message);
+    void sendMessage(const QJsonDocument &message, const QString &routingKey, const QString &messageType);
 
 private slots:
     void clientConnected();
@@ -39,7 +39,7 @@ private:
     QString m_rpcExchangeName;
     QString m_rpcRoutingKey;
     QString m_pubSubExchangeName;
-    QStringList m_bindingKeys;
+    QStringList m_pubSubTopics;
 
     QAmqpClient *m_client;
     QAmqpQueue *m_rpcResponseQueue;

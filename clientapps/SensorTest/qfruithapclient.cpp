@@ -50,9 +50,9 @@ QFruitHapClient::~QFruitHapClient()
 
 }
 
-void QFruitHapClient::setBindingKeys(const QStringList &bindingKeys)
+void QFruitHapClient::setPubSubTopics(const QStringList &topics)
 {
-    m_bindingKeys = bindingKeys;
+    m_pubSubTopics = topics;
 }
 
 bool QFruitHapClient::connectToServer(const QString &uri)
@@ -83,21 +83,21 @@ void QFruitHapClient::disconnectFromServer()
     emit disconnected();
 }
 
-void QFruitHapClient::sendMessage(const QJsonDocument &message)
+void QFruitHapClient::sendMessage(const QJsonDocument &message, const QString &routingKey, const QString &messageType)
 {
     if (!m_client->isConnected())
     {
         qDebug() << "Cannot send message, not connected";
         return;
     }
-    qDebug() << "Sending message";
+    qDebug() << "Sending message";    
     m_correlationId = QUuid::createUuid().toString();
     QAmqpMessage::PropertyHash properties;
     properties.insert(QAmqpMessage::ReplyTo, m_rpcResponseQueue->name());
     properties.insert(QAmqpMessage::CorrelationId, m_correlationId);
-    properties.insert(QAmqpMessage::Type, "FruitHap.Core.Action.SensorMessage:FruitHAP.Core");
+    properties.insert(QAmqpMessage::Type, messageType);
 
-    m_rpcExchange->publish(message.toJson(), m_rpcRoutingKey, properties);
+    m_rpcExchange->publish(message.toJson(), routingKey, properties);
 }
 
 void QFruitHapClient::clientConnected()
@@ -129,7 +129,7 @@ void QFruitHapClient::pubSubExchangeDeclared()
 
 void QFruitHapClient::pubSubQueueDeclared() {
 
-    foreach (QString bindingKey, m_bindingKeys)
+    foreach (QString bindingKey, m_pubSubTopics)
     {
         m_pubsubQueue->bind(m_pubsubExchange, bindingKey);
         qDebug() << " [*] Waiting for incoming messages with binding key " << bindingKey;
@@ -152,7 +152,8 @@ void QFruitHapClient::messageReceived() {
        decodedMessage = QJsonDocument::fromJson(message.payload());
     }
 
-     emit responseReceived(decodedMessage);
+
+     emit responseReceived(decodedMessage, message.routingKey());
 
 }
 
@@ -183,6 +184,7 @@ void QFruitHapClient::rpcResponseReceived()
        decodedMessage = QJsonDocument::fromJson(message.payload());
     }
 
-     emit responseReceived(decodedMessage);
+
+     emit responseReceived(decodedMessage,message.property(QAmqpMessage::Type).toString());
 }
 

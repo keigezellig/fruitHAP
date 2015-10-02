@@ -28,6 +28,7 @@ private slots:
     void on_btnOff_clicked();
     void on_cmbSwitchList_currentIndexChanged(int index);
     void onSwitchStateReceived(const QString name, SwitchState state);
+    void onSwitchListReceived(const QStringList list);
     void on_actionConnect_triggered();
 
     void connectToMQ(const QStringList &bindingKeys, const QString &uri);
