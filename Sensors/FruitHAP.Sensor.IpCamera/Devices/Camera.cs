@@ -24,6 +24,7 @@ namespace FruitHAP.Sensor.Camera.Devices
 
         public string Name { get; set; }
         public string Description { get; set; }
+        public string Category { get; set; }
         public string Resolution { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }

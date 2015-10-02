@@ -69,6 +69,15 @@ namespace FruitHAP.Core.SensorRepository
 			persister.SaveSensors (sensors);			
     	}
 
+        public IEnumerable<ISensor> GetSensorsByCategoryName(string category)
+        {
+            return sensors.Where(f => f.Category == category);
+        }
+
+        public IEnumerable<string> GetSensorCategories()
+        {
+            return sensors.Select(f => f.Category).Distinct();
+        }
 
     }
 }

@@ -40,6 +40,8 @@ namespace FruitHAP.Sensor.KaKu.Common
 			set { description = value; }
 		}
 
+        public string Category { get; set; }
+
 		public uint DeviceId {
 			get {
 				return this.deviceId;

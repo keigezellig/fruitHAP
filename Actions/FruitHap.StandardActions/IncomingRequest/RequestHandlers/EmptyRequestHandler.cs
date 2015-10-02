@@ -1,5 +1,5 @@
 ﻿using System;
-using FruitHap.Core.Action;
+using FruitHAP.Core.Action;
 
 namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 {

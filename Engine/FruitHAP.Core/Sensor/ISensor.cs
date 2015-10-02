@@ -7,6 +7,7 @@ namespace FruitHAP.Core.Sensor
     {
         string Name { get; }
         string Description { get; }
+        string Category { get; }
 
     }
 }

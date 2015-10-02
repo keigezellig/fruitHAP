@@ -2,13 +2,10 @@
 using FruitHAP.Core.SensorRepository;
 using Castle.Core.Logging;
 using FruitHAP.Core.MQ;
-using System.Threading.Tasks;
-using FruitHap.Core.Action;
-using System;
 
 namespace FruitHap.StandardActions.IncomingRequest
 {
-	public class IncomingRequestAction : RpcAction<SensorMessage,SensorMessage>
+    public class IncomingRequestAction : RpcAction<SensorMessage,SensorMessage>
 	{
 		private readonly ISensorRepository sensorRepository;
 		private readonly IRequestHandlerFactory requestHandlerFactory;

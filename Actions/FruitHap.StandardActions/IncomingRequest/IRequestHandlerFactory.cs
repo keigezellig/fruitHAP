@@ -1,5 +1,7 @@
-using FruitHap.Core.Action;
 
+
+
+using FruitHAP.Core.Action;
 
 namespace FruitHap.StandardActions.IncomingRequest
 {
@@ -7,9 +9,6 @@ namespace FruitHap.StandardActions.IncomingRequest
 	{
 		IRequestHandler GetRequestHandler (SensorMessage request);
 	}
-
-
-
 
 }
 

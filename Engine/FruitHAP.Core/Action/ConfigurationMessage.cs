@@ -3,7 +3,10 @@ using System.Collections.Generic;
 
 namespace FruitHAP.Core.Action
 {
-	public class ConfigurationMessage
+	/// <summary>
+    /// 
+    /// </summary>
+    public class ConfigurationMessage
 	{
 		public DateTime TimeStamp {get; set;}
 		public string OperationName { get; set;}

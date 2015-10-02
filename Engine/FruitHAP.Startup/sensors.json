@@ -1,4 +1,4 @@
-[{"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"SingleSocket","Description":"Single socket","DeviceId":0x010101,"UnitCode":1}},
- {"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"MultipleSocket","Description":"Multi socket box","DeviceId":0x010101,"UnitCode":2}},
- {"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"PIR","Description":"PIR","DeviceId":0xD9D6DA,"UnitCode":10,"IsReadOnly":true}}
+[{"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"SingleSocket","Category":"Switch","Description":"Single socket","DeviceId":0x010101,"UnitCode":1}},
+ {"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"MultipleSocket","Category":"Switch","Description":"Multi socket box","DeviceId":0x010101,"UnitCode":2}},
+ {"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"PIR","Category":"Switch","Description":"PIR","DeviceId":0xD9D6DA,"UnitCode":10,"IsReadOnly":true}}
 ]

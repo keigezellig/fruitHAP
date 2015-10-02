@@ -48,7 +48,8 @@ namespace FruitHAP.Core.Action
 
 		Task<TResponse> HandleIncomingRequest (TRequest request)
 		{
-			Task<TResponse> task = 
+            logger.InfoFormat("Incoming request received: {0} ", request);
+            Task<TResponse> task = 
 				new Task<TResponse> (() => 
 					{						
 						TResponse result = ProcessRequest(request);

@@ -33,17 +33,36 @@ namespace FruitHap.StandardActions.ConfigurationRequest
                 IEnumerable<SensorConfigurationEntry> sensorData = GetAllSensors();
                 responseMessage.Data = sensorData;
                 responseMessage.MessageType = ConfigurationMessageType.Response;
+                return responseMessage;
             }
 
-            if (request.OperationName == "GetAllSensorsByType")
+            if (request.OperationName == "GetAllSensorsByCategory")
             {
-
-                IEnumerable<SensorConfigurationEntry> sensorData = GetAllSensors();
+                IEnumerable<SensorConfigurationEntry> sensorData = GetAllSensorsByCategory(request.Parameters["Category"]);
                 responseMessage.Data = sensorData;
                 responseMessage.MessageType = ConfigurationMessageType.Response;
+                return responseMessage;
             }
 
+            if (request.OperationName == "GetSensorCategories")
+            {
+                responseMessage.Data = sensorRepository.GetSensorCategories();
+                responseMessage.MessageType = ConfigurationMessageType.Response;
+                return responseMessage;
+            }
 
+            responseMessage.Data = "Invalid operation";
+            responseMessage.MessageType = ConfigurationMessageType.ErrorResponse;
+            return responseMessage;
+
+
+        }
+
+        private IEnumerable<SensorConfigurationEntry> GetAllSensorsByCategory(string category)
+        {
+            var sensorList = sensorRepository.GetSensorsByCategoryName(category);
+            var sensorData = sensorPersister.GetSensorConfiguration(sensorList);
+            return sensorData;
         }
 
         private IEnumerable<SensorConfigurationEntry> GetAllSensors()

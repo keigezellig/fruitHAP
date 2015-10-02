@@ -2,7 +2,7 @@
 using FruitHap.StandardActions.IncomingRequest.RequestHandlers;
 using FruitHAP.Core.SensorRepository;
 using Castle.Core.Logging;
-using FruitHap.Core.Action;
+using FruitHAP.Core.Action;
 
 namespace FruitHap.StandardActions.IncomingRequest
 {

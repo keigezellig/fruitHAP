@@ -13,5 +13,7 @@ namespace FruitHAP.Core.SensorRepository
         T FindSensorOfTypeByName<T>(string name) where T : ISensor;
 		IEnumerable<ISensor> GetSensors ();
 		void SaveSensors(IEnumerable<ISensor> sensors);
+        IEnumerable<ISensor> GetSensorsByCategoryName(string category);
+        IEnumerable<string> GetSensorCategories();
     }
 }

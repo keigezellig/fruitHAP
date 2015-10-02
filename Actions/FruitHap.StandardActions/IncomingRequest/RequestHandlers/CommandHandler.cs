@@ -5,7 +5,7 @@ using FruitHAP.Core.SensorRepository;
 using FruitHAP.Common.Helpers;
 using System.Linq;
 using System.Collections;
-using FruitHap.Core.Action;
+using FruitHAP.Core.Action;
 
 namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 {
