@@ -80,6 +80,8 @@
     <Compile Include="Action\SensorMessage.cs" />
     <Compile Include="Action\ConfigurationMessage.cs" />
     <Compile Include="Action\RpcAction.cs" />
+    <Compile Include="Sensor\PacketData\General\AckPacket.cs" />
+    <Compile Include="Sensor\PacketData\General\AckPacketEvent.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -89,5 +91,8 @@
       <Project>{179D28CA-9963-44F8-8073-845126C982CA}</Project>
       <Name>FruitHAP.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Sensor\PacketData\General\" />
   </ItemGroup>
 </Project>

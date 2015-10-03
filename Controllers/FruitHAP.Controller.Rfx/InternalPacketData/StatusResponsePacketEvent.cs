@@ -4,7 +4,7 @@ using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace FruitHAP.Controller.Rfx.InternalPacketData
 {
-	public class StatusResponsePacketEvent : PubSubEvent<ControllerEventData<StatusPacket>>
+	class StatusResponsePacketEvent : PubSubEvent<ControllerEventData<StatusPacket>>
 	{
 	}
 

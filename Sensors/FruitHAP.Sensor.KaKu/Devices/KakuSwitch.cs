@@ -10,6 +10,7 @@ using FruitHAP.Core.Sensor.SensorTypes;
 using FruitHAP.Sensor.PacketData.AC;
 using FruitHAP.Core.SensorEventPublisher;
 using FruitHAP.Core.Controller;
+using FruitHAP.Sensor.PacketData.General;
 
 namespace FruitHAP.Sensor.KaKu
 {
@@ -25,6 +26,8 @@ namespace FruitHAP.Sensor.KaKu
 		public KakuSwitch(IEventAggregator aggregator, ILogger logger, ISensorEventPublisher sensorEventPublisher) : base(aggregator,logger)
 		{
 			this.sensorEventPublisher = sensorEventPublisher;
+
+
 		}
 
 		public Command OnCommand {
@@ -66,7 +69,7 @@ namespace FruitHAP.Sensor.KaKu
 		{
             if (!isReadOnly)
             {
-                TriggerControllerEvent(SwitchState.On);                
+				UpdateState (SwitchState.On);
             }
             else
             {
@@ -78,13 +81,28 @@ namespace FruitHAP.Sensor.KaKu
 		{
             if (!isReadOnly)
             {
-                TriggerControllerEvent(SwitchState.Off);
+				UpdateState (SwitchState.Off);
             }
             else
             {
                 logger.Warn("Read only switch!");
             }
         }
+
+		private void UpdateState (SwitchState newState)
+		{
+			TriggerControllerEvent(newState);
+			var ack = GetAck ().Result;
+			if (ack) {
+				state = newState;
+				TriggerSensorEvent ();
+				logger.InfoFormat ("State changed to {0}", state);				
+			} 
+			else 
+			{
+				logger.Warn ("Negative or no acknowledgement from controller received, state will not be changed");
+			}
+		}
 
 		public SwitchState GetState ()
 		{

@@ -36,6 +36,9 @@ namespace FruitHAP.Controller.Rfx
 			case RfxPacketType.Interface:
 				logger.Debug ("Interface packet received");
 				return new RfxInterfacePacketHandler (logger, aggregator);
+			case RfxPacketType.Ack:
+				logger.Debug ("Ack packet received");
+				return new RfxAckPacketHandler (logger, aggregator);
 			default:
 				return null;
 			}

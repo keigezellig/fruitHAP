@@ -1,12 +1,12 @@
 ﻿using System;
-using FruitHAP.Core.Controller;
 using Microsoft.Practices.Prism.PubSubEvents;
+using FruitHAP.Core.Controller;
 
 namespace FruitHAP.Controller.Rfx.InternalPacketData
 {
-	class SetModeResponsePacketEvent : PubSubEvent<ControllerEventData<StatusPacket>>
+	class RfxAckPacketEvent : PubSubEvent<ControllerEventData<RfxAckPacket>>
 	{
+		
 	}
-
 }
 

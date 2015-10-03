@@ -2,7 +2,7 @@
 
 namespace FruitHAP.Controller.Rfx.InternalPacketData
 {
-	public class StatusPacket
+	class StatusPacket
 	{
 		public byte SequenceNumber { get; set; }
 		public DeviceType DeviceType { get; set; }
