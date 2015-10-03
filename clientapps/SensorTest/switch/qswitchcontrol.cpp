@@ -173,13 +173,6 @@ void QSwitchControl::onClientResponseReceived(const QJsonDocument response, cons
     }
 
 
-    if (messageType.contains("SensorMessage"))
-    {
-        handleSensorMessage(responseObject);
-    }
-
-
-
     if (messageType.contains("ConfigurationMessage"))
     {
         if (responseObject["MessageType"] == 2)
@@ -206,6 +199,10 @@ void QSwitchControl::onClientResponseReceived(const QJsonDocument response, cons
 
         }
 
+    }
+    else
+    {
+        handleSensorMessage(responseObject);
     }
 
 
