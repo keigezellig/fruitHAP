@@ -91,6 +91,11 @@ namespace FruitHAP.Sensor.KaKu
 
 		private void UpdateState (SwitchState newState)
 		{
+			if (newState == state) 
+			{
+				return;
+			}
+
 			TriggerControllerEvent(newState);
 			var ack = GetAck ().Result;
 			if (ack) {

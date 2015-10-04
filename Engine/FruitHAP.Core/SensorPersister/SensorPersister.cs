@@ -87,7 +87,7 @@ namespace FruitHAP.Core.SensorPersister
 			var result = new List<ISensor> ();
 			foreach (var entry in configurationEntries) 
 			{
-				var prototypeList = prototypes.Where (f => f.GetType ().Name.Contains (entry.Type));
+				var prototypeList = prototypes.Where (f => f.GetType().Name == entry.Type);
 
 				if (prototypeList.Count() == 0) {
 					logger.WarnFormat ("Ignoring sensor type {0} because it is not supported. Check your sensor configuration ", entry.Type);
