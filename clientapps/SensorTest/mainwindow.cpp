@@ -1,20 +1,27 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QInputDialog>
-
-
+#include <QPixmap>
+#include <QThread>
+#include <QtConcurrent>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_client(QString("FruitHAP_RpcExchange"), QString("FruitHAP_RpcQueue.FruitHap.Core.Action.SensorMessage"),QString("FruitHAP_PubSubExchange"),parent),
-    m_switchControl(m_client,parent)
+    m_drawing(nullptr),
+    m_client(QString("FruitHAP_RpcExchange"), QString("FruitHAP_PubSubExchange"),parent),
+    m_switchControl(QString("Switch"),m_client,parent),
+    m_cameraControl(QString("Camera"),m_client,parent),
+    m_configControl(m_client,parent)
+
+
 {
 
     ui->setupUi(this);
 
     connect(&m_switchControl,&QSwitchControl::switchStateReceived,this,&MainWindow::onSwitchStateReceived);
-    connect(&m_switchControl,&QSwitchControl::switchListReceived,this,&MainWindow::onSwitchListReceived);
+    connect(&m_cameraControl,&QCameraControl::imageDataReceived,this,&MainWindow::onImageDataReceived);
+    connect(&m_configControl,&QConfigurationControl::sensorListReceived,this,&MainWindow::onSensorListReceived);
     connect(&m_client,&QFruitHapClient::connected,this,&MainWindow::onConnected);
     connect(&m_client,&QFruitHapClient::disconnected,this,&MainWindow::onDisconnected);
     connect(&m_client,&QFruitHapClient::rpcQueueReady,this,&MainWindow::onRpcQueueReady);
@@ -55,6 +62,30 @@ void MainWindow::onConnected()
     ui->actionDisconnect->setEnabled(true);
 }
 
+void MainWindow::onSensorListReceived(const QList<SensorData> list)
+{
+
+    ui->cmbSwitchList->clear();
+    ui->cmbCameraList->clear();
+
+    foreach (SensorData item, list)
+    {
+        if (item.getCategory() == "Switch")
+        {
+            ui->cmbSwitchList->addItem(item.getName());
+        }
+
+        if (item.getCategory() == "Camera")
+        {
+            ui->cmbCameraList->addItem(item.getName());
+        }
+
+    }
+
+
+
+}
+
 void MainWindow::onDisconnected()
 {
     ui->actionConnect->setEnabled(true);
@@ -63,7 +94,7 @@ void MainWindow::onDisconnected()
 
 void MainWindow::onRpcQueueReady()
 {
-    loadSwitches();
+    loadSensors();
 }
 
 
@@ -72,6 +103,12 @@ void MainWindow::on_cmbSwitchList_currentIndexChanged(int index)
 {
     QString selectedItem = ui->cmbSwitchList->itemText(index);
     m_switchControl.getState(selectedItem);
+}
+
+void MainWindow::on_cmbCameraList_currentIndexChanged(int index)
+{
+    QString selectedItem = ui->cmbCameraList->itemText(index);
+    m_cameraControl.getImage(selectedItem);
 }
 
 
@@ -84,11 +121,27 @@ void MainWindow::onSwitchStateReceived(const QString name, SwitchState state)
   }
 }
 
-void MainWindow::onSwitchListReceived(const QStringList list)
+
+void MainWindow::onImageDataReceived(const QString name, const QByteArray imageData)
 {
-    ui->cmbSwitchList->clear();
-    ui->cmbSwitchList->addItems(list);
+    QString selectedItem = ui->cmbCameraList->currentText();
+    if (selectedItem == name)
+    {
+        QImage image = QImage::fromData(imageData);
+        if (m_drawing != nullptr)
+        {
+            delete m_drawing;
+            m_drawing = nullptr;
+        }
+
+        m_drawing = new QGraphicsScene(this);
+        m_drawing->addPixmap(QPixmap::fromImage(image));
+        m_drawing->setSceneRect(image.rect());
+
+        ui->cameraImage->setScene(m_drawing);
+    }
 }
+
 
 void MainWindow::on_actionConnect_triggered()
 {
@@ -125,16 +178,9 @@ void MainWindow::on_btnOff_clicked()
     m_switchControl.turnOff(selectedItem);
 }
 
-void MainWindow::loadSwitches()
-{
-    QStringList list;
-    std::vector<QString> items;
-    m_switchControl.getNames();
-//    for(uint i = 0; i < items.size();i++)
-//    {
-//        list.push_back(items[i]);
-//    }
-//    ui->cmbSwitchList->clear();
-//    ui->cmbSwitchList->addItems(list);
+void MainWindow::loadSensors()
+{    
+    m_configControl.getSensorNames();
+
 
 }

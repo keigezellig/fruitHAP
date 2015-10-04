@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -26,7 +26,10 @@ SOURCES += main.cpp\
     libs/qamqp/source/qamqpqueue.cpp \
     libs/qamqp/source/qamqptable.cpp \
     switch/qswitchcontrol.cpp \
-    qfruithapclient.cpp
+    qfruithapclient.cpp \        
+    camera/qcameracontrol.cpp \
+    qconfigurationcontrol.cpp \
+    sensordata.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -46,7 +49,10 @@ HEADERS  += mainwindow.h \
     libs/qamqp/source/qamqpqueue_p.h \
     libs/qamqp/source/qamqptable.h \
     switch/qswitchcontrol.h \
-    qfruithapclient.h
+    qfruithapclient.h \        
+    camera/qcameracontrol.h \
+    qconfigurationcontrol.h \
+    sensordata.h
 
 
 FORMS    += mainwindow.ui

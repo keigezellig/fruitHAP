@@ -13,9 +13,10 @@ class QFruitHapClient : public QObject
 {
     Q_OBJECT
 public:
-    QFruitHapClient(QString rpcExchangeName, QString rpcRoutingKey, QString pubSubExchangeName, QObject *parent = 0);
+    QFruitHapClient(QString rpcExchangeName, QString pubSubExchangeName, QObject *parent = 0);
     ~QFruitHapClient();
     void setPubSubTopics(const QStringList &topics);
+    QStringList getPubSubTopics() const;
 signals:
     void connected();
     void disconnected();

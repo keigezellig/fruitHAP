@@ -2,7 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QGraphicsScene>
 #include "switch/qswitchcontrol.h"
+#include "camera/qcameracontrol.h"
+#include "qconfigurationcontrol.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -18,22 +22,26 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QGraphicsScene *m_drawing;
     QFruitHapClient m_client;
     QSwitchControl m_switchControl;
-
+    QCameraControl m_cameraControl;
+    QConfigurationControl m_configControl;
 
 private slots:
-    void loadSwitches();
+    void loadSensors();
     void on_btnOn_clicked();
     void on_btnOff_clicked();
     void on_cmbSwitchList_currentIndexChanged(int index);
-    void onSwitchStateReceived(const QString name, SwitchState state);
-    void onSwitchListReceived(const QStringList list);
+    void on_cmbCameraList_currentIndexChanged(int index);
     void on_actionConnect_triggered();
+    void on_actionDisconnect_triggered();
 
     void connectToMQ(const QStringList &bindingKeys, const QString &uri);
     void onConnected();
-    void on_actionDisconnect_triggered();
+    void onSensorListReceived(const QList<SensorData> list);
+    void onSwitchStateReceived(const QString name, SwitchState state);
+    void onImageDataReceived(const QString name, const QByteArray imageData);
     void onDisconnected();
     void onRpcQueueReady();
 };

@@ -3,10 +3,9 @@
 #include <QUuid>
 #include <QDebug>
 
-QFruitHapClient::QFruitHapClient(QString rpcExchangeName, QString rpcRoutingKey, QString pubSubExchangeName, QObject *parent):
+QFruitHapClient::QFruitHapClient(QString rpcExchangeName, QString pubSubExchangeName, QObject *parent):
     QObject(parent),
     m_rpcExchangeName(rpcExchangeName),
-    m_rpcRoutingKey(rpcRoutingKey),
     m_pubSubExchangeName(pubSubExchangeName),
     m_client(0),
     m_rpcResponseQueue(0),
@@ -53,6 +52,11 @@ QFruitHapClient::~QFruitHapClient()
 void QFruitHapClient::setPubSubTopics(const QStringList &topics)
 {
     m_pubSubTopics = topics;
+}
+
+QStringList QFruitHapClient::getPubSubTopics() const
+{
+    return m_pubSubTopics;
 }
 
 bool QFruitHapClient::connectToServer(const QString &uri)
