@@ -2,8 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QInputDialog>
 #include <QPixmap>
-#include <QThread>
-#include <QtConcurrent>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -24,12 +23,16 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&m_configControl,&QConfigurationControl::sensorListReceived,this,&MainWindow::onSensorListReceived);
     connect(&m_client,&QFruitHapClient::connected,this,&MainWindow::onConnected);
     connect(&m_client,&QFruitHapClient::disconnected,this,&MainWindow::onDisconnected);
-    connect(&m_client,&QFruitHapClient::rpcQueueReady,this,&MainWindow::onRpcQueueReady);
+    connect(&m_client,&QFruitHapClient::rpcQueueReady,this,&MainWindow::onRpcQueueReady);    
+    m_timer = new QTimer(this);
+    connect(m_timer,&QTimer::timeout, this, &MainWindow::updateImage);
+
 
 }
 
 MainWindow::~MainWindow()
 {
+    delete m_timer;
     delete ui;
 }
 
@@ -60,6 +63,7 @@ void MainWindow::onConnected()
 {
     ui->actionConnect->setEnabled(false);
     ui->actionDisconnect->setEnabled(true);
+    ui->dialRefreshrate->setEnabled(true);
 }
 
 void MainWindow::onSensorListReceived(const QList<SensorData> list)
@@ -97,6 +101,12 @@ void MainWindow::onRpcQueueReady()
     loadSensors();
 }
 
+void MainWindow::updateImage()
+{
+    QString selectedItem = ui->cmbCameraList->itemText(ui->cmbCameraList->currentIndex());
+    m_cameraControl.getImage(selectedItem);
+}
+
 
 
 void MainWindow::on_cmbSwitchList_currentIndexChanged(int index)
@@ -107,8 +117,7 @@ void MainWindow::on_cmbSwitchList_currentIndexChanged(int index)
 
 void MainWindow::on_cmbCameraList_currentIndexChanged(int index)
 {
-    QString selectedItem = ui->cmbCameraList->itemText(index);
-    m_cameraControl.getImage(selectedItem);
+    updateImage();
 }
 
 
@@ -163,6 +172,11 @@ void MainWindow::on_actionConnect_triggered()
 void MainWindow::on_actionDisconnect_triggered()
 {
     m_client.disconnectFromServer();
+}
+
+void MainWindow::on_dialRefreshrate_valueChanged(int value)
+{
+    m_timer->start(value);
 }
 
 

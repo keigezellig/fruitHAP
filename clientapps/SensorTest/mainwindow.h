@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
+#include <QTimer>
 #include "switch/qswitchcontrol.h"
 #include "camera/qcameracontrol.h"
 #include "qconfigurationcontrol.h"
@@ -23,6 +24,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *m_drawing;
+    QTimer *m_timer;
     QFruitHapClient m_client;
     QSwitchControl m_switchControl;
     QCameraControl m_cameraControl;
@@ -36,6 +38,7 @@ private slots:
     void on_cmbCameraList_currentIndexChanged(int index);
     void on_actionConnect_triggered();
     void on_actionDisconnect_triggered();
+    void on_dialRefreshrate_valueChanged(int value);
 
     void connectToMQ(const QStringList &bindingKeys, const QString &uri);
     void onConnected();
@@ -44,6 +47,7 @@ private slots:
     void onImageDataReceived(const QString name, const QByteArray imageData);
     void onDisconnected();
     void onRpcQueueReady();
+    void updateImage();
 };
 
 #endif // MAINWINDOW_H
