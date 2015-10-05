@@ -29,7 +29,9 @@ SOURCES += main.cpp\
     qfruithapclient.cpp \        
     camera/qcameracontrol.cpp \
     qconfigurationcontrol.cpp \
-    sensordata.cpp
+    sensordata.cpp \
+    qeventedsensor.cpp \
+    camera/qeventedcamera.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -52,7 +54,9 @@ HEADERS  += mainwindow.h \
     qfruithapclient.h \        
     camera/qcameracontrol.h \
     qconfigurationcontrol.h \
-    sensordata.h
+    sensordata.h \
+    qeventedsensor.h \
+    camera/qeventedcamera.h
 
 
 FORMS    += mainwindow.ui
