@@ -8,14 +8,14 @@ class QEventedCamera : public QEventedSensor
 {
     Q_OBJECT
 
-private:
-    QString m_name;
-
 public:
-    QEventedCamera(QString m_name, );
+    QEventedCamera(QFruitHapClient *client, QString name, QObject *parent = 0);
+
+protected:
+    virtual handleSensorEvent(QJsonObject responseObject);
 
 signals:
-
+    void imageReceived(const QString name, const QByteArray imageData);
 public slots:
 };
 

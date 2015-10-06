@@ -8,13 +8,13 @@ class QEventedSensor : public QObject
 {
     Q_OBJECT
 
+public:
+    QString getName() const;
 protected:
-    QEventedSensor(QFruitHapClient *client, QObject *parent = 0);
+    QEventedSensor(QFruitHapClient *client, QString name, QObject *parent = 0);
     QFruitHapClient* m_client;
-    virtual handleSensorMessage(QJsonObject responseObject) = 0;
-    ~QEventedSensor();
-signals:
-    void errorReceived(QString sensorName, QString message);
+    QString m_name;
+    virtual handleSensorEvent(QJsonObject responseObject) = 0;
 private slots:
     void onClientResponseReceived(const QJsonDocument response, const QString messageType);
 };

@@ -1,10 +1,11 @@
 #include "qeventedsensor.h"
 #include <QJsonObject>
 
-QEventedSensor::QEventedSensor(QFruitHapClient *client, QObject *parent):
-    QObject(parent), m_client(client)
-{
 
+QEventedSensor::QEventedSensor(QFruitHapClient *client, QString name, QObject *parent):
+    QObject(parent), m_client(client),m_name(name)
+{
+    connect(client, &QFruitHapClient::responseReceived, this, &QEventedSensor::onClientResponseReceived)
 }
 
 void QEventedSensor::onClientResponseReceived(const QJsonDocument response, const QString messageType)
@@ -25,9 +26,15 @@ void QEventedSensor::onClientResponseReceived(const QJsonDocument response, cons
 
      auto topics = m_client->getPubSubTopics();
 
-     if (messageType.contains("SensorMessage") || topics.contains(messageType))
+     if (topics.contains(messageType) && messageType.contains("SensorMessage") && responseObject["SensorName"] == m_name && responseObject["EventType"] == "SensorEvent")
      {
-         handleSensorMessage(responseObject);
+         handleSensorEvent(responseObject);
      }
 
 }
+
+QString QEventedSensor::getName() const
+{
+    return m_name;
+}
+

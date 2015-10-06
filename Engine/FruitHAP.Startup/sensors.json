@@ -2,5 +2,7 @@
  {"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"MultipleSocket","Category":"Switch","Description":"Multi socket box","DeviceId":0x010101,"UnitCode":2}},
  {"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"PIR","Category":"Switch","Description":"PIR","DeviceId":0xD9D6DA,"UnitCode":10,"IsReadOnly":true}},
  {"Type":"Camera","IsAggegrate":false,"Parameters":{"Name":"DoorCamera","Category":"Camera","Description":"My doorcam","Url":"http://bihac/snapshot.cgi","Username":"visitor","Password":"visitor"}},
- {"Type":"Camera","IsAggegrate":false,"Parameters":{"Name":"DoorCamera1","Category":"Camera","Description":"My doorcam","Url":"local:///dev/video1","Resolution":"640x480"}}
+ {"Type":"Camera","IsAggegrate":false,"Parameters":{"Name":"DoorCamera1","Category":"Camera","Description":"My doorcam","Url":"local:///dev/video1","Resolution":"640x480"}},
+ {"Type":"SwitchWithCameraSensor","IsAggegrate":true,"Parameters":{"Name":"EventedDoorcam","Category":"Camera","Description":"My doorcam (evented)","Inputs":["DoorCamera","PIR"]}}
+
 ]
