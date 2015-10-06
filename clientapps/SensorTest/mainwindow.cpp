@@ -76,22 +76,33 @@ void MainWindow::onSensorListReceived(const QList<SensorData> list)
     foreach (SensorData item, list)
     {
         if (item.getCategory() == "Switch")
-        {
-            ui->cmbSwitchList->addItem(item.getName());
-            QEventedSwitch *eventedSwitch = new QEventedSwitch(m_client,item.getName(),parent());
+        {            
+            QEventedSwitch *eventedSwitch = new QEventedSwitch(m_client,item.getName(),true,item.IsReadOnly(),parent());
             connect(eventedSwitch, &QEventedSwitch::switchStateReceived, this, &MainWindow::onSwitchStateReceived);
             connect(eventedSwitch, &QEventedSwitch::errorEventReceived, this, &MainWindow::onErrorReceived);
             m_eventedSensors.append(eventedSwitch);
+            ui->cmbSwitchList->addItem(item.getName());
         }
 
 
-        if( (item.getType() == "ButtonWithCameraSensor") || (item.getType() == "SwitchWithCameraSensor") || (item.getCategory() == "Camera"))
+        if( (item.getType() == "ButtonWithCameraSensor") || (item.getType() == "SwitchWithCameraSensor"))
         {
-            ui->cmbCameraList->addItem(item.getName());
-            QEventedCamera *eventedCamera = new QEventedCamera(m_client,item.getName(),parent());
+
+            QEventedCamera *eventedCamera = new QEventedCamera(m_client,item.getName(),false,item.IsReadOnly(),parent());
             connect(eventedCamera, &QEventedCamera::imageReceived, this, &MainWindow::onImageDataReceived);
             connect(eventedCamera, &QEventedCamera::errorEventReceived, this, &MainWindow::onErrorReceived);
             m_eventedSensors.append(eventedCamera);
+            ui->cmbCameraList->addItem(item.getName());
+        }
+
+        if( (item.getType() == "Camera"))
+        {
+
+            QEventedCamera *eventedCamera = new QEventedCamera(m_client,item.getName(),true,item.IsReadOnly(),parent());
+            connect(eventedCamera, &QEventedCamera::imageReceived, this, &MainWindow::onImageDataReceived);
+            connect(eventedCamera, &QEventedCamera::errorEventReceived, this, &MainWindow::onErrorReceived);
+            m_eventedSensors.append(eventedCamera);
+            ui->cmbCameraList->addItem(item.getName());
         }
     }
 
@@ -129,7 +140,7 @@ void MainWindow::updateImage()
     QString selectedItem = ui->cmbCameraList->itemText(ui->cmbCameraList->currentIndex());
     QEventedSensor* selectedSensor = getSensorByName(selectedItem);
 
-    if (selectedSensor != nullptr)
+    if (selectedSensor != nullptr && selectedSensor->isPollable())
     {
         selectedSensor->getValue();
     }
@@ -142,10 +153,13 @@ void MainWindow::on_cmbSwitchList_currentIndexChanged(int index)
     QString selectedItem = ui->cmbSwitchList->itemText(index);
     QEventedSensor* selectedSensor = getSensorByName(selectedItem);
 
-    if (selectedSensor != nullptr)
+    if (selectedSensor != nullptr && selectedSensor->isPollable())
     {
         selectedSensor->getValue();
     }
+
+    ui->btnOn->setEnabled(!selectedSensor->isReadOnly());
+    ui->btnOff->setEnabled(!selectedSensor->isReadOnly());
 }
 
 void MainWindow::on_cmbCameraList_currentIndexChanged(int index)
@@ -238,7 +252,7 @@ void MainWindow::on_btnOff_clicked()
 
     if (aSwitch != nullptr)
     {
-        aSwitch->turnOn();
+        aSwitch->turnOff();
     }
 }
 

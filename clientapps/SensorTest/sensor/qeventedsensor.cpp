@@ -2,8 +2,8 @@
 #include <QJsonObject>
 
 
-QEventedSensor::QEventedSensor(QFruitHapClient *client, QString name, QObject *parent):
-    QObject(parent),m_isBusy(false), m_client(client), m_name(name)
+QEventedSensor::QEventedSensor(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent):
+    QObject(parent),m_isBusy(false), m_client(client), m_name(name), m_isPollable(isPollable), m_isReadOnly(isReadOnly)
 {
     connect(m_client, &QFruitHapClient::responseReceived, this, &QEventedSensor::onClientResponseReceived);
     connect(this, &QEventedSensor::responseHandled, this, &QEventedSensor::onResponseHandled);
@@ -110,11 +110,24 @@ QString QEventedSensor::getName() const
     return m_name;
 }
 
+bool QEventedSensor::isPollable() const
+{
+    return m_isPollable;
+}
+
+bool QEventedSensor::isReadOnly() const
+{
+    return m_isReadOnly;
+}
+
 void QEventedSensor::getValue()
 {
+    if (!isPollable())
+    {
+        qWarning() << "This sensor is not pollable";
+        return;
+    }
     QJsonObject obj;
-
-
     obj["SensorName"] = m_name;
     obj["EventType"] = "GetValue";
     sendRequest(obj);

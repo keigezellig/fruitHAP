@@ -9,7 +9,7 @@ class QEventedCamera : public QEventedSensor
     Q_OBJECT
 
 public:
-    QEventedCamera(QFruitHapClient *client, QString name, QObject *parent = 0);    
+    QEventedCamera(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent = 0);
 
 protected:
     virtual void handleSensorEvent(const QJsonObject responseObject);

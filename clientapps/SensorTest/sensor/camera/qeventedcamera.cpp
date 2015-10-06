@@ -3,8 +3,8 @@
 
 
 
-QEventedCamera::QEventedCamera(QFruitHapClient *client, QString name, QObject *parent):
-    QEventedSensor(client,name,parent)
+QEventedCamera::QEventedCamera(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent):
+    QEventedSensor(client,name,isPollable,isReadOnly,parent)
 {
 
 }

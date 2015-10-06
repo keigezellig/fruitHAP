@@ -2,8 +2,8 @@
 
 
 
-SensorData::SensorData(const QString name, const QString category, const QString type):
-    m_name(name), m_category(category), m_type(type)
+SensorData::SensorData(const QString name, const QString category, const QString type, bool isReadOnly):
+    m_name(name), m_category(category), m_type(type), m_isReadOnly(isReadOnly)
 {
 
 }
@@ -21,4 +21,9 @@ QString SensorData::getCategory() const
 QString SensorData::getType() const
 {
     return m_type;
+}
+
+bool SensorData::IsReadOnly() const
+{
+    return m_isReadOnly;
 }

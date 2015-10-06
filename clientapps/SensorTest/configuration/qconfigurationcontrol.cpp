@@ -68,7 +68,7 @@ void QConfigurationControl::handleConfigurationMessage(QJsonObject responseObjec
         {
             QJsonObject sensorObject = sensor.toObject();
             QJsonObject parameters = sensorObject["Parameters"].toObject();
-            SensorData data(parameters["Name"].toString(),parameters["Category"].toString(), sensorObject["Type"].toString() );
+            SensorData data(parameters["Name"].toString(),parameters["Category"].toString(), sensorObject["Type"].toString(), parameters["IsReadOnly"].toBool() );
             sensorDataList.append(data);
 
         }

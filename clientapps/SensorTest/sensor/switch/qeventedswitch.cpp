@@ -3,14 +3,19 @@
 
 
 
-QEventedSwitch::QEventedSwitch(QFruitHapClient *client, QString name, QObject *parent):
-    QEventedSensor(client,name,parent)
+QEventedSwitch::QEventedSwitch(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent):
+    QEventedSensor(client,name,isPollable,isReadOnly,parent)
 {
 
 }
 
 void QEventedSwitch::turnOn()
 {
+    if (isReadOnly())
+    {
+        qWarning() << "This is a readonly sensor";
+        return;
+    }
     QJsonObject obj;
     QJsonObject commandObject;
 
@@ -26,6 +31,12 @@ void QEventedSwitch::turnOn()
 
 void QEventedSwitch::turnOff()
 {
+    if (isReadOnly())
+    {
+        qWarning() << "This is a readonly sensor";
+        return;
+    }
+
     QJsonObject obj;
     QJsonObject commandObject;
 
