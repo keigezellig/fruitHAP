@@ -4,10 +4,10 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QTimer>
-#include "switch/qswitchcontrol.h"
-#include "camera/qcameracontrol.h"
-#include "qconfigurationcontrol.h"
 
+#include "configuration/qconfigurationcontrol.h"
+#include "sensor/qeventedsensor.h"
+#include "sensor/switch/definitions.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,11 +25,12 @@ private:
     Ui::MainWindow *ui;
     QGraphicsScene *m_drawing;
     QTimer *m_timer;
-    QFruitHapClient m_client;
-    QSwitchControl m_switchControl;
-    QCameraControl m_cameraControl;
+    QFruitHapClient *m_client;
     QConfigurationControl m_configControl;
 
+    QList<QEventedSensor*> m_eventedSensors;
+
+    QEventedSensor* getSensorByName(const QString name) const;
 private slots:
     void loadSensors();
     void on_btnOn_clicked();
@@ -44,6 +45,7 @@ private slots:
     void onConnected();
     void onSensorListReceived(const QList<SensorData> list);
     void onSwitchStateReceived(const QString name, SwitchState state);
+    void onErrorReceived(const QString name, const QString errorMessage);
     void onImageDataReceived(const QString name, const QByteArray imageData);
     void onDisconnected();
     void onRpcQueueReady();

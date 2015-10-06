@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "sensor/camera/qeventedcamera.h"
+#include "sensor/switch/qeventedswitch.h"
 #include <QInputDialog>
 #include <QPixmap>
 
@@ -8,22 +10,20 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_drawing(nullptr),
-    m_client(QString("FruitHAP_RpcExchange"), QString("FruitHAP_PubSubExchange"),parent),
-    m_switchControl(QString("Switch"),m_client,parent),
-    m_cameraControl(QString("Camera"),m_client,parent),
-    m_configControl(m_client,parent)
+    m_client(new QFruitHapClient(QString("FruitHAP_RpcExchange"), QString("FruitHAP_PubSubExchange"),this)),
+    m_configControl(m_client,this),
+    m_eventedSensors()
 
 
 {
 
     ui->setupUi(this);
 
-    connect(&m_switchControl,&QSwitchControl::switchStateReceived,this,&MainWindow::onSwitchStateReceived);
-    connect(&m_cameraControl,&QCameraControl::imageDataReceived,this,&MainWindow::onImageDataReceived);
+
     connect(&m_configControl,&QConfigurationControl::sensorListReceived,this,&MainWindow::onSensorListReceived);
-    connect(&m_client,&QFruitHapClient::connected,this,&MainWindow::onConnected);
-    connect(&m_client,&QFruitHapClient::disconnected,this,&MainWindow::onDisconnected);
-    connect(&m_client,&QFruitHapClient::rpcQueueReady,this,&MainWindow::onRpcQueueReady);    
+    connect(m_client,&QFruitHapClient::connected,this,&MainWindow::onConnected);
+    connect(m_client,&QFruitHapClient::disconnected,this,&MainWindow::onDisconnected);
+    connect(m_client,&QFruitHapClient::rpcQueueReady,this,&MainWindow::onRpcQueueReady);
     m_timer = new QTimer(this);
     connect(m_timer,&QTimer::timeout, this, &MainWindow::updateImage);
 
@@ -34,6 +34,7 @@ MainWindow::~MainWindow()
 {
     delete m_timer;
     delete ui;
+    qDeleteAll(m_eventedSensors);
 }
 
 QString convertEnumToString(const SwitchState& state )
@@ -54,8 +55,8 @@ QString convertEnumToString(const SwitchState& state )
 
 void MainWindow::connectToMQ(const QStringList &bindingKeys, const QString &uri)
 {
-    m_client.setPubSubTopics(bindingKeys);
-    m_client.connectToServer(uri);
+    m_client->setPubSubTopics(bindingKeys);
+    m_client->connectToServer(uri);
 
 }
 
@@ -77,13 +78,21 @@ void MainWindow::onSensorListReceived(const QList<SensorData> list)
         if (item.getCategory() == "Switch")
         {
             ui->cmbSwitchList->addItem(item.getName());
+            QEventedSwitch *eventedSwitch = new QEventedSwitch(m_client,item.getName(),parent());
+            connect(eventedSwitch, &QEventedSwitch::switchStateReceived, this, &MainWindow::onSwitchStateReceived);
+            connect(eventedSwitch, &QEventedSwitch::errorEventReceived, this, &MainWindow::onErrorReceived);
+            m_eventedSensors.append(eventedSwitch);
         }
 
-        if (item.getCategory() == "Camera")
+
+        if( (item.getType() == "ButtonWithCameraSensor") || (item.getType() == "SwitchWithCameraSensor") || (item.getCategory() == "Camera"))
         {
             ui->cmbCameraList->addItem(item.getName());
+            QEventedCamera *eventedCamera = new QEventedCamera(m_client,item.getName(),parent());
+            connect(eventedCamera, &QEventedCamera::imageReceived, this, MainWindow::onImageDataReceived);
+            connect(eventedSwitch, &QEventedSwitch::errorEventReceived, this, &MainWindow::onErrorReceived);
+            m_eventedSensors.append(eventedCamera);
         }
-
     }
 
 
@@ -101,10 +110,29 @@ void MainWindow::onRpcQueueReady()
     loadSensors();
 }
 
+
+QEventedSensor* MainWindow::getSensorByName(const QString name) const
+{
+    foreach (QEventedSensor* item, m_eventedSensors)
+    {
+        if (item->getName() == name)
+        {
+            return item;
+        }
+    }
+
+    return nullptr;
+}
+
 void MainWindow::updateImage()
 {
     QString selectedItem = ui->cmbCameraList->itemText(ui->cmbCameraList->currentIndex());
-    m_cameraControl.getImage(selectedItem);
+    QEventedSensor* selectedSensor = getSensorByName(selectedItem);
+
+    if (selectedSensor != nullptr)
+    {
+        selectedSensor->getValue();
+    }
 }
 
 
@@ -112,7 +140,12 @@ void MainWindow::updateImage()
 void MainWindow::on_cmbSwitchList_currentIndexChanged(int index)
 {
     QString selectedItem = ui->cmbSwitchList->itemText(index);
-    m_switchControl.getState(selectedItem);
+    QEventedSensor* selectedSensor = getSensorByName(selectedItem);
+
+    if (selectedSensor != nullptr)
+    {
+        selectedSensor->getValue();
+    }
 }
 
 void MainWindow::on_cmbCameraList_currentIndexChanged(int index)
@@ -128,6 +161,11 @@ void MainWindow::onSwitchStateReceived(const QString name, SwitchState state)
   {
       ui->lbState->setText(convertEnumToString(state));
   }
+}
+
+void MainWindow::onErrorReceived(const QString name, const QString errorMessage)
+{
+    qCritical() << "Error received from " << name << ". Message: " << errorMessage;
 }
 
 
@@ -171,7 +209,7 @@ void MainWindow::on_actionConnect_triggered()
 
 void MainWindow::on_actionDisconnect_triggered()
 {
-    m_client.disconnectFromServer();
+    m_client->disconnectFromServer();
 }
 
 void MainWindow::on_dialRefreshrate_valueChanged(int value)
@@ -183,13 +221,25 @@ void MainWindow::on_dialRefreshrate_valueChanged(int value)
 void MainWindow::on_btnOn_clicked()
 {
     QString selectedItem = ui->cmbSwitchList->itemText(ui->cmbSwitchList->currentIndex());
-    m_switchControl.turnOn(selectedItem);
+    QEventedSensor* selectedSensor = getSensorByName(selectedItem);
+    QEventedSwitch* aSwitch = dynamic_cast<QEventedSwitch*>(selectedSensor);
+
+    if (aSwitch != nullptr)
+    {
+        aSwitch->turnOn();
+    }
 }
 
 void MainWindow::on_btnOff_clicked()
 {
     QString selectedItem = ui->cmbSwitchList->itemText(ui->cmbSwitchList->currentIndex());
-    m_switchControl.turnOff(selectedItem);
+    QEventedSensor* selectedSensor = getSensorByName(selectedItem);
+    QEventedSwitch* aSwitch = dynamic_cast<QEventedSwitch*>(selectedSensor);
+
+    if (aSwitch != nullptr)
+    {
+        aSwitch->turnOn();
+    }
 }
 
 void MainWindow::loadSensors()

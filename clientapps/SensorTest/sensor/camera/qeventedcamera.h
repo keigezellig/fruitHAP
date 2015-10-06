@@ -2,17 +2,18 @@
 #define QEVENTEDCAMERA_H
 
 #include <QObject>
-#include "qeventedsensor.h"
+#include "../qeventedsensor.h"
 
 class QEventedCamera : public QEventedSensor
 {
     Q_OBJECT
 
 public:
-    QEventedCamera(QFruitHapClient *client, QString name, QObject *parent = 0);
+    QEventedCamera(QFruitHapClient *client, QString name, QObject *parent = 0);    
 
 protected:
-    virtual handleSensorEvent(QJsonObject responseObject);
+    virtual void handleSensorEvent(const QJsonObject responseObject);
+    virtual void handleGetValueEvent(const QJsonObject responseObject);
 
 signals:
     void imageReceived(const QString name, const QByteArray imageData);

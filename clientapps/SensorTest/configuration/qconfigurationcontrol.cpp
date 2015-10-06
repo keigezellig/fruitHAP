@@ -1,13 +1,13 @@
 #include "qconfigurationcontrol.h"
 
 
-QConfigurationControl::QConfigurationControl(QFruitHapClient &client, QObject *parent):
+QConfigurationControl::QConfigurationControl(QFruitHapClient *client, QObject *parent):
     QObject(parent), m_client(client), m_isBusy(false)
 {
     m_requestTimer = new QTimer(this);
     m_requestTimer->setSingleShot(true);
     connect(m_requestTimer,&QTimer::timeout, this, &QConfigurationControl::requestTimeout);
-    connect(&m_client,&QFruitHapClient::responseReceived,this,&QConfigurationControl::onClientResponseReceived);
+    connect(m_client,&QFruitHapClient::responseReceived,this,&QConfigurationControl::onClientResponseReceived);
 
 }
 
@@ -17,7 +17,7 @@ QConfigurationControl::QConfigurationControl(const QConfigurationControl &copy):
     m_requestTimer = new QTimer(this);
     m_requestTimer->setSingleShot(true);
     connect(m_requestTimer,&QTimer::timeout, this, &QConfigurationControl::requestTimeout);
-    connect(&m_client,&QFruitHapClient::responseReceived,this,&QConfigurationControl::onClientResponseReceived);
+    connect(m_client,&QFruitHapClient::responseReceived,this,&QConfigurationControl::onClientResponseReceived);
 }
 
 void QConfigurationControl::getSensorNames()
@@ -46,7 +46,7 @@ void QConfigurationControl::getSensorNames()
     QJsonDocument message(obj);
     QString routingKey("FruitHAP_RpcQueue.FruitHAP.Core.Action.ConfigurationMessage");
     QString messageType("FruitHAP.Core.Action.ConfigurationMessage:FruitHAP.Core");
-    m_client.sendMessage(message,routingKey,messageType);
+    m_client->sendMessage(message,routingKey,messageType);
 }
 
 void QConfigurationControl::handleConfigurationMessage(QJsonObject responseObject)
@@ -68,7 +68,7 @@ void QConfigurationControl::handleConfigurationMessage(QJsonObject responseObjec
         {
             QJsonObject sensorObject = sensor.toObject();
             QJsonObject parameters = sensorObject["Parameters"].toObject();
-            SensorData data(parameters["Name"].toString(),parameters["Category"].toString() );
+            SensorData data(parameters["Name"].toString(),parameters["Category"].toString(), sensorObject["Type"].toString() );
             sensorDataList.append(data);
 
         }
