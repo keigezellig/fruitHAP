@@ -60,7 +60,7 @@ namespace FruitHAP.Sensor.Aggregated
 		{
 			var image = this.camera.GetImageAsync ().Result;
 			if (image != null) {
-				sensorEventPublisher.Publish<SensorEvent> (this, Convert.ToBase64String (image));
+				sensorEventPublisher.Publish<SensorEvent> (this, image);
 			} 
 			else 
 			{

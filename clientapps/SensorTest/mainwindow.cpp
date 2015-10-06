@@ -89,8 +89,8 @@ void MainWindow::onSensorListReceived(const QList<SensorData> list)
         {
             ui->cmbCameraList->addItem(item.getName());
             QEventedCamera *eventedCamera = new QEventedCamera(m_client,item.getName(),parent());
-            connect(eventedCamera, &QEventedCamera::imageReceived, this, MainWindow::onImageDataReceived);
-            connect(eventedSwitch, &QEventedSwitch::errorEventReceived, this, &MainWindow::onErrorReceived);
+            connect(eventedCamera, &QEventedCamera::imageReceived, this, &MainWindow::onImageDataReceived);
+            connect(eventedCamera, &QEventedCamera::errorEventReceived, this, &MainWindow::onErrorReceived);
             m_eventedSensors.append(eventedCamera);
         }
     }

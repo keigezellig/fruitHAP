@@ -63,7 +63,7 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 		void OnButtonPressed (EventData data)
 		{
 			var image = this.camera.GetImageAsync ().Result;
-			sensorEventPublisher.Publish<SensorEvent> (this, Convert.ToBase64String(image));
+			sensorEventPublisher.Publish<SensorEvent> (this, image);
 		}
 		#endregion
 
