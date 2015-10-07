@@ -6,7 +6,7 @@
 #include <QTimer>
 
 #include "configuration/qconfigurationcontrol.h"
-#include "sensor/qeventedsensor.h"
+#include "sensor/qsensor.h"
 #include "sensor/switch/definitions.h"
 
 namespace Ui {
@@ -28,9 +28,9 @@ private:
     QFruitHapClient *m_client;
     QConfigurationControl m_configControl;
 
-    QList<QEventedSensor*> m_eventedSensors;
+    QList<QSensor*> m_eventedSensors;
 
-    QEventedSensor* getSensorByName(const QString name) const;
+    QSensor* getSensorByName(const QString name) const;
 private slots:
     void loadSensors();
     void on_btnOn_clicked();

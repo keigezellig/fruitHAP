@@ -13,20 +13,15 @@ class QConfigurationControl : public QObject
     Q_OBJECT
 public:
     QConfigurationControl(QFruitHapClient *client, QObject *parent = 0);
-    QConfigurationControl(const QConfigurationControl& copy);
-    void getSensorNames();
+    void getSensorList();
 
 private:
     QFruitHapClient *m_client;
-    QString m_category;
-    QTimer *m_requestTimer;
-    bool m_isBusy;
     void handleConfigurationMessage(QJsonObject responseObject);
 signals:
     void sensorListReceived(const QList<SensorData> list);
 private slots:
     void onClientResponseReceived(const QJsonDocument response, const QString messageType);
-    void requestTimeout();
 
 };
 

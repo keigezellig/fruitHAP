@@ -6,12 +6,15 @@
 #include "libs/qamqp/source/qamqpclient.h"
 #include "libs/qamqp/source/qamqpexchange.h"
 #include "libs/qamqp/source/qamqpqueue.h"
+#include <QTimer>
 
 
 
 class QFruitHapClient : public QObject
 {
     Q_OBJECT
+    bool m_isBusy;
+    QTimer *m_requestTimer;
 public:
     QFruitHapClient(QString rpcExchangeName, QString pubSubExchangeName, QObject *parent = 0);
     ~QFruitHapClient();
@@ -26,7 +29,7 @@ signals:
 public slots:
     bool connectToServer(const QString &uri);
     void disconnectFromServer();
-    void sendMessage(const QJsonDocument &message, const QString &routingKey, const QString &messageType);
+    void sendMessage(const QJsonObject &message, const QString &routingKey, const QString &messageType);
 
 private slots:
     void clientConnected();
@@ -36,6 +39,7 @@ private slots:
     void pubSubQueueDeclared();
     void pubSubQueueBound();
     void messageReceived();
+    void onRequestTimeout();
 private:
     QString m_rpcExchangeName;
     QString m_rpcRoutingKey;
@@ -48,6 +52,7 @@ private:
     QAmqpExchange *m_pubsubExchange;
     QAmqpQueue *m_pubsubQueue;
     QString m_correlationId;
+
 
 
 };

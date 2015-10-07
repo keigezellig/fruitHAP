@@ -6,11 +6,10 @@
 #include <QTimer>
 #include "../mqclient/qfruithapclient.h"
 
-class QEventedSensor : public QObject
+class QSensor : public QObject
 {
     Q_OBJECT
-    bool m_isBusy;
-    QTimer *m_requestTimer;
+
 public:
     QString getName() const;
     bool isPollable() const;
@@ -18,7 +17,7 @@ public:
     void getValue();
 
 protected:
-    QEventedSensor(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent = 0);
+    QSensor(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent = 0);
     QFruitHapClient* m_client;
     QString m_name;
     bool m_isPollable;
@@ -28,12 +27,12 @@ protected:
     void sendRequest(const QJsonObject request);
 signals:
     void errorEventReceived(const QString sensorName, const QString msg);
-    void responseHandled();
+
 
 private slots:
     void onClientResponseReceived(const QJsonDocument response, const QString messageType);
-    void onResponseHandled();
-    void onRequestTimeout();
+
+
 };
 
 #endif // QEVENTEDSENSOR_H

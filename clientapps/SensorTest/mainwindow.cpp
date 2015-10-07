@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "sensor/camera/qeventedcamera.h"
-#include "sensor/switch/qeventedswitch.h"
+#include "sensor/camera/qcamera.h"
+#include "sensor/switch/qswitch.h"
 #include <QInputDialog>
 #include <QPixmap>
 
@@ -88,9 +88,9 @@ void MainWindow::onSensorListReceived(const QList<SensorData> list)
     {
         if (item.getCategory() == "Switch")
         {            
-            QEventedSwitch *eventedSwitch = new QEventedSwitch(m_client,item.getName(),true,item.IsReadOnly(),parent());
-            connect(eventedSwitch, &QEventedSwitch::switchStateReceived, this, &MainWindow::onSwitchStateReceived);
-            connect(eventedSwitch, &QEventedSwitch::errorEventReceived, this, &MainWindow::onErrorReceived);
+            QSwitch *eventedSwitch = new QSwitch(m_client,item.getName(),true,item.IsReadOnly(),parent());
+            connect(eventedSwitch, &QSwitch::switchStateReceived, this, &MainWindow::onSwitchStateReceived);
+            connect(eventedSwitch, &QSwitch::errorEventReceived, this, &MainWindow::onErrorReceived);
             m_eventedSensors.append(eventedSwitch);
             ui->cmbSwitchList->addItem(item.getName());
         }
@@ -99,9 +99,9 @@ void MainWindow::onSensorListReceived(const QList<SensorData> list)
         if( (item.getType() == "ButtonWithCameraSensor") || (item.getType() == "SwitchWithCameraSensor"))
         {
 
-            QEventedCamera *eventedCamera = new QEventedCamera(m_client,item.getName(),false,item.IsReadOnly(),parent());
-            connect(eventedCamera, &QEventedCamera::imageReceived, this, &MainWindow::onImageDataReceived);
-            connect(eventedCamera, &QEventedCamera::errorEventReceived, this, &MainWindow::onErrorReceived);
+            QCamera *eventedCamera = new QCamera(m_client,item.getName(),false,item.IsReadOnly(),parent());
+            connect(eventedCamera, &QCamera::imageReceived, this, &MainWindow::onImageDataReceived);
+            connect(eventedCamera, &QCamera::errorEventReceived, this, &MainWindow::onErrorReceived);
             m_eventedSensors.append(eventedCamera);
             ui->cmbCameraList->addItem(item.getName());
         }
@@ -109,9 +109,9 @@ void MainWindow::onSensorListReceived(const QList<SensorData> list)
         if( (item.getType() == "Camera"))
         {
 
-            QEventedCamera *eventedCamera = new QEventedCamera(m_client,item.getName(),true,item.IsReadOnly(),parent());
-            connect(eventedCamera, &QEventedCamera::imageReceived, this, &MainWindow::onImageDataReceived);
-            connect(eventedCamera, &QEventedCamera::errorEventReceived, this, &MainWindow::onErrorReceived);
+            QCamera *eventedCamera = new QCamera(m_client,item.getName(),true,item.IsReadOnly(),parent());
+            connect(eventedCamera, &QCamera::imageReceived, this, &MainWindow::onImageDataReceived);
+            connect(eventedCamera, &QCamera::errorEventReceived, this, &MainWindow::onErrorReceived);
             m_eventedSensors.append(eventedCamera);
             ui->cmbCameraList->addItem(item.getName());
         }
@@ -133,9 +133,9 @@ void MainWindow::onRpcQueueReady()
 }
 
 
-QEventedSensor* MainWindow::getSensorByName(const QString name) const
+QSensor* MainWindow::getSensorByName(const QString name) const
 {
-    foreach (QEventedSensor* item, m_eventedSensors)
+    foreach (QSensor* item, m_eventedSensors)
     {
         if (item->getName() == name)
         {
@@ -149,7 +149,7 @@ QEventedSensor* MainWindow::getSensorByName(const QString name) const
 void MainWindow::updateImage()
 {
     QString selectedItem = ui->cmbCameraList->itemText(ui->cmbCameraList->currentIndex());
-    QEventedSensor* selectedSensor = getSensorByName(selectedItem);
+    QSensor* selectedSensor = getSensorByName(selectedItem);
 
     if (selectedSensor != nullptr && selectedSensor->isPollable())
     {
@@ -162,7 +162,7 @@ void MainWindow::updateImage()
 void MainWindow::on_cmbSwitchList_currentIndexChanged(int index)
 {
     QString selectedItem = ui->cmbSwitchList->itemText(index);
-    QEventedSensor* selectedSensor = getSensorByName(selectedItem);
+    QSensor* selectedSensor = getSensorByName(selectedItem);
 
     if (selectedSensor != nullptr && selectedSensor->isPollable())
     {
@@ -247,8 +247,8 @@ void MainWindow::on_dialRefreshrate_valueChanged(int value)
 void MainWindow::on_btnOn_clicked()
 {
     QString selectedItem = ui->cmbSwitchList->itemText(ui->cmbSwitchList->currentIndex());
-    QEventedSensor* selectedSensor = getSensorByName(selectedItem);
-    QEventedSwitch* aSwitch = dynamic_cast<QEventedSwitch*>(selectedSensor);
+    QSensor* selectedSensor = getSensorByName(selectedItem);
+    QSwitch* aSwitch = dynamic_cast<QSwitch*>(selectedSensor);
 
     if (aSwitch != nullptr)
     {
@@ -259,8 +259,8 @@ void MainWindow::on_btnOn_clicked()
 void MainWindow::on_btnOff_clicked()
 {
     QString selectedItem = ui->cmbSwitchList->itemText(ui->cmbSwitchList->currentIndex());
-    QEventedSensor* selectedSensor = getSensorByName(selectedItem);
-    QEventedSwitch* aSwitch = dynamic_cast<QEventedSwitch*>(selectedSensor);
+    QSensor* selectedSensor = getSensorByName(selectedItem);
+    QSwitch* aSwitch = dynamic_cast<QSwitch*>(selectedSensor);
 
     if (aSwitch != nullptr)
     {
@@ -270,7 +270,7 @@ void MainWindow::on_btnOff_clicked()
 
 void MainWindow::loadSensors()
 {    
-    m_configControl.getSensorNames();
+    m_configControl.getSensorList();
 
 
 }

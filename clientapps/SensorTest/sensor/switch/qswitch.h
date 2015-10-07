@@ -1,16 +1,16 @@
 #ifndef QEVENTEDSWITCH_H
 #define QEVENTEDSWITCH_H
 
-#include "../qeventedsensor.h"
+#include "../qsensor.h"
 #include "definitions.h"
 
 
-class QEventedSwitch : public QEventedSensor
+class QSwitch : public QSensor
 {
     Q_OBJECT
     void sendSignal(const QJsonObject &responseObject);
 public:
-    QEventedSwitch(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent);
+    QSwitch(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent);
     void turnOn();
     void turnOff();
 

@@ -1,15 +1,15 @@
-#include "qeventedswitch.h"
+#include "qswitch.h"
 #include <QJsonObject>
 
 
 
-QEventedSwitch::QEventedSwitch(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent):
-    QEventedSensor(client,name,isPollable,isReadOnly,parent)
+QSwitch::QSwitch(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent):
+    QSensor(client,name,isPollable,isReadOnly,parent)
 {
 
 }
 
-void QEventedSwitch::turnOn()
+void QSwitch::turnOn()
 {
     if (isReadOnly())
     {
@@ -29,7 +29,7 @@ void QEventedSwitch::turnOn()
     sendRequest(obj);
 }
 
-void QEventedSwitch::turnOff()
+void QSwitch::turnOff()
 {
     if (isReadOnly())
     {
@@ -51,19 +51,19 @@ void QEventedSwitch::turnOff()
 
 
 
-void QEventedSwitch::sendSignal(const QJsonObject &responseObject)
+void QSwitch::sendSignal(const QJsonObject &responseObject)
 {
     int state = responseObject["Data"].toInt();
     SwitchState theState = static_cast<SwitchState>(state);
     emit switchStateReceived(m_name,theState);
 }
 
-void QEventedSwitch::handleSensorEvent(const QJsonObject responseObject)
+void QSwitch::handleSensorEvent(const QJsonObject responseObject)
 {
     sendSignal(responseObject);
 }
 
-void QEventedSwitch::handleGetValueEvent(const QJsonObject responseObject)
+void QSwitch::handleGetValueEvent(const QJsonObject responseObject)
 {
     sendSignal(responseObject);
 }

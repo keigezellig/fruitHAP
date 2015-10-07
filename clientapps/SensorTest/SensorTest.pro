@@ -27,11 +27,11 @@ SOURCES += \
     libs/qamqp/source/qamqpqueue.cpp \
     libs/qamqp/source/qamqptable.cpp \
     mqclient/qfruithapclient.cpp \
-    sensor/camera/qeventedcamera.cpp \
-    sensor/switch/qeventedswitch.cpp \
-    sensor/qeventedsensor.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    sensor/camera/qcamera.cpp \
+    sensor/switch/qswitch.cpp \
+    sensor/qsensor.cpp
 
 
 HEADERS  += \
@@ -53,11 +53,11 @@ HEADERS  += \
     libs/qamqp/source/qamqpqueue_p.h \
     libs/qamqp/source/qamqptable.h \
     mqclient/qfruithapclient.h \
-    sensor/camera/qeventedcamera.h \
-    sensor/switch/qeventedswitch.h \    
-    sensor/qeventedsensor.h \
     mainwindow.h \
-    sensor/switch/definitions.h
+    sensor/switch/definitions.h \
+    sensor/qsensor.h \
+    sensor/switch/qswitch.h \
+    sensor/camera/qcamera.h
 
 FORMS += \
     mainwindow.ui

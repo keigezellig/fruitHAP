@@ -11,10 +11,16 @@ QFruitHapClient::QFruitHapClient(QString rpcExchangeName, QString pubSubExchange
     m_rpcResponseQueue(0),
     m_rpcExchange(0),
     m_pubsubExchange(0),
-    m_pubsubQueue(0)
+    m_pubsubQueue(0),
+    m_isBusy(false)
 {
   m_client = new QAmqpClient(this);
   connect(m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
+
+  m_requestTimer = new QTimer(this);
+  m_requestTimer->setSingleShot(true);
+  connect(m_requestTimer,&QTimer::timeout, this, &QFruitHapClient::onRequestTimeout);
+
 
 }
 
@@ -107,14 +113,26 @@ void QFruitHapClient::disconnectFromServer()
     emit disconnected();
 }
 
-void QFruitHapClient::sendMessage(const QJsonDocument &message, const QString &routingKey, const QString &messageType)
+void QFruitHapClient::sendMessage(const QJsonObject &request, const QString &routingKey, const QString &messageType)
 {
     if (!m_client->isConnected())
     {
-        qDebug() << "Cannot send message, not connected";
+        qCritical() << this->metaObject()->className() << "::Cannot send message, not connected";
         return;
     }
-    qDebug() << "Sending message";    
+
+    if (m_isBusy)
+    {
+       qCritical() << this->metaObject()->className() << "::SendRequest: Busy";
+        return;
+    }
+
+    qDebug() << this->metaObject()->className() << "::Sending message";
+    m_requestTimer->start(2000);
+    m_isBusy = true;
+
+    QJsonDocument message(request);
+
     m_correlationId = QUuid::createUuid().toString();
     QAmqpMessage::PropertyHash properties;
     properties.insert(QAmqpMessage::ReplyTo, m_rpcResponseQueue->name());
@@ -208,7 +226,20 @@ void QFruitHapClient::rpcResponseReceived()
        decodedMessage = QJsonDocument::fromJson(message.payload());
     }
 
+    qDebug() << this->metaObject()->className() << "Got answer back";
+    m_isBusy = false;
+    if (m_requestTimer->isActive())
+    {
+        m_requestTimer->stop();
+    }
+
 
      emit responseReceived(decodedMessage,message.property(QAmqpMessage::Type).toString());
 }
 
+void QFruitHapClient::onRequestTimeout()
+{
+    qCritical() << "Request timeout. Check your connection";
+    m_isBusy = false;
+
+}

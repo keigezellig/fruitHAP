@@ -1,51 +1,34 @@
-#include "qeventedsensor.h"
+#include "qsensor.h"
 #include <QJsonObject>
 
 
-QEventedSensor::QEventedSensor(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent):
-    QObject(parent),m_isBusy(false), m_client(client), m_name(name), m_isPollable(isPollable), m_isReadOnly(isReadOnly)
+QSensor::QSensor(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent):
+    QObject(parent), m_client(client), m_name(name), m_isPollable(isPollable), m_isReadOnly(isReadOnly)
 {
-    connect(m_client, &QFruitHapClient::responseReceived, this, &QEventedSensor::onClientResponseReceived);
-    connect(this, &QEventedSensor::responseHandled, this, &QEventedSensor::onResponseHandled);
-    m_requestTimer = new QTimer(this);
-    m_requestTimer->setSingleShot(true);
-    connect(m_requestTimer,&QTimer::timeout, this, &QEventedSensor::onRequestTimeout);
-
+    connect(m_client, &QFruitHapClient::responseReceived, this, &QSensor::onClientResponseReceived);
 }
 
-void QEventedSensor::sendRequest(const QJsonObject request)
+void QSensor::sendRequest(const QJsonObject request)
 {
-
-    if (m_isBusy)
-    {
-       qCritical() << this->metaObject()->className() << "::SendRequest: Busy";
-        return;
-    }
-    m_requestTimer->start(2000);
-    m_isBusy = true;
-    QJsonDocument message(request);
-
     QString routingKey("FruitHAP_RpcQueue.FruitHAP.Core.Action.SensorMessage");
     QString messageType("FruitHAP.Core.Action.SensorMessage:FruitHAP.Core");
-    m_client->sendMessage(message,routingKey,messageType);
-
-
+    m_client->sendMessage(request,routingKey,messageType);
 }
 
-void QEventedSensor::handleGetValueEvent(const QJsonObject)
+void QSensor::handleGetValueEvent(const QJsonObject)
 {
 
 }
 
 
-void QEventedSensor::onClientResponseReceived(const QJsonDocument response, const QString messageType)
+void QSensor::onClientResponseReceived(const QJsonDocument response, const QString messageType)
 {
 
     qDebug() << this->metaObject()->className() << "::onClientResponseReceived| Response received: " << messageType;
      if (response.isNull() || response.isEmpty())
      {
          qCritical() << this->metaObject()->className() << "::onClientResponseReceived| Response is empty";
-         emit responseHandled();
+
          return;
      }
 
@@ -53,7 +36,7 @@ void QEventedSensor::onClientResponseReceived(const QJsonDocument response, cons
      if (response.isNull() || response.isEmpty())
      {
          qDebug() << this->metaObject()->className() << "::onClientResponseReceived| Response object is empty";
-         emit responseHandled();
+
          return;
      }
 
@@ -79,48 +62,31 @@ void QEventedSensor::onClientResponseReceived(const QJsonDocument response, cons
              emit errorEventReceived(message,name);
          }
 
-         emit responseHandled();
+
      }
 
 
 
 }
 
-void QEventedSensor::onResponseHandled()
-{
-    qDebug() << this->metaObject()->className() << "Response handled";
-    m_isBusy = false;
-    if (m_requestTimer->isActive())
-    {
-        m_requestTimer->stop();
-    }
-
-}
 
 
-void QEventedSensor::onRequestTimeout()
-{
-    qCritical() << "Request timeout. Check your connection";
-    m_isBusy = false;
-
-}
-
-QString QEventedSensor::getName() const
+QString QSensor::getName() const
 {
     return m_name;
 }
 
-bool QEventedSensor::isPollable() const
+bool QSensor::isPollable() const
 {
     return m_isPollable;
 }
 
-bool QEventedSensor::isReadOnly() const
+bool QSensor::isReadOnly() const
 {
     return m_isReadOnly;
 }
 
-void QEventedSensor::getValue()
+void QSensor::getValue()
 {
     if (!isPollable())
     {
