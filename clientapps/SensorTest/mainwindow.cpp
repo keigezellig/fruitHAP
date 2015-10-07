@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_client,&QFruitHapClient::rpcQueueReady,this,&MainWindow::onRpcQueueReady);
     m_timer = new QTimer(this);
     connect(m_timer,&QTimer::timeout, this, &MainWindow::updateImage);
+    onDisconnected();
 
 
 }
@@ -56,7 +57,17 @@ QString convertEnumToString(const SwitchState& state )
 void MainWindow::connectToMQ(const QStringList &bindingKeys, const QString &uri)
 {
     m_client->setPubSubTopics(bindingKeys);
-    m_client->connectToServer(uri);
+    bool isConnected = m_client->connectToServer(uri);
+    if (isConnected)
+    {
+        onConnected();
+    }
+    else
+    {
+        QString uristring = !uri.isEmpty() ? uri : "localhost";
+        qCritical() << "Cannot connect to: " << uristring;
+        onDisconnected();
+    }
 
 }
 
@@ -156,10 +167,11 @@ void MainWindow::on_cmbSwitchList_currentIndexChanged(int index)
     if (selectedSensor != nullptr && selectedSensor->isPollable())
     {
         selectedSensor->getValue();
+        ui->btnOn->setEnabled(!selectedSensor->isReadOnly());
+        ui->btnOff->setEnabled(!selectedSensor->isReadOnly());
     }
 
-    ui->btnOn->setEnabled(!selectedSensor->isReadOnly());
-    ui->btnOff->setEnabled(!selectedSensor->isReadOnly());
+
 }
 
 void MainWindow::on_cmbCameraList_currentIndexChanged(int index)

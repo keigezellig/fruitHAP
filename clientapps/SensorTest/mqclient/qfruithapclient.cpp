@@ -67,7 +67,9 @@ bool QFruitHapClient::connectToServer(const QString &uri)
     }
 
     QEventLoop loop;
-    connect(this, SIGNAL(connected()), &loop, SLOT(quit()));
+    connect(m_client, SIGNAL(connected()), &loop, SLOT(quit()));
+    connect(m_client, SIGNAL(socketError(QAbstractSocket::SocketError)), &loop, SLOT(quit()));
+
     if (uri.isNull() || uri.isEmpty() )
     {
         m_client->connectToHost();
@@ -76,6 +78,7 @@ bool QFruitHapClient::connectToServer(const QString &uri)
     {
         m_client->connectToHost(uri);
     }
+    loop.exec();
 
     return m_client->isConnected();
 }
@@ -83,7 +86,24 @@ bool QFruitHapClient::connectToServer(const QString &uri)
 void QFruitHapClient::disconnectFromServer()
 {
     qDebug() << "Disconnect from server";
+    m_rpcResponseQueue->close();
+    m_pubsubQueue->close();
+    m_rpcExchange->close();
+    m_pubsubExchange->close();
+
+    delete m_rpcExchange;
+    delete m_rpcResponseQueue;
+    delete m_pubsubExchange;
+    delete m_pubsubQueue;
+    m_rpcExchange = nullptr;
+    m_rpcResponseQueue = nullptr;
+    m_pubsubExchange = nullptr;
+    m_pubsubQueue = nullptr;
+
     m_client->disconnectFromHost();
+
+
+
     emit disconnected();
 }
 
