@@ -7,6 +7,7 @@
 #include "libs/qamqp/source/qamqpexchange.h"
 #include "libs/qamqp/source/qamqpqueue.h"
 #include <QTimer>
+#include <QAbstractSocket>
 
 
 
@@ -23,7 +24,7 @@ public:
 signals:
     void connected();
     void disconnected();
-    void rpcQueueReady();
+    void error(const QString message);
     void responseReceived(const QJsonDocument response, const QString responseType);
 
 public slots:
@@ -32,13 +33,16 @@ public slots:
     void sendMessage(const QJsonObject &message, const QString &routingKey, const QString &messageType);
 
 private slots:
-    void clientConnected();
-    void rpcQueueDeclared();
-    void rpcResponseReceived();
-    void pubSubExchangeDeclared();
-    void pubSubQueueDeclared();
-    void pubSubQueueBound();
-    void messageReceived();
+    void onClientConnected();
+    void onClientDisconnected();
+    void onAMQPError(QAMQP::Error error);
+    void onSocketError(QAbstractSocket::SocketError error);
+    void onRpcQueueDeclared();
+    void onRpcResponseReceived();
+    void onPubSubExchangeDeclared();
+    void onPubSubQueueDeclared();
+    void onPubSubQueueBound();
+    void onMessageReceived();
     void onRequestTimeout();
 private:
     QString m_rpcExchangeName;

@@ -15,7 +15,10 @@ QFruitHapClient::QFruitHapClient(QString rpcExchangeName, QString pubSubExchange
     m_isBusy(false)
 {
   m_client = new QAmqpClient(this);
-  connect(m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
+  connect(m_client, &QAmqpClient::connected, this, &QFruitHapClient::onClientConnected);
+  connect(m_client, &QAmqpClient::disconnected, this, &QFruitHapClient::onClientDisconnected);
+  connect(m_client, SIGNAL(socketError()), this, SLOT(onAMQPError()));
+  connect(m_client, SIGNAL(error()), this, SLOT(onAMQPError());
 
   m_requestTimer = new QTimer(this);
   m_requestTimer->setSingleShot(true);
@@ -108,9 +111,6 @@ void QFruitHapClient::disconnectFromServer()
 
     m_client->disconnectFromHost();
 
-
-
-    emit disconnected();
 }
 
 void QFruitHapClient::sendMessage(const QJsonObject &request, const QString &routingKey, const QString &messageType)
@@ -142,34 +142,51 @@ void QFruitHapClient::sendMessage(const QJsonObject &request, const QString &rou
     m_rpcExchange->publish(message.toJson(), routingKey, properties);
 }
 
-void QFruitHapClient::clientConnected()
+void QFruitHapClient::onClientConnected()
 {
-    qDebug() << "QFruitHapClient::clientConnected| Connected to MQ server";
+    qDebug() << this->metaObject()->className() << "Connected to MQ server";
     m_rpcResponseQueue = m_client->createQueue();
-    connect(m_rpcResponseQueue, SIGNAL(declared()), this, SLOT(rpcQueueDeclared()));
-    connect(m_rpcResponseQueue, SIGNAL(messageReceived()), this, SLOT(rpcResponseReceived()));
+    connect(m_rpcResponseQueue, SIGNAL(declared()), this, SLOT(onRpcQueueDeclared()));
+    connect(m_rpcResponseQueue, SIGNAL(onMessageReceived()), this, SLOT(onRpcResponseReceived()));
     m_rpcResponseQueue->declare(QAmqpQueue::Exclusive | QAmqpQueue::AutoDelete);
     m_rpcExchange = m_client->createExchange(m_rpcExchangeName);
 
 
     m_pubsubExchange = m_client->createExchange(m_pubSubExchangeName);
-    connect(m_pubsubExchange, SIGNAL(declared()), this, SLOT(pubSubExchangeDeclared()));
+    connect(m_pubsubExchange, SIGNAL(declared()), this, SLOT(onPubSubExchangeDeclared()));
     m_pubsubExchange->declare(QAmqpExchange::Topic);
-    emit connected();
-
-
 }
 
-void QFruitHapClient::pubSubExchangeDeclared()
+void QFruitHapClient::onClientDisconnected()
+{
+    qDebug() << this->metaObject()->className() << "Client disconnected from mq server";
+    emit disconnected();
+}
+
+void QFruitHapClient::onAMQPError(QAMQP::Error error)
+{
+    qDebug() << this->metaObject()->className() << "AMQP Error";
+    QString errorMessage("AMQP error code: " + error);
+    emit error(errorMessage);
+}
+
+void QFruitHapClient::onSocketError(QAbstractSocket::SocketError error)
+{
+    qDebug() << this->metaObject()->className() << "Socket Error";
+    QString errorMessage("Connection error: " + error);
+    emit error(errorMessage);
+}
+
+void QFruitHapClient::onPubSubExchangeDeclared()
 {
     m_pubsubQueue = m_client->createQueue();
-    connect(m_pubsubQueue, SIGNAL(declared()), this, SLOT(pubSubQueueDeclared()));
-    connect(m_pubsubQueue, SIGNAL(bound()), this, SLOT(pubSubQueueBound()));
-    connect(m_pubsubQueue, SIGNAL(messageReceived()), this, SLOT(messageReceived()));
+    connect(m_pubsubQueue, SIGNAL(declared()), this, SLOT(onPubSubQueueDeclared()));
+    connect(m_pubsubQueue, SIGNAL(bound()), this, SLOT(onPubSubQueueBound()));
+    connect(m_pubsubQueue, SIGNAL(onMessageReceived()), this, SLOT(onMessageReceived()));
     m_pubsubQueue->declare(QAmqpQueue::Exclusive);
 }
 
-void QFruitHapClient::pubSubQueueDeclared() {
+void QFruitHapClient::onPubSubQueueDeclared() {
 
     foreach (QString bindingKey, m_pubSubTopics)
     {
@@ -178,12 +195,12 @@ void QFruitHapClient::pubSubQueueDeclared() {
     }
 }
 
-void QFruitHapClient::pubSubQueueBound() {
+void QFruitHapClient::onPubSubQueueBound() {
 
     m_pubsubQueue->consume(QAmqpQueue::coNoAck);
 }
 
-void QFruitHapClient::messageReceived() {
+void QFruitHapClient::onMessageReceived() {
 
     QJsonDocument decodedMessage;
 
@@ -201,16 +218,16 @@ void QFruitHapClient::messageReceived() {
 
 
 
-void QFruitHapClient::rpcQueueDeclared()
+void QFruitHapClient::onRpcQueueDeclared()
 {
     qDebug() << "Rpc queue ready";
     m_rpcResponseQueue->consume();
 
-    emit rpcQueueReady();
+    emit connected();
 }
 
 
-void QFruitHapClient::rpcResponseReceived()
+void QFruitHapClient::onRpcResponseReceived()
 {
     qDebug() << "QFruitHapClient::responseFromMQReceived| Response received";
     QAmqpMessage message = m_rpcResponseQueue->dequeue();
