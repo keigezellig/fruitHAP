@@ -2,9 +2,9 @@
 #define QEVENTEDCAMERA_H
 
 #include <QObject>
-#include "../qsensor.h"
+#include "../qfruithapsensor.h"
 
-class QCamera : public QSensor
+class QCamera : public QFruitHapSensor
 {
     Q_OBJECT
 

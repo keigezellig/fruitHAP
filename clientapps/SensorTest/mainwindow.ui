@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>946</width>
-    <height>703</height>
+    <width>990</width>
+    <height>731</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,55 +23,27 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>921</width>
-      <height>611</height>
+      <x>10</x>
+      <y>70</y>
+      <width>871</width>
+      <height>571</height>
      </rect>
     </property>
     <property name="tabShape">
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tabSwitch">
      <attribute name="title">
       <string>Switch</string>
      </attribute>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>20</y>
-        <width>131</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Available switches</string>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="cmbSwitchList">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>40</y>
-        <width>141</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QLabel" name="lbState">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>130</y>
+        <x>10</x>
+        <y>30</y>
         <width>151</width>
         <height>16</height>
        </rect>
@@ -91,7 +63,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>170</y>
+        <y>60</y>
         <width>81</width>
         <height>41</height>
        </rect>
@@ -109,7 +81,7 @@
       <property name="geometry">
        <rect>
         <x>100</x>
-        <y>170</y>
+        <y>60</y>
         <width>81</width>
         <height>41</height>
        </rect>
@@ -124,43 +96,15 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab">
+    <widget class="QWidget" name="tabCamera">
      <attribute name="title">
       <string>Camera</string>
      </attribute>
-     <widget class="QComboBox" name="cmbCameraList">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>40</y>
-        <width>141</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_2">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>20</y>
-        <width>131</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Available cameras</string>
-      </property>
-     </widget>
      <widget class="QGraphicsView" name="cameraImage">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>70</y>
+        <y>10</y>
         <width>741</width>
         <height>481</height>
        </rect>
@@ -236,6 +180,75 @@
       </property>
      </widget>
     </widget>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Page</string>
+     </attribute>
+     <widget class="QScrollArea" name="sensorScroller">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>611</width>
+        <height>511</height>
+       </rect>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>609</width>
+         <height>509</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QComboBox" name="cmbSensorList">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>141</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>131</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Available sensors</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnGetValue">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>26</y>
+      <width>121</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Get current value</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -243,7 +256,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>946</width>
+     <width>990</width>
      <height>27</height>
     </rect>
    </property>
@@ -330,12 +343,12 @@
    <slot>display(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>797</x>
-     <y>376</y>
+     <x>809</x>
+     <y>491</y>
     </hint>
     <hint type="destinationlabel">
-     <x>817</x>
-     <y>322</y>
+     <x>829</x>
+     <y>403</y>
     </hint>
    </hints>
   </connection>

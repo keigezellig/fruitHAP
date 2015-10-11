@@ -4,9 +4,10 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QTimer>
+#include <QLabel>
 
 #include "configuration/qconfigurationcontrol.h"
-#include "sensor/qsensor.h"
+#include "sensor/qfruithapsensor.h"
 #include "sensor/switch/definitions.h"
 
 namespace Ui {
@@ -25,21 +26,24 @@ private:
     Ui::MainWindow *ui;
     QGraphicsScene *m_drawing;
     QTimer *m_timer;
+    QLabel *m_statusBarLabel;
     QFruitHapClient *m_client;
     QConfigurationControl m_configControl;
-
-    QList<QSensor*> m_eventedSensors;
-
-    QSensor* getSensorByName(const QString name) const;
+    QString m_uri;
+    QList<QFruitHapSensor*> m_eventedSensors;
+    QFruitHapSensor* m_selectedSensor;
+    QFruitHapSensor* getSensorByName(const QString name) const;
+    QWidget* m_switchBoard;
+    void loadSwitchboard();
 private slots:
     void loadSensors();
     void on_btnOn_clicked();
     void on_btnOff_clicked();
-    void on_cmbSwitchList_currentIndexChanged(int index);
-    void on_cmbCameraList_currentIndexChanged(int index);
+    void on_cmbSensorList_currentIndexChanged(int index);
     void on_actionConnect_triggered();
     void on_actionDisconnect_triggered();
     void on_dialRefreshrate_valueChanged(int value);
+    void on_btnGetValue_clicked();
 
     void connectToMQ(const QStringList &bindingKeys, const QString &uri);
     void onConnected();
@@ -48,8 +52,7 @@ private slots:
     void onErrorReceived(const QString name, const QString errorMessage);
     void onImageDataReceived(const QString name, const QByteArray imageData);
     void onDisconnected();
-    void onRpcQueueReady();
-    void updateImage();
+    void updateImage(QFruitHapSensor *cameraSensor);
 };
 
 #endif // MAINWINDOW_H

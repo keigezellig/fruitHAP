@@ -4,7 +4,7 @@
 
 
 QSwitch::QSwitch(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent):
-    QSensor(client,name,isPollable,isReadOnly,parent)
+    QFruitHapSensor(client,name,isPollable,isReadOnly,parent)
 {
 
 }

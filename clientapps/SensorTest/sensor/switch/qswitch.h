@@ -1,11 +1,11 @@
 #ifndef QEVENTEDSWITCH_H
 #define QEVENTEDSWITCH_H
 
-#include "../qsensor.h"
+#include "../qfruithapsensor.h"
 #include "definitions.h"
 
 
-class QSwitch : public QSensor
+class QSwitch : public QFruitHapSensor
 {
     Q_OBJECT
     void sendSignal(const QJsonObject &responseObject);

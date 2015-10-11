@@ -17,8 +17,8 @@ QFruitHapClient::QFruitHapClient(QString rpcExchangeName, QString pubSubExchange
   m_client = new QAmqpClient(this);
   connect(m_client, &QAmqpClient::connected, this, &QFruitHapClient::onClientConnected);
   connect(m_client, &QAmqpClient::disconnected, this, &QFruitHapClient::onClientDisconnected);
-  connect(m_client, SIGNAL(socketError()), this, SLOT(onAMQPError()));
-  connect(m_client, SIGNAL(error()), this, SLOT(onAMQPError());
+  //connect(m_client, SIGNAL(socketError()), this, SLOT(onAMQPError()));
+  //connect(m_client, SIGNAL(error()), this, SLOT(onAMQPError());
 
   m_requestTimer = new QTimer(this);
   m_requestTimer->setSingleShot(true);
@@ -147,7 +147,7 @@ void QFruitHapClient::onClientConnected()
     qDebug() << this->metaObject()->className() << "Connected to MQ server";
     m_rpcResponseQueue = m_client->createQueue();
     connect(m_rpcResponseQueue, SIGNAL(declared()), this, SLOT(onRpcQueueDeclared()));
-    connect(m_rpcResponseQueue, SIGNAL(onMessageReceived()), this, SLOT(onRpcResponseReceived()));
+    connect(m_rpcResponseQueue, SIGNAL(messageReceived()), this, SLOT(onRpcResponseReceived()));
     m_rpcResponseQueue->declare(QAmqpQueue::Exclusive | QAmqpQueue::AutoDelete);
     m_rpcExchange = m_client->createExchange(m_rpcExchangeName);
 
@@ -167,14 +167,14 @@ void QFruitHapClient::onAMQPError(QAMQP::Error error)
 {
     qDebug() << this->metaObject()->className() << "AMQP Error";
     QString errorMessage("AMQP error code: " + error);
-    emit error(errorMessage);
+    //emit error(errorMessage);
 }
 
 void QFruitHapClient::onSocketError(QAbstractSocket::SocketError error)
 {
     qDebug() << this->metaObject()->className() << "Socket Error";
     QString errorMessage("Connection error: " + error);
-    emit error(errorMessage);
+    //emit error(errorMessage);
 }
 
 void QFruitHapClient::onPubSubExchangeDeclared()
@@ -182,7 +182,7 @@ void QFruitHapClient::onPubSubExchangeDeclared()
     m_pubsubQueue = m_client->createQueue();
     connect(m_pubsubQueue, SIGNAL(declared()), this, SLOT(onPubSubQueueDeclared()));
     connect(m_pubsubQueue, SIGNAL(bound()), this, SLOT(onPubSubQueueBound()));
-    connect(m_pubsubQueue, SIGNAL(onMessageReceived()), this, SLOT(onMessageReceived()));
+    connect(m_pubsubQueue, SIGNAL(messageReceived()), this, SLOT(onMessageReceived()));
     m_pubsubQueue->declare(QAmqpQueue::Exclusive);
 }
 

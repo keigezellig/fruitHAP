@@ -1,27 +1,27 @@
-#include "qsensor.h"
+#include "qfruithapsensor.h"
 #include <QJsonObject>
 
 
-QSensor::QSensor(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent):
+QFruitHapSensor::QFruitHapSensor(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent):
     QObject(parent), m_client(client), m_name(name), m_isPollable(isPollable), m_isReadOnly(isReadOnly)
 {
-    connect(m_client, &QFruitHapClient::responseReceived, this, &QSensor::onClientResponseReceived);
+    connect(m_client, &QFruitHapClient::responseReceived, this, &QFruitHapSensor::onClientResponseReceived);
 }
 
-void QSensor::sendRequest(const QJsonObject request)
+void QFruitHapSensor::sendRequest(const QJsonObject request)
 {
     QString routingKey("FruitHAP_RpcQueue.FruitHAP.Core.Action.SensorMessage");
     QString messageType("FruitHAP.Core.Action.SensorMessage:FruitHAP.Core");
     m_client->sendMessage(request,routingKey,messageType);
 }
 
-void QSensor::handleGetValueEvent(const QJsonObject)
+void QFruitHapSensor::handleGetValueEvent(const QJsonObject)
 {
 
 }
 
 
-void QSensor::onClientResponseReceived(const QJsonDocument response, const QString messageType)
+void QFruitHapSensor::onClientResponseReceived(const QJsonDocument response, const QString messageType)
 {
 
     qDebug() << this->metaObject()->className() << "::onClientResponseReceived| Response received: " << messageType;
@@ -71,22 +71,22 @@ void QSensor::onClientResponseReceived(const QJsonDocument response, const QStri
 
 
 
-QString QSensor::getName() const
+QString QFruitHapSensor::getName() const
 {
     return m_name;
 }
 
-bool QSensor::isPollable() const
+bool QFruitHapSensor::isPollable() const
 {
     return m_isPollable;
 }
 
-bool QSensor::isReadOnly() const
+bool QFruitHapSensor::isReadOnly() const
 {
     return m_isReadOnly;
 }
 
-void QSensor::getValue()
+void QFruitHapSensor::getValue()
 {
     if (!isPollable())
     {

@@ -6,7 +6,7 @@
 #include <QTimer>
 #include "../mqclient/qfruithapclient.h"
 
-class QSensor : public QObject
+class QFruitHapSensor : public QObject
 {
     Q_OBJECT
 
@@ -17,7 +17,7 @@ public:
     void getValue();
 
 protected:
-    QSensor(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent = 0);
+    QFruitHapSensor(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent = 0);
     QFruitHapClient* m_client;
     QString m_name;
     bool m_isPollable;
