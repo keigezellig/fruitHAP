@@ -14,7 +14,7 @@ public:
     QString getName() const;
     bool isPollable() const;
     bool isReadOnly() const;
-    void getValue();
+
 
 protected:
     QFruitHapSensor(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent = 0);
@@ -28,9 +28,10 @@ protected:
 signals:
     void errorEventReceived(const QString sensorName, const QString msg);
 
-
 private slots:
     void onClientResponseReceived(const QJsonDocument response, const QString messageType);
+public slots:
+    void getValue();
 
 
 };

@@ -128,7 +128,7 @@ void QFruitHapClient::sendMessage(const QJsonObject &request, const QString &rou
     }
 
     qDebug() << this->metaObject()->className() << "::Sending message";
-    m_requestTimer->start(2000);
+    m_requestTimer->start(4000);
     m_isBusy = true;
 
     QJsonDocument message(request);
@@ -167,14 +167,12 @@ void QFruitHapClient::onAMQPError(QAMQP::Error error)
 {
     qDebug() << this->metaObject()->className() << "AMQP Error";
     QString errorMessage("AMQP error code: " + error);
-    //emit error(errorMessage);
 }
 
 void QFruitHapClient::onSocketError(QAbstractSocket::SocketError error)
 {
     qDebug() << this->metaObject()->className() << "Socket Error";
     QString errorMessage("Connection error: " + error);
-    //emit error(errorMessage);
 }
 
 void QFruitHapClient::onPubSubExchangeDeclared()
@@ -222,8 +220,10 @@ void QFruitHapClient::onRpcQueueDeclared()
 {
     qDebug() << "Rpc queue ready";
     m_rpcResponseQueue->consume();
+    QString uri(m_client->host());
 
-    emit connected();
+
+    emit connected(uri);
 }
 
 
@@ -258,5 +258,6 @@ void QFruitHapClient::onRequestTimeout()
 {
     qCritical() << "Request timeout. Check your connection";
     m_isBusy = false;
+    emit requestTimedOut();
 
 }

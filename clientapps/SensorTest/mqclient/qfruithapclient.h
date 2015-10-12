@@ -22,10 +22,11 @@ public:
     void setPubSubTopics(const QStringList &topics);
     QStringList getPubSubTopics() const;
 signals:
-    void connected();
+    void connected(const QString uri);
     void disconnected();
     void error(const QString message);
     void responseReceived(const QJsonDocument response, const QString responseType);
+    void requestTimedOut();
 
 public slots:
     bool connectToServer(const QString &uri);

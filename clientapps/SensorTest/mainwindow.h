@@ -24,35 +24,24 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QGraphicsScene *m_drawing;
-    QTimer *m_timer;
     QLabel *m_statusBarLabel;
     QFruitHapClient *m_client;
     QConfigurationControl m_configControl;
     QString m_uri;
-    QList<QFruitHapSensor*> m_eventedSensors;
-    QFruitHapSensor* m_selectedSensor;
-    QFruitHapSensor* getSensorByName(const QString name) const;
+    QList<QFruitHapSensor*> m_eventedSensors;    
+    //QFruitHapSensor* getSensorByName(const QString name) const;
     QWidget* m_switchBoard;
     void loadSwitchboard();
+    void loadCameraView();
 private slots:
-    void loadSensors();
-    void on_btnOn_clicked();
-    void on_btnOff_clicked();
-    void on_cmbSensorList_currentIndexChanged(int index);
+    void loadSensors();    
     void on_actionConnect_triggered();
-    void on_actionDisconnect_triggered();
-    void on_dialRefreshrate_valueChanged(int value);
-    void on_btnGetValue_clicked();
-
+    void on_actionDisconnect_triggered();    
     void connectToMQ(const QStringList &bindingKeys, const QString &uri);
-    void onConnected();
+    void onConnected(const QString uri);
     void onSensorListReceived(const QList<SensorData> list);
-    void onSwitchStateReceived(const QString name, SwitchState state);
     void onErrorReceived(const QString name, const QString errorMessage);
-    void onImageDataReceived(const QString name, const QByteArray imageData);
-    void onDisconnected();
-    void updateImage(QFruitHapSensor *cameraSensor);
+    void onDisconnected();    
 };
 
 #endif // MAINWINDOW_H

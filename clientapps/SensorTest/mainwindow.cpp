@@ -6,11 +6,13 @@
 #include <QPixmap>
 #include <widgets/qswitchwidget.h>
 #include <QLayout>
+#include <QGraphicsView>
+#include <QThread>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    m_drawing(nullptr),
+    ui(new Ui::MainWindow),    
     m_client(new QFruitHapClient(QString("FruitHAP_RpcExchange"), QString("FruitHAP_PubSubExchange"),this)),
     m_configControl(m_client,this),
     m_eventedSensors(),
@@ -19,26 +21,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
 {
     ui->setupUi(this);
-
-
-
-
-
-
-
     connect(&m_configControl,&QConfigurationControl::sensorListReceived,this,&MainWindow::onSensorListReceived);
     connect(m_client,&QFruitHapClient::connected,this,&MainWindow::onConnected);
-    connect(m_client,&QFruitHapClient::disconnected,this,&MainWindow::onDisconnected);
-    m_timer = new QTimer(this);
+    connect(m_client,&QFruitHapClient::disconnected,this,&MainWindow::onDisconnected);    
     m_statusBarLabel = new QLabel();
     ui->statusBar->addWidget(m_statusBarLabel);
-    //connect(m_timer,&QTimer::timeout, this, &MainWindow::updateImage);
+
     onDisconnected();
 }
 
 MainWindow::~MainWindow()
-{
-    delete m_timer;
+{    
     delete ui;
     qDeleteAll(m_eventedSensors);
 }
@@ -75,29 +68,27 @@ void MainWindow::connectToMQ(const QStringList &bindingKeys, const QString &uri)
 
 }
 
-void MainWindow::onConnected()
+void MainWindow::onConnected(const QString uri)
 {
     ui->actionConnect->setEnabled(false);
     ui->actionDisconnect->setEnabled(true);
-    ui->dialRefreshrate->setEnabled(true);
+
     loadSensors();
     ui->statusBar->setStyleSheet("background-color: green");
-    m_statusBarLabel->setText("Connected to "+m_uri);
+    m_statusBarLabel->setText("Connected to "+uri);
     m_statusBarLabel->setStyleSheet("color: white");
 
 }
 
 void MainWindow::onSensorListReceived(const QList<SensorData> list)
 {
-
-    ui->cmbSensorList->clear();
-
+    m_eventedSensors.clear();
     foreach (SensorData item, list)
     {
         if (item.getCategory() == "Switch")
         {            
             QSwitch *eventedSwitch = new QSwitch(m_client,item.getName(),true,item.IsReadOnly(),parent());
-            connect(eventedSwitch, &QSwitch::switchStateReceived, this, &MainWindow::onSwitchStateReceived);
+
             connect(eventedSwitch, &QSwitch::errorEventReceived, this, &MainWindow::onErrorReceived);
             m_eventedSensors.append(eventedSwitch);
         }
@@ -107,27 +98,41 @@ void MainWindow::onSensorListReceived(const QList<SensorData> list)
         {
 
             QCamera *eventedCamera = new QCamera(m_client,item.getName(),false,item.IsReadOnly(),parent());
-            connect(eventedCamera, &QCamera::imageReceived, this, &MainWindow::onImageDataReceived);
-            connect(eventedCamera, &QCamera::errorEventReceived, this, &MainWindow::onErrorReceived);
             m_eventedSensors.append(eventedCamera);
         }
 
         if( (item.getType() == "Camera"))
         {
             QCamera *eventedCamera = new QCamera(m_client,item.getName(),true,item.IsReadOnly(),parent());
-            connect(eventedCamera, &QCamera::imageReceived, this, &MainWindow::onImageDataReceived);
-            connect(eventedCamera, &QCamera::errorEventReceived, this, &MainWindow::onErrorReceived);
             m_eventedSensors.append(eventedCamera);
         }
 
-        ui->cmbSensorList->addItem(item.getName());
-
     }
-
     loadSwitchboard();
+    loadCameraView();
+}
 
+void MainWindow::loadCameraView()
+{
+   QVBoxLayout *layout = new QVBoxLayout();
+   QWidget *widhet = new QWidget(this);
+   foreach (QFruitHapSensor *sensor, m_eventedSensors)
+   {
+       QCamera *aCamera = dynamic_cast<QCamera*>(sensor);
 
+       if (aCamera != nullptr)
+       {
+           QGraphicsView* gr = new QGraphicsView();
+           gr->setMinimumWidth(640);
+           gr->setMaximumWidth(640);
+           gr->setMinimumHeight(480);
+           gr->setMaximumHeight(480);
+           layout->addWidget(gr);
+       }
+   }
 
+   widhet->setLayout(layout);
+   ui->scrollArea->setWidget(widhet);
 }
 
 void MainWindow::loadSwitchboard()
@@ -138,36 +143,30 @@ void MainWindow::loadSwitchboard()
         m_switchBoard = nullptr;
     }
 
-    m_switchBoard = new QWidget(this);
-    m_switchBoard->setLayout(new QVBoxLayout(m_switchBoard));
+    m_switchBoard = new QWidget(this);    
 
+    QVBoxLayout *layout = new QVBoxLayout();
+    QTimer *timer = new QTimer(this);
+    timer->setSingleShot(true);
     foreach (QFruitHapSensor *sensor, m_eventedSensors)
     {
         QSwitch *aSwitch = dynamic_cast<QSwitch*>(sensor);
 
         if (aSwitch != nullptr)
         {
-            QSwitchWidget *widget = new QSwitchWidget(aSwitch->getName(),aSwitch->isReadOnly());
+            QSwitchWidget *widget = new QSwitchWidget(aSwitch->getName(),aSwitch->isReadOnly(), aSwitch->isPollable());
 
-            m_switchBoard->layout()->addWidget(widget);
-
+            connect(widget,&QSwitchWidget::turnOn,aSwitch, &QSwitch::turnOn);
+            connect(widget,&QSwitchWidget::turnOff,aSwitch, &QSwitch::turnOff);
+            connect(widget,&QSwitchWidget::refresh,aSwitch, &QSwitch::getValue);
+            connect(aSwitch,&QSwitch::switchStateReceived, widget, &QSwitchWidget::onStateChanged);
+            layout->addWidget(widget);
         }
     }
 
-    ui->sensorScroller->setWidget(m_switchBoard);
+    m_switchBoard->setLayout(layout);
+    ui->switchPage->setWidget(m_switchBoard);
 
-
-
-
-    //    dummy->layout()->addWidget(new QSwitchWidget("Switch A",this));
-//    dummy->layout()->addWidget(new QSwitchWidget("Switch A",this));
-//    dummy->layout()->addWidget(new QSwitchWidget("Switch A",this));
-//    dummy->layout()->addWidget(new QSwitchWidget("Switch A",this));
-//    dummy->layout()->addWidget(new QSwitchWidget("Switch A",this));
-//    dummy->layout()->addWidget(new QSwitchWidget("Switch A",this));
-//dummy->layout()->addWidget(new QSwitchWidget("Switch A",this));
-//dummy->layout()->addWidget(new QSwitchWidget("Switch A",this));
-//dummy->layout()->addWidget(new QSwitchWidget("Switch A",this));
 
 }
 
@@ -182,66 +181,8 @@ void MainWindow::onDisconnected()
 
 
 
-QFruitHapSensor* MainWindow::getSensorByName(const QString name) const
-{
-    foreach (QFruitHapSensor* item, m_eventedSensors)
-    {
-        if (item->getName() == name)
-        {
-            return item;
-        }
-    }
-
-    return nullptr;
-}
-
-void MainWindow::updateImage(QFruitHapSensor* cameraSensor)
-{
-    if (cameraSensor != nullptr)
-    {
-        cameraSensor->getValue();
-    }
-}
 
 
-
-void MainWindow::on_cmbSensorList_currentIndexChanged(int index)
-{
-    QString selectedItem = ui->cmbSensorList->itemText(index);
-    m_selectedSensor = getSensorByName(selectedItem);
-    if (m_selectedSensor != nullptr)
-    {
-        ui->btnGetValue->setEnabled(m_selectedSensor->isPollable());
-
-        QString sensorType(m_selectedSensor->metaObject()->className());
-        if (sensorType == "QSwitch")
-        {
-            ui->tabWidget->setEnabled(false);
-            ui->tabSwitch->setEnabled(true);
-            ui->btnOn->setEnabled(!m_selectedSensor->isReadOnly());
-            ui->btnOff->setEnabled(!m_selectedSensor->isReadOnly());
-        }
-
-        if (sensorType == "QCamera")
-        {
-           ui->tabSwitch->setEnabled(false);
-            ui->tabCamera->setEnabled(true);
-        }
-    }
-
-}
-
-
-
-void MainWindow::onSwitchStateReceived(const QString name, SwitchState state)
-{
-
-    if (m_selectedSensor != nullptr && m_selectedSensor->getName() == name)
-    {
-      ui->lbState->setText(convertEnumToString(state));
-    }
-
-}
 
 void MainWindow::onErrorReceived(const QString name, const QString errorMessage)
 {
@@ -249,24 +190,24 @@ void MainWindow::onErrorReceived(const QString name, const QString errorMessage)
 }
 
 
-void MainWindow::onImageDataReceived(const QString name, const QByteArray imageData)
-{
-    if (m_selectedSensor != nullptr && m_selectedSensor->getName() == name)
-    {
-        QImage image = QImage::fromData(imageData);
-        if (m_drawing != nullptr)
-        {
-            delete m_drawing;
-            m_drawing = nullptr;
-        }
+//void MainWindow::onImageDataReceived(const QString name, const QByteArray imageData)
+//{
+//    if (m_selectedSensor != nullptr && m_selectedSensor->getName() == name)
+//    {
+//        QImage image = QImage::fromData(imageData);
+//        if (m_drawing != nullptr)
+//        {
+//            delete m_drawing;
+//            m_drawing = nullptr;
+//        }
 
-        m_drawing = new QGraphicsScene(this);
-        m_drawing->addPixmap(QPixmap::fromImage(image));
-        m_drawing->setSceneRect(image.rect());
+//        m_drawing = new QGraphicsScene(this);
+//        m_drawing->addPixmap(QPixmap::fromImage(image));
+//        m_drawing->setSceneRect(image.rect());
 
-        ui->cameraImage->setScene(m_drawing);
-    }
-}
+//        ui->cameraImage->setScene(m_drawing);
+//    }
+//}
 
 
 void MainWindow::on_actionConnect_triggered()
@@ -291,44 +232,8 @@ void MainWindow::on_actionDisconnect_triggered()
     m_client->disconnectFromServer();
 }
 
-void MainWindow::on_dialRefreshrate_valueChanged(int value)
-{
-    m_timer->start(value);
-}
-
-void MainWindow::on_btnGetValue_clicked()
-{
-    if (m_selectedSensor != nullptr)
-    {
-        m_selectedSensor->getValue();
-
-    }
-}
-
-
-void MainWindow::on_btnOn_clicked()
-{
-    QSwitch* aSwitch = dynamic_cast<QSwitch*>(m_selectedSensor);
-
-    if (aSwitch != nullptr)
-    {
-        aSwitch->turnOn();
-    }
-}
-
-void MainWindow::on_btnOff_clicked()
-{
-    QSwitch* aSwitch = dynamic_cast<QSwitch*>(m_selectedSensor);
-
-    if (aSwitch != nullptr)
-    {
-        aSwitch->turnOff();
-    }
-}
 
 void MainWindow::loadSensors()
 {    
     m_configControl.getSensorList();
-
-
 }

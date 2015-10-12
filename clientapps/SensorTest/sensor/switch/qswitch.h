@@ -11,15 +11,17 @@ class QSwitch : public QFruitHapSensor
     void sendSignal(const QJsonObject &responseObject);
 public:
     QSwitch(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent);
-    void turnOn();
-    void turnOff();
-
 protected:
     virtual void handleSensorEvent(const QJsonObject responseObject);
     virtual void handleGetValueEvent(const QJsonObject responseObject);
 
 signals:
-    void switchStateReceived(const QString name, SwitchState state);
+    void switchStateReceived(const SwitchState state, const QDateTime dateTime);
+public slots:
+    void turnOn();
+    void turnOff();
+
+
 };
 
 #endif // QEVENTEDSWITCH_H
