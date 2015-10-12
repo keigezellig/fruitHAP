@@ -2,6 +2,7 @@
 #define QEVENTEDCAMERA_H
 
 #include <QObject>
+#include <QDateTime>
 #include "../qfruithapsensor.h"
 
 class QCamera : public QFruitHapSensor
@@ -16,7 +17,7 @@ protected:
     virtual void handleGetValueEvent(const QJsonObject responseObject);
 
 signals:
-    void imageReceived(const QString name, const QByteArray imageData);
+    void imageReceived(const QString name, const QByteArray imageData, const QDateTime timestamp);
 public slots:
 };
 

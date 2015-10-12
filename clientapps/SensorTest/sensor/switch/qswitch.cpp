@@ -53,10 +53,10 @@ void QSwitch::turnOff()
 
 void QSwitch::sendSignal(const QJsonObject &responseObject)
 {
-    int state = responseObject["Data"].toInt();    
+     int state = responseObject["Data"].toInt();
     QDateTime timestamp = QDateTime::fromString(responseObject["TimeStamp"].toString(),Qt::ISODate);
     SwitchState theState = static_cast<SwitchState>(state);
-    emit switchStateReceived(theState, timestamp);
+    emit switchStateReceived(m_name, theState, timestamp);
 }
 
 void QSwitch::handleSensorEvent(const QJsonObject responseObject)

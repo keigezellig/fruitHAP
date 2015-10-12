@@ -16,7 +16,7 @@ protected:
     virtual void handleGetValueEvent(const QJsonObject responseObject);
 
 signals:
-    void switchStateReceived(const SwitchState state, const QDateTime dateTime);
+    void switchStateReceived(const QString name, const SwitchState state, const QDateTime dateTime);
 public slots:
     void turnOn();
     void turnOff();

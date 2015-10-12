@@ -3,11 +3,11 @@
 
 
 QSwitchWidget::QSwitchWidget(const QString name, const bool isReadOnly, const bool isPollable, QWidget *parent) :
-    QWidget(parent),
+    QWidget(parent),  m_name(name),
     ui(new Ui::QSwitchWidget)
 {
     ui->setupUi(this);
-    setName(name);
+    setName(m_name);
     setIsReadOnly(isReadOnly);
     setPollable(isPollable);
 }
@@ -19,6 +19,7 @@ QSwitchWidget::~QSwitchWidget()
 
 void QSwitchWidget::setName(const QString &name)
 {
+
     ui->lblName->setText(name);
 }
 
@@ -33,15 +34,18 @@ void QSwitchWidget::setPollable(bool value)
     ui->btnRefresh->setEnabled(value);
 }
 
-void QSwitchWidget::onStateChanged(const SwitchState newState, const QDateTime timestamp)
+void QSwitchWidget::onStateChanged(const QString name, const SwitchState newState, const QDateTime timestamp)
 {
-   QString text("Undefined");
-   QString styleSheet("color: black");
+   if (name == m_name)
+   {
+       QString text("Undefined");
+       QString styleSheet("color: black");
 
-   convertEnumToString(newState,text,styleSheet);
-   ui->lblState->setText(text);
-   ui->lblState->setStyleSheet(styleSheet);
-   ui->lblLastRefreshed->setText(timestamp.toString());
+       convertEnumToString(newState,text,styleSheet);
+       ui->lblState->setText(text);
+       ui->lblState->setStyleSheet(styleSheet);
+       ui->lblLastRefreshed->setText(timestamp.toString());
+   }
 }
 
 void QSwitchWidget::on_btnOff_clicked()
@@ -66,12 +70,15 @@ void QSwitchWidget::convertEnumToString(const SwitchState &state, QString &strin
     case SwitchState::On:
         string = "On";
         styleSheet = "color: green";
+        break;
     case SwitchState::Off:
        string = "Off";
        styleSheet = "color: red";
+        break;
     case SwitchState::Undefined:
        string = "Undefined";
        styleSheet = "color: black";
+        break;
     }
 
 }

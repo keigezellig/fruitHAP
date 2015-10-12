@@ -116,16 +116,31 @@ void MainWindow::onSensorListReceived(const QList<SensorData> list)
 
 void MainWindow::loadCameraView()
 {
-   QVBoxLayout *layout = new QVBoxLayout();
+   QGridLayout *layout = new QGridLayout();
+   layout->setMargin(0);
    QWidget *widget = new QWidget(this);
+   int col = 0;
+   int row = 0;
    foreach (QFruitHapSensor *sensor, m_eventedSensors)
    {
        QCamera *aCamera = dynamic_cast<QCamera*>(sensor);
 
        if (aCamera != nullptr)
        {
-           QCameraWidget *cameraWidget = new QCameraWidget();
-           layout->addWidget(cameraWidget);
+           QCameraWidget *cameraWidget = new QCameraWidget(aCamera->getName(),aCamera->isPollable());
+           connect(cameraWidget,&QCameraWidget::refresh,aCamera, &QCamera::getValue);
+           connect(aCamera,&QCamera::imageReceived, cameraWidget, &QCameraWidget::onImageReceived);
+
+           layout->addWidget(cameraWidget,row,col,1,1);
+           if (row >= 1)
+           {
+               col++;
+               row = 0;
+           }
+           else
+           {
+               row++;
+           }
 
            //           QGraphicsView* gr = new QGraphicsView();
 
@@ -146,8 +161,11 @@ void MainWindow::loadCameraView()
        }
    }
 
+   //widget->setGeometry(0,0,700,700);
+   layout->setAlignment(layout,Qt::AlignTop);
    widget->setLayout(layout);
    ui->cameraList->setWidget(widget);
+   //ui->tab_2->setLayout(layout);
 }
 
 void MainWindow::loadSwitchboard()

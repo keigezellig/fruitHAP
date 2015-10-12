@@ -13,6 +13,7 @@ class QSwitchWidget : public QWidget
 {
     Q_OBJECT
     void setName(const QString &name);
+    QString m_name;
 
 public:
     QSwitchWidget(const QString name, const bool isReadOnly, const bool isPollable, QWidget *parent = 0);
@@ -23,7 +24,7 @@ signals:
     void turnOff();
     void refresh();
 public slots:
-    void onStateChanged(const SwitchState newState, const QDateTime timestamp);
+    void onStateChanged(const QString name, const SwitchState newState, const QDateTime timestamp);
 private slots:
     void on_btnOff_clicked();
     void on_btnOn_clicked();
