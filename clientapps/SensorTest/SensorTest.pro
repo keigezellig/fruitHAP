@@ -32,7 +32,8 @@ SOURCES += \
     sensor/camera/qcamera.cpp \
     sensor/switch/qswitch.cpp \
     sensor/qfruithapsensor.cpp \
-    widgets/qswitchwidget.cpp
+    widgets/qswitchwidget.cpp \
+    widgets/qcamerawidget.cpp
 
 
 HEADERS  += \
@@ -59,8 +60,10 @@ HEADERS  += \
     sensor/switch/qswitch.h \
     sensor/camera/qcamera.h \
     sensor/qfruithapsensor.h \
-    widgets/qswitchwidget.h
+    widgets/qswitchwidget.h \
+    widgets/qcamerawidget.h
 
 FORMS += \
     mainwindow.ui \
-    widgets/qswitchwidget.ui
+    widgets/qswitchwidget.ui \
+    widgets/qcamerawidget.ui

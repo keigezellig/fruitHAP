@@ -7,7 +7,9 @@
 #include <widgets/qswitchwidget.h>
 #include <QLayout>
 #include <QGraphicsView>
+#include <QGraphicsTextItem>
 #include <QThread>
+#include <widgets/qcamerawidget.h>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -115,24 +117,37 @@ void MainWindow::onSensorListReceived(const QList<SensorData> list)
 void MainWindow::loadCameraView()
 {
    QVBoxLayout *layout = new QVBoxLayout();
-   QWidget *widhet = new QWidget(this);
+   QWidget *widget = new QWidget(this);
    foreach (QFruitHapSensor *sensor, m_eventedSensors)
    {
        QCamera *aCamera = dynamic_cast<QCamera*>(sensor);
 
        if (aCamera != nullptr)
        {
-           QGraphicsView* gr = new QGraphicsView();
-           gr->setMinimumWidth(640);
-           gr->setMaximumWidth(640);
-           gr->setMinimumHeight(480);
-           gr->setMaximumHeight(480);
-           layout->addWidget(gr);
+           QCameraWidget *cameraWidget = new QCameraWidget();
+           layout->addWidget(cameraWidget);
+
+           //           QGraphicsView* gr = new QGraphicsView();
+
+//           gr->setMinimumWidth(640);
+//           gr->setMaximumWidth(640);
+//           gr->setMinimumHeight(480);
+//           gr->setMaximumHeight(480);
+
+
+
+//           QGraphicsScene *drawing = new QGraphicsScene(this);
+//           QPixmap pixmap = QPixmap::fromImage(QImage("/home/maarten/home-cat.jpg"));//.scaled(drawing->width(),drawing->height());
+
+//           drawing->addPixmap(pixmap.scaled(gr->width() - 5,gr->height() - 5));
+//           drawing->addText(QString(aCamera->getName()));
+//           gr->setScene(drawing);
+//           layout->addWidget(gr);
        }
    }
 
-   widhet->setLayout(layout);
-   ui->scrollArea->setWidget(widhet);
+   widget->setLayout(layout);
+   ui->cameraList->setWidget(widget);
 }
 
 void MainWindow::loadSwitchboard()

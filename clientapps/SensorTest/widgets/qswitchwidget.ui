@@ -5,8 +5,8 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
     <widget class="QLabel" name="lblName">
      <property name="font">
       <font>
@@ -21,7 +21,7 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="0" column="1">
     <widget class="QPushButton" name="btnOn">
      <property name="font">
       <font>
@@ -33,7 +33,7 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="0" column="2">
     <widget class="QPushButton" name="btnOff">
      <property name="font">
       <font>
@@ -45,7 +45,7 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="0" column="3">
     <widget class="QPushButton" name="btnRefresh">
      <property name="font">
       <font>
@@ -57,7 +57,7 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="0" column="4">
     <widget class="QLabel" name="lblState">
      <property name="font">
       <font>
@@ -69,7 +69,7 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="0" column="5">
     <widget class="QLabel" name="lblLastRefreshed">
      <property name="font">
       <font>
