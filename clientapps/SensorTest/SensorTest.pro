@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network concurrent
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,6 +13,8 @@ TEMPLATE = app
 CONFIG += c++11
 
 
+INCLUDEPATH += /usr/local/include/opencv
+LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -lopencv_highgui -lopencv_objdetect
 
 SOURCES += \
     configuration/qconfigurationcontrol.cpp \
@@ -33,7 +35,9 @@ SOURCES += \
     sensor/switch/qswitch.cpp \
     sensor/qfruithapsensor.cpp \
     widgets/qswitchwidget.cpp \
-    widgets/qcamerawidget.cpp
+    widgets/qcamerawidget.cpp \
+    faceverifier/ifaceverifier.cpp \
+    faceverifier/qopencvfaceverifier.cpp
 
 
 HEADERS  += \
@@ -61,7 +65,9 @@ HEADERS  += \
     sensor/camera/qcamera.h \
     sensor/qfruithapsensor.h \
     widgets/qswitchwidget.h \
-    widgets/qcamerawidget.h
+    widgets/qcamerawidget.h \
+    faceverifier/ifaceverifier.h \
+    faceverifier/qopencvfaceverifier.h
 
 FORMS += \
     mainwindow.ui \
