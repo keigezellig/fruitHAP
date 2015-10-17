@@ -4,13 +4,19 @@
 #include <QObject>
 #include <QDateTime>
 #include "../qfruithapsensor.h"
+#include "../../faceverifier/faceverifier.h"
 
 class QCamera : public QFruitHapSensor
 {
     Q_OBJECT
+    bool m_isFaceDetectionEnabled;
+    FaceVerifier *m_faceVerifier;
 
+
+    void sendImage(const QJsonObject responseObject);
 public:
-    QCamera(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent = 0);
+    QCamera(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, FaceVerifier *faceVerifier, QObject *parent = 0);
+    void enableFaceDetection(bool isEnabled);
 
 protected:
     virtual void handleSensorEvent(const QJsonObject responseObject);
@@ -18,6 +24,7 @@ protected:
 
 signals:
     void imageReceived(const QString name, const QByteArray imageData, const QDateTime timestamp);
+    void faceDetected(const QString name, const QDateTime timestamp);
 public slots:
 };
 

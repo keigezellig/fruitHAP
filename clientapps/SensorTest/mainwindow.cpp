@@ -10,19 +10,22 @@
 #include <QGraphicsTextItem>
 #include <QThread>
 #include <widgets/qcamerawidget.h>
+#include "faceverifier/qopencvfaceverifier.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),    
-    m_client(new QFruitHapClient(QString("FruitHAP_RpcExchange"), QString("FruitHAP_PubSubExchange"),this)),
-    m_configControl(m_client,this),
+    m_client(new QFruitHapClient(QString("FruitHAP_RpcExchange"), QString("FruitHAP_PubSubExchange"),this)),    
+    m_configControl(m_client,this),    
     m_eventedSensors(),
     m_switchBoard(0)
 
 
 {
     ui->setupUi(this);
+    QOpenCvFaceVerifier *bla = new QOpenCvFaceVerifier(1,false,this);
+    m_faceVerifier = bla;
     connect(&m_configControl,&QConfigurationControl::sensorListReceived,this,&MainWindow::onSensorListReceived);
     connect(m_client,&QFruitHapClient::connected,this,&MainWindow::onConnected);
     connect(m_client,&QFruitHapClient::disconnected,this,&MainWindow::onDisconnected);    
@@ -91,27 +94,56 @@ void MainWindow::onSensorListReceived(const QList<SensorData> list)
         {            
             QSwitch *eventedSwitch = new QSwitch(m_client,item.getName(),true,item.IsReadOnly(),parent());
 
-            connect(eventedSwitch, &QSwitch::errorEventReceived, this, &MainWindow::onErrorReceived);
+            connect(eventedSwitch, &QSwitch::errorEventReceived, this, &MainWindow::onErrorReceived);            
             m_eventedSensors.append(eventedSwitch);
         }
 
 
         if( (item.getType() == "ButtonWithCameraSensor") || (item.getType() == "SwitchWithCameraSensor"))
         {
-
-            QCamera *eventedCamera = new QCamera(m_client,item.getName(),false,item.IsReadOnly(),parent());
+            QCamera *eventedCamera = new QCamera(m_client,item.getName(),false,item.IsReadOnly(),m_faceVerifier,parent());
             m_eventedSensors.append(eventedCamera);
         }
 
         if( (item.getType() == "Camera"))
         {
-            QCamera *eventedCamera = new QCamera(m_client,item.getName(),true,item.IsReadOnly(),parent());
-            m_eventedSensors.append(eventedCamera);
+            QCamera *camera = new QCamera(m_client,item.getName(),true,item.IsReadOnly(),m_faceVerifier,parent());
+
+
+            m_eventedSensors.append(camera);
         }
 
     }
+
+    QString faceDetectionSwitchName = "RedLight";       //Ugly and hardcoded but will do for demo purposes
+    QSwitch *faceDetectionSwitch = dynamic_cast<QSwitch*>(getSensorByName(faceDetectionSwitchName));
+
+    foreach (QFruitHapSensor *sensor, m_eventedSensors)
+    {
+        QCamera* camera = dynamic_cast<QCamera*>(sensor);
+        if (camera != nullptr)
+        {
+            camera->enableFaceDetection(true);
+            connect(camera,&QCamera::faceDetected, faceDetectionSwitch, &QSwitch::turnOn);
+            connect(camera,&QCamera::faceDetected, this, &MainWindow::onFaceDetected);
+        }
+    }
+
     loadSwitchboard();
     loadCameraView();
+}
+
+QFruitHapSensor* MainWindow::getSensorByName(const QString &name) const
+{
+    foreach (QFruitHapSensor* item, m_eventedSensors)
+    {
+        if (item->getName() == name)
+        {
+            return item;
+        }
+    }
+
+    return nullptr;
 }
 
 void MainWindow::loadCameraView()
@@ -209,6 +241,13 @@ void MainWindow::onDisconnected()
     ui->actionDisconnect->setEnabled(false);
     ui->statusBar->setStyleSheet("background-color: red");
     m_statusBarLabel->setText("Not connected..");
+    m_statusBarLabel->setStyleSheet("color: white");
+}
+
+void MainWindow::onFaceDetected(const QString name, const QDateTime timestamp)
+{
+    ui->statusBar->setStyleSheet("background-color: red");
+    m_statusBarLabel->setText("Oh oh.. person detected on camera " + name + "@ " + timestamp.toString());
     m_statusBarLabel->setStyleSheet("color: white");
 }
 

@@ -3,17 +3,22 @@
 #include <QDebug>
 
 QOpenCvFaceVerifier::QOpenCvFaceVerifier(double scale, bool tryFlip, QObject *parent) :
-    QObject(parent),
-    m_cascadeName("haarcascade_frontalface_alt.xml"),
-    m_nestedCascadeName("haarcascade_eye_tree_eyeglasses.xml"),
+    FaceVerifier(parent),
+    m_cascadeName("haarcascade_frontalface_default.xml"),
+    m_nestedCascadeName(""),//haarcascade_eye_tree_eyeglasses.xml"),
     m_scale(scale),
     m_tryFlip(tryFlip)
 {
-
+    m_cascadeList.push_back("haarcascade_frontalface_default.xml");
+    m_cascadeList.push_back("haarcascade_frontalface_alt.xml");
+    m_cascadeList.push_back("haarcascade_frontalface_alt2.xml");
+    m_cascadeList.push_back("haarcascade_profileface.xml");
 }
 
 int QOpenCvFaceVerifier::DetectFacesInImage(const QByteArray &image, QByteArray &destImage)
 {
+     try
+    {
      vector<unsigned char> imageData(image.begin(), image.end());
      Mat img = imdecode(imageData,1);
      if (img.empty())
@@ -22,18 +27,35 @@ int QOpenCvFaceVerifier::DetectFacesInImage(const QByteArray &image, QByteArray 
          return -1;
      }
 
-     CascadeClassifier cascade = CascadeClassifier(m_cascadeName.toStdString());
-     CascadeClassifier nestedcascade = CascadeClassifier(m_nestedCascadeName.toStdString());
+     CascadeClassifier cascade;
+     CascadeClassifier nestedcascade;
 
-     if (cascade.empty() && nestedcascade.empty())
+     for(std::string &c : m_cascadeList)
      {
-         qCritical() << "Cannot load classifiers, put them in the right folder";
-         return -1;
+         cascade.load(c);
+
+         if (cascade.empty())
+         {
+             qCritical() << "Cannot load classifier" << QString::fromStdString(c) << "put them in the right folder";
+             continue;
+         }
+
+         qDebug() << "Detecting face with: " << QString::fromStdString(c);
+         int facesDetected = detectAndDraw(img,cascade,nestedcascade,m_scale,m_tryFlip);
+         if (facesDetected > 0)
+         {
+             qDebug() << "Found face with: " << QString::fromStdString(c);
+             return facesDetected;
+         }
      }
 
-     int facesDetected = detectAndDraw(img,cascade,nestedcascade,m_scale,m_tryFlip);
-
-     return facesDetected;
+     return 0;
+    }
+    catch (cv::Exception ex)
+    {
+        qCritical() << "Something went wrong with opencv: " << QString::fromStdString(ex.msg);
+        return -1;
+    }
 
 
 }
@@ -85,6 +107,7 @@ int QOpenCvFaceVerifier::detectAndDraw( Mat& img, CascadeClassifier& cascade,
     }
     t = (double)cvGetTickCount() - t;
     printf( "detection time = %g ms\n", t/((double)cvGetTickFrequency()*1000.) );
+    int numFaces = 0;
     for( vector<Rect>::const_iterator r = faces.begin(); r != faces.end(); r++, i++ )
     {
         Mat smallImgROI;
@@ -123,8 +146,15 @@ int QOpenCvFaceVerifier::detectAndDraw( Mat& img, CascadeClassifier& cascade,
             radius = cvRound((nr->width + nr->height)*0.25*scale);
             circle( img, center, radius, color, 3, 8, 0 );
         }
+
+
+
+
     }
-    cv::imshow( "result", img );
+    if (faces.size() > 0)
+    {
+        cv::imshow( "result", img );
+    }
     return faces.size();
 }
 

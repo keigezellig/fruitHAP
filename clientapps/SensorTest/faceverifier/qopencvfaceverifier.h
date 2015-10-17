@@ -2,7 +2,7 @@
 #define QOPENCVFACEVERIFIER_H
 
 #include <QObject>
-#include "ifaceverifier.h"
+#include "faceverifier.h"
 #include "opencv2/objdetect.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/videoio.hpp"
@@ -14,12 +14,13 @@
 #include "opencv2/highgui/highgui_c.h"
 
 #include <QString>
+#include <QObject>
 
 using namespace std;
 using namespace cv;
 
 
-class QOpenCvFaceVerifier : public QObject, IFaceVerifier
+class QOpenCvFaceVerifier : public FaceVerifier
 {
     Q_OBJECT
     int detectAndDraw(Mat &img, CascadeClassifier &cascade, CascadeClassifier &nestedCascade, double scale, bool tryflip);
@@ -27,9 +28,10 @@ class QOpenCvFaceVerifier : public QObject, IFaceVerifier
     QString m_nestedCascadeName;
     double m_scale;
     bool m_tryFlip;
+    vector<string> m_cascadeList;
 public:
      QOpenCvFaceVerifier(double scale = 1, bool tryFlip = false, QObject *parent = 0);
-     int DetectFacesInImage(const QByteArray &image, QByteArray &destImage) override;
+     virtual int DetectFacesInImage(const QByteArray &image, QByteArray &destImage);
 
 };
 

@@ -36,8 +36,8 @@ SOURCES += \
     sensor/qfruithapsensor.cpp \
     widgets/qswitchwidget.cpp \
     widgets/qcamerawidget.cpp \
-    faceverifier/ifaceverifier.cpp \
-    faceverifier/qopencvfaceverifier.cpp
+    faceverifier/qopencvfaceverifier.cpp \
+    faceverifier/faceverifier.cpp
 
 
 HEADERS  += \
@@ -66,8 +66,8 @@ HEADERS  += \
     sensor/qfruithapsensor.h \
     widgets/qswitchwidget.h \
     widgets/qcamerawidget.h \
-    faceverifier/ifaceverifier.h \
-    faceverifier/qopencvfaceverifier.h
+    faceverifier/qopencvfaceverifier.h \
+    faceverifier/faceverifier.h
 
 FORMS += \
     mainwindow.ui \

@@ -1,1 +1,1 @@
-{"RoutingKey":"alerts","Sensors":["SingleSocket","MultipleSocket","PIR","EventedDoorcam"]}
+{"RoutingKey":"alerts","Sensors":["RedLight","BlueLight","PIR","IpCamMotionDetect"]}

@@ -9,6 +9,7 @@
 #include "configuration/qconfigurationcontrol.h"
 #include "sensor/qfruithapsensor.h"
 #include "sensor/switch/definitions.h"
+#include "faceverifier/faceverifier.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,13 +27,14 @@ private:
     Ui::MainWindow *ui;
     QLabel *m_statusBarLabel;
     QFruitHapClient *m_client;
+    FaceVerifier *m_faceVerifier;
     QConfigurationControl m_configControl;
     QString m_uri;
     QList<QFruitHapSensor*> m_eventedSensors;    
-    //QFruitHapSensor* getSensorByName(const QString name) const;
     QWidget* m_switchBoard;
     void loadSwitchboard();
     void loadCameraView();
+    QFruitHapSensor* getSensorByName(const QString& name) const;
 private slots:
     void loadSensors();    
     void on_actionConnect_triggered();
@@ -42,6 +44,7 @@ private slots:
     void onSensorListReceived(const QList<SensorData> list);
     void onErrorReceived(const QString name, const QString errorMessage);
     void onDisconnected();    
+    void onFaceDetected(const QString name, const QDateTime timestamp);
 };
 
 #endif // MAINWINDOW_H
