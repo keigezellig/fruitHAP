@@ -18,6 +18,7 @@ class QCameraWidget : public QWidget
     QString m_name;
     bool m_isPollable;
     QGraphicsScene *m_drawing;
+    QStringList m_switchListForFaceDetection;
 
 
 public:

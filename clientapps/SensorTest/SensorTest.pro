@@ -37,7 +37,8 @@ SOURCES += \
     widgets/qswitchwidget.cpp \
     widgets/qcamerawidget.cpp \
     faceverifier/qopencvfaceverifier.cpp \
-    faceverifier/faceverifier.cpp
+    faceverifier/faceverifier.cpp \
+    configuration/facedetectionsettings/facedetectionsettings.cpp
 
 
 HEADERS  += \
@@ -67,7 +68,8 @@ HEADERS  += \
     widgets/qswitchwidget.h \
     widgets/qcamerawidget.h \
     faceverifier/qopencvfaceverifier.h \
-    faceverifier/faceverifier.h
+    faceverifier/faceverifier.h \
+    configuration/facedetectionsettings/facedetectionsettings.h
 
 FORMS += \
     mainwindow.ui \

@@ -29,8 +29,7 @@ private:
     QFruitHapClient *m_client;
     FaceVerifier *m_faceVerifier;
     QConfigurationControl m_configControl;
-    QString m_uri;
-    QList<QFruitHapSensor*> m_eventedSensors;    
+    QString m_uri;    
     QWidget* m_switchBoard;
     void loadSwitchboard();
     void loadCameraView();
@@ -41,7 +40,8 @@ private slots:
     void on_actionDisconnect_triggered();    
     void connectToMQ(const QStringList &bindingKeys, const QString &uri);
     void onConnected(const QString uri);
-    void onSensorListReceived(const QList<SensorData> list);
+    void onSensorListLoaded();
+
     void onErrorReceived(const QString name, const QString errorMessage);
     void onDisconnected();    
     void onFaceDetected(const QString name, const QDateTime timestamp);

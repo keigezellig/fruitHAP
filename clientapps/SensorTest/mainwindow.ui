@@ -80,9 +80,9 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_2">
+      <widget class="QWidget" name="FaceSettings">
        <attribute name="title">
-        <string>Page</string>
+        <string>Face detection mapping</string>
        </attribute>
       </widget>
      </widget>

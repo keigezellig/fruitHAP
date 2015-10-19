@@ -1,14 +1,16 @@
 #include "qconfigurationcontrol.h"
 
 
-QConfigurationControl::QConfigurationControl(QFruitHapClient *client, QObject *parent):
-    QObject(parent), m_client(client)
+QConfigurationControl::QConfigurationControl(QFruitHapClient *client, FaceVerifier *faceVerifier, QObject *parent):
+    QObject(parent), m_client(client), m_faceVerifier(faceVerifier)
 {
-        connect(m_client,&QFruitHapClient::responseReceived,this,&QConfigurationControl::onClientResponseReceived);
+
+    connect(m_client,&QFruitHapClient::responseReceived,this,&QConfigurationControl::onClientResponseReceived);
+    connect(this,&QConfigurationControl::sensorListReceived,this,&QConfigurationControl::onSensorListReceived);
 }
 
 
-void QConfigurationControl::getSensorList()
+void QConfigurationControl::requestSensorList()
 {
     QJsonObject obj;
     QJsonObject paramObj;
@@ -20,6 +22,51 @@ void QConfigurationControl::getSensorList()
     QString routingKey("FruitHAP_RpcQueue.FruitHAP.Core.Action.ConfigurationMessage");
     QString messageType("FruitHAP.Core.Action.ConfigurationMessage:FruitHAP.Core");
     m_client->sendMessage(obj,routingKey,messageType);
+}
+
+void QConfigurationControl::getAllSensors(QList<QFruitHapSensor *> &list) const
+{
+    list = QList<QFruitHapSensor*>(m_sensors);
+}
+
+QFruitHapSensor *QConfigurationControl::getSensorByName(const QString &name) const
+{
+    foreach (QFruitHapSensor* item, m_sensors)
+    {
+        if (item->getName() == name)
+        {
+            return item;
+        }
+    }
+
+    return nullptr;
+}
+
+void QConfigurationControl::getAllCameras(QList<QCamera *> &list) const
+{
+    list.clear();
+    foreach (QFruitHapSensor *sensor, m_sensors)
+    {
+        QCamera *aCamera = dynamic_cast<QCamera*>(sensor);
+        if (aCamera != nullptr)
+        {
+            list.append(aCamera);
+        }
+    }
+
+}
+
+void QConfigurationControl::getAllSwitches(QList<QSwitch *> &list) const
+{
+    list.clear();
+    foreach (QFruitHapSensor *sensor, m_sensors)
+    {
+        QSwitch *aSwitch = dynamic_cast<QSwitch*>(sensor);
+        if (aSwitch != nullptr)
+        {
+            list.append(aSwitch);
+        }
+    }
 }
 
 void QConfigurationControl::handleConfigurationMessage(QJsonObject responseObject)
@@ -77,3 +124,60 @@ void QConfigurationControl::onClientResponseReceived(const QJsonDocument respons
     }
 }
 
+void QConfigurationControl::onSensorListReceived(const QList<SensorData> list)
+{
+    qDeleteAll(m_sensors);
+
+
+    foreach (SensorData item, list)
+    {
+        if (item.getCategory() == "Switch")
+        {
+            QSwitch *eventedSwitch = new QSwitch(m_client,item.getName(),true,item.IsReadOnly(),parent());
+            //connect(eventedSwitch, &QSwitch::errorEventReceived, this, &MainWindow::onErrorReceived);
+            m_sensors.append(eventedSwitch);
+        }
+
+
+        if( (item.getType() == "ButtonWithCameraSensor") || (item.getType() == "SwitchWithCameraSensor"))
+        {
+            QCamera *eventedCamera = new QCamera(m_client,item.getName(),false,item.IsReadOnly(),m_faceVerifier,parent());
+            m_sensors.append(eventedCamera);
+        }
+
+        if (item.getType() == "Camera")
+        {
+            QCamera *eventedCamera = new QCamera(m_client,item.getName(),true,item.IsReadOnly(),m_faceVerifier,parent());
+            m_sensors.append(eventedCamera);
+        }
+
+    }
+
+    emit sensorListLoaded();
+}
+
+void QConfigurationControl::coupleFaceDetectionToSwitch(const QString& cameraName, const QString& switchName)
+{
+    QCamera* camera = dynamic_cast<QCamera*>(getSensorByName(cameraName));
+    QSwitch* theSwitch = dynamic_cast<QSwitch*>(getSensorByName(switchName));
+
+    if (camera == nullptr)
+    {
+        qCritical() << "Camera " << cameraName << "not available";
+        return;
+    }
+
+    if (theSwitch == nullptr)
+    {
+        qCritical() << "Switch " << switchName << "not available";
+        return;
+    }
+
+    camera->enableFaceDetection(true);
+    connect(camera,&QCamera::faceDetected, theSwitch, &QSwitch::turnOn);
+}
+
+QConfigurationControl::~QConfigurationControl()
+{
+    qDeleteAll(m_sensors);
+}

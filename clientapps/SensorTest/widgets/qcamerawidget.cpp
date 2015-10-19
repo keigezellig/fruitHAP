@@ -7,7 +7,7 @@ QCameraWidget::QCameraWidget(const QString name, bool isPollable, QWidget *paren
     QWidget(parent),
     ui(new Ui::QCameraWidget),
     m_name(name),
-    m_isPollable(isPollable),
+    m_isPollable(isPollable),    
     m_drawing(0)
 {
     ui->setupUi(this);
