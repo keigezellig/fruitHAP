@@ -3,7 +3,7 @@
 
 #include <QString>
 
-class FaceDetectionSettings
+class FaceDetectionSetting
 {
 private:
     QString m_cameraName;
@@ -11,8 +11,8 @@ private:
     bool m_faceDetection;
     bool m_faceRecognition;
 public:
-    FaceDetectionSettings();
-    FaceDetectionSettings(const QString &cameraName, const QString &switchName, const bool faceDetectionEnabled, const bool faceRecognitionEnabled);
+    FaceDetectionSetting();
+    FaceDetectionSetting(const QString cameraName, const QString switchName, const bool faceDetectionEnabled, const bool faceRecognitionEnabled);
     void setCameraName(const QString &name);
     void setSwitchName(const QString &switchName);
     void setFaceDetectionEnabled(const bool isEnabled);

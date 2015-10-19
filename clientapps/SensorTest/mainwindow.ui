@@ -84,6 +84,11 @@
        <attribute name="title">
         <string>Face detection mapping</string>
        </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QTableView" name="tblDetectionSettings"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>

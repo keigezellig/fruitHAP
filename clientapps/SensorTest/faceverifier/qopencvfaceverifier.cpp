@@ -49,7 +49,7 @@ int QOpenCvFaceVerifier::DetectFacesInImage(const QByteArray &image, QByteArray 
          }
      }
 
-     return 0;
+     return -1;
     }
     catch (cv::Exception ex)
     {

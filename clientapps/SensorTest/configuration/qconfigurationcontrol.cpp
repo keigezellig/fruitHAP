@@ -1,4 +1,6 @@
 #include "qconfigurationcontrol.h"
+#include "facedetectionsettings/facedetectionsettings.h"
+#include "facedetectionsettings/facedetectionsettingsmodel.h"
 
 
 QConfigurationControl::QConfigurationControl(QFruitHapClient *client, FaceVerifier *faceVerifier, QObject *parent):
@@ -131,7 +133,7 @@ void QConfigurationControl::onSensorListReceived(const QList<SensorData> list)
 
     foreach (SensorData item, list)
     {
-        if (item.getCategory() == "Switch")
+        if (item.getCategory() == "SwTriggerOnFaceDetectionitch")
         {
             QSwitch *eventedSwitch = new QSwitch(m_client,item.getName(),true,item.IsReadOnly(),parent());
             //connect(eventedSwitch, &QSwitch::errorEventReceived, this, &MainWindow::onErrorReceived);
@@ -152,6 +154,17 @@ void QConfigurationControl::onSensorListReceived(const QList<SensorData> list)
         }
 
     }
+
+    QList<FaceDetectionSetting> settings;
+
+    FaceDetectionSettingsModel model;
+    model.LoadSettingsFromFile("settings.json",settings);
+
+    foreach (const FaceDetectionSetting &setting, settings)
+    {
+        coupleFaceDetectionToSwitch(setting.getCameraName(),setting.getSwitchName());
+    }
+
 
     emit sensorListLoaded();
 }

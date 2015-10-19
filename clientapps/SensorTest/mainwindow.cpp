@@ -11,6 +11,7 @@
 #include <QThread>
 #include <widgets/qcamerawidget.h>
 #include "faceverifier/qopencvfaceverifier.h"
+#include "configuration/facedetectionsettings/facedetectionsettingsmodel.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
