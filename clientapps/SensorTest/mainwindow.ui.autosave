@@ -44,8 +44,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>98</width>
-             <height>28</height>
+             <width>1154</width>
+             <height>530</height>
             </rect>
            </property>
           </widget>
@@ -146,7 +146,7 @@
     <string>Disconnect</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+D, Enter</string>
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
  </widget>

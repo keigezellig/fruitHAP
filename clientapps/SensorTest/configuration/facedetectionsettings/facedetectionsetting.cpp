@@ -45,7 +45,7 @@ QString FaceDetectionSetting::getSwitchName() const
     return m_switchName;
 }
 
-bool FaceDetectionSetting::getFaceDetectionEnabled() const
+bool FaceDetectionSetting::isFaceDetectionEnabled() const
 {
     return m_faceDetection;
 }

@@ -14,6 +14,11 @@ void QCamera::enableFaceDetection(bool isEnabled)
     m_isFaceDetectionEnabled = isEnabled;
 }
 
+bool QCamera::isFaceDetectionEnabled() const
+{
+    return m_isFaceDetectionEnabled;
+}
+
 void QCamera::sendImage(const QJsonObject responseObject)
 {
     QByteArray base64Data = responseObject["Data"].toObject()["$value"].toString().toLatin1();

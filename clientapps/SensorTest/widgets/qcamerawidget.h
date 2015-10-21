@@ -17,12 +17,13 @@ class QCameraWidget : public QWidget
     QTimer *m_timer;
     QString m_name;
     bool m_isPollable;
+    bool m_isFaceDetectionEnabled;
     QGraphicsScene *m_drawing;
     QStringList m_switchListForFaceDetection;
 
 
 public:
-    QCameraWidget(const QString name, bool isPollable, QWidget *parent = 0);
+    QCameraWidget(const QString name, bool isPollable, bool isFaceDetectionEnabled, QWidget *parent = 0);
     ~QCameraWidget();
 
 signals:

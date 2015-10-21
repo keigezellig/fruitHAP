@@ -17,6 +17,7 @@ class QCamera : public QFruitHapSensor
 public:
     QCamera(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, FaceVerifier *faceVerifier, QObject *parent = 0);
     void enableFaceDetection(bool isEnabled);
+    bool isFaceDetectionEnabled() const;
 
 protected:
     virtual void handleSensorEvent(const QJsonObject responseObject);

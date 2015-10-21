@@ -20,7 +20,7 @@ public:
 
     QString getCameraName() const;
     QString getSwitchName() const;
-    bool getFaceDetectionEnabled() const;
+    bool isFaceDetectionEnabled() const;
     bool getFaceRecognitionEnabled() const;
 };
 

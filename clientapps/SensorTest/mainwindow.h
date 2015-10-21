@@ -34,6 +34,7 @@ private:
     void loadSwitchboard();
     void loadCameraView();
     QFruitHapSensor* getSensorByName(const QString& name) const;
+    void loadFaceDetectionSettings();
 private slots:
     void loadSensors();    
     void on_actionConnect_triggered();

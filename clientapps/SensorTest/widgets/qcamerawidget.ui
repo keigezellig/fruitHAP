@@ -58,25 +58,12 @@
       </spacer>
      </item>
      <item>
-      <widget class="QCheckBox" name="chkFaceDetection">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
+      <widget class="QLabel" name="lblFaceDetectionEnabled">
+       <property name="styleSheet">
+        <string notr="true">color: rgb(255, 0, 0);</string>
        </property>
        <property name="text">
-        <string>Face detection</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="cmbFaceDetectionSwitchList">
-       <property name="enabled">
-        <bool>false</bool>
+        <string>Fface detection enabled</string>
        </property>
       </widget>
      </item>
@@ -140,22 +127,6 @@
     <hint type="destinationlabel">
      <x>737</x>
      <y>457</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkFaceDetection</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>cmbFaceDetectionSwitchList</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>732</x>
-     <y>237</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>732</x>
-     <y>268</y>
     </hint>
    </hints>
   </connection>

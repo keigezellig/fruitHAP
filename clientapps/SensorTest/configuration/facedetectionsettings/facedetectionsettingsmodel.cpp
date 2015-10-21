@@ -51,7 +51,7 @@ void FaceDetectionSettingsModel::SaveSettingsToFile(const QString &filename, con
         QJsonObject dataObject;
         dataObject["CameraName"] = setting.getCameraName();
         dataObject["SwitchName"] = setting.getSwitchName();
-        dataObject["TriggerOnFaceDetection"] = setting.getFaceDetectionEnabled();
+        dataObject["TriggerOnFaceDetection"] = setting.isFaceDetectionEnabled();
         dataObject["TriggerOnFaceRecognition"] = setting.getFaceRecognitionEnabled();
 
         jsonArray.append(dataObject);

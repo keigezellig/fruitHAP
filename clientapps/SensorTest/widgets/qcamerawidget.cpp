@@ -3,11 +3,12 @@
 #include <QDebug>
 #include <QTimer>
 
-QCameraWidget::QCameraWidget(const QString name, bool isPollable, QWidget *parent) :
+QCameraWidget::QCameraWidget(const QString name, bool isPollable, bool isFaceDetectionEnabled, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::QCameraWidget),
     m_name(name),
-    m_isPollable(isPollable),    
+    m_isPollable(isPollable),
+    m_isFaceDetectionEnabled(isFaceDetectionEnabled),
     m_drawing(0)
 {
     ui->setupUi(this);
@@ -30,6 +31,8 @@ QCameraWidget::QCameraWidget(const QString name, bool isPollable, QWidget *paren
         ui->lcdRefreshInterval->setVisible(false);
         ui->label->setVisible(false);
     }
+
+    ui->lblFaceDetectionEnabled->setVisible(m_isFaceDetectionEnabled);
 
 }
 

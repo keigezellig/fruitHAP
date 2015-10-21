@@ -85,11 +85,27 @@ void MainWindow::onConnected(const QString uri)
 
 void MainWindow::onSensorListLoaded()
 {        
+    loadFaceDetectionSettings();
     loadSwitchboard();
     loadCameraView();
+
     qDebug() << "Sensor list loaded..";
 }
 
+void MainWindow::loadFaceDetectionSettings()
+{
+    QList<FaceDetectionSetting> settings;
+    FaceDetectionSettingsModel model;
+    model.LoadSettingsFromFile("settings.json",settings);
+
+    foreach (const FaceDetectionSetting &setting, settings)
+    {
+        if (setting.isFaceDetectionEnabled())
+        {
+            m_configControl.coupleFaceDetectionToSwitch(setting.getCameraName(),setting.getSwitchName());
+        }
+    }
+}
 
 void MainWindow::loadCameraView()
 {
@@ -104,7 +120,7 @@ void MainWindow::loadCameraView()
    int row = 0;
    foreach (QCamera *aCamera, cameraList)
    {
-       QCameraWidget *cameraWidget = new QCameraWidget(aCamera->getName(),aCamera->isPollable());
+       QCameraWidget *cameraWidget = new QCameraWidget(aCamera->getName(),aCamera->isPollable(), aCamera->isFaceDetectionEnabled());
        connect(cameraWidget,&QCameraWidget::refresh,aCamera, &QCamera::getValue);
        connect(aCamera,&QCamera::imageReceived, cameraWidget, &QCameraWidget::onImageReceived);
        connect(aCamera,&QCamera::faceDetected, this, &MainWindow::onFaceDetected);
