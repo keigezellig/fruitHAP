@@ -39,7 +39,9 @@ SOURCES += \
     faceverifier/qopencvfaceverifier.cpp \
     faceverifier/faceverifier.cpp \
     configuration/facedetectionsettings/facedetectionsettingsmodel.cpp \
-    configuration/facedetectionsettings/facedetectionsetting.cpp
+    configuration/facedetectionsettings/facedetectionsetting.cpp \
+    statemachine/DoorMachine_sm.cpp \
+    statemachine/door.cpp
 
 
 HEADERS  += \
@@ -71,7 +73,11 @@ HEADERS  += \
     faceverifier/qopencvfaceverifier.h \
     faceverifier/faceverifier.h \
     configuration/facedetectionsettings/facedetectionsettings.h \
-    configuration/facedetectionsettings/facedetectionsettingsmodel.h
+    configuration/facedetectionsettings/facedetectionsettingsmodel.h \
+    statemachine/DoorMachine_sm.h \
+    statemachine/door.h \
+    ../../../Downloads/smc_6_6_0/lib/C++/statemap.h \
+    statemachine/statemap.h
 
 FORMS += \
     mainwindow.ui \

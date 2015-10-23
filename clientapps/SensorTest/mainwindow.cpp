@@ -19,7 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     m_client(new QFruitHapClient(QString("FruitHAP_RpcExchange"), QString("FruitHAP_PubSubExchange"),this)),        
     m_configControl(m_client, new QOpenCvFaceVerifier(1,false,this), this),
-    m_switchBoard(0)
+    m_switchBoard(0),
+    m_door(new Door(this))
 
 
 {
@@ -85,11 +86,31 @@ void MainWindow::onConnected(const QString uri)
 
 void MainWindow::onSensorListLoaded()
 {        
-    loadFaceDetectionSettings();
+    //loadFaceDetectionSettings();
+    initDoorSetup();
     loadSwitchboard();
     loadCameraView();
 
     qDebug() << "Sensor list loaded..";
+}
+
+void MainWindow::initDoorSetup()
+{
+
+    connect(m_door,&Door::initialize,this,&MainWindow::onDoorInitialize);
+    connect(m_door,&Door::personApproved,this, &MainWindow::onDoorAccessGranted);
+    connect(m_door,&Door::personNotApproved,this, &MainWindow::onDoorAccessDenied);
+    connect(m_door,&Door::noAnswer,this, &MainWindow::onDoorNoAnswer);
+
+    QCamera* doorCamera = dynamic_cast<QCamera*>(m_configControl.getSensorByName(DOORCAMERA_NAME));
+
+    if (doorCamera != nullptr)
+    {
+        doorCamera->enableFaceDetection(true);
+        QCameraWidget *doorCameraWidget = new QCameraWidget(doorCamera->getName(),false, doorCamera->isFaceDetectionEnabled(),this);
+        connect(m_door,&Door::imageWithFaceIsAvailable, doorCameraWidget, &QCameraWidget::onImageReceived);
+
+    }
 }
 
 void MainWindow::loadFaceDetectionSettings()
@@ -179,11 +200,17 @@ void MainWindow::onDisconnected()
     m_statusBarLabel->setStyleSheet("color: white");
 }
 
-void MainWindow::onFaceDetected(const QString name, const QDateTime timestamp)
+void MainWindow::onFaceDetected(const QString name, const QByteArray imageData, const QDateTime timestamp)
 {
     ui->statusBar->setStyleSheet("background-color: red");
     m_statusBarLabel->setText("Oh oh.. person detected on camera " + name + "@ " + timestamp.toString());
     m_statusBarLabel->setStyleSheet("color: white");
+
+    if (name == DOORCAMERA_NAME)
+    {
+        m_door->faceHasBeenDetected(imageData);
+    }
+
 }
 
 

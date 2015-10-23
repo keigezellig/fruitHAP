@@ -25,7 +25,7 @@ protected:
 
 signals:
     void imageReceived(const QString name, const QByteArray imageData, const QDateTime timestamp);
-    void faceDetected(const QString name, const QDateTime timestamp);
+    void faceDetected(const QString name, const QByteArray imageData, const QDateTime timestamp);
 public slots:
 };
 

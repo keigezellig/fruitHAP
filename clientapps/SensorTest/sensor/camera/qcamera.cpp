@@ -25,6 +25,9 @@ void QCamera::sendImage(const QJsonObject responseObject)
     QDateTime timestamp = QDateTime::fromString(responseObject["TimeStamp"].toString(),Qt::ISODate);
     QByteArray data = QByteArray::fromBase64(base64Data);
     QByteArray imageWithFace;
+
+
+
     int faces = 0;
     if (m_faceVerifier != nullptr && m_isFaceDetectionEnabled)
     {
@@ -32,15 +35,20 @@ void QCamera::sendImage(const QJsonObject responseObject)
         if (faces > 0)
         {
             qDebug() << "Face detected on camera: " << m_name;            
-            emit faceDetected(m_name,timestamp);
+            emit faceDetected(m_name, data, timestamp);
         }
         else
         {
             qDebug() << "No face detected on camera: " << m_name;
+            emit imageReceived(m_name,data, timestamp);
         }
     }
+    else
+    {
+        emit imageReceived(m_name,data, timestamp);
+    }
 
-    emit imageReceived(m_name,data, timestamp);
+
 
 }
 

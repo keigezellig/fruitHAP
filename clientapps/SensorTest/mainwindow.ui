@@ -27,7 +27,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -44,8 +44,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>98</width>
-             <height>28</height>
+             <width>1154</width>
+             <height>530</height>
             </rect>
            </property>
           </widget>
@@ -79,6 +79,60 @@
          </widget>
         </item>
        </layout>
+      </widget>
+      <widget class="QWidget" name="tabDoor">
+       <attribute name="title">
+        <string>Door</string>
+       </attribute>
+       <widget class="QPushButton" name="btnApprove">
+        <property name="geometry">
+         <rect>
+          <x>630</x>
+          <y>10</y>
+          <width>151</width>
+          <height>71</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Open door</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnNotApprove">
+        <property name="geometry">
+         <rect>
+          <x>630</x>
+          <y>90</y>
+          <width>151</width>
+          <height>71</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Enable alarm</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnReset">
+        <property name="geometry">
+         <rect>
+          <x>630</x>
+          <y>180</y>
+          <width>151</width>
+          <height>71</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Reset alarm</string>
+        </property>
+       </widget>
+       <widget class="QWidget" name="doorCameraWidget" native="true">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>601</width>
+          <height>511</height>
+         </rect>
+        </property>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -146,7 +200,7 @@
     <string>Disconnect</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+D, Enter</string>
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
  </widget>

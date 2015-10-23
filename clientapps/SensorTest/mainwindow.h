@@ -10,6 +10,7 @@
 #include "sensor/qfruithapsensor.h"
 #include "sensor/switch/definitions.h"
 #include "faceverifier/faceverifier.h"
+#include "statemachine/door.h"
 
 namespace Ui {
 class MainWindow;
@@ -18,6 +19,9 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+    const QString DOORCAMERA_NAME = QString("DoorCamera");
+    const QString ALARMSWITCH_NAME = QString("RedLamp");
+    const QString APROVESWITCH_NAME = QString("BlueLamp");
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -31,12 +35,15 @@ private:
     QConfigurationControl m_configControl;
     QString m_uri;    
     QWidget* m_switchBoard;
+    Door* m_door;
     void loadSwitchboard();
     void loadCameraView();
     QFruitHapSensor* getSensorByName(const QString& name) const;
     void loadFaceDetectionSettings();
+
 private slots:
     void loadSensors();    
+    void initDoorSetup();
     void on_actionConnect_triggered();
     void on_actionDisconnect_triggered();    
     void connectToMQ(const QStringList &bindingKeys, const QString &uri);
@@ -45,7 +52,7 @@ private slots:
 
     void onErrorReceived(const QString name, const QString errorMessage);
     void onDisconnected();    
-    void onFaceDetected(const QString name, const QDateTime timestamp);
+    void onFaceDetected(const QString name, const QByteArray imageData, const QDateTime timestamp);
 };
 
 #endif // MAINWINDOW_H
