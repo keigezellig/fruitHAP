@@ -20,7 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_client(new QFruitHapClient(QString("FruitHAP_RpcExchange"), QString("FruitHAP_PubSubExchange"),this)),        
     m_configControl(m_client, new QOpenCvFaceVerifier(1,false,this), this),
     m_switchBoard(0),
-    m_door(new Door(this))
+    m_door(new Door(this)),
+    m_doorCameraWidget(0)
 
 
 {
@@ -30,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_client,&QFruitHapClient::disconnected,this,&MainWindow::onDisconnected);    
     m_statusBarLabel = new QLabel();
     ui->statusBar->addWidget(m_statusBarLabel);
+    ui->doorCameraWidget = new QCameraWidget("",false, true,ui->doorCameraWidget);
+
 
     onDisconnected();
 }
@@ -107,9 +110,12 @@ void MainWindow::initDoorSetup()
     if (doorCamera != nullptr)
     {
         doorCamera->enableFaceDetection(true);
-        QCameraWidget *doorCameraWidget = new QCameraWidget(doorCamera->getName(),false, doorCamera->isFaceDetectionEnabled(),this);
-        connect(m_door,&Door::imageWithFaceIsAvailable, doorCameraWidget, &QCameraWidget::onImageReceived);
-
+        connect(m_door,&Door::imageWithFaceIsAvailable, this, &MainWindow::onDoorImageWithFaceIsAvailable);
+        m_door->init();
+    }
+    else
+    {
+        qCritical () << "DoorCamera not found";
     }
 }
 
@@ -162,7 +168,6 @@ void MainWindow::loadCameraView()
    ui->cameraList->setWidget(widget);
 }
 
-
 void MainWindow::loadSwitchboard()
 {
     QList<QSwitch*> switchList;
@@ -209,22 +214,17 @@ void MainWindow::onFaceDetected(const QString name, const QByteArray imageData, 
     if (name == DOORCAMERA_NAME)
     {
         m_door->faceHasBeenDetected(imageData);
+        ui->btnApprove->setEnabled(true);
+        ui->btnReset->setEnabled(false);
+        ui->btnNotApprove->setEnabled(true);
     }
 
 }
-
-
-
-
-
 
 void MainWindow::onErrorReceived(const QString name, const QString errorMessage)
 {
     qCritical() << "Error received from " << name << ". Message: " << errorMessage;
 }
-
-
-
 
 void MainWindow::on_actionConnect_triggered()
 {
@@ -249,8 +249,89 @@ void MainWindow::on_actionDisconnect_triggered()
 
 }
 
+void MainWindow::on_btnApprove_clicked()
+{
+    m_door->approve(true);
+}
+
+void MainWindow::on_btnNotApprove_clicked()
+{
+    m_door->approve(false);
+}
+
+void MainWindow::on_btnReset_clicked()
+{
+    m_door->reset();
+}
 
 void MainWindow::loadSensors()
 {    
     m_configControl.requestSensorList();
+}
+
+void MainWindow::onDoorInitialize()
+{
+    qDebug() << "Door initialize";
+    QSwitch* alarmSwitch = dynamic_cast<QSwitch*>(m_configControl.getSensorByName(ALARMSWITCH_NAME));
+    QSwitch* approvalSwitch = dynamic_cast<QSwitch*>(m_configControl.getSensorByName(APROVESWITCH_NAME));
+
+    if (alarmSwitch != nullptr && approvalSwitch != nullptr)
+    {
+        alarmSwitch->turnOff();
+        delay(1);
+        approvalSwitch->turnOff();
+
+    }
+
+    ui->btnApprove->setEnabled(false);
+    ui->btnReset->setEnabled(false);
+    ui->btnNotApprove->setEnabled(false);
+}
+
+void MainWindow::onDoorImageWithFaceIsAvailable(const QByteArray image)
+{
+    QCameraWidget *widget = dynamic_cast<QCameraWidget*>(ui->doorCameraWidget);
+    widget->onImageReceived(DOORCAMERA_NAME,image,QDateTime::currentDateTime());
+
+
+}
+
+void MainWindow::onDoorAccessGranted()
+{
+    qDebug() << "Access granted";
+    QSwitch* approvalSwitch = dynamic_cast<QSwitch*>(m_configControl.getSensorByName(APROVESWITCH_NAME));
+    if (approvalSwitch != nullptr)
+    {
+        approvalSwitch->turnOn();
+    }
+    ui->btnApprove->setEnabled(false);
+    ui->btnReset->setEnabled(false);
+    ui->btnNotApprove->setEnabled(false);
+}
+
+void MainWindow::onDoorAccessDenied()
+{
+    qDebug() << "Access denied";
+    QSwitch* alarmSwitch = dynamic_cast<QSwitch*>(m_configControl.getSensorByName(ALARMSWITCH_NAME));
+    if (alarmSwitch != nullptr)
+    {
+        alarmSwitch->turnOn();
+    }
+    ui->btnApprove->setEnabled(false);
+    ui->btnReset->setEnabled(true);
+    ui->btnNotApprove->setEnabled(false);
+
+}
+
+void MainWindow::onDoorNoAnswer()
+{
+    qDebug() << "No answer..";
+}
+
+
+void MainWindow::delay(int seconds)
+{
+    QTime dieTime= QTime::currentTime().addSecs(seconds);
+    while (QTime::currentTime() < dieTime)
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }

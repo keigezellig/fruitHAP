@@ -151,10 +151,7 @@ int QOpenCvFaceVerifier::detectAndDraw( Mat& img, CascadeClassifier& cascade,
 
 
     }
-    if (faces.size() > 0)
-    {
-        cv::imshow( "result", img );
-    }
+
     return faces.size();
 }
 

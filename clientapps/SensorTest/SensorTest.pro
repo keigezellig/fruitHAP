@@ -75,8 +75,7 @@ HEADERS  += \
     configuration/facedetectionsettings/facedetectionsettings.h \
     configuration/facedetectionsettings/facedetectionsettingsmodel.h \
     statemachine/DoorMachine_sm.h \
-    statemachine/door.h \
-    ../../../Downloads/smc_6_6_0/lib/C++/statemap.h \
+    statemachine/door.h \    
     statemachine/statemap.h
 
 FORMS += \
