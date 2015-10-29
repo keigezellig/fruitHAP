@@ -14,8 +14,6 @@
 #include "statemap.h"
 #include <QByteArray>
 
-
-
 // Forward declarations.
 class MainMap;
 class MainMap_WaitingForFaceDetection;
@@ -80,6 +78,7 @@ public:
     {};
 
     virtual void Entry(DoorMachineContext&);
+    virtual void Default(DoorMachineContext& context);
     virtual void FaceDetected(DoorMachineContext& context, const QByteArray& image);
 };
 
@@ -95,6 +94,7 @@ public:
     virtual void Exit(DoorMachineContext&);
     virtual void Approval(DoorMachineContext& context, const bool isApproved);
     virtual void ApprovalTimeOut(DoorMachineContext& context);
+    virtual void Default(DoorMachineContext& context);
 };
 
 class MainMap_Alarm :
@@ -105,6 +105,7 @@ public:
     : MainMap_Default(name, stateId)
     {};
 
+    virtual void Default(DoorMachineContext& context);
     virtual void Reset(DoorMachineContext& context);
 };
 
@@ -118,6 +119,7 @@ public:
 
     virtual void Entry(DoorMachineContext&);
     virtual void Exit(DoorMachineContext&);
+    virtual void Default(DoorMachineContext& context);
     virtual void UnlockedTimerTimeOut(DoorMachineContext& context);
 };
 

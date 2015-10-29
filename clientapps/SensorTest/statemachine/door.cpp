@@ -6,8 +6,8 @@ Door::Door(QObject *parent): QObject(parent), m_doorMachine(*this)
 {    
     m_approvalTimer = new QTimer(this);
     m_unlockedTimer = new QTimer(this);
-    m_approvalTimer->setInterval(10000);
-    m_unlockedTimer->setInterval(7000);
+    m_approvalTimer->setInterval(20000);
+    m_unlockedTimer->setInterval(25000);
     connect(m_approvalTimer, &QTimer::timeout, this, &Door::approvalTimerExpired);
     connect(m_unlockedTimer, &QTimer::timeout, this, &Door::unlockedTimerExpired);
 

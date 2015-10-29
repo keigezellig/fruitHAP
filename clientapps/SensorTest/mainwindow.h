@@ -5,7 +5,8 @@
 #include <QGraphicsScene>
 #include <QTimer>
 #include <QLabel>
-
+#include <QMap>
+#include <QSoundEffect>
 #include "configuration/qconfigurationcontrol.h"
 #include "sensor/qfruithapsensor.h"
 #include "sensor/switch/definitions.h"
@@ -39,18 +40,25 @@ private:
     Door* m_door;
 
     QCameraWidget* m_doorCameraWidget;
+    QMap<QString,QSoundEffect*> m_soundEffects;
 
     void loadSwitchboard();
     void loadCameraView();
     QFruitHapSensor* getSensorByName(const QString& name) const;
-    void loadFaceDetectionSettings();
 
+    void loadFaceDetectionSettings();
     void delay(int seconds);
+    void initSensors();
+    void initSoundEffects(const QString pathToSounds);
+    void stopAllSounds();
+
 private slots:
     void loadSensors();    
     void initDoorSetup();
     void on_actionConnect_triggered();
     void on_actionDisconnect_triggered();    
+    void on_actionInit_sensors_triggered();
+    void on_actionInit_door_triggered();
     void on_btnApprove_clicked();
     void on_btnNotApprove_clicked();
     void on_btnReset_clicked();

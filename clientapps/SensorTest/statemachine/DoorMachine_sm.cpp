@@ -5,7 +5,6 @@
 // from file : DoorMachine.sm
 //
 
- 
 #include "door.h"
 #include "DoorMachine_sm.h"
 
@@ -57,6 +56,12 @@ void MainMap_WaitingForFaceDetection::Entry(DoorMachineContext& context)
     Door& ctxt = context.getOwner();
 
     ctxt.initialAction();
+}
+
+void MainMap_WaitingForFaceDetection::Default(DoorMachineContext& context)
+{
+
+
 }
 
 void MainMap_WaitingForFaceDetection::FaceDetected(DoorMachineContext& context, const QByteArray& image)
@@ -158,6 +163,18 @@ void MainMap_WaitingForApproval::ApprovalTimeOut(DoorMachineContext& context)
 
 }
 
+void MainMap_WaitingForApproval::Default(DoorMachineContext& context)
+{
+
+
+}
+
+void MainMap_Alarm::Default(DoorMachineContext& context)
+{
+
+
+}
+
 void MainMap_Alarm::Reset(DoorMachineContext& context)
 {
 
@@ -181,6 +198,12 @@ void MainMap_Unlocked::Exit(DoorMachineContext& context)
     Door& ctxt = context.getOwner();
 
     ctxt.stopUnlockedTimer();
+}
+
+void MainMap_Unlocked::Default(DoorMachineContext& context)
+{
+
+
 }
 
 void MainMap_Unlocked::UnlockedTimerTimeOut(DoorMachineContext& context)

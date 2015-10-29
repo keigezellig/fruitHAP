@@ -129,6 +129,7 @@ void QConfigurationControl::onClientResponseReceived(const QJsonDocument respons
 
 void QConfigurationControl::onSensorListReceived(const QList<SensorData> list)
 {
+    qDebug() << "onSensorListReceived";
     qDeleteAll(m_sensors);
 
 
@@ -137,8 +138,11 @@ void QConfigurationControl::onSensorListReceived(const QList<SensorData> list)
         if (item.getCategory() == "Switch")
         {
             QSwitch *eventedSwitch = new QSwitch(m_client,item.getName(),true,item.IsReadOnly(),parent());
-            //connect(eventedSwitch, &QSwitch::errorEventReceived, this, &MainWindow::onErrorReceived);
+            //connect(eventedSwitch, &QSwitch::errorEventReceived, this, &MainWindow::onErrorReceived);            
             m_sensors.append(eventedSwitch);
+            qDebug() << "Added " << item.getName();
+
+
         }
 
 
@@ -146,12 +150,14 @@ void QConfigurationControl::onSensorListReceived(const QList<SensorData> list)
         {
             QCamera *eventedCamera = new QCamera(m_client,item.getName(),false,item.IsReadOnly(),m_faceVerifier,parent());
             m_sensors.append(eventedCamera);
+            qDebug() << "Added " << item.getName();
         }
 
         if (item.getType() == "Camera")
         {
             QCamera *eventedCamera = new QCamera(m_client,item.getName(),true,item.IsReadOnly(),m_faceVerifier,parent());
             m_sensors.append(eventedCamera);
+            qDebug() << "Added " << item.getName();
         }
 
     }

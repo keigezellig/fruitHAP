@@ -16,6 +16,8 @@ void QSwitch::turnOn()
         qWarning() << "This is a readonly sensor";
         return;
     }
+
+    qDebug() << "Turn on " << m_name;
     QJsonObject obj;
     QJsonObject commandObject;
 
@@ -31,6 +33,8 @@ void QSwitch::turnOn()
 
 void QSwitch::turnOff()
 {
+    qDebug() << "Turn off " << m_name;
+
     if (isReadOnly())
     {
         qWarning() << "This is a readonly sensor";
@@ -56,6 +60,7 @@ void QSwitch::sendSignal(const QJsonObject &responseObject)
      int state = responseObject["Data"].toInt();
     QDateTime timestamp = QDateTime::fromString(responseObject["TimeStamp"].toString(),Qt::ISODate);
     SwitchState theState = static_cast<SwitchState>(state);
+    qDebug() << "State for " << m_name << " is " << (int)theState;
     emit switchStateReceived(m_name, theState, timestamp);
 }
 

@@ -31,6 +31,7 @@ signals:
 
 public slots:
     void onImageReceived(const QString name, const QByteArray imageData, QDateTime timeStamp);
+    void clear();
 private slots:
 
     void on_btnRefresh_clicked();

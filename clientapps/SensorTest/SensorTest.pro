@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -42,6 +42,8 @@ SOURCES += \
     configuration/facedetectionsettings/facedetectionsetting.cpp \
     statemachine/DoorMachine_sm.cpp \
     statemachine/door.cpp
+
+
 
 
 HEADERS  += \

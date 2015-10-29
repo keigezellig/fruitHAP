@@ -9,9 +9,11 @@
 #include <QGraphicsView>
 #include <QGraphicsTextItem>
 #include <QThread>
+#include <QSound>
 #include <widgets/qcamerawidget.h>
 #include "faceverifier/qopencvfaceverifier.h"
 #include "configuration/facedetectionsettings/facedetectionsettingsmodel.h"
+
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -31,8 +33,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_client,&QFruitHapClient::disconnected,this,&MainWindow::onDisconnected);    
     m_statusBarLabel = new QLabel();
     ui->statusBar->addWidget(m_statusBarLabel);
-    ui->doorCameraWidget = new QCameraWidget("",false, true,ui->doorCameraWidget);
-
+    ui->doorCameraWidget = new QCameraWidget(DOORCAMERA_NAME,false, true,ui->doorCameraWidget);
+    initSoundEffects("./sounds/");
 
     onDisconnected();
 }
@@ -89,12 +91,95 @@ void MainWindow::onConnected(const QString uri)
 
 void MainWindow::onSensorListLoaded()
 {        
-    //loadFaceDetectionSettings();
-    initDoorSetup();
+    qDebug() << "OnSensorListLoaded..";
+    //loadFaceDetectionSettings();    
     loadSwitchboard();
     loadCameraView();
 
     qDebug() << "Sensor list loaded..";
+}
+
+void MainWindow::initSensors()
+{
+    QList<QSwitch*> switches;
+    m_configControl.getAllSwitches(switches);
+
+    QList<QCamera*> cameras;
+    m_configControl.getAllCameras(cameras);
+
+    foreach (QSwitch* theSwitch, switches)
+    {
+        if (theSwitch->isReadOnly())
+        {
+            if (theSwitch->isPollable())
+            {
+                theSwitch->getValue();
+            }
+        }
+        else
+        {
+            theSwitch->turnOff();
+            delay(1);
+            theSwitch->getValue();
+        }
+
+        delay(1);
+    }
+
+    foreach (QCamera* theCamera, cameras)
+    {
+        if (theCamera->isPollable())
+        {
+            theCamera->getValue();
+        }
+        delay(1);
+    }
+}
+
+void MainWindow::initSoundEffects(const QString pathToSounds)
+{
+    //QSound::play("./sounds/facedetected.wav");
+   // bla.setLoops(-1);
+   // bla.play();
+
+
+    QSoundEffect* facedetectedFX = new QSoundEffect(this);
+    QSoundEffect* countdownFX = new QSoundEffect(this);
+    QSoundEffect* alarmFX = new QSoundEffect(this);
+    QSoundEffect* noAnswerFX = new QSoundEffect(this);
+    QSoundEffect* welcomeFX = new QSoundEffect(this);
+
+    facedetectedFX->setSource(QUrl::fromLocalFile(pathToSounds + "facedetected.wav"));
+    facedetectedFX->setLoopCount(1);
+
+    countdownFX->setSource(QUrl::fromLocalFile(pathToSounds + "countdown.wav"));
+    countdownFX->setLoopCount(1);
+
+    alarmFX->setSource(QUrl::fromLocalFile(pathToSounds + "alarm.wav"));
+    alarmFX->setLoopCount(QSoundEffect::Infinite);
+
+    noAnswerFX->setSource(QUrl::fromLocalFile(pathToSounds + "noanswer.wav"));
+    noAnswerFX->setLoopCount(1);
+
+    welcomeFX->setSource(QUrl::fromLocalFile(pathToSounds + "welcome.wav"));
+    welcomeFX->setLoopCount(1);
+
+
+
+    m_soundEffects.insert("FaceDetected",facedetectedFX);
+    m_soundEffects.insert("AlarmCountDown",countdownFX);
+    m_soundEffects.insert("AlarmSound",alarmFX);
+    m_soundEffects.insert("Welcome",welcomeFX);
+    m_soundEffects.insert("NoAnswer",noAnswerFX);
+}
+
+void MainWindow::stopAllSounds()
+{
+    m_soundEffects["FaceDetected"]->stop();
+    m_soundEffects["AlarmCountDown"]->stop();
+    m_soundEffects["AlarmSound"]->stop();
+    m_soundEffects["Welcome"]->stop();
+    m_soundEffects["NoAnswer"]->stop();
 }
 
 void MainWindow::initDoorSetup()
@@ -213,10 +298,7 @@ void MainWindow::onFaceDetected(const QString name, const QByteArray imageData, 
 
     if (name == DOORCAMERA_NAME)
     {
-        m_door->faceHasBeenDetected(imageData);
-        ui->btnApprove->setEnabled(true);
-        ui->btnReset->setEnabled(false);
-        ui->btnNotApprove->setEnabled(true);
+        m_door->faceHasBeenDetected(imageData);        
     }
 
 }
@@ -230,8 +312,8 @@ void MainWindow::on_actionConnect_triggered()
 {
     bool ok;
     m_uri = QInputDialog::getText(this,"Connect to MQ server",
-                                            "Enter AMQ connection string (default is amqp://guest:guest@localhost)", QLineEdit::Normal,
-                                            "", &ok);
+                                            "Enter AMQ connection string (empty is amqp://guest:guest@localhost/)", QLineEdit::Normal,
+                                            "amqp://admin:admin@sarajevo/", &ok);
     if (ok)
     {
             QStringList bindingKeys;
@@ -247,6 +329,16 @@ void MainWindow::on_actionDisconnect_triggered()
 {
     m_client->disconnectFromServer();
 
+}
+
+void MainWindow::on_actionInit_sensors_triggered()
+{
+    initSensors();       
+}
+
+void MainWindow::on_actionInit_door_triggered()
+{
+    initDoorSetup();
 }
 
 void MainWindow::on_btnApprove_clicked()
@@ -272,6 +364,7 @@ void MainWindow::loadSensors()
 void MainWindow::onDoorInitialize()
 {
     qDebug() << "Door initialize";
+    stopAllSounds();
     QSwitch* alarmSwitch = dynamic_cast<QSwitch*>(m_configControl.getSensorByName(ALARMSWITCH_NAME));
     QSwitch* approvalSwitch = dynamic_cast<QSwitch*>(m_configControl.getSensorByName(APROVESWITCH_NAME));
 
@@ -284,48 +377,66 @@ void MainWindow::onDoorInitialize()
     }
 
     ui->btnApprove->setEnabled(false);
-    ui->btnReset->setEnabled(false);
     ui->btnNotApprove->setEnabled(false);
+    ui->btnReset->setEnabled(false);
+    QCameraWidget *widget = dynamic_cast<QCameraWidget*>(ui->doorCameraWidget);
+    widget->clear();
+
 }
 
 void MainWindow::onDoorImageWithFaceIsAvailable(const QByteArray image)
 {
+    stopAllSounds();
     QCameraWidget *widget = dynamic_cast<QCameraWidget*>(ui->doorCameraWidget);
     widget->onImageReceived(DOORCAMERA_NAME,image,QDateTime::currentDateTime());
-
+    m_soundEffects["FaceDetected"]->play();
+    ui->btnApprove->setEnabled(true);
+    ui->btnNotApprove->setEnabled(true);
+    ui->btnReset->setEnabled(false);
 
 }
 
 void MainWindow::onDoorAccessGranted()
 {
     qDebug() << "Access granted";
+    stopAllSounds();
     QSwitch* approvalSwitch = dynamic_cast<QSwitch*>(m_configControl.getSensorByName(APROVESWITCH_NAME));
+
     if (approvalSwitch != nullptr)
     {
         approvalSwitch->turnOn();
     }
+    m_soundEffects["Welcome"]->play();
     ui->btnApprove->setEnabled(false);
-    ui->btnReset->setEnabled(false);
     ui->btnNotApprove->setEnabled(false);
+    ui->btnReset->setEnabled(false);
+
 }
 
 void MainWindow::onDoorAccessDenied()
 {
+
     qDebug() << "Access denied";
+    stopAllSounds();
     QSwitch* alarmSwitch = dynamic_cast<QSwitch*>(m_configControl.getSensorByName(ALARMSWITCH_NAME));
+    m_soundEffects["AlarmCountDown"]->play();
     if (alarmSwitch != nullptr)
     {
         alarmSwitch->turnOn();
     }
+    m_soundEffects["AlarmSound"]->play();
     ui->btnApprove->setEnabled(false);
-    ui->btnReset->setEnabled(true);
     ui->btnNotApprove->setEnabled(false);
+    ui->btnReset->setEnabled(true);
 
 }
 
 void MainWindow::onDoorNoAnswer()
 {
     qDebug() << "No answer..";
+    stopAllSounds();
+    m_soundEffects["NoAnswer"]->play();
+    delay(10);
 }
 
 

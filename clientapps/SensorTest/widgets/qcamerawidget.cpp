@@ -116,3 +116,9 @@ void QCameraWidget::onImageReceived(const QString name, const QByteArray imageDa
         ui->graphicsView->setScene(m_drawing);
     }
 }
+
+void QCameraWidget::clear()
+{
+    if (m_drawing != nullptr)
+        m_drawing->clear();
+}

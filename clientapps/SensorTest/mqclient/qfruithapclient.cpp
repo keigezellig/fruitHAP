@@ -190,6 +190,8 @@ void QFruitHapClient::onPubSubQueueDeclared() {
     {
         m_pubsubQueue->bind(m_pubsubExchange, bindingKey);
         qDebug() << " [*] Waiting for incoming messages with binding key " << bindingKey;
+        QString uri(m_client->host());
+        emit connected(uri);
     }
 }
 
@@ -220,10 +222,8 @@ void QFruitHapClient::onRpcQueueDeclared()
 {
     qDebug() << "Rpc queue ready";
     m_rpcResponseQueue->consume();
-    QString uri(m_client->host());
 
 
-    emit connected(uri);
 }
 
 
@@ -261,3 +261,4 @@ void QFruitHapClient::onRequestTimeout()
     emit requestTimedOut();
 
 }
+

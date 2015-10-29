@@ -58,8 +58,6 @@ private:
     QAmqpQueue *m_pubsubQueue;
     QString m_correlationId;
 
-
-
 };
 
 #endif // QFRUITHAPCLIENT_H
