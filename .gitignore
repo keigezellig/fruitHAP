@@ -8,3 +8,4 @@ packages
 *.jpg
 node_modules
 *.dev.json
+build*

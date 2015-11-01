@@ -15,7 +15,7 @@ sub.on('data', function(alert)
 { 
     console.log("Received alert!");
   var alertObject = JSON.parse(alert);
-  if (alertObject.SensorName == 'DoorbellMonitor')
+  if (alertObject.SensorName == 'UsbCamMotionDetect')
 	  {
 	  var timestamp = new Date(alertObject.TimeStamp);
 	  var formatted = moment(timestamp).format('LLLL');
@@ -36,7 +36,7 @@ sub.on('data', function(alert)
   	  if (alertObject.Data != null && alertObject.Data != "" )
 	  {
 	      console.log("Image data found, decoding");
-	      base64_decode(alertObject.Data, imgPath);
+	      base64_decode(alertObject.Data.$value, imgPath);
 	  
   console.log("Sending image");
   pusher.file(deviceParams, imgPath, 'Camera image', function(error, response)
