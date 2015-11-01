@@ -1,5 +1,6 @@
 ﻿using System;
-using FruitHap.StandardActions.Messages;
+
+using FruitHAP.Core.Action;
 
 namespace FruitHap.StandardActions
 {

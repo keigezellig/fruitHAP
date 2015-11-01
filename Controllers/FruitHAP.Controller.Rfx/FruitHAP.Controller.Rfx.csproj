@@ -50,6 +50,9 @@
     <Compile Include="InternalPacketData\SetModeResponsePacketEvent.cs" />
     <Compile Include="InternalPacketData\StatusResponsePacketEvent.cs" />
     <Compile Include="RfxDevice.cs" />
+    <Compile Include="PacketHandlers\RfxAckPacketHandler.cs" />
+    <Compile Include="InternalPacketData\RfxAckPacket.cs" />
+    <Compile Include="InternalPacketData\RfxAckPacketEvent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

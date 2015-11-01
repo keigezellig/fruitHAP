@@ -1,0 +1,91 @@
+%class Door
+%header Door.h
+
+%start MainMap::WaitingForFaceDetection
+
+%map MainMap
+%%
+WaitingForFaceDetection
+Entry
+{
+  initialAction();
+}
+{
+  FaceDetected (image: const QByteArray&)
+    WaitingForApproval
+    {
+	onFaceDetected(image);
+    }
+  Default
+    nil
+    {
+    }
+}
+
+WaitingForApproval
+Entry
+{
+  startApprovalTimer();
+}
+Exit
+{
+  stopApprovalTimer();
+}
+{
+  ApprovalTimeOut
+    WaitingForFaceDetection
+    {
+	onApprovalTimeOut();
+    }
+  Approval (isApproved: const bool)
+    [isApproved=false] 
+    Alarm
+    {
+	onNotApproved();
+    }
+  Approval (isApproved: const bool)
+    [isApproved=true]
+    Unlocked
+    {
+	onApproved();
+    }
+  Default
+    nil
+    {
+    }
+}
+
+Alarm
+{
+  Reset
+    WaitingForFaceDetection
+    {
+    }
+  Default
+    nil
+    {
+    }
+
+}
+
+Unlocked
+Entry
+{
+  startUnlockedTimer();
+}
+Exit
+{
+  stopUnlockedTimer();
+}
+{
+  UnlockedTimerTimeOut
+    WaitingForFaceDetection
+    {
+    }
+  Default
+    nil
+    {
+    }
+}
+
+%%

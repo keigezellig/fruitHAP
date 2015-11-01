@@ -5,7 +5,7 @@ using FruitHAP.Core.SensorRepository;
 using FruitHAP.Common.Helpers;
 using System.Linq;
 using System.Collections;
-using FruitHap.StandardActions.Messages;
+using FruitHAP.Core.Action;
 
 namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 {
@@ -97,17 +97,17 @@ namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 
 			var callResult = method.Invoke (sensor, arguments.ToArray());
 
-			return CreateResultMessage(sensor,callResult);
+			return CreateResultMessage(sensor,command.OperationName,callResult);
 		}			
 
 		#endregion
 
 	
-		SensorMessage CreateResultMessage (ISensor sensor, object callResult)
+		SensorMessage CreateResultMessage (ISensor sensor, string operationName, object callResult)
 		{
 			return new SensorMessage () {
 				TimeStamp = DateTime.Now,
-				Data = callResult,
+				Data = new CommandResult() {OperationName = operationName, Result = callResult},
 				SensorName = sensor.Name,
 				EventType = RequestDataType.Command.ToString ()
 			};

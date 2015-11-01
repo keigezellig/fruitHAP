@@ -29,9 +29,10 @@ namespace FruitHAP.Sensor.Aggregated
 		public string Name { get; set; }
 
 		public string Description { get; set; }
+        public string Category { get; set; }
 
 
-		public List<ISensor> Inputs {
+        public List<ISensor> Inputs {
 			get 
 			{
 				return inputs;
@@ -59,7 +60,7 @@ namespace FruitHAP.Sensor.Aggregated
 		{
 			var image = this.camera.GetImageAsync ().Result;
 			if (image != null) {
-				sensorEventPublisher.Publish<SensorEvent> (this, Convert.ToBase64String (image));
+				sensorEventPublisher.Publish<SensorEvent> (this, image);
 			} 
 			else 
 			{

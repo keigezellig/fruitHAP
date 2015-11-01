@@ -6,6 +6,8 @@ using FruitHAP.Common.Helpers;
 using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Sensor.PacketData.AC;
 using FruitHAP.Core.Controller;
+using FruitHAP.Sensor.PacketData.General;
+using System.Threading.Tasks;
 
 namespace FruitHAP.Sensor.KaKu.Common
 {
@@ -18,6 +20,9 @@ namespace FruitHAP.Sensor.KaKu.Common
 		protected readonly ILogger logger;
 		protected IEventAggregator aggregator;
 
+		private bool isAckReceived;
+		private bool ackValue;
+
 		protected abstract void ProcessReceivedACDataForThisDevice (ACPacket data);
 
 		protected KakuDevice (IEventAggregator aggregator, ILogger logger)
@@ -25,6 +30,7 @@ namespace FruitHAP.Sensor.KaKu.Common
 			this.aggregator = aggregator;
 			this.logger = logger;
 			aggregator.GetEvent<ACPacketEvent> ().Subscribe (HandleIncomingACMessage, ThreadOption.PublisherThread, false, f => f.Direction == Direction.FromController && DataReceivedCorrespondsToThisDevice(f.Payload));
+			aggregator.GetEvent<AckPacketEvent>().Subscribe(HandleIncomingAckMessage, ThreadOption.PublisherThread, false, f => f.Direction == Direction.FromController);
 
 		}
 			
@@ -39,6 +45,8 @@ namespace FruitHAP.Sensor.KaKu.Common
 			get { return description; }
 			set { description = value; }
 		}
+
+        public string Category { get; set; }
 
 		public uint DeviceId {
 			get {
@@ -72,6 +80,31 @@ namespace FruitHAP.Sensor.KaKu.Common
 		{
 			return (decodedData.DeviceId == deviceId) && (decodedData.UnitCode == unitCode);
 		}
+
+		void HandleIncomingAckMessage (ControllerEventData<AckPacket> obj)
+		{			
+			isAckReceived = true;
+			ackValue = obj.Payload.IsAcknowledged;
+		}
+
+		protected async Task<bool> GetAck()
+		{
+			
+
+			Task<bool> workerTask = new Task<bool>(() => {
+				while (!this.isAckReceived)
+				{
+				}
+				this.isAckReceived = false;
+				return this.ackValue;
+			});
+
+			workerTask.Start();
+
+			return await workerTask.TimeoutAfter(TimeSpan.FromSeconds(5));
+
+		}
+
 
 		public override string ToString ()
 		{

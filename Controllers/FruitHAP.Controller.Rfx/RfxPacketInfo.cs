@@ -15,6 +15,7 @@ namespace FruitHAP.Controller.Rfx
 	{
 		Unknown,
 		Interface,
+		Ack,
 		AC
 	}
 

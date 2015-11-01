@@ -10,6 +10,7 @@ using FruitHAP.Core.Sensor.SensorTypes;
 using FruitHAP.Sensor.PacketData.AC;
 using FruitHAP.Core.SensorEventPublisher;
 using FruitHAP.Core.Controller;
+using FruitHAP.Sensor.PacketData.General;
 
 namespace FruitHAP.Sensor.KaKu
 {
@@ -25,6 +26,8 @@ namespace FruitHAP.Sensor.KaKu
 		public KakuSwitch(IEventAggregator aggregator, ILogger logger, ISensorEventPublisher sensorEventPublisher) : base(aggregator,logger)
 		{
 			this.sensorEventPublisher = sensorEventPublisher;
+
+
 		}
 
 		public Command OnCommand {
@@ -64,41 +67,53 @@ namespace FruitHAP.Sensor.KaKu
 
 		public void TurnOn ()
 		{
-			State = SwitchState.On;
+            if (!isReadOnly)
+            {
+				UpdateState (SwitchState.On);
+            }
+            else
+            {
+                logger.Warn("Read only switch!");
+            }
 		}
 
 		public void TurnOff ()
 		{
-			State = SwitchState.Off;
+            if (!isReadOnly)
+            {
+				UpdateState (SwitchState.Off);
+            }
+            else
+            {
+                logger.Warn("Read only switch!");
+            }
+        }
+
+		private void UpdateState (SwitchState newState)
+		{
+			if (newState == state) 
+			{
+				return;
+			}
+
+			TriggerControllerEvent(newState);
+			var ack = GetAck ().Result;
+			if (ack) {
+				state = newState;
+				TriggerSensorEvent ();
+				logger.InfoFormat ("State changed to {0}", state);				
+			} 
+			else 
+			{
+				logger.Warn ("Negative or no acknowledgement from controller received, state will not be changed");
+			}
 		}
 
 		public SwitchState GetState ()
 		{
-			return State;
+			return state;
 		}
-
-		private SwitchState State
-		{
-			get 
-			{
-				return state;
-			}
-			set 
-			{
-				if (value != state) 
-				{
-					state = value;
-					logger.InfoFormat ("State changed to {0}",state);
-					if (!IsReadOnly) 
-					{
-						TriggerControllerEvent ();
-					}
-					TriggerSensorEvent ();
-				}
-			}
-		}
-
-
+        
 		public object GetValue ()
 		{
 			return state;
@@ -116,9 +131,10 @@ namespace FruitHAP.Sensor.KaKu
 		protected override void ProcessReceivedACDataForThisDevice (ACPacket data)
 		{
 			SwitchState newState = DetermineNewState(data);
-			State = newState;
-
-		}
+			state = newState;
+            TriggerSensorEvent();
+            logger.InfoFormat("State changed to {0}", state);
+        }
 
 		void TriggerSensorEvent ()
 		{
@@ -138,11 +154,11 @@ namespace FruitHAP.Sensor.KaKu
 
 			if (fireEvent) 
 			{
-				sensorEventPublisher.Publish<SensorEvent> (this, state.ToString ());
+				sensorEventPublisher.Publish<SensorEvent> (this, state);
 			}
 		}
 
-		private void TriggerControllerEvent ()
+		private void TriggerControllerEvent (SwitchState state)
 		{
 			logger.Debug ("Firing controller event");
 			if (state == SwitchState.Undefined) 

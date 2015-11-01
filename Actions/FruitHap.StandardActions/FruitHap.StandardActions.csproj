@@ -58,15 +58,16 @@
     <Compile Include="EventTrigger\Configuration\EventTriggerActionConfiguration.cs" />
     <Compile Include="EventTrigger\Configuration\EventTriggerActionConfigurationProvider.cs" />
     <Compile Include="IncomingRequest\RequestDataType.cs" />
-    <Compile Include="Messages\SensorMessage.cs" />
+    <Compile Include="IncomingRequest\RequestHandlers\CommandResult.cs" />
+    <Compile Include="ConfigurationRequest\ConfigurationRequestAction.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Messages\" />
     <Folder Include="IncomingRequest\" />
     <Folder Include="EventTrigger\" />
     <Folder Include="IncomingRequest\RequestHandlers\" />
     <Folder Include="EventTrigger\Configuration\" />
+    <Folder Include="ConfigurationRequest\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
