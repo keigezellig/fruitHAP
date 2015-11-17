@@ -1,0 +1,55 @@
+- hosts: testserver
+  tasks:
+  - name: Update repo cache
+    apt: update_cache=yes
+
+  - name: Update to latest software
+    apt: upgrade=dist
+
+  - name: Test for arm7
+    shell: echo "ARM v7 present so adding Xamarin repos for Mono"
+    when: ansible_architecture == "armv7l"
+
+  - name: Add Xamarin repo keys
+    apt_key: keyserver=keyserver.ubuntu.com id=3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+             state=present
+    when: ansible_architecture == "armv7l"
+
+  - name: Add Xamarin repo
+    apt_repository: repo='deb http://download.mono-project.com/repo/debian wheezy main'
+                    state=present
+    when: ansible_architecture == "armv7l"
+  
+  - name: Install Mono
+    apt: pkg=mono-complete state=latest update_cache=true
+
+  - name: Download rabbit-mq
+    get_url: url=https://www.rabbitmq.com/releases/rabbitmq-server/v3.4.4/rabbitmq-server_3.4.4-1_all.deb dest=/home/pi/
+
+  - name: Install Erlang stuff 1
+    apt: pkg=erlang state=latest
+
+  - name: Install Erlang stuff 2
+    apt: pkg=erlang-nox state=latest
+  
+  - name: Install Erlang stuff 4
+    apt: pkg=logrotate state=latest
+    
+  - name: Install rabbit-mq package
+    apt: deb=/home/pi/rabbitmq-server_3.4.4-1_all.deb state=present
+
+  - name: Enable management plugin for rabbit-mq
+    rabbitmq_plugin: names=rabbitmq_management state=enabled
+
+  - name: Add admin user to rabbit-mq
+    rabbitmq_user: user=admin password=admin tags=administrator configure_priv=.* read_priv=.* write_priv=.* state=present
+  
+  - name: Add non admin user to rabbit-mq (amqpuser)
+    rabbitmq_user: user=amqpuser password=amqpuser read_priv=.* write_priv=.* state=present
+
+  - name: Restart Rabbit MQ
+    service: name=rabbitmq-server state=restarted
+
+
+
+    
