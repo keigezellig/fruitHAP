@@ -48,7 +48,7 @@
     rabbitmq_user: user=amqpuser password=amqpuser read_priv=.* write_priv=.* state=present
 
   - name: Restart Rabbit MQ
-    service: name=rabbitmq-server state=restarted
+    service: name=rabbitmq-server state=restarted enabled=yes
   
   - name: Download NodeJS
     get_url: url=http://node-arm.herokuapp.com/node_latest_armhf.deb dest=/home/pi/
