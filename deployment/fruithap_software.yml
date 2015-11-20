@@ -1,23 +1,27 @@
 - hosts: testserver
   tasks:
   - name: Copy FruitHAP Engine to ~/fruithap/engine
-    synchronize: src=engine dest=/home/pi/fruithap/ delete=yes recursive=yes 
+    synchronize: 
+        src: engine 
+        dest: /home/pi/fruithap/ 
+        delete: yes
+        recursive: yes 
         rsync_opts:
           - "--exclude=.json"
           - "--exclude=.config"
   - name: Copy Pushbullet notifier to ~/fruithap/pushbullet-notifier 
     synchronize: src=pushbullet-notifier dest=/home/pi/fruithap/ recursive=yes
   - name: Copy supervisor config
-    copy: src=initscripts/supervisord.conf dest=/etc/
+    copy: src=initscripts/supervisord.conf dest=/etc/ group=root owner=root mode=0755
   - name: Copy supervisor init script
-    copy: src=initscripts/supervisord.sh /etc/init.d/supervisor
+    copy: src=initscripts/supervisord.sh dest=/etc/init.d/supervisor group=root owner=root mode=0755
   - name: Create log directory for supervisord
-    file: path=/var/log/supervisord/ state=directory
+    file: path=/var/log/supervisor/ state=directory group=root owner=root mode=0755
 
   - name: Add user pi to group dialout
     user: name=pi groups=dialout append=yes
   - name: Install required npm packages for pushbullet-notifier
     npm: path=/home/pi/fruithap/pushbullet-notifier
   - name: Start service supervisor and configure it to run on startup
-    service: name=supervisor enabled=yes started=started
+    service: name=supervisor state=started enabled=yes
 
