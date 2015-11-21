@@ -8,19 +8,19 @@
     
   - name: Upgrade to Jessie (1)
     apt_repository: repo='deb http://mirrordirector.raspbian.org/raspbian/ wheezy main contrib non-free rpi' state=absent
-    when: ansible_distribution_release = "wheezy"
+    when: ansible_distribution_release == "wheezy"
 
   - name: Upgrade to Jessie (2)
     apt_repository: repo='deb http://mirrordirector.raspbian.org/raspbian/ jessie main contrib non-free rpi' state=present
-    when: ansible_distribution_release = "wheezy"
+    when: ansible_distribution_release == "wheezy"
 
   - name: Upgrade to Jessie (3)
     apt: update_cache=yes
-    when: ansible_distribution_release = "wheezy"
+    when: ansible_distribution_release == "wheezy"
 
   - name: Upgrade to Jessie (4)
     apt: upgrade=dist
-    when: ansible_distribution_release = "wheezy"
+    when: ansible_distribution_release == "wheezy"
 
   - name: Test for arm7
     shell: echo "ARM v7 present so adding Xamarin repos for Mono"
