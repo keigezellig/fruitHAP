@@ -111,7 +111,7 @@
   - name: Install required npm packages for pushbullet-notifier
     npm: path=/home/pi/fruithap/pushbullet-notifier
   - name: Start service supervisor and configure it to run on startup
-    service: name=supervisor state=started enabled=yes
+    service: name=supervisor state=restarted enabled=yes
 
     
 
