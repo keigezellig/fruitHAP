@@ -1,4 +1,4 @@
-- hosts: "{{ target }}"
+- hosts: "{{ target | default('all') }}"
   tasks:
   - name: Update repo cache
     apt: update_cache=yes
