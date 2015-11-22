@@ -97,8 +97,17 @@
           - "--exclude=*.json"
           - "--exclude=*.config"
 
+  - name: Copy main config file
+    copy: src=engine/FruitHAP.Startup.exe.config dest=/home/pi/fruithap/engine force=no
+
   - name: Copy Pushbullet notifier to ~/fruithap/pushbullet-notifier 
-    synchronize: src=pushbullet-notifier dest=/home/pi/fruithap/ recursive=yes
+    synchronize: 
+	- src: pushbullet-notifier 
+        - dest: /home/pi/fruithap/ 
+        - recursive: yes
+        - rsync_opts:
+          - "--exclude=*.json"
+        
   - name: Copy supervisor config
     copy: src=initscripts/supervisord.conf dest=/etc/ group=root owner=root mode=0755
   - name: Copy supervisor init script
