@@ -1,24 +1,33 @@
 - hosts: "{{ target | default('all') }}"
   tasks:
+  
+  - name: Check if supervisor Service Exists
+    stat: path=/etc/init.d/supervisor
+    register: service_status
+
+  - name: Stop supervisor Service
+    service: name=supervisor state=stopped
+    when: service_status.stat.exists
+
   - name: Update repo cache
     apt: update_cache=yes
 
   - name: Update to latest software
     apt: upgrade=dist
     
-  - name: Upgrade to Jessie (1)
+  - name: Upgrade to Jessie - Remove Wheezy repos
     apt_repository: repo='deb http://mirrordirector.raspbian.org/raspbian/ wheezy main contrib non-free rpi' state=absent
     when: ansible_distribution_release == "wheezy"
 
-  - name: Upgrade to Jessie (2)
+  - name: Upgrade to Jessie - Add Jessie repos
     apt_repository: repo='deb http://mirrordirector.raspbian.org/raspbian/ jessie main contrib non-free rpi' state=present
     when: ansible_distribution_release == "wheezy"
 
-  - name: Upgrade to Jessie (3)
+  - name: Upgrade to Jessie - Update cache
     apt: update_cache=yes
     when: ansible_distribution_release == "wheezy"
 
-  - name: Upgrade to Jessie (4)
+  - name: Upgrade to Jessie - Upgrade!
     apt: upgrade=dist
     when: ansible_distribution_release == "wheezy"
 
@@ -101,13 +110,13 @@
     copy: src=engine/FruitHAP.Startup.exe.config dest=/home/pi/fruithap/engine force=no
 
   - name: Copy Pushbullet notifier to ~/fruithap/pushbullet-notifier 
-    synchronize: 
-	- src: pushbullet-notifier 
-        - dest: /home/pi/fruithap/ 
-        - recursive: yes
-        - rsync_opts:
+    synchronize:
+        src: pushbullet-notifier 
+        dest: /home/pi/fruithap/ 
+        recursive: yes 
+        rsync_opts:
           - "--exclude=*.json"
-        
+       
   - name: Copy supervisor config
     copy: src=initscripts/supervisord.conf dest=/etc/ group=root owner=root mode=0755
   - name: Copy supervisor init script

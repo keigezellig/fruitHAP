@@ -16,9 +16,9 @@ if [ ! -f $playbookname ] ; then
 fi
 
 if [ -z $target ] ; then
-	cmdline="$ansible $playbookname -u $user -s -vvv"
+	cmdline="$ansible $playbookname -u $user -s"
 else
-	cmdline="$ansible $playbookname -u $user -s -e target=$target -vvv"
+	cmdline="$ansible $playbookname -u $user -s -e target=$target"
 fi
 
 echo $cmdline
