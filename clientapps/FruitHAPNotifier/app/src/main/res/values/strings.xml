@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">FruitHAP Notifier</string>
+    <string name="title_notification_detail">Notification Detail</string>
+</resources>
