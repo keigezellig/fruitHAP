@@ -5,18 +5,24 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.fruithapnotifier.app.R;
-import com.fruithapnotifier.app.ServiceControlActivity;
+
+import java.util.Date;
 
 public class EventNotificationService extends Service
 {
     private static String LOGTAG = "EventNotificationService";
+    private static String SENSOREVENT_ACTION = "com.fruithapnotifier.app.action.SENSOR_EVENT";
+
     private static int SERVICE_STATE_NOTIFICATIONID = 1;
+    private static int INCOMING_EVENT_NOTIFICATIONID = 2;
+
     private static String START_ACTION = "com.fruithapnotifier.app.action.START_SERVICE";
     private static String STOP_ACTION = "com.fruithapnotifier.app.action.STOP_SERVICE";
 
@@ -42,13 +48,31 @@ public class EventNotificationService extends Service
     {
         super.onCreate();
         eventNotificationTask = new EventNotificationTask(this);
+
         eventNotificationReceiver = new BroadcastReceiver()
         {
             @Override
             public void onReceive(Context context, Intent intent)
             {
-                String message = intent.getStringExtra("message");
-                Log.d("receiver", "Got message: " + message);
+
+                String id = intent.getStringExtra("itemId");
+                String value = intent.getStringExtra("itemValue");
+                Date timestamp =  new Date(intent.getLongExtra("itemTimestamp",0));
+                Log.d(LOGTAG,"Id: "+id);
+                Log.d(LOGTAG,"Timestamp: "+timestamp.toString());
+                Log.d(LOGTAG,"Value: "+value);
+
+                NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context)
+                        .setContentTitle("Incoming event!")
+                        .setContentText(intent.getStringExtra("itemValue"))
+                        .setContentInfo(intent.getStringExtra("itemId"))
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setLights(Color.RED,100,100)
+                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+
+                notificationManager.notify(
+                        INCOMING_EVENT_NOTIFICATIONID,
+                        notifyBuilder.build());
 
             }
         };
@@ -75,6 +99,9 @@ public class EventNotificationService extends Service
     {
         Log.d(LOGTAG, "Service started");
 
+        notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
 /*        // Creates an explicit intent for an Activity in your app
         Intent notifyIntent = new Intent(this, ServiceControlActivity.class);
 
@@ -93,8 +120,6 @@ public class EventNotificationService extends Service
         Intent stopServiceIntent = new Intent(STOP_ACTION);
         PendingIntent pendingIntentStop = PendingIntent.getBroadcast(this, -1, stopServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notifyBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle("FruitHap Notification Service")
@@ -121,7 +146,7 @@ public class EventNotificationService extends Service
 
     private void registerBroadcastListener()
     {
-        LocalBroadcastManager.getInstance(this).registerReceiver(eventNotificationReceiver,new IntentFilter("ACTION_FRUITHAP_NOTIFICATION"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(eventNotificationReceiver,new IntentFilter(SENSOREVENT_ACTION));
     }
 
     private void unregisterBroadcastReceiver()

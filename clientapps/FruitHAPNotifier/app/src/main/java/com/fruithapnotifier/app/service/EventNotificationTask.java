@@ -6,7 +6,9 @@ import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import com.fruithapnotifier.app.domain.SensorEvent;
 
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -27,19 +29,16 @@ public class EventNotificationTask extends AsyncTask<Void, Void, Void>
     protected Void doInBackground(Void... voids)
     {
         Random rnd = new Random();
-        int counter=0;
         while (!isCancelled())
         {
-            int index = rnd.nextInt(3) + 1;
-            intent.putExtra("message","Hello from NotifierTask " + counter);
+            int index = rnd.nextInt(3);
+            SensorEvent.DummyItem item = new SensorEvent.DummyItem("" + index,new Date().getTime(),"Item "+index);
+            intent.putExtra("itemId",item.id);
+            intent.putExtra("itemTimestamp",item.timeStamp);
+            intent.putExtra("itemValue",item.toString());
             broadcastManager.sendBroadcast(intent);
-            counter++;
-            SystemClock.sleep(1000);
+            SystemClock.sleep(5000);
 
-            /*if (isCancelled())
-            {
-                break;
-            }*/
         }
 
         Log.d("TASK", "Cancelled!");

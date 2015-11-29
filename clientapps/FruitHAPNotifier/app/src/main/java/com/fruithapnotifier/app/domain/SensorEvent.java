@@ -35,10 +35,12 @@ public class SensorEvent
      */
     public static class DummyItem {
         public String id;
+        public long timeStamp;
         public String content;
 
-        public DummyItem(String id, String content) {
+        public DummyItem(String id, long timeStamp, String content) {
             this.id = id;
+            this.timeStamp = timeStamp;
             this.content = content;
         }
 
