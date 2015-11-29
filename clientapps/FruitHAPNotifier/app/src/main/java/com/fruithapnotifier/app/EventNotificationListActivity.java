@@ -1,4 +1,4 @@
-package com.example.fruithapnotifier.app;
+package com.fruithapnotifier.app;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,23 +6,23 @@ import android.support.v4.app.FragmentActivity;
 
 
 /**
- * An activity representing a list of Notifications. This activity
+ * An activity representing a list of EventNotifications. This activity
  * has different presentations for handset and tablet-size devices. On
  * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link NotificationDetailActivity} representing
+ * lead to a {@link EventNotificationDetailActivity} representing
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  * <p/>
  * The activity makes heavy use of fragments. The list of items is a
- * {@link NotificationListFragment} and the item details
- * (if present) is a {@link NotificationDetailFragment}.
+ * {@link EventNotificationListFragment} and the item details
+ * (if present) is a {@link EventNotificationDetailFragment}.
  * <p/>
  * This activity also implements the required
- * {@link NotificationListFragment.Callbacks} interface
+ * {@link EventNotificationListFragment.Callbacks} interface
  * to listen for item selections.
  */
-public class NotificationListActivity extends FragmentActivity
-        implements NotificationListFragment.Callbacks {
+public class EventNotificationListActivity extends FragmentActivity
+        implements EventNotificationListFragment.Callbacks {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -33,9 +33,9 @@ public class NotificationListActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notification_list);
+        setContentView(R.layout.activity_eventnotification_list);
 
-        if (findViewById(R.id.notification_detail_container) != null) {
+        if (findViewById(R.id.eventnotification_detail_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-large and
             // res/values-sw600dp). If this view is present, then the
@@ -44,8 +44,8 @@ public class NotificationListActivity extends FragmentActivity
 
             // In two-pane mode, list items should be given the
             // 'activated' state when touched.
-            ((NotificationListFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.notification_list))
+            ((EventNotificationListFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.eventnotification_list))
                     .setActivateOnItemClick(true);
         }
 
@@ -53,7 +53,7 @@ public class NotificationListActivity extends FragmentActivity
     }
 
     /**
-     * Callback method from {@link NotificationListFragment.Callbacks}
+     * Callback method from {@link EventNotificationListFragment.Callbacks}
      * indicating that the item with the given ID was selected.
      */
     @Override
@@ -63,18 +63,18 @@ public class NotificationListActivity extends FragmentActivity
             // adding or replacing the detail fragment using a
             // fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(NotificationDetailFragment.ARG_ITEM_ID, id);
-            NotificationDetailFragment fragment = new NotificationDetailFragment();
+            arguments.putString(EventNotificationDetailFragment.ARG_ITEM_ID, id);
+            EventNotificationDetailFragment fragment = new EventNotificationDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.notification_detail_container, fragment)
+                    .replace(R.id.eventnotification_detail_container, fragment)
                     .commit();
 
         } else {
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
-            Intent detailIntent = new Intent(this, NotificationDetailActivity.class);
-            detailIntent.putExtra(NotificationDetailFragment.ARG_ITEM_ID, id);
+            Intent detailIntent = new Intent(this, EventNotificationDetailActivity.class);
+            detailIntent.putExtra(EventNotificationDetailFragment.ARG_ITEM_ID, id);
             startActivity(detailIntent);
         }
     }

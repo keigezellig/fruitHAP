@@ -1,4 +1,4 @@
-package com.example.fruithapnotifier.app.dummy;
+package com.fruithapnotifier.app.dummy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

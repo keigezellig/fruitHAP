@@ -1,26 +1,28 @@
-package com.example.fruithapnotifier.app.service;
+package com.fruithapnotifier.app.service;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 /**
- * Created by maarten on 11/27/15.
+ * Created by developer on 11/28/15.
  */
-public class NotifierTask extends AsyncTask<NotifierTaskParameters, Void, Void>
+public class NotificationTask extends AsyncTask<Void, Void, Void>
 {
     private final Intent intent;
     private final LocalBroadcastManager broadcastManager;
     private static String INTENT_ACTION = "ACTION_FRUITHAP_NOTIFICATION";
 
-    public NotifierTask(Context ctx) {
+    public NotificationTask(Context ctx) {
         this.broadcastManager = LocalBroadcastManager.getInstance(ctx);
         this.intent = new Intent(INTENT_ACTION);
     }
 
     @Override
-    protected Void doInBackground(NotifierTaskParameters... notifierTaskParameters)
+    protected Void doInBackground(Void... voids)
     {
         int counter=0;
         while (!isCancelled())
@@ -28,10 +30,16 @@ public class NotifierTask extends AsyncTask<NotifierTaskParameters, Void, Void>
             intent.putExtra("message","Hello from NotifierTask " + counter);
             broadcastManager.sendBroadcast(intent);
             counter++;
+            SystemClock.sleep(1000);
+
+            /*if (isCancelled())
+            {
+                break;
+            }*/
         }
 
+        Log.d("TASK", "Cancelled!");
+
         return null;
-
-
     }
 }

@@ -1,26 +1,27 @@
-package com.example.fruithapnotifier.app;
+package com.fruithapnotifier.app;
 
-import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 
 import android.view.MenuItem;
 
+
 /**
- * An activity representing a single Notification detail screen. This
+ * An activity representing a single EventNotification detail screen. This
  * activity is only used on handset devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
- * in a {@link NotificationListActivity}.
+ * in a {@link EventNotificationListActivity}.
  * <p/>
  * This activity is mostly just a 'shell' activity containing nothing
- * more than a {@link NotificationDetailFragment}.
+ * more than a {@link EventNotificationDetailFragment}.
  */
-public class NotificationDetailActivity extends AppCompatActivity {
+public class EventNotificationDetailActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notification_detail);
+        setContentView(R.layout.activity_eventnotification_detail);
 
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -38,12 +39,12 @@ public class NotificationDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(NotificationDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(NotificationDetailFragment.ARG_ITEM_ID));
-            NotificationDetailFragment fragment = new NotificationDetailFragment();
+            arguments.putString(EventNotificationDetailFragment.ARG_ITEM_ID,
+                    getIntent().getStringExtra(EventNotificationDetailFragment.ARG_ITEM_ID));
+            EventNotificationDetailFragment fragment = new EventNotificationDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.notification_detail_container, fragment)
+                    .add(R.id.eventnotification_detail_container, fragment)
                     .commit();
         }
     }
@@ -58,7 +59,7 @@ public class NotificationDetailActivity extends AppCompatActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            navigateUpTo(new Intent(this, NotificationListActivity.class));
+            navigateUpTo(new Intent(this, EventNotificationListActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -8,24 +8,24 @@
               android:divider="?android:attr/dividerHorizontal"
               android:orientation="horizontal"
               android:showDividers="middle"
-              tools:context=".NotificationListActivity">
+              tools:context=".EventNotificationListActivity">
 
     <!--
-    This layout is a two-pane layout for the Notifications
+    This layout is a two-pane layout for the EventNotifications
     master/detail flow.
     
     -->
 
     <fragment
-            android:id="@+id/notification_list"
-            android:name="com.example.fruithapnotifier.app.NotificationListFragment"
+            android:id="@+id/eventnotification_list"
+            android:name="com.fruithapnotifier.app.EventNotificationListFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             tools:layout="@android:layout/list_content"/>
 
     <FrameLayout
-            android:id="@+id/notification_detail_container"
+            android:id="@+id/eventnotification_detail_container"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"/>

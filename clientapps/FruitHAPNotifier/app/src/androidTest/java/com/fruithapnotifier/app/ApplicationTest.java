@@ -1,4 +1,4 @@
-package com.example.fruithapnotifier.app;
+package com.fruithapnotifier.app;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
