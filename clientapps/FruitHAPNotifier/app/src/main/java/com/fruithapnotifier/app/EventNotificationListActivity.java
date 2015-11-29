@@ -3,6 +3,7 @@ package com.fruithapnotifier.app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import com.fruithapnotifier.app.service.EventNotificationService;
 
 
 /**
@@ -29,6 +30,7 @@ public class EventNotificationListActivity extends FragmentActivity
      * device.
      */
     private boolean mTwoPane;
+    private Intent serviceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,16 @@ public class EventNotificationListActivity extends FragmentActivity
                     .setActivateOnItemClick(true);
         }
 
-        // TODO: If exposing deep links into your app, handle intents here.
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        serviceIntent = new Intent(EventNotificationListActivity.this, EventNotificationService.class);
+        startService(serviceIntent);
+
     }
 
     /**
@@ -77,5 +88,11 @@ public class EventNotificationListActivity extends FragmentActivity
             detailIntent.putExtra(EventNotificationDetailFragment.ARG_ITEM_ID, id);
             startActivity(detailIntent);
         }
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
     }
 }

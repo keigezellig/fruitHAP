@@ -7,26 +7,30 @@ import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import java.util.Random;
+
 /**
  * Created by developer on 11/28/15.
  */
-public class NotificationTask extends AsyncTask<Void, Void, Void>
+public class EventNotificationTask extends AsyncTask<Void, Void, Void>
 {
     private final Intent intent;
     private final LocalBroadcastManager broadcastManager;
-    private static String INTENT_ACTION = "ACTION_FRUITHAP_NOTIFICATION";
+    private static String SENSOREVENT_ACTION = "com.fruithapnotifier.app.action.SENSOR_EVENT";
 
-    public NotificationTask(Context ctx) {
+    public EventNotificationTask(Context ctx) {
         this.broadcastManager = LocalBroadcastManager.getInstance(ctx);
-        this.intent = new Intent(INTENT_ACTION);
+        this.intent = new Intent(SENSOREVENT_ACTION);
     }
 
     @Override
     protected Void doInBackground(Void... voids)
     {
+        Random rnd = new Random();
         int counter=0;
         while (!isCancelled())
         {
+            int index = rnd.nextInt(3) + 1;
             intent.putExtra("message","Hello from NotifierTask " + counter);
             broadcastManager.sendBroadcast(intent);
             counter++;
