@@ -6,8 +6,10 @@ import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import com.fruithapnotifier.app.domain.Dummy;
 import com.fruithapnotifier.app.domain.SensorEvent;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Random;
 
@@ -31,11 +33,10 @@ public class EventNotificationTask extends AsyncTask<Void, Void, Void>
         Random rnd = new Random();
         while (!isCancelled())
         {
-            int index = rnd.nextInt(3);
-            SensorEvent.DummyItem item = new SensorEvent.DummyItem("" + index,new Date().getTime(),"Item "+index);
-            intent.putExtra("itemId",item.id);
-            intent.putExtra("itemTimestamp",item.timeStamp);
-            intent.putExtra("itemValue",item.toString());
+            intent.putExtra("timestamp",new Date());
+            intent.putExtra("sensorName","Doorbell");
+            intent.putExtra("optionalData", (String) null);
+
             broadcastManager.sendBroadcast(intent);
             SystemClock.sleep(5000);
 

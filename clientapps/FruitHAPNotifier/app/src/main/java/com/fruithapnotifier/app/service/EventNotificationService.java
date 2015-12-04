@@ -55,7 +55,6 @@ public class EventNotificationService extends Service
             public void onReceive(Context context, Intent intent)
             {
 
-                String id = intent.getStringExtra("itemId");
                 String value = intent.getStringExtra("itemValue");
                 Date timestamp =  new Date(intent.getLongExtra("itemTimestamp",0));
                 Log.d(LOGTAG,"Id: "+id);

@@ -1,52 +1,42 @@
 package com.fruithapnotifier.app.domain;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Date;
 
+/**
+ * Created by maarten on 12/2/15.
+ */
 public class SensorEvent
 {
+    private int id;
+    private String sensorName;
+    private Date timestamp;
+    private byte[] optionalData;
 
-    /**
-     * An array of sample (dummy) items.
-     */
-    public static List<DummyItem> ITEMS = new ArrayList<DummyItem>();
-
-    /**
-     * A map of sample (dummy) items, by ID.
-     */
-    public static Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
-
-    static {
-        // Add 3 sample items.
-        addItem(new DummyItem("1", "Item 1"));
-        addItem(new DummyItem("2", "Item 2"));
-        addItem(new DummyItem("3", "Item 3"));
+    public SensorEvent(int id, String sensorName, Date timestamp, byte[] optionalData) {
+        this.id = id;
+        this.sensorName = sensorName;
+        this.timestamp = timestamp;
+        this.optionalData = optionalData;
     }
 
-    private static void addItem(DummyItem item) {
-        ITEMS.add(item);
-        ITEM_MAP.put(item.id, item);
+    public int getId() {
+        return id;
     }
 
-    /**
-     * A dummy item representing a piece of content.
-     */
-    public static class DummyItem {
-        public String id;
-        public long timeStamp;
-        public String content;
+    public String getSensorName() {
+        return sensorName;
+    }
 
-        public DummyItem(String id, long timeStamp, String content) {
-            this.id = id;
-            this.timeStamp = timeStamp;
-            this.content = content;
-        }
+    public Date getTimestamp() {
+        return timestamp;
+    }
 
-        @Override
-        public String toString() {
-            return content;
-        }
+    public byte[] getOptionalData() {
+        return optionalData;
+    }
+
+    @Override
+    public String toString() {
+        return getTimestamp().toString() + " " + getSensorName();
     }
 }

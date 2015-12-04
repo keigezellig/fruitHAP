@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-import com.fruithapnotifier.app.domain.SensorEvent;
+import com.fruithapnotifier.app.domain.Dummy;
 
 /**
  * A fragment representing a single EventNotification detail screen.
@@ -26,7 +26,7 @@ public class EventNotificationDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
-    private SensorEvent.DummyItem mItem;
+    private Dummy.DummyItem mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -43,7 +43,7 @@ public class EventNotificationDetailFragment extends Fragment {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = SensorEvent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            mItem = Dummy.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
         }
     }
 
