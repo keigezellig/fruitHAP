@@ -7,9 +7,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.fruithapnotifier.app.domain.SensorEvent;
-import org.apache.commons.lang3.SerializationUtils;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,29 +16,34 @@ import java.util.List;
  */
 public class SensorEventRepository
 {
+
+
     // Database fields
     private SQLiteDatabase database;
     private SqlHelper dbHelper;
-    private String[] allColumns = { SqlHelper.COLUMN_ID, SqlHelper.COLUMN_TIMESTAMP, SqlHelper.COLUMN_SENSORNAME, SqlHelper.COLUMN_OPTIONALDATA };
+    private String[] allColumns = { SqlHelper.COLUMN_ID, SqlHelper.COLUMN_SENSORNAME, SqlHelper.COLUMN_TIMESTAMP, SqlHelper.COLUMN_OPTIONALDATA };
 
-    public SensorEventRepository(Context context) {
+    public SensorEventRepository(Context context)
+    {
         dbHelper = new SqlHelper(context);
     }
 
-    public void open() throws SQLException {
+    public void open() throws SQLException
+    {
         database = dbHelper.getWritableDatabase();
     }
 
-    public void close() {
+    public void close()
+    {
         dbHelper.close();
     }
 
-    public SensorEvent createEvent(Long timestamp, String sensorName, Serializable optionalData)
+    public SensorEvent createEvent(Long timestamp, String sensorName, byte[] optionalData)
     {
         ContentValues values = new ContentValues();
         values.put(SqlHelper.COLUMN_TIMESTAMP, timestamp);
         values.put(SqlHelper.COLUMN_SENSORNAME, sensorName);
-        values.put(SqlHelper.COLUMN_OPTIONALDATA, SerializationUtils.serialize(optionalData));
+        values.put(SqlHelper.COLUMN_OPTIONALDATA, optionalData);
 
         long insertId = database.insert(SqlHelper.TABLE_EVENTS, null,
                 values);
@@ -78,9 +80,11 @@ public class SensorEventRepository
         return events;
     }
 
-    private SensorEvent cursorToSensorEvent(Cursor cursor) {
+    private SensorEvent cursorToSensorEvent(Cursor cursor)
+    {
         SensorEvent event = new SensorEvent(cursor.getInt(0), cursor.getString(1), new Date(cursor.getLong(2)), cursor.getBlob(3));
         return event;
     }
+
 }
 

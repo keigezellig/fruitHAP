@@ -4,12 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.service.EventNotificationService;
 
 public class ServiceControlReceiver extends BroadcastReceiver
 {
-    private static String START_ACTION = "com.fruithapnotifier.app.action.START_SERVICE";
-    private static String STOP_ACTION = "com.fruithapnotifier.app.action.STOP_SERVICE";
+
 
     public ServiceControlReceiver()
     {
@@ -23,11 +23,11 @@ public class ServiceControlReceiver extends BroadcastReceiver
 
         String action = intent.getAction();
         Log.d("ServiceControlReceiver",action);
-        if (action.equals(START_ACTION))
+        if (action.equals(Constants.START_ACTION))
         {
             context.startService(serviceIntent);
         }
-        else if (action.equals(STOP_ACTION))
+        else if (action.equals(Constants.STOP_ACTION))
         {
             context.stopService(serviceIntent);
         }

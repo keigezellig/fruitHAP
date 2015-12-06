@@ -3,12 +3,17 @@ package com.fruithapnotifier.app;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
 import com.fruithapnotifier.app.domain.Dummy;
+import com.fruithapnotifier.app.domain.SensorEvent;
+import com.fruithapnotifier.app.persistence.SensorEventRepository;
+
+import java.util.List;
 
 /**
  * A list fragment representing a list of EventNotifications. This fragment
@@ -37,6 +42,8 @@ public class EventNotificationListFragment extends ListFragment {
      * The current activated item position. Only used on tablets.
      */
     private int mActivatedPosition = ListView.INVALID_POSITION;
+    private SensorEventRepository datasource;
+    private List<SensorEvent> values;
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -71,12 +78,23 @@ public class EventNotificationListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+//        datasource = new SensorEventRepository(this.getContext());
+//        datasource.open();
+//
+//        values = datasource.getAllComments();
+
         // TODO: replace with a real list adapter.
         setListAdapter(new ArrayAdapter<Dummy.DummyItem>(
                 getActivity(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
                 Dummy.ITEMS));
+
+        /*setListAdapter(new ArrayAdapter<SensorEvent>(
+                getActivity(),
+                android.R.layout.simple_list_item_activated_1,
+                android.R.id.text1,
+                values));*/
     }
 
     @Override
@@ -116,7 +134,8 @@ public class EventNotificationListFragment extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onItemSelected(Dummy.ITEMS.get(position).id);
+        Log.d("listfrag", "position: " + position + " id: " + id);
+        //mCallbacks.onItemSelected(values.get(position).getId());
     }
 
     @Override

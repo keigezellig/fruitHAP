@@ -12,25 +12,23 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.fruithapnotifier.app.R;
+import com.fruithapnotifier.app.ServiceControlActivity;
+import com.fruithapnotifier.app.common.Constants;
+import com.fruithapnotifier.app.persistence.SensorEventRepository;
 
 import java.util.Date;
 
 public class EventNotificationService extends Service
 {
     private static String LOGTAG = "EventNotificationService";
-    private static String SENSOREVENT_ACTION = "com.fruithapnotifier.app.action.SENSOR_EVENT";
 
-    private static int SERVICE_STATE_NOTIFICATIONID = 1;
-    private static int INCOMING_EVENT_NOTIFICATIONID = 2;
-
-    private static String START_ACTION = "com.fruithapnotifier.app.action.START_SERVICE";
-    private static String STOP_ACTION = "com.fruithapnotifier.app.action.STOP_SERVICE";
 
     private EventNotificationTask eventNotificationTask;
     private NotificationManager notificationManager;
     private NotificationCompat.Builder notifyBuilder;
 
     private BroadcastReceiver eventNotificationReceiver;
+    private SensorEventRepository datasource;
 
 
     public EventNotificationService()
@@ -47,32 +45,39 @@ public class EventNotificationService extends Service
     public void onCreate()
     {
         super.onCreate();
-        eventNotificationTask = new EventNotificationTask(this);
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
+        datasource = new SensorEventRepository(this);
+
+        eventNotificationTask = new RabbitMQNotificationTask(this);
         eventNotificationReceiver = new BroadcastReceiver()
         {
             @Override
             public void onReceive(Context context, Intent intent)
             {
+                if (intent.getAction().equals(Constants.SENSOREVENT_ACTION))
+                {
+                    Date timestamp = new Date(intent.getLongExtra("timestamp", 0));
+                    String sensorName = intent.getStringExtra("sensorName");
+                    byte[] optionalData = intent.getByteArrayExtra("optionalData");
+                    Log.d(LOGTAG, "Timestamp: " + timestamp.toString());
+                    Log.d(LOGTAG, "Sensor name: " + sensorName);
+                    Log.d(LOGTAG, "Optional data?: " + optionalData == null ? "yes" : "no");
 
-                String value = intent.getStringExtra("itemValue");
-                Date timestamp =  new Date(intent.getLongExtra("itemTimestamp",0));
-                Log.d(LOGTAG,"Id: "+id);
-                Log.d(LOGTAG,"Timestamp: "+timestamp.toString());
-                Log.d(LOGTAG,"Value: "+value);
+                    NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context)
+                            .setContentTitle("Incoming event!")
+                            .setContentText(sensorName)
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setLights(Color.RED, 500, 500)
+                            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
-                NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context)
-                        .setContentTitle("Incoming event!")
-                        .setContentText(intent.getStringExtra("itemValue"))
-                        .setContentInfo(intent.getStringExtra("itemId"))
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setLights(Color.RED,100,100)
-                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+                    notificationManager.notify(
+                            Constants.INCOMING_EVENT_NOTIFICATIONID,
+                            notifyBuilder.build());
 
-                notificationManager.notify(
-                        INCOMING_EVENT_NOTIFICATIONID,
-                        notifyBuilder.build());
+                    // saveToDatabase(timestamp,sensorName,optionalData);
 
+                }
             }
         };
 
@@ -82,13 +87,24 @@ public class EventNotificationService extends Service
 
     }
 
+    private void saveToDatabase(Date timestamp, String sensorName, byte[] optionalData)
+    {
+        datasource.open();
+        datasource.createEvent(timestamp.getTime(),sensorName,optionalData);
+        datasource.close();
+    }
+
     @Override
     public void onDestroy()
     {
         unregisterBroadcastReceiver();
-        notificationManager.cancel(SERVICE_STATE_NOTIFICATIONID);
-        eventNotificationTask.cancel(true);
+        notificationManager.cancel(Constants.SERVICE_STATE_NOTIFICATIONID);
+        if (eventNotificationTask.getStatus() == AsyncTask.Status.RUNNING)
+        {
+            eventNotificationTask.cancel(true);
+        }
         Log.d(LOGTAG, "Service stopped");
+        //datasource.close();
         super.onDestroy();
 
     }
@@ -96,56 +112,58 @@ public class EventNotificationService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        Log.d(LOGTAG, "Service started");
-
-        notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-/*        // Creates an explicit intent for an Activity in your app
-        Intent notifyIntent = new Intent(this, ServiceControlActivity.class);
-
-// Sets the Activity to start in a new, empty task
-        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-// Creates the PendingIntent
-        PendingIntent notifyPendingIntent =
-                PendingIntent.getActivity(
-                        this,
-                        0,
-                        notifyIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );*/
-
-        Intent stopServiceIntent = new Intent(STOP_ACTION);
-        PendingIntent pendingIntentStop = PendingIntent.getBroadcast(this, -1, stopServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
+        PendingIntent stopServicePendingIntent = getStopServicePendingIntent();
+        PendingIntent startServiceControlPendingIntent = getServiceControlPendingIntent();
 
         notifyBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle("FruitHap Notification Service")
                 .setContentText("Service active")
                 .setContentInfo("Service status")
                 .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentIntent(startServiceControlPendingIntent)
                 .setOngoing(true)
-                .addAction(R.mipmap.ic_launcher,"Stop",pendingIntentStop)
+                .addAction(R.mipmap.ic_launcher,"Stop",stopServicePendingIntent)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
-
         notificationManager.notify(
-                SERVICE_STATE_NOTIFICATIONID,
+                Constants.SERVICE_STATE_NOTIFICATIONID,
                 notifyBuilder.build());
 
 
-        if (eventNotificationTask.getStatus() != AsyncTask.Status.RUNNING)
-        {
-            eventNotificationTask.execute((Void) null);
-        }
+
+        String amqpUrl = "amqp://admin:admin@192.168.1.81";
+        String exchangeName = "FruitHAP_PubSubExchange";
+        String topic = "alerts";
+
+        eventNotificationTask.execute(amqpUrl, exchangeName, topic);
+
+        Log.d(LOGTAG, "Service started");
         return START_NOT_STICKY;
+    }
+
+    private PendingIntent getServiceControlPendingIntent()
+    {
+        Intent startServiceControlIntent = new Intent(this, ServiceControlActivity.class);
+        startServiceControlIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        return PendingIntent.getActivity(
+                this,
+                0,
+                startServiceControlIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+    }
+
+    private PendingIntent getStopServicePendingIntent()
+    {
+        Intent stopServiceIntent = new Intent(Constants.STOP_ACTION);
+        return PendingIntent.getBroadcast(this, -1, stopServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
 
     private void registerBroadcastListener()
     {
-        LocalBroadcastManager.getInstance(this).registerReceiver(eventNotificationReceiver,new IntentFilter(SENSOREVENT_ACTION));
+        LocalBroadcastManager.getInstance(this).registerReceiver(eventNotificationReceiver,new IntentFilter(Constants.SENSOREVENT_ACTION));
     }
 
     private void unregisterBroadcastReceiver()

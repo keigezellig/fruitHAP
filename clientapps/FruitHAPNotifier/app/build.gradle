@@ -17,7 +17,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.example.fruithapnotifier.app"
+        applicationId "com.fruithapnotifier.app"
         minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
@@ -36,4 +36,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:support-v4:23.1.1'
     compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'com.rabbitmq:amqp-client:3.5.6'
 }

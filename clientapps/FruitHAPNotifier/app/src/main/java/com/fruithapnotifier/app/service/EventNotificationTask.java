@@ -3,47 +3,66 @@ package com.fruithapnotifier.app.service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import com.fruithapnotifier.app.domain.Dummy;
-import com.fruithapnotifier.app.domain.SensorEvent;
-
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Random;
+import android.widget.Toast;
+import com.fruithapnotifier.app.common.Constants;
 
 /**
- * Created by developer on 11/28/15.
+ * Created by developer on 12/5/15.
  */
-public class EventNotificationTask extends AsyncTask<Void, Void, Void>
+public abstract class EventNotificationTask extends AsyncTask<String, Void, Void>
 {
-    private final Intent intent;
-    private final LocalBroadcastManager broadcastManager;
-    private static String SENSOREVENT_ACTION = "com.fruithapnotifier.app.action.SENSOR_EVENT";
+    private final Context context;
+    protected String LOGTAG;
+    protected final Intent intent;
+    protected final LocalBroadcastManager broadcastManager;
 
-    public EventNotificationTask(Context ctx) {
+    public EventNotificationTask(Context ctx)
+    {
         this.broadcastManager = LocalBroadcastManager.getInstance(ctx);
-        this.intent = new Intent(SENSOREVENT_ACTION);
+        this.intent = new Intent(Constants.SENSOREVENT_ACTION);
+        this.context = ctx;
+    }
+
+
+
+    @Override
+    public Void doInBackground(String... parameters)
+    {
+        try
+        {
+            initialize(parameters);
+            while (!isCancelled())
+            {
+                doWork(parameters);
+            }
+
+            Log.d(LOGTAG, "Cancelled!");
+
+            cleanup(parameters);
+
+        }
+        catch (Exception ex)
+        {
+            Log.e(LOGTAG,"Oops. Something went wrong:",ex);
+        }
+
+        return null;
+
     }
 
     @Override
-    protected Void doInBackground(Void... voids)
+    protected void onPostExecute(Void aVoid)
     {
-        Random rnd = new Random();
-        while (!isCancelled())
+        if (!isCancelled()) //Terminated in an error so stop the service
         {
-            intent.putExtra("timestamp",new Date());
-            intent.putExtra("sensorName","Doorbell");
-            intent.putExtra("optionalData", (String) null);
-
-            broadcastManager.sendBroadcast(intent);
-            SystemClock.sleep(5000);
-
+            Toast.makeText(context,"Something went wrong while executing the service and will be stopped now",Toast.LENGTH_SHORT).show();
+            context.stopService(new Intent(context, EventNotificationService.class));
         }
-
-        Log.d("TASK", "Cancelled!");
-
-        return null;
     }
+
+    protected abstract void initialize(String[] parameters) throws Exception;
+    protected abstract void doWork(String[] parameters) throws Exception;
+    protected abstract void cleanup(String[] parameters) throws Exception;
 }
