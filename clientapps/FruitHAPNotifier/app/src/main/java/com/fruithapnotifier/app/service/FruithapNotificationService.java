@@ -12,18 +12,20 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.fruithapnotifier.app.R;
-import com.fruithapnotifier.app.ServiceControlActivity;
+import com.fruithapnotifier.app.ui.ServiceControlActivity;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.persistence.SensorEventRepository;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Date;
 
-public class EventNotificationService extends Service
+public class FruithapNotificationService extends Service
 {
-    private static String LOGTAG = "EventNotificationService";
+    private static String LOGTAG = "FruithapNotificationService";
 
 
-    private EventNotificationTask eventNotificationTask;
+    private FruithapNotificationTask fruithapNotificationTask;
     private NotificationManager notificationManager;
     private NotificationCompat.Builder notifyBuilder;
 
@@ -31,7 +33,7 @@ public class EventNotificationService extends Service
     private SensorEventRepository datasource;
 
 
-    public EventNotificationService()
+    public FruithapNotificationService()
     {
     }
 
@@ -49,24 +51,19 @@ public class EventNotificationService extends Service
 
         datasource = new SensorEventRepository(this);
 
-        eventNotificationTask = new RabbitMQNotificationTask(this);
+
+        fruithapNotificationTask = new FruithapNotificationTask(this);
         eventNotificationReceiver = new BroadcastReceiver()
         {
             @Override
             public void onReceive(Context context, Intent intent)
             {
-                if (intent.getAction().equals(Constants.SENSOREVENT_ACTION))
+                if (intent.getAction().equals(Constants.FRUITHAP_NOTIFICATION_ACTION))
                 {
-                    Date timestamp = new Date(intent.getLongExtra("timestamp", 0));
-                    String sensorName = intent.getStringExtra("sensorName");
-                    byte[] optionalData = intent.getByteArrayExtra("optionalData");
-                    Log.d(LOGTAG, "Timestamp: " + timestamp.toString());
-                    Log.d(LOGTAG, "Sensor name: " + sensorName);
-                    Log.d(LOGTAG, "Optional data?: " + optionalData == null ? "yes" : "no");
 
                     NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context)
                             .setContentTitle("Incoming event!")
-                            .setContentText(sensorName)
+                            .setContentText("")
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setLights(Color.RED, 500, 500)
                             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
@@ -74,6 +71,22 @@ public class EventNotificationService extends Service
                     notificationManager.notify(
                             Constants.INCOMING_EVENT_NOTIFICATIONID,
                             notifyBuilder.build());
+
+                    String message = intent.getStringExtra(Constants.MQ_PUBSUB_MESSAGE);
+
+                    if (!message.isEmpty())
+                    {
+                        try
+                        {
+                            JSONObject jsonObject = new JSONObject(message);
+                            Log.d(LOGTAG,jsonObject.toString());
+                        }
+                        catch (JSONException e)
+                        {
+                            Log.e(LOGTAG,"Message error",e);
+                        }
+
+                    }
 
                     // saveToDatabase(timestamp,sensorName,optionalData);
 
@@ -87,24 +100,18 @@ public class EventNotificationService extends Service
 
     }
 
-    private void saveToDatabase(Date timestamp, String sensorName, byte[] optionalData)
-    {
-        datasource.open();
-        datasource.createEvent(timestamp.getTime(),sensorName,optionalData);
-        datasource.close();
-    }
 
     @Override
     public void onDestroy()
     {
         unregisterBroadcastReceiver();
         notificationManager.cancel(Constants.SERVICE_STATE_NOTIFICATIONID);
-        if (eventNotificationTask.getStatus() == AsyncTask.Status.RUNNING)
+        if (fruithapNotificationTask.getStatus() == AsyncTask.Status.RUNNING)
         {
-            eventNotificationTask.cancel(true);
+            fruithapNotificationTask.cancel(true);
         }
+        datasource.close();
         Log.d(LOGTAG, "Service stopped");
-        //datasource.close();
         super.onDestroy();
 
     }
@@ -135,7 +142,7 @@ public class EventNotificationService extends Service
         String exchangeName = "FruitHAP_PubSubExchange";
         String topic = "alerts";
 
-        eventNotificationTask.execute(amqpUrl, exchangeName, topic);
+        fruithapNotificationTask.execute(amqpUrl, exchangeName, topic);
 
         Log.d(LOGTAG, "Service started");
         return START_NOT_STICKY;
@@ -163,15 +170,12 @@ public class EventNotificationService extends Service
 
     private void registerBroadcastListener()
     {
-        LocalBroadcastManager.getInstance(this).registerReceiver(eventNotificationReceiver,new IntentFilter(Constants.SENSOREVENT_ACTION));
+        LocalBroadcastManager.getInstance(this).registerReceiver(eventNotificationReceiver,new IntentFilter(Constants.FRUITHAP_NOTIFICATION_ACTION));
     }
 
     private void unregisterBroadcastReceiver()
     {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(eventNotificationReceiver);
     }
-
-
-
 
 }

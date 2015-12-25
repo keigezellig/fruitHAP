@@ -56,14 +56,14 @@ public class SensorEventRepository
         return newEvent;
     }
 
-    public void deleteComment(SensorEvent event) {
+    public void deleteEvent(SensorEvent event) {
         long id = event.getId();
         Log.d("repos","Event deleted with id: " + id);
         database.delete(SqlHelper.TABLE_EVENTS, dbHelper.COLUMN_ID
                 + " = " + id, null);
     }
 
-    public List<SensorEvent> getAllComments() {
+    public List<SensorEvent> getAllEvents() {
         List<SensorEvent> events = new ArrayList<SensorEvent>();
 
         Cursor cursor = database.query(SqlHelper.TABLE_EVENTS,

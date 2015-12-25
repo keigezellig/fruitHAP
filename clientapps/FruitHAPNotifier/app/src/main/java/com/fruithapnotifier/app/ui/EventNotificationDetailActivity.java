@@ -1,10 +1,11 @@
-package com.fruithapnotifier.app;
+package com.fruithapnotifier.app.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
 import android.view.MenuItem;
+import com.fruithapnotifier.app.R;
 
 
 /**

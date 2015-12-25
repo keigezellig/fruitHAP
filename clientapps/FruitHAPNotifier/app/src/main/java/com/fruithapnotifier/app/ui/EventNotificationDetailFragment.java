@@ -1,4 +1,4 @@
-package com.fruithapnotifier.app;
+package com.fruithapnotifier.app.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.domain.Dummy;
 
 /**

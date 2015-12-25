@@ -1,11 +1,11 @@
-package com.fruithapnotifier.app;
+package com.fruithapnotifier.app.ui;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import com.fruithapnotifier.app.common.Constants;
-import com.fruithapnotifier.app.service.EventNotificationService;
+import com.fruithapnotifier.app.service.FruithapNotificationService;
 
 public class ServiceControlReceiver extends BroadcastReceiver
 {
@@ -19,7 +19,7 @@ public class ServiceControlReceiver extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        Intent serviceIntent = new Intent(context, EventNotificationService.class);
+        Intent serviceIntent = new Intent(context, FruithapNotificationService.class);
 
         String action = intent.getAction();
         Log.d("ServiceControlReceiver",action);

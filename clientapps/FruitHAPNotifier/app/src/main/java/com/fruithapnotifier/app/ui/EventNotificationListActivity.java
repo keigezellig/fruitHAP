@@ -1,9 +1,10 @@
-package com.fruithapnotifier.app;
+package com.fruithapnotifier.app.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import com.fruithapnotifier.app.service.EventNotificationService;
+import com.fruithapnotifier.app.R;
+import com.fruithapnotifier.app.service.FruithapNotificationService;
 
 
 /**
@@ -58,7 +59,7 @@ public class EventNotificationListActivity extends FragmentActivity
     {
         super.onResume();
 
-        serviceIntent = new Intent(EventNotificationListActivity.this, EventNotificationService.class);
+        serviceIntent = new Intent(EventNotificationListActivity.this, FruithapNotificationService.class);
         startService(serviceIntent);
 
     }

@@ -1,13 +1,13 @@
-package com.fruithapnotifier.app;
+package com.fruithapnotifier.app.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import com.fruithapnotifier.app.service.EventNotificationService;
+import com.fruithapnotifier.app.R;
+import com.fruithapnotifier.app.service.FruithapNotificationService;
 
 
 public class ServiceControlActivity extends Activity
@@ -18,7 +18,7 @@ public class ServiceControlActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        serviceIntent = new Intent(ServiceControlActivity.this, EventNotificationService.class);
+        serviceIntent = new Intent(ServiceControlActivity.this, FruithapNotificationService.class);
         setContentView(R.layout.activity_test);
 
     }

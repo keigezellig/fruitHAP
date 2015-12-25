@@ -1,4 +1,4 @@
-package com.fruithapnotifier.app;
+package com.fruithapnotifier.app.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -81,7 +81,7 @@ public class EventNotificationListFragment extends ListFragment {
 //        datasource = new SensorEventRepository(this.getContext());
 //        datasource.open();
 //
-//        values = datasource.getAllComments();
+//        values = datasource.getAllEvents();
 
         // TODO: replace with a real list adapter.
         setListAdapter(new ArrayAdapter<Dummy.DummyItem>(

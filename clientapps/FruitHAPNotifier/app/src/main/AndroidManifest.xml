@@ -2,19 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fruithapnotifier.app" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".ServiceControlActivity"
+            android:name=".ui.ServiceControlActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:taskAffinity="" >
         </activity>
         <activity
-            android:name=".EventNotificationListActivity"
+            android:name=".ui.EventNotificationListActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,30 +25,33 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".EventNotificationDetailActivity"
+            android:name=".ui.EventNotificationDetailActivity"
             android:label="@string/title_eventnotification_detail"
-            android:parentActivityName=".EventNotificationListActivity" >
+            android:parentActivityName=".ui.EventNotificationListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".EventNotificationListActivity" />
+                android:value=".ui.EventNotificationListActivity" />
         </activity>
 
         <service
-            android:name=".service.EventNotificationService"
+            android:name=".service.FruithapNotificationService"
             android:enabled="true"
             android:exported="false" >
         </service>
 
         <receiver
-            android:name=".ServiceControlReceiver"
-            android:enabled="true">
+            android:name=".ui.ServiceControlReceiver"
+            android:enabled="true" >
             <intent-filter>
-                <action android:name="com.fruithapnotifier.app.action.START_SERVICE"/>
-                <action android:name="com.fruithapnotifier.app.action.STOP_SERVICE"/>
+                <action android:name="com.fruithapnotifier.app.action.START_SERVICE" />
+                <action android:name="com.fruithapnotifier.app.action.STOP_SERVICE" />
             </intent-filter>
         </receiver>
-    </application>
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+        <service
+            android:name=".service.FruithapRpcService"
+            android:exported="false" >
+        </service>
+    </application>
 
 </manifest>
