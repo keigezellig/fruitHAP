@@ -1,1 +1,7 @@
-{"RoutingKey":"alerts","Sensors":["RedLight","BlueLight","PIR","IpCamMotionDetect"]}
+{
+"RoutingKey":"alerts",
+"Sensors":
+	[		
+		{"SensorName":"IpCamMotionDetect","NotificationText":"Motion detected!","Priority":"Low"}
+	]
+}

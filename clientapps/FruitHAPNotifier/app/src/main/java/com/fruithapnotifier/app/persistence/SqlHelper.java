@@ -12,23 +12,17 @@ public class SqlHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_EVENTS = "events";
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_SENSORNAME = "sensorName";
-    public static final String COLUMN_TIMESTAMP = "timestamp";
-    public static final String COLUMN_OPTIONALDATA = "optional_data";
+    public static final String COLUMN_EVENTDATA = "eventData";
 
     private static final String DATABASE_NAME = "fruithap.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database creation sql statement
     private static final String DATABASE_CREATE = "create table "
             + TABLE_EVENTS + "(" + COLUMN_ID
             + " integer primary key autoincrement, "
-            + COLUMN_SENSORNAME
-            + " text not null, "
-            + COLUMN_TIMESTAMP
-            + " integer not null, "
-            + COLUMN_OPTIONALDATA
-            + " blob "
+            + COLUMN_EVENTDATA
+            + " text not null "
             +");";
 
     public SqlHelper(Context context) {

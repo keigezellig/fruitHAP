@@ -7,8 +7,10 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.fruithapnotifier.app.domain.SensorEvent;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,7 +23,7 @@ public class SensorEventRepository
     // Database fields
     private SQLiteDatabase database;
     private SqlHelper dbHelper;
-    private String[] allColumns = { SqlHelper.COLUMN_ID, SqlHelper.COLUMN_SENSORNAME, SqlHelper.COLUMN_TIMESTAMP, SqlHelper.COLUMN_OPTIONALDATA };
+    private String[] allColumns = { SqlHelper.COLUMN_ID, SqlHelper.COLUMN_EVENTDATA };
 
     public SensorEventRepository(Context context)
     {
@@ -38,12 +40,10 @@ public class SensorEventRepository
         dbHelper.close();
     }
 
-    public SensorEvent createEvent(Long timestamp, String sensorName, byte[] optionalData)
+    public SensorEvent createEvent(String eventData)
     {
         ContentValues values = new ContentValues();
-        values.put(SqlHelper.COLUMN_TIMESTAMP, timestamp);
-        values.put(SqlHelper.COLUMN_SENSORNAME, sensorName);
-        values.put(SqlHelper.COLUMN_OPTIONALDATA, optionalData);
+        values.put(SqlHelper.COLUMN_EVENTDATA, eventData);
 
         long insertId = database.insert(SqlHelper.TABLE_EVENTS, null,
                 values);
@@ -82,8 +82,18 @@ public class SensorEventRepository
 
     private SensorEvent cursorToSensorEvent(Cursor cursor)
     {
-        SensorEvent event = new SensorEvent(cursor.getInt(0), cursor.getString(1), new Date(cursor.getLong(2)), cursor.getBlob(3));
-        return event;
+        try
+        {
+            JSONObject eventData = new JSONObject(cursor.getString(1));
+            SensorEvent event = new SensorEvent(cursor.getInt(0), eventData);
+            return event;
+        }
+        catch (JSONException e)
+        {
+            Log.e("SensorEventRepository", "Cannot retrieve sensor event:",e);
+            return null;
+        }
+
     }
 
 }

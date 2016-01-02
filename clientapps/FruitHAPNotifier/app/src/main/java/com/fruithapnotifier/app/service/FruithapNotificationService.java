@@ -12,13 +12,12 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.fruithapnotifier.app.R;
+import com.fruithapnotifier.app.domain.Priority;
+import com.fruithapnotifier.app.domain.SensorEvent;
 import com.fruithapnotifier.app.ui.ServiceControlActivity;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.persistence.SensorEventRepository;
 import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Date;
 
 public class FruithapNotificationService extends Service
 {
@@ -49,8 +48,8 @@ public class FruithapNotificationService extends Service
         super.onCreate();
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        datasource = new SensorEventRepository(this);
 
+        datasource = new SensorEventRepository(this);
 
         fruithapNotificationTask = new FruithapNotificationTask(this);
         eventNotificationReceiver = new BroadcastReceiver()
@@ -60,43 +59,64 @@ public class FruithapNotificationService extends Service
             {
                 if (intent.getAction().equals(Constants.FRUITHAP_NOTIFICATION_ACTION))
                 {
-
-                    NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context)
-                            .setContentTitle("Incoming event!")
-                            .setContentText("")
-                            .setSmallIcon(R.mipmap.ic_launcher)
-                            .setLights(Color.RED, 500, 500)
-                            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-
-                    notificationManager.notify(
-                            Constants.INCOMING_EVENT_NOTIFICATIONID,
-                            notifyBuilder.build());
-
                     String message = intent.getStringExtra(Constants.MQ_PUBSUB_MESSAGE);
 
                     if (!message.isEmpty())
                     {
                         try
                         {
-                            JSONObject jsonObject = new JSONObject(message);
-                            Log.d(LOGTAG,jsonObject.toString());
+                            datasource.open();
+                            SensorEvent event = datasource.createEvent(message);
+                            datasource.close();
+
+                            Log.d(LOGTAG, event.toString());
+
+                            if (event.getNotificationText()!= null)
+                            {
+                                String messageText = event.getNotificationText();
+                                Priority prio = event.getNotificationPriority();
+                                int color = Color.BLACK;
+
+                                switch (prio)
+                                {
+                                    case Low:
+                                        color = Color.WHITE;
+                                        break;
+                                    case Medium:
+                                        color = Color.YELLOW;
+                                        break;
+                                    case High:
+                                        color = Color.RED;
+                                        break;
+                                }
+
+
+                                NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context)
+                                        .setContentTitle(messageText)
+                                        .setContentText(event.getSensorName())
+                                        .setSmallIcon(R.mipmap.ic_launcher)
+                                        .setLights(color, 1000, 1000)
+                                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+
+                                notificationManager.notify(
+                                        Constants.INCOMING_EVENT_NOTIFICATIONID,
+                                        notifyBuilder.build());
+                            }
+
+
                         }
                         catch (JSONException e)
                         {
-                            Log.e(LOGTAG,"Message error",e);
+                            Log.e(LOGTAG, "Message error", e);
                         }
-
                     }
-
-                    // saveToDatabase(timestamp,sensorName,optionalData);
-
                 }
             }
         };
 
         registerBroadcastListener();
 
-        Log.d(LOGTAG,"Service created");
+        Log.d(LOGTAG, "Service created");
 
     }
 
@@ -120,22 +140,21 @@ public class FruithapNotificationService extends Service
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         PendingIntent stopServicePendingIntent = getStopServicePendingIntent();
-        PendingIntent startServiceControlPendingIntent = getServiceControlPendingIntent();
+        PendingIntent startServiceControlActivityIntent = getServiceControlActivityIntent();
 
         notifyBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle("FruitHap Notification Service")
                 .setContentText("Service active")
                 .setContentInfo("Service status")
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentIntent(startServiceControlPendingIntent)
+                .setContentIntent(startServiceControlActivityIntent)
                 .setOngoing(true)
-                .addAction(R.mipmap.ic_launcher,"Stop",stopServicePendingIntent)
+                .addAction(R.mipmap.ic_launcher, "Stop", stopServicePendingIntent)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
         notificationManager.notify(
                 Constants.SERVICE_STATE_NOTIFICATIONID,
                 notifyBuilder.build());
-
 
 
         String amqpUrl = "amqp://admin:admin@192.168.1.81";
@@ -148,7 +167,7 @@ public class FruithapNotificationService extends Service
         return START_NOT_STICKY;
     }
 
-    private PendingIntent getServiceControlPendingIntent()
+    private PendingIntent getServiceControlActivityIntent()
     {
         Intent startServiceControlIntent = new Intent(this, ServiceControlActivity.class);
         startServiceControlIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -170,7 +189,7 @@ public class FruithapNotificationService extends Service
 
     private void registerBroadcastListener()
     {
-        LocalBroadcastManager.getInstance(this).registerReceiver(eventNotificationReceiver,new IntentFilter(Constants.FRUITHAP_NOTIFICATION_ACTION));
+        LocalBroadcastManager.getInstance(this).registerReceiver(eventNotificationReceiver, new IntentFilter(Constants.FRUITHAP_NOTIFICATION_ACTION));
     }
 
     private void unregisterBroadcastReceiver()
