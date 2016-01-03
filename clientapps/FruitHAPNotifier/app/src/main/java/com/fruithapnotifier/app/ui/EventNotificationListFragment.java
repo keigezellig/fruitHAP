@@ -1,6 +1,7 @@
 package com.fruithapnotifier.app.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -109,15 +110,23 @@ public class EventNotificationListFragment extends ListFragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
-        // Activities containing this fragment must implement its callbacks.
-        if (!(activity instanceof Callbacks)) {
-            throw new IllegalStateException("Activity must implement fragment's callbacks.");
+        Activity activity;
+
+        if (context instanceof Activity)
+        {
+            activity = (Activity) context;
+
+            // Activities containing this fragment must implement its callbacks.
+            if (!(activity instanceof Callbacks))
+            {
+                throw new IllegalStateException("Activity must implement fragment's callbacks.");
+            }
+            mCallbacks = (Callbacks) activity;
         }
 
-        mCallbacks = (Callbacks) activity;
     }
 
     @Override

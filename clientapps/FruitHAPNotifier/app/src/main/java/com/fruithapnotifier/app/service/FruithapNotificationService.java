@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -14,9 +13,12 @@ import android.util.Log;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.domain.Priority;
 import com.fruithapnotifier.app.domain.SensorEvent;
+import com.fruithapnotifier.app.ui.EventNotificationDetailActivity;
+import com.fruithapnotifier.app.ui.EventNotificationDetailFragment;
 import com.fruithapnotifier.app.ui.ServiceControlActivity;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.persistence.SensorEventRepository;
+import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
 import org.json.JSONException;
 
 public class FruithapNotificationService extends Service
@@ -46,8 +48,7 @@ public class FruithapNotificationService extends Service
     public void onCreate()
     {
         super.onCreate();
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
+        notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         datasource = new SensorEventRepository(this);
 
@@ -75,25 +76,12 @@ public class FruithapNotificationService extends Service
                             {
                                 String messageText = event.getNotificationText();
                                 Priority prio = event.getNotificationPriority();
-                                int color = Color.BLACK;
-
-                                switch (prio)
-                                {
-                                    case Low:
-                                        color = Color.WHITE;
-                                        break;
-                                    case Medium:
-                                        color = Color.YELLOW;
-                                        break;
-                                    case High:
-                                        color = Color.RED;
-                                        break;
-                                }
-
+                                int color = PriorityHelpers.ConvertToColor(prio);
 
                                 NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context)
                                         .setContentTitle(messageText)
                                         .setContentText(event.getSensorName())
+                                        .setContentIntent(getEventDetailActivityIntent(event.getId()))
                                         .setSmallIcon(R.mipmap.ic_launcher)
                                         .setLights(color, 1000, 1000)
                                         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
@@ -184,6 +172,19 @@ public class FruithapNotificationService extends Service
     {
         Intent stopServiceIntent = new Intent(Constants.STOP_ACTION);
         return PendingIntent.getBroadcast(this, -1, stopServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private PendingIntent getEventDetailActivityIntent(int eventId)
+    {
+        Intent eventDetailActivityIntent = new Intent(this, EventNotificationDetailActivity.class);
+        eventDetailActivityIntent.putExtra(EventNotificationDetailFragment.ARG_ITEM_ID,eventId);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+// Adds the back stack
+        stackBuilder.addParentStack(EventNotificationDetailActivity.class);
+// Adds the Intent to the top of the stack
+        stackBuilder.addNextIntent(eventDetailActivityIntent);
+// Gets a PendingIntent containing the entire back stack
+        return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
 

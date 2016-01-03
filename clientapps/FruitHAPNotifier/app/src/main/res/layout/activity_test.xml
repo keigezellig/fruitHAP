@@ -11,10 +11,20 @@
     <Button
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:id="@+id/btnStart"
+        android:text="Start notification service"
+        android:onClick="startNotificationService"
+        android:layout_weight="1" />
+
+
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:id="@+id/btnStop"
         android:text="Stop notification service"
         android:onClick="stopNotificationService"
         android:layout_weight="1" />
+
 
 
 </LinearLayout>

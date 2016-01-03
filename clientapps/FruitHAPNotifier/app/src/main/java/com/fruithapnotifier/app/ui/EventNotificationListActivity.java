@@ -59,8 +59,8 @@ public class EventNotificationListActivity extends FragmentActivity
     {
         super.onResume();
 
-        serviceIntent = new Intent(EventNotificationListActivity.this, FruithapNotificationService.class);
-        startService(serviceIntent);
+       // serviceIntent = new Intent(EventNotificationListActivity.this, FruithapNotificationService.class);
+        //startService(serviceIntent);
 
     }
 

@@ -80,6 +80,23 @@ public class SensorEventRepository
         return events;
     }
 
+    public SensorEvent getEventById(int id)
+    {
+        SensorEvent event = null;
+
+        Cursor cursor = database.query(SqlHelper.TABLE_EVENTS,
+                allColumns,dbHelper.COLUMN_ID + "=?",new String[] {""+id},null,null,null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            event = cursorToSensorEvent(cursor);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        return event;
+    }
+
     private SensorEvent cursorToSensorEvent(Cursor cursor)
     {
         try
