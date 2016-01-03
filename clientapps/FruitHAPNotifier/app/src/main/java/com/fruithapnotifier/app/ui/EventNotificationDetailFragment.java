@@ -21,6 +21,7 @@ import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.domain.SensorEvent;
 import com.fruithapnotifier.app.persistence.SensorEventRepository;
 import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
+import org.joda.time.format.DateTimeFormat;
 
 /**
  * A fragment representing a single EventNotification detail screen.
@@ -86,7 +87,7 @@ public class EventNotificationDetailFragment extends Fragment {
                 txtPriority.setText(PriorityHelpers.GetTextResource(mItem.getNotificationPriority()));
 
                 TextView txtTimestamp = (TextView) rootView.findViewById(R.id.txtTimestamp);
-                txtTimestamp.setText(mItem.getTimestamp().toString());
+                txtTimestamp.setText(DateTimeFormat.forStyle("SL").print(mItem.getTimestamp()));
 
                 TextView txtSensorName = (TextView) rootView.findViewById(R.id.txtSensorName);
                 txtSensorName.setText(mItem.getSensorName());

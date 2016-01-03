@@ -1,5 +1,7 @@
 package com.fruithapnotifier.app.domain;
 
+import android.util.Log;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
@@ -56,9 +58,16 @@ public class SensorEvent
     @Override
     public String toString()
     {
-        return "SensorEvent{" +
-                "id=" + id +
-                ", eventData=" + eventData +
-                '}';
+        try
+        {
+            String dt = DateTimeFormat.forStyle("SS").print(getTimestamp());
+            return String.format("%s %s %s",getNotificationPriority(),dt,getNotificationText());
+        }
+        catch (JSONException e)
+        {
+            Log.e(this.getClass().getName(),"Error",e);
+            return "";
+        }
+
     }
 }

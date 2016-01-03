@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
-import com.fruithapnotifier.app.domain.Dummy;
 import com.fruithapnotifier.app.domain.SensorEvent;
 import com.fruithapnotifier.app.persistence.SensorEventRepository;
 
@@ -54,8 +53,9 @@ public class EventNotificationListFragment extends ListFragment {
     public interface Callbacks {
         /**
          * Callback for when an item has been selected.
+         * @param id
          */
-        public void onItemSelected(String id);
+        public void onItemSelected(int id);
     }
 
     /**
@@ -64,7 +64,7 @@ public class EventNotificationListFragment extends ListFragment {
      */
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public void onItemSelected(String id) {
+        public void onItemSelected(int id) {
         }
     };
 
@@ -79,23 +79,18 @@ public class EventNotificationListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        datasource = new SensorEventRepository(this.getContext());
-//        datasource.open();
-//
-//        values = datasource.getAllEvents();
+        datasource = new SensorEventRepository(getActivity());
+        datasource.open();
 
-        // TODO: replace with a real list adapter.
-        setListAdapter(new ArrayAdapter<Dummy.DummyItem>(
-                getActivity(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                Dummy.ITEMS));
+        values = datasource.getAllEvents();
+        datasource.close();
 
-        /*setListAdapter(new ArrayAdapter<SensorEvent>(
-                getActivity(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                values));*/
+        setListAdapter(new SensorEventAdapter(getActivity(),android.R.layout.simple_list_item_activated_1,values));
+//        setListAdapter(new ArrayAdapter<SensorEvent>(
+//                getActivity(),
+//                android.R.layout.simple_list_item_activated_1,
+//                android.R.id.text1,
+//                values));
     }
 
     @Override
@@ -144,7 +139,7 @@ public class EventNotificationListFragment extends ListFragment {
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
         Log.d("listfrag", "position: " + position + " id: " + id);
-        //mCallbacks.onItemSelected(values.get(position).getId());
+        mCallbacks.onItemSelected(values.get(position).getId());
     }
 
     @Override

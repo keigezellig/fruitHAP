@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import com.fruithapnotifier.app.R;
-import com.fruithapnotifier.app.service.FruithapNotificationService;
 
 
 /**
@@ -67,15 +66,16 @@ public class EventNotificationListActivity extends FragmentActivity
     /**
      * Callback method from {@link EventNotificationListFragment.Callbacks}
      * indicating that the item with the given ID was selected.
+     * @param id
      */
     @Override
-    public void onItemSelected(String id) {
+    public void onItemSelected(int id) {
         if (mTwoPane) {
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
             // fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(EventNotificationDetailFragment.ARG_ITEM_ID, id);
+            arguments.putInt(EventNotificationDetailFragment.ARG_ITEM_ID, id);
             EventNotificationDetailFragment fragment = new EventNotificationDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
