@@ -66,9 +66,7 @@ public class FruithapNotificationService extends Service
                     {
                         try
                         {
-                            datasource.open();
                             SensorEvent event = datasource.createEvent(message);
-                            datasource.close();
 
                             Log.d(LOGTAG, event.toString());
 
@@ -118,7 +116,7 @@ public class FruithapNotificationService extends Service
         {
             fruithapNotificationTask.cancel(true);
         }
-        datasource.close();
+
         Log.d(LOGTAG, "Service stopped");
         super.onDestroy();
 
@@ -178,6 +176,7 @@ public class FruithapNotificationService extends Service
     {
         Intent eventDetailActivityIntent = new Intent(this, EventNotificationDetailActivity.class);
         eventDetailActivityIntent.putExtra(EventNotificationDetailFragment.ARG_ITEM_ID,eventId);
+        eventDetailActivityIntent.putExtra(EventNotificationDetailFragment.SHOULD_CLEAR_NOTIFICATION,true);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 // Adds the back stack
         stackBuilder.addParentStack(EventNotificationDetailActivity.class);

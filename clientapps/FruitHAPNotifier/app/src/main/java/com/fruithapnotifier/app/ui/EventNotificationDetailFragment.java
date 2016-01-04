@@ -35,6 +35,7 @@ public class EventNotificationDetailFragment extends Fragment {
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
+    public static final String SHOULD_CLEAR_NOTIFICATION = "SHOULD_CLEAR_NOTIFICATION" ;
 
     /**
      * The dummy content this fragment is presenting.
@@ -54,8 +55,7 @@ public class EventNotificationDetailFragment extends Fragment {
     {
         super.onAttach(context);
         datasource = new SensorEventRepository(context);
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(Constants.INCOMING_EVENT_NOTIFICATIONID);
+
     }
 
     @Override
@@ -64,9 +64,15 @@ public class EventNotificationDetailFragment extends Fragment {
 
         if (getArguments().containsKey(ARG_ITEM_ID))
         {
-            datasource.open();
             mItem = datasource.getEventById(getArguments().getInt(ARG_ITEM_ID));
-            datasource.close();
+        }
+
+        boolean shouldClearNotification = getArguments().getBoolean(SHOULD_CLEAR_NOTIFICATION,false);
+
+        if (shouldClearNotification)
+        {
+            NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(Constants.INCOMING_EVENT_NOTIFICATIONID);
         }
     }
 

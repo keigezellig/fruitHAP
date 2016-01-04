@@ -80,17 +80,8 @@ public class EventNotificationListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         datasource = new SensorEventRepository(getActivity());
-        datasource.open();
-
         values = datasource.getAllEvents();
-        datasource.close();
-
         setListAdapter(new SensorEventAdapter(getActivity(),android.R.layout.simple_list_item_activated_1,values));
-//        setListAdapter(new ArrayAdapter<SensorEvent>(
-//                getActivity(),
-//                android.R.layout.simple_list_item_activated_1,
-//                android.R.id.text1,
-//                values));
     }
 
     @Override
