@@ -21,4 +21,10 @@ public class Constants
     public static String FRUITHAP_NOTIFICATION_ACTION = "com.fruithapnotifier.app.action.FRUITHAP_NOTIFICATION";
     public static int SERVICE_STATE_NOTIFICATIONID = 1;
     public static int INCOMING_EVENT_NOTIFICATIONID = 2;
+
+    public enum MainScreenSection
+    {
+        ALERT_LIST,
+        DASHBOARD
+    }
 }

@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
+import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.domain.SensorEvent;
 import com.fruithapnotifier.app.persistence.SensorEventRepository;
 
@@ -111,6 +112,10 @@ public class EventNotificationListFragment extends ListFragment {
                 throw new IllegalStateException("Activity must implement fragment's callbacks.");
             }
             mCallbacks = (Callbacks) activity;
+
+            ((MainActivity) activity).onSectionAttached(Constants.MainScreenSection.ALERT_LIST);
+
+
         }
 
     }

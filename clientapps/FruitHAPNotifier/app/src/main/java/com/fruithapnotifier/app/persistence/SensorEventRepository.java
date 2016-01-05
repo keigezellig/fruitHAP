@@ -116,5 +116,11 @@ public class SensorEventRepository
 
     }
 
+    public void deleteAll()
+    {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        database.delete(SqlHelper.TABLE_EVENTS,null,null);
+        dbHelper.close();
+    }
 }
 

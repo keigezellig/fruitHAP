@@ -15,6 +15,7 @@ import com.fruithapnotifier.app.domain.Priority;
 import com.fruithapnotifier.app.domain.SensorEvent;
 import com.fruithapnotifier.app.ui.EventNotificationDetailActivity;
 import com.fruithapnotifier.app.ui.EventNotificationDetailFragment;
+import com.fruithapnotifier.app.ui.MainActivity;
 import com.fruithapnotifier.app.ui.ServiceControlActivity;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.persistence.SensorEventRepository;
@@ -132,10 +133,10 @@ public class FruithapNotificationService extends Service
                 .setContentTitle("FruitHap Notification Service")
                 .setContentText("Service active")
                 .setContentInfo("Service status")
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.mipmap.strawberry)
                 .setContentIntent(startServiceControlActivityIntent)
                 .setOngoing(true)
-                .addAction(R.mipmap.ic_launcher, "Stop", stopServicePendingIntent)
+                .addAction(R.drawable., "Stop", stopServicePendingIntent)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
         notificationManager.notify(
@@ -155,8 +156,7 @@ public class FruithapNotificationService extends Service
 
     private PendingIntent getServiceControlActivityIntent()
     {
-        Intent startServiceControlIntent = new Intent(this, ServiceControlActivity.class);
-        startServiceControlIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent startServiceControlIntent = new Intent(this, MainActivity.class);
 
         return PendingIntent.getActivity(
                 this,
