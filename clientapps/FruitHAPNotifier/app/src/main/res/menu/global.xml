@@ -1,8 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings" android:orderInCategory="100"
+    <item android:id="@+id/action_settings" android:title="@string/action_general_settings" android:orderInCategory="100"
         app:showAsAction="never" />
     <item android:id="@+id/action_turnonservice" android:title="@string/turn_on_notification_service" android:orderInCategory="100"
         app:showAsAction="never" />
     <item android:id="@+id/action_turnoffservice" android:title="@string/turn_off_notification_service" android:orderInCategory="100"
         app:showAsAction="never" />
+
 </menu>

@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.persistence.SensorEventRepository;
+import com.fruithapnotifier.app.service.FruithapNotificationService;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, EventNotificationListFragment.Callbacks
@@ -34,12 +35,14 @@ public class MainActivity extends AppCompatActivity
      */
     private CharSequence mTitle;
     private Constants.MainScreenSection currentSection;
+    private Intent serviceIntent;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        serviceIntent = new Intent(MainActivity.this, FruithapNotificationService.class);
         setContentView(R.layout.activity_main);
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -180,12 +183,14 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_clear_list)
         {
-            Toast.makeText(this, "Clearing list", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.clearing_list), Toast.LENGTH_SHORT).show();
             SensorEventRepository repository = new SensorEventRepository(this);
             repository.deleteAll();
 
             return true;
         }
+
+
 
         return super.onOptionsItemSelected(item);
     }

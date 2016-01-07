@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
+import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.common.MessageCallback;
 import com.fruithapnotifier.app.common.MqProvider;
@@ -65,8 +66,12 @@ public class FruithapNotificationTask extends AsyncTask<String, Void, Void>
     {
         if (!isCancelled()) //Terminated in an error so stop the service
         {
-            Toast.makeText(context,"Something went wrong while executing the service and will be stopped now",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.notification_service_error,Toast.LENGTH_SHORT).show();
             context.stopService(new Intent(context, FruithapNotificationService.class));
+        }
+        else
+        {
+            Toast.makeText(context, R.string.notification_service_stopped, Toast.LENGTH_SHORT).show();
         }
     }
 

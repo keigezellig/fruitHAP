@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.domain.Priority;
 import com.fruithapnotifier.app.domain.SensorEvent;
@@ -130,13 +131,11 @@ public class FruithapNotificationService extends Service
         PendingIntent startServiceControlActivityIntent = getServiceControlActivityIntent();
 
         notifyBuilder = new NotificationCompat.Builder(this)
-                .setContentTitle("FruitHap Notification Service")
-                .setContentText("Service active")
-                .setContentInfo("Service status")
+                .setContentTitle(getString(R.string.notification_service_name))
                 .setSmallIcon(R.mipmap.strawberry)
                 .setContentIntent(startServiceControlActivityIntent)
                 .setOngoing(true)
-                .addAction(R.drawable., "Stop", stopServicePendingIntent)
+                .addAction(R.drawable.ic_drawer, getString(R.string.turn_off_notification_service), stopServicePendingIntent)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
         notificationManager.notify(
@@ -150,7 +149,8 @@ public class FruithapNotificationService extends Service
 
         fruithapNotificationTask.execute(amqpUrl, exchangeName, topic);
 
-        Log.d(LOGTAG, "Service started");
+        Toast.makeText(this, R.string.notification_service_started, Toast.LENGTH_SHORT).show();
+
         return START_NOT_STICKY;
     }
 

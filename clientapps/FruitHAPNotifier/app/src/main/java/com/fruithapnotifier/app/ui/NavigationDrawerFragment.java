@@ -1,6 +1,8 @@
 package com.fruithapnotifier.app.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
@@ -288,19 +290,55 @@ public class NavigationDrawerFragment extends Fragment
         if (item.getItemId() == R.id.action_turnonservice)
         {
             getActivity().startService(serviceIntent);
-            Toast.makeText(getActivity(), "Service started", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getString(R.string.notification_service_started), Toast.LENGTH_SHORT).show();
             return true;
         }
 
         if (item.getItemId() == R.id.action_turnoffservice)
         {
-            getActivity().stopService(serviceIntent);
-            Toast.makeText(getActivity(), "Service stopped", Toast.LENGTH_SHORT).show();
-            return true;
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                    getActivity());
+
+            // set title
+            alertDialogBuilder.setTitle(getString(R.string.turn_off_notification_service));
+
+            // set dialog message
+            alertDialogBuilder
+                    .setMessage(getString(R.string.notification_service_stopwarning))
+                    .setCancelable(false)
+                    .setPositiveButton(getString(R.string.caption_yes), new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+
+                            getActivity().stopService(serviceIntent);
+
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.caption_no), new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+                            // if this button is clicked, just close
+                            // the dialog box and do nothing
+                            dialog.cancel();
+                        }
+                    });
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
         }
+
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
+
 
     /**
      * Per the navigation drawer design guidelines, updates the action bar to show the global app

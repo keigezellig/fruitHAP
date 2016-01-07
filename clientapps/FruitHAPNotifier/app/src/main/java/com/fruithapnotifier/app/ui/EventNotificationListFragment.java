@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
+import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.domain.SensorEvent;
 import com.fruithapnotifier.app.persistence.SensorEventRepository;
@@ -94,6 +95,8 @@ public class EventNotificationListFragment extends ListFragment {
                 && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
             setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
         }
+
+        setEmptyText(getString(R.string.no_alerts));
     }
 
     @Override
