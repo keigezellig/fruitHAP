@@ -1,4 +1,4 @@
-package com.fruithapnotifier.app.ui;
+package com.fruithapnotifier.app.ui.alerts;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
@@ -14,17 +14,16 @@ import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
 import org.joda.time.format.DateTimeFormat;
 import org.json.JSONException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by developer on 1/3/16.
  */
-public class SensorEventAdapter extends ArrayAdapter<SensorEvent>
+public class AlertAdapter extends ArrayAdapter<SensorEvent>
 {
     private final List<SensorEvent> events;
 
-    public SensorEventAdapter(Context context, int textViewResourceId, List<SensorEvent> events)
+    public AlertAdapter(Context context, int textViewResourceId, List<SensorEvent> events)
     {
         super(context, textViewResourceId, events);
         this.events = events;
@@ -37,7 +36,7 @@ public class SensorEventAdapter extends ArrayAdapter<SensorEvent>
         if (v == null)
         {
             LayoutInflater vi = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = vi.inflate(R.layout.notification_listitem, null);
+            v = vi.inflate(R.layout.alert_listitem, null);
         }
 
         SensorEvent event = events.get(position);
@@ -45,15 +44,15 @@ public class SensorEventAdapter extends ArrayAdapter<SensorEvent>
         {
             try
             {
-                TextView txtPriority = (TextView) v.findViewById(R.id.txtPriority);
+                TextView txtPriority = (TextView) v.findViewById(R.id.alert_listitem_txtPriority);
                 GradientDrawable background = (GradientDrawable) txtPriority.getBackground();
                 background.setColor(PriorityHelpers.ConvertToColor(event.getNotificationPriority()));
                 txtPriority.setText(PriorityHelpers.GetTextResource(event.getNotificationPriority()));
 
-                TextView txtTimestamp = (TextView) v.findViewById(R.id.txtTimestamp);
+                TextView txtTimestamp = (TextView) v.findViewById(R.id.alert_listitem_txtTimestamp);
                 txtTimestamp.setText(DateTimeFormat.forStyle("SL").print(event.getTimestamp()));
 
-                TextView txtMessage = (TextView) v.findViewById(R.id.txtMessage);
+                TextView txtMessage = (TextView) v.findViewById(R.id.alert_listitem_txtMessage);
                 txtMessage.setText(event.getNotificationText());
             }
             catch (JSONException e)

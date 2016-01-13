@@ -1,4 +1,4 @@
-package com.fruithapnotifier.app.ui;
+package com.fruithapnotifier.app.ui.alerts;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -25,11 +25,11 @@ import org.joda.time.format.DateTimeFormat;
 
 /**
  * A fragment representing a single EventNotification detail screen.
- * This fragment is either contained in a {@link EventNotificationListActivity}
- * in two-pane mode (on tablets) or a {@link EventNotificationDetailActivity}
+ * This fragment is either contained in a {@link AlertListActivity}
+ * in two-pane mode (on tablets) or a {@link AlertDetailActivity}
  * on handsets.
  */
-public class EventNotificationDetailFragment extends Fragment {
+public class AlertDetailFragment extends Fragment {
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -47,7 +47,7 @@ public class EventNotificationDetailFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public EventNotificationDetailFragment() {
+    public AlertDetailFragment() {
     }
 
     @Override
@@ -79,7 +79,7 @@ public class EventNotificationDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_eventnotification_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_alert_detail, container, false);
 
 
         try
@@ -87,18 +87,18 @@ public class EventNotificationDetailFragment extends Fragment {
             // Show the dummy content as text in a TextView.
             if (mItem != null)
             {
-                TextView txtPriority = (TextView) rootView.findViewById(R.id.txtPriority);
+                TextView txtPriority = (TextView) rootView.findViewById(R.id.alert_detail_txtPriority);
                 GradientDrawable background = (GradientDrawable) txtPriority.getBackground();
                 background.setColor(PriorityHelpers.ConvertToColor(mItem.getNotificationPriority()));
                 txtPriority.setText(PriorityHelpers.GetTextResource(mItem.getNotificationPriority()));
 
-                TextView txtTimestamp = (TextView) rootView.findViewById(R.id.txtTimestamp);
+                TextView txtTimestamp = (TextView) rootView.findViewById(R.id.alert_detail_txtTimestamp);
                 txtTimestamp.setText(DateTimeFormat.forStyle("SL").print(mItem.getTimestamp()));
 
-                TextView txtSensorName = (TextView) rootView.findViewById(R.id.txtSensorName);
+                TextView txtSensorName = (TextView) rootView.findViewById(R.id.alert_detail_txtSensorName);
                 txtSensorName.setText(mItem.getSensorName());
 
-                TextView txtMessage = (TextView) rootView.findViewById(R.id.txtMessage);
+                TextView txtMessage = (TextView) rootView.findViewById(R.id.alert_detail_txtMessage);
                 txtMessage.setText(mItem.getNotificationText());
 
                 if ( (!mItem.getOptionalData().isNull("$type")) && (mItem.getOptionalData().getString("$type").contains("Byte")))
@@ -106,7 +106,7 @@ public class EventNotificationDetailFragment extends Fragment {
                     String imageString = mItem.getOptionalData().getString("$value");
                     byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
                     Bitmap decodedImage = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    ImageView imgOptional = (ImageView) rootView.findViewById(R.id.imgOptional);
+                    ImageView imgOptional = (ImageView) rootView.findViewById(R.id.alert_detail_imgOptional);
                     imgOptional.setImageBitmap(decodedImage);
                 }
             }

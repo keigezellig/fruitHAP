@@ -36,7 +36,7 @@
             android:background="@drawable/priority_box"
             android:layout_gravity="left"
             android:layout_marginBottom="10dp"
-            android:id="@+id/txtPriority" />
+            android:id="@+id/alert_detail_txtPriority" />
 
         <TextView
             android:text="@string/alert_details_time"
@@ -53,7 +53,7 @@
             android:layout_row="3"
             android:layout_gravity="left"
             android:layout_marginBottom="10dp"
-            android:id="@+id/txtTimestamp" />
+            android:id="@+id/alert_detail_txtTimestamp" />
 
         <TextView
             android:text="@string/alert_details_source"
@@ -70,7 +70,7 @@
             android:layout_row="4"
             android:layout_gravity="left"
             android:layout_marginBottom="10dp"
-            android:id="@+id/txtSensorName" />
+            android:id="@+id/alert_detail_txtSensorName" />
 
         <TextView
             android:text="@string/alert_details_message"
@@ -87,14 +87,14 @@
             android:layout_row="5"
             android:layout_gravity="left"
             android:layout_marginBottom="50dp"
-            android:id="@+id/txtMessage" />
+            android:id="@+id/alert_detail_txtMessage" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_columnSpan="2"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:id="@+id/imgOptional" />
+            android:id="@+id/alert_detail_imgOptional" />
     </GridLayout>
 
 

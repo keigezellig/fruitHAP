@@ -1,4 +1,4 @@
-package com.fruithapnotifier.app.ui;
+package com.fruithapnotifier.app.ui.main;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

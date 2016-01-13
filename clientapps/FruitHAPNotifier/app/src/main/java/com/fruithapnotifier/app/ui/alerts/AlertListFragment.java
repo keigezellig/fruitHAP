@@ -1,4 +1,4 @@
-package com.fruithapnotifier.app.ui;
+package com.fruithapnotifier.app.ui.alerts;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,13 +6,13 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.domain.SensorEvent;
 import com.fruithapnotifier.app.persistence.SensorEventRepository;
+import com.fruithapnotifier.app.ui.main.MainActivity;
 
 import java.util.List;
 
@@ -20,12 +20,12 @@ import java.util.List;
  * A list fragment representing a list of EventNotifications. This fragment
  * also supports tablet devices by allowing list items to be given an
  * 'activated' state upon selection. This helps indicate which item is
- * currently being viewed in a {@link EventNotificationDetailFragment}.
+ * currently being viewed in a {@link AlertDetailFragment}.
  * <p/>
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class EventNotificationListFragment extends ListFragment {
+public class AlertListFragment extends ListFragment {
 
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -73,7 +73,7 @@ public class EventNotificationListFragment extends ListFragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public EventNotificationListFragment() {
+    public AlertListFragment() {
     }
 
     @Override
@@ -82,7 +82,7 @@ public class EventNotificationListFragment extends ListFragment {
 
         datasource = new SensorEventRepository(getActivity());
         values = datasource.getAllEvents();
-        setListAdapter(new SensorEventAdapter(getActivity(),android.R.layout.simple_list_item_activated_1,values));
+        setListAdapter(new AlertAdapter(getActivity(),android.R.layout.simple_list_item_activated_1,values));
     }
 
     @Override

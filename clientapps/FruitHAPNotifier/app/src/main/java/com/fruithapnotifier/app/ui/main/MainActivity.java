@@ -1,4 +1,4 @@
-package com.fruithapnotifier.app.ui;
+package com.fruithapnotifier.app.ui.main;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,9 +18,12 @@ import android.widget.Toast;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.persistence.SensorEventRepository;
+import com.fruithapnotifier.app.ui.alerts.AlertDetailActivity;
+import com.fruithapnotifier.app.ui.alerts.AlertDetailFragment;
+import com.fruithapnotifier.app.ui.alerts.AlertListFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, EventNotificationListFragment.Callbacks
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, AlertListFragment.Callbacks
 
 {
 
@@ -50,7 +53,7 @@ public class MainActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        if (findViewById(R.id.eventnotification_detail_container) != null)
+        if (findViewById(R.id.alert_detail_container) != null)
         {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-large and
@@ -60,7 +63,7 @@ public class MainActivity extends AppCompatActivity
 
             // In two-pane mode, list items should be given the
             // 'activated' state when touched.
-            ((EventNotificationListFragment) getSupportFragmentManager()
+            ((AlertListFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.eventnotification_list))
                     .setActivateOnItemClick(true);
         }
@@ -68,7 +71,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Callback method from {@link EventNotificationListFragment.Callbacks}
+     * Callback method from {@link AlertListFragment.Callbacks}
      * indicating that the item with the given ID was selected.
      *
      * @param id
@@ -82,11 +85,11 @@ public class MainActivity extends AppCompatActivity
             // adding or replacing the detail fragment using a
             // fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putInt(EventNotificationDetailFragment.ARG_ITEM_ID, id);
-            EventNotificationDetailFragment fragment = new EventNotificationDetailFragment();
+            arguments.putInt(AlertDetailFragment.ARG_ITEM_ID, id);
+            AlertDetailFragment fragment = new AlertDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.eventnotification_detail_container, fragment)
+                    .replace(R.id.alert_detail_container, fragment)
                     .commit();
 
         }
@@ -94,8 +97,8 @@ public class MainActivity extends AppCompatActivity
         {
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
-            Intent detailIntent = new Intent(this, EventNotificationDetailActivity.class);
-            detailIntent.putExtra(EventNotificationDetailFragment.ARG_ITEM_ID, id);
+            Intent detailIntent = new Intent(this, AlertDetailActivity.class);
+            detailIntent.putExtra(AlertDetailFragment.ARG_ITEM_ID, id);
             startActivity(detailIntent);
         }
     }
@@ -110,7 +113,7 @@ public class MainActivity extends AppCompatActivity
             case 0:
                 //Home
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, new EventNotificationListFragment())
+                        .replace(R.id.container, new AlertListFragment())
                         .commit();
                 break;
             case 1:
