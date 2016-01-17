@@ -3,11 +3,9 @@ package com.fruithapnotifier.app.persistence;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.fruithapnotifier.app.domain.SensorEvent;
-import com.fruithapnotifier.app.ui.SensorEventAdapter;
 import org.json.JSONException;
 import org.json.JSONObject;
 

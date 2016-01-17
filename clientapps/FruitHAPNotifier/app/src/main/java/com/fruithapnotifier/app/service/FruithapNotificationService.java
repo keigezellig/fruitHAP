@@ -14,10 +14,9 @@ import android.widget.Toast;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.domain.Priority;
 import com.fruithapnotifier.app.domain.SensorEvent;
-import com.fruithapnotifier.app.ui.EventNotificationDetailActivity;
-import com.fruithapnotifier.app.ui.EventNotificationDetailFragment;
-import com.fruithapnotifier.app.ui.MainActivity;
-import com.fruithapnotifier.app.ui.ServiceControlActivity;
+import com.fruithapnotifier.app.ui.alerts.AlertDetailActivity;
+import com.fruithapnotifier.app.ui.alerts.AlertDetailFragment;
+import com.fruithapnotifier.app.ui.main.MainActivity;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.persistence.SensorEventRepository;
 import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
@@ -174,12 +173,12 @@ public class FruithapNotificationService extends Service
 
     private PendingIntent getEventDetailActivityIntent(int eventId)
     {
-        Intent eventDetailActivityIntent = new Intent(this, EventNotificationDetailActivity.class);
-        eventDetailActivityIntent.putExtra(EventNotificationDetailFragment.ARG_ITEM_ID,eventId);
-        eventDetailActivityIntent.putExtra(EventNotificationDetailFragment.SHOULD_CLEAR_NOTIFICATION,true);
+        Intent eventDetailActivityIntent = new Intent(this, AlertDetailActivity.class);
+        eventDetailActivityIntent.putExtra(AlertDetailFragment.ARG_ITEM_ID,eventId);
+        eventDetailActivityIntent.putExtra(AlertDetailFragment.SHOULD_CLEAR_NOTIFICATION,true);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 // Adds the back stack
-        stackBuilder.addParentStack(EventNotificationDetailActivity.class);
+        stackBuilder.addParentStack(AlertDetailActivity.class);
 // Adds the Intent to the top of the stack
         stackBuilder.addNextIntent(eventDetailActivityIntent);
 // Gets a PendingIntent containing the entire back stack

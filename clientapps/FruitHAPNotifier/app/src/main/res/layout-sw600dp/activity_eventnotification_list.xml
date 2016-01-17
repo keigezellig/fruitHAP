@@ -18,14 +18,14 @@
 
     <fragment
             android:id="@+id/eventnotification_list"
-            android:name="com.fruithapnotifier.app.ui.EventNotificationListFragment"
+            android:name="com.fruithapnotifier.app.ui.alerts.AlertListFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             tools:layout="@android:layout/list_content"/>
 
     <FrameLayout
-            android:id="@+id/eventnotification_detail_container"
+            android:id="@+id/alert_detail_container"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"/>
