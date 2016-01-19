@@ -2,14 +2,14 @@ package com.fruithapnotifier.app.ui.helpers;
 
 import android.graphics.Color;
 import com.fruithapnotifier.app.R;
-import com.fruithapnotifier.app.domain.Priority;
+import com.fruithapnotifier.app.domain.AlertPriority;
 
 /**
  * Created by developer on 1/2/16.
  */
 public class PriorityHelpers
 {
-    public static int ConvertToColor(Priority priority)
+    public static int ConvertToColor(AlertPriority priority)
     {
         switch (priority)
         {
@@ -24,7 +24,7 @@ public class PriorityHelpers
         }
     }
 
-    public static int GetTextResource(Priority priority)
+    public static int GetTextResource(AlertPriority priority)
     {
         switch (priority)
         {

@@ -12,13 +12,13 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 import com.fruithapnotifier.app.R;
-import com.fruithapnotifier.app.domain.Priority;
-import com.fruithapnotifier.app.domain.SensorEvent;
+import com.fruithapnotifier.app.domain.AlertPriority;
+import com.fruithapnotifier.app.domain.Alert;
+import com.fruithapnotifier.app.persistence.EventRepository;
 import com.fruithapnotifier.app.ui.alerts.AlertDetailActivity;
 import com.fruithapnotifier.app.ui.alerts.AlertDetailFragment;
 import com.fruithapnotifier.app.ui.main.MainActivity;
 import com.fruithapnotifier.app.common.Constants;
-import com.fruithapnotifier.app.persistence.SensorEventRepository;
 import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
 import org.json.JSONException;
 
@@ -32,7 +32,8 @@ public class FruithapNotificationService extends Service
     private NotificationCompat.Builder notifyBuilder;
 
     private BroadcastReceiver eventNotificationReceiver;
-    private SensorEventRepository datasource;
+    private EventRepository datasource;
+    private LocalBroadcastManager broadcastManager;
 
 
     public FruithapNotificationService()
@@ -50,8 +51,8 @@ public class FruithapNotificationService extends Service
     {
         super.onCreate();
         notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        datasource = new SensorEventRepository(this);
+        broadcastManager = LocalBroadcastManager.getInstance(this);
+        datasource = new EventRepository(this);
 
         fruithapNotificationTask = new FruithapNotificationTask(this);
         eventNotificationReceiver = new BroadcastReceiver()
@@ -67,14 +68,14 @@ public class FruithapNotificationService extends Service
                     {
                         try
                         {
-                            SensorEvent event = datasource.createEvent(message);
+                            Alert event = datasource.insertEvent(message);
 
                             Log.d(LOGTAG, event.toString());
 
                             if (event.getNotificationText()!= null)
                             {
                                 String messageText = event.getNotificationText();
-                                Priority prio = event.getNotificationPriority();
+                                AlertPriority prio = event.getNotificationPriority();
                                 int color = PriorityHelpers.ConvertToColor(prio);
 
                                 NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context)
@@ -188,12 +189,12 @@ public class FruithapNotificationService extends Service
 
     private void registerBroadcastListener()
     {
-        LocalBroadcastManager.getInstance(this).registerReceiver(eventNotificationReceiver, new IntentFilter(Constants.FRUITHAP_NOTIFICATION_ACTION));
+        broadcastManager.registerReceiver(eventNotificationReceiver, new IntentFilter(Constants.FRUITHAP_NOTIFICATION_ACTION));
     }
 
     private void unregisterBroadcastReceiver()
     {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(eventNotificationReceiver);
+        broadcastManager.unregisterReceiver(eventNotificationReceiver);
     }
 
 }

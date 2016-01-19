@@ -18,8 +18,8 @@ import android.widget.TextView;
 
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
-import com.fruithapnotifier.app.domain.SensorEvent;
-import com.fruithapnotifier.app.persistence.SensorEventRepository;
+import com.fruithapnotifier.app.domain.Alert;
+import com.fruithapnotifier.app.persistence.EventRepository;
 import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
 import org.joda.time.format.DateTimeFormat;
 
@@ -40,8 +40,8 @@ public class AlertDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
-    private SensorEvent mItem;
-    private SensorEventRepository datasource;
+    private Alert mItem;
+    private EventRepository datasource;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -54,7 +54,7 @@ public class AlertDetailFragment extends Fragment {
     public void onAttach(Context context)
     {
         super.onAttach(context);
-        datasource = new SensorEventRepository(context);
+        datasource = new EventRepository(context);
 
     }
 
@@ -64,7 +64,7 @@ public class AlertDetailFragment extends Fragment {
 
         if (getArguments().containsKey(ARG_ITEM_ID))
         {
-            mItem = datasource.getEventById(getArguments().getInt(ARG_ITEM_ID));
+            mItem = datasource.getAlertById(getArguments().getInt(ARG_ITEM_ID));
         }
 
         boolean shouldClearNotification = getArguments().getBoolean(SHOULD_CLEAR_NOTIFICATION,false);
@@ -79,7 +79,7 @@ public class AlertDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_alert_detail, container, false);
+        View rootView = inflater.inflate(R.layout.alert_fragment_detail, container, false);
 
 
         try

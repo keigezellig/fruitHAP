@@ -17,7 +17,7 @@
     -->
 
     <fragment
-            android:id="@+id/eventnotification_list"
+            android:id="@+id/alert_list"
             android:name="com.fruithapnotifier.app.ui.alerts.AlertListFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"

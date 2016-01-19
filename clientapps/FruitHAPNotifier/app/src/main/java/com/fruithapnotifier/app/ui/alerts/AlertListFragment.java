@@ -11,8 +11,8 @@ import android.widget.ListView;
 
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
-import com.fruithapnotifier.app.domain.SensorEvent;
-import com.fruithapnotifier.app.persistence.SensorEventRepository;
+import com.fruithapnotifier.app.domain.Alert;
+import com.fruithapnotifier.app.persistence.EventRepository;
 import com.fruithapnotifier.app.ui.main.MainActivity;
 
 import java.util.List;
@@ -44,8 +44,8 @@ public class AlertListFragment extends ListFragment {
      * The current activated item position. Only used on tablets.
      */
     private int mActivatedPosition = ListView.INVALID_POSITION;
-    private SensorEventRepository datasource;
-    private List<SensorEvent> values;
+    private EventRepository datasource;
+    private List<Alert> values;
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -81,9 +81,9 @@ public class AlertListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        datasource = new SensorEventRepository(getActivity());
-        values = datasource.getAllEvents();
-        setListAdapter(new AlertAdapter(getActivity(),android.R.layout.simple_list_item_activated_1,values));
+        datasource = new EventRepository(getActivity());
+        AlertAdapter adapter = new AlertAdapter(getActivity(),android.R.layout.simple_list_item_activated_1,datasource.getAllAlerts());
+        setListAdapter(adapter);
     }
 
     @Override

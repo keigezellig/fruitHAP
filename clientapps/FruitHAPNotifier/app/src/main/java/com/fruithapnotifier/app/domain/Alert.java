@@ -13,19 +13,11 @@ import org.joda.time.DateTime;
 /**
  * Created by maarten on 12/2/15.
  */
-public class SensorEvent
+public class Alert extends Event
 {
-    private int id;
-    private JSONObject eventData;
 
-    public SensorEvent(int id, JSONObject eventData) {
-        this.id = id;
-        this.eventData = eventData;
-    }
-
-    public int getId()
-    {
-        return id;
+    public Alert(int id, JSONObject eventData) {
+        super(eventData, id);
     }
 
     public String getSensorName() throws JSONException
@@ -45,9 +37,9 @@ public class SensorEvent
         return eventData.getJSONObject("Data").getString("NotificationText");
     }
 
-    public Priority getNotificationPriority() throws JSONException
+    public AlertPriority getNotificationPriority() throws JSONException
     {
-        return Priority.values()[eventData.getJSONObject("Data").getInt("Priority")];
+        return AlertPriority.values()[eventData.getJSONObject("Data").getInt("AlertPriority")];
     }
 
     public JSONObject getOptionalData() throws JSONException

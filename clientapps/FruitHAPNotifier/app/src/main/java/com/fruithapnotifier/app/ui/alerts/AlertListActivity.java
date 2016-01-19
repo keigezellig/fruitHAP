@@ -35,7 +35,7 @@ public class AlertListActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_eventnotification_list);
+        setContentView(R.layout.alert_activity_list);
 
         if (findViewById(R.id.alert_detail_container) != null) {
             // The detail container view will be present only in the
@@ -47,7 +47,7 @@ public class AlertListActivity extends FragmentActivity
             // In two-pane mode, list items should be given the
             // 'activated' state when touched.
             ((AlertListFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.eventnotification_list))
+                    .findFragmentById(R.id.alert_list))
                     .setActivateOnItemClick(true);
         }
 

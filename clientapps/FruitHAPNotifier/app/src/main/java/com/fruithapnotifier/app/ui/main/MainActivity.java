@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
-import com.fruithapnotifier.app.persistence.SensorEventRepository;
+import com.fruithapnotifier.app.persistence.EventRepository;
 import com.fruithapnotifier.app.service.FruithapNotificationService;
 import com.fruithapnotifier.app.ui.alerts.AlertDetailActivity;
 import com.fruithapnotifier.app.ui.alerts.AlertDetailFragment;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         serviceIntent = new Intent(MainActivity.this, FruithapNotificationService.class);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main_activity_main);
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity
             // In two-pane mode, list items should be given the
             // 'activated' state when touched.
             ((AlertListFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.eventnotification_list))
+                    .findFragmentById(R.id.alert_list))
                     .setActivateOnItemClick(true);
         }
 
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_clear_list)
         {
             Toast.makeText(this, getString(R.string.clearing_list), Toast.LENGTH_SHORT).show();
-            SensorEventRepository repository = new SensorEventRepository(this);
+            EventRepository repository = new EventRepository(this);
             repository.deleteAll();
 
             return true;
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState)
         {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            View rootView = inflater.inflate(R.layout.main_fragment_main, container, false);
             TextView label = (TextView) rootView.findViewById(R.id.section_label);
             label.setText("This is section " + getArguments().getInt(ARG_SECTION_NUMBER));
 

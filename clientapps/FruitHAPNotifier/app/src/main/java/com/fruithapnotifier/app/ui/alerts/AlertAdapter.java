@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.fruithapnotifier.app.R;
-import com.fruithapnotifier.app.domain.SensorEvent;
+import com.fruithapnotifier.app.domain.Alert;
 import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
 import org.joda.time.format.DateTimeFormat;
 import org.json.JSONException;
@@ -19,11 +19,11 @@ import java.util.List;
 /**
  * Created by developer on 1/3/16.
  */
-public class AlertAdapter extends ArrayAdapter<SensorEvent>
+public class AlertAdapter extends ArrayAdapter<Alert>
 {
-    private final List<SensorEvent> events;
+    private final List<Alert> events;
 
-    public AlertAdapter(Context context, int textViewResourceId, List<SensorEvent> events)
+    public AlertAdapter(Context context, int textViewResourceId, List<Alert> events)
     {
         super(context, textViewResourceId, events);
         this.events = events;
@@ -39,7 +39,7 @@ public class AlertAdapter extends ArrayAdapter<SensorEvent>
             v = vi.inflate(R.layout.alert_listitem, null);
         }
 
-        SensorEvent event = events.get(position);
+        Alert event = events.get(position);
         if (event != null)
         {
             try

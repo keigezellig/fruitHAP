@@ -103,7 +103,7 @@ public class NavigationDrawerFragment extends Fragment
                              Bundle savedInstanceState)
     {
         mDrawerListView = (ListView) inflater.inflate(
-                R.layout.fragment_navigation_drawer, container, false);
+                R.layout.main_fragment_navigation_drawer, container, false);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import com.fruithapnotifier.app.domain.Alert;
+import com.fruithapnotifier.app.domain.Event;
 import com.fruithapnotifier.app.domain.SensorEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,42 +17,37 @@ import java.util.List;
 /**
  * Created by maarten on 12/2/15.
  */
-public class SensorEventRepository
+public class EventRepository
 {
 
 
     // Database fields
-    private SQLiteDatabase database;
     private SqlHelper dbHelper;
-    private String[] allColumns = { SqlHelper.COLUMN_ID, SqlHelper.COLUMN_EVENTDATA };
+    private String[] allColumns = { SqlHelper.COLUMN_ID, SqlHelper.COLUMN_EVENTDATA, SqlHelper.COLUMN_TYPE };
+    private Context context;
 
 
-
-    public SensorEventRepository(Context context)
+    public EventRepository(Context context)
     {
+        this.context = context;
         dbHelper = new SqlHelper(context);
     }
 
 
-    public SensorEvent createEvent(String eventData)
+    public long insertEvent(String eventData, EventType type)
     {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(SqlHelper.COLUMN_EVENTDATA, eventData);
+        values.put(SqlHelper.COLUMN_TYPE,type.ordinal());
 
         long insertId = database.insert(SqlHelper.TABLE_EVENTS, null,
                 values);
-        Cursor cursor = database.query(SqlHelper.TABLE_EVENTS,
-                allColumns, SqlHelper.COLUMN_ID + " = " + insertId, null,
-                null, null, null);
-        cursor.moveToFirst();
-        SensorEvent newEvent = cursorToSensorEvent(cursor);
-        cursor.close();
         dbHelper.close();
-        return newEvent;
+        return insertId;
     }
 
-    public void deleteEvent(SensorEvent event)
+    public void deleteEvent(Event event)
     {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         long id = event.getId();
@@ -60,65 +57,66 @@ public class SensorEventRepository
         dbHelper.close();
     }
 
-    public List<SensorEvent> getAllEvents()
+    public List<Alert> getAllAlerts()
     {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        List<SensorEvent> events = new ArrayList<SensorEvent>();
+        List<Alert> alerts = new ArrayList<Alert>();
 
         Cursor cursor = database.query(SqlHelper.TABLE_EVENTS,
-                allColumns, null, null, null, null, null);
+                allColumns, SqlHelper.COLUMN_TYPE + "=?", new String[] {EventType.ALERT.ordinal() + ""}, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            SensorEvent event = cursorToSensorEvent(cursor);
-            events.add(event);
+            Alert alert = cursorToAlert(cursor);
+            alerts.add(alert);
             cursor.moveToNext();
         }
         // make sure to close the cursor
         cursor.close();
         dbHelper.close();
-        return events;
+        return alerts;
     }
 
-    public SensorEvent getEventById(int id)
+    public Alert getAlertById(int id)
     {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        SensorEvent event = null;
+        Alert alert = null;
         Cursor cursor = database.query(SqlHelper.TABLE_EVENTS,
-                allColumns,dbHelper.COLUMN_ID + "=?",new String[] {""+id},null,null,null);
+                allColumns,dbHelper.COLUMN_ID + "=? AND "+SqlHelper.COLUMN_TYPE + "=?",new String[] {""+id, EventType.ALERT.ordinal() + ""},null,null,null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            event = cursorToSensorEvent(cursor);
+            alert = cursorToAlert(cursor);
             cursor.moveToNext();
         }
         // make sure to close the cursor
         cursor.close();
         dbHelper.close();
-        return event;
+        return alert;
     }
 
-    private SensorEvent cursorToSensorEvent(Cursor cursor)
+    private Alert cursorToAlert(Cursor cursor)
     {
         try
         {
             JSONObject eventData = new JSONObject(cursor.getString(1));
-            SensorEvent event = new SensorEvent(cursor.getInt(0), eventData);
-            return event;
+            Alert alert = new Alert(cursor.getInt(0), eventData);
+            return alert;
         }
         catch (JSONException e)
         {
-            Log.e("SensorEventRepository", "Cannot retrieve sensor event:",e);
+            Log.e("EventRepository", "Cannot retrieve alert:",e);
             return null;
         }
 
     }
 
-    public void deleteAll()
+    public void deleteAll(EventType type)
     {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        database.delete(SqlHelper.TABLE_EVENTS,null,null);
+        database.delete(SqlHelper.TABLE_EVENTS,SqlHelper.COLUMN_TYPE + "=?", new String[] {type.ordinal() + ""});
         dbHelper.close();
     }
+
 }
 
