@@ -1,5 +1,7 @@
 package com.fruithapnotifier.app.common;
 
+import android.content.Intent;
+
 /**
  * Created by developer on 12/5/15.
  */
@@ -16,6 +18,9 @@ public class Constants
     public static final java.lang.String MQ_RPCEXCHANGE = "com.fruithapnotifier.app.service.rpc.connection.MQ_RPCEXCHANGE" ;
     public static final String MQ_PUBSUB_TOPIC = "com.fruithapnotifier.app.service.pubsub.MQ_PUBSUB_TOPIC";
     public static final String MQ_PUBSUB_MESSAGE = "com.fruithapnotifier.app.service.pubsub.MQ_PUBSUB_MESSAGE";
+    public static final String ALERT_INSERTED = "com.fruithapnotifier.app.action.ALERT_INSERTED";
+    public static final String ALERT_DELETED = "com.fruithapnotifier.app.action.ALERT_DELETED";
+    public static final String ALERTS_CLEARED = "com.fruithapnotifier.app.action.ALERTS_DELETED";
     public static String START_ACTION = "com.fruithapnotifier.app.action.START_SERVICE";
     public static String STOP_ACTION = "com.fruithapnotifier.app.action.STOP_SERVICE";
     public static String FRUITHAP_NOTIFICATION_ACTION = "com.fruithapnotifier.app.action.FRUITHAP_NOTIFICATION";

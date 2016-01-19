@@ -62,26 +62,27 @@ public class FruithapNotificationService extends Service
             {
                 if (intent.getAction().equals(Constants.FRUITHAP_NOTIFICATION_ACTION))
                 {
+                    String topic = intent.getStringExtra(Constants.MQ_PUBSUB_TOPIC);
                     String message = intent.getStringExtra(Constants.MQ_PUBSUB_MESSAGE);
 
-                    if (!message.isEmpty())
+                    if (topic.equals("alerts") && !message.isEmpty())
                     {
                         try
                         {
-                            Alert event = datasource.insertEvent(message);
+                            Alert alert = datasource.insertAlert(message);
 
-                            Log.d(LOGTAG, event.toString());
+                            Log.d(LOGTAG, alert.toString());
 
-                            if (event.getNotificationText()!= null)
+                            if (alert.getNotificationText()!= null)
                             {
-                                String messageText = event.getNotificationText();
-                                AlertPriority prio = event.getNotificationPriority();
+                                String messageText = alert.getNotificationText();
+                                AlertPriority prio = alert.getNotificationPriority();
                                 int color = PriorityHelpers.ConvertToColor(prio);
 
                                 NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context)
                                         .setContentTitle(messageText)
-                                        .setContentText(event.getSensorName())
-                                        .setContentIntent(getEventDetailActivityIntent(event.getId()))
+                                        .setContentText(alert.getSensorName())
+                                        .setContentIntent(getEventDetailActivityIntent(alert.getId()))
                                         .setSmallIcon(R.mipmap.ic_launcher)
                                         .setLights(color, 1000, 1000)
                                         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);

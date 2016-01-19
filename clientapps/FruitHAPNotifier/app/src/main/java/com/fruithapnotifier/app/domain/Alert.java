@@ -1,5 +1,7 @@
 package com.fruithapnotifier.app.domain;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -13,11 +15,36 @@ import org.joda.time.DateTime;
 /**
  * Created by maarten on 12/2/15.
  */
-public class Alert extends Event
-{
+public class Alert implements Parcelable {
 
-    public Alert(int id, JSONObject eventData) {
-        super(eventData, id);
+    public static final Creator<Alert> CREATOR = new Creator<Alert>()
+    {
+        public Alert createFromParcel(Parcel source)
+        {
+            return new Alert(source);
+        }
+
+        public Alert[] newArray(int size)
+        {
+            return new Alert[size];
+        }
+    };
+    private int id;
+    private JSONObject eventData;
+
+
+
+    public Alert(int id, JSONObject eventData)
+    {
+        this.eventData = eventData;
+        this.id = id;
+    }
+
+
+    protected Alert(Parcel in)
+    {
+        this.id = in.readInt();
+        this.eventData = in.readParcelable(JSONObject.class.getClassLoader());
     }
 
     public String getSensorName() throws JSONException
@@ -61,5 +88,23 @@ public class Alert extends Event
             return "";
         }
 
+    }
+
+    public int getId()
+    {
+        return id;
+    }
+
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeInt(this.id);
+        dest.writeString(this.eventData.toString());
     }
 }

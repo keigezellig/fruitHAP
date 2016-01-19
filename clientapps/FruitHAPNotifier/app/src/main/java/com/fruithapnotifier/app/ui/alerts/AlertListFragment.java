@@ -1,9 +1,13 @@
 package com.fruithapnotifier.app.ui.alerts;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -46,6 +50,9 @@ public class AlertListFragment extends ListFragment {
     private int mActivatedPosition = ListView.INVALID_POSITION;
     private EventRepository datasource;
     private List<Alert> values;
+    private AlertAdapter adapter;
+    private LocalBroadcastManager broadcastManager;
+    private BroadcastReceiver onAlertDbChanged;
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -82,10 +89,51 @@ public class AlertListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         datasource = new EventRepository(getActivity());
-        AlertAdapter adapter = new AlertAdapter(getActivity(),android.R.layout.simple_list_item_activated_1,datasource.getAllAlerts());
+        adapter = new AlertAdapter(getActivity(),android.R.layout.simple_list_item_activated_1,datasource.getAllAlerts());
         setListAdapter(adapter);
+
+        onAlertDbChanged = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent)
+            {
+                if (intent.getAction().equals(Constants.ALERT_INSERTED))
+                {
+                    Alert alert = intent.getParcelableExtra("ALERTDATA");
+                    adapter.add(alert);
+                }
+
+                if (intent.getAction().equals(Constants.ALERT_DELETED))
+                {
+                    Alert alert = intent.getParcelableExtra("ALERTDATA");
+                    adapter.remove(alert);
+                }
+
+                if (intent.getAction().equals(Constants.ALERTS_CLEARED))
+                {
+                    adapter.clear();
+                }
+
+                adapter.notifyDataSetChanged();
+
+            }
+        };
+
+        registerBroadcastListener();
     }
 
+    private void registerBroadcastListener()
+    {
+        IntentFilter alertDbChangedIntentFilter = new IntentFilter();
+        alertDbChangedIntentFilter.addAction(Constants.ALERT_INSERTED);
+        alertDbChangedIntentFilter.addAction(Constants.ALERT_DELETED);
+        alertDbChangedIntentFilter.addAction(Constants.ALERTS_CLEARED);
+        broadcastManager.registerReceiver(onAlertDbChanged, alertDbChangedIntentFilter);
+    }
+
+    private void unregisterBroadcastReceiver()
+    {
+        broadcastManager.unregisterReceiver(onAlertDbChanged);
+    }
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -117,10 +165,15 @@ public class AlertListFragment extends ListFragment {
             mCallbacks = (Callbacks) activity;
 
             ((MainActivity) activity).onSectionAttached(Constants.MainScreenSection.ALERT_LIST);
-
-
         }
 
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        unregisterBroadcastReceiver();
     }
 
     @Override

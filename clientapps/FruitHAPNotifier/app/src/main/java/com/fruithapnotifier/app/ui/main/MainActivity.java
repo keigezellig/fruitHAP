@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity
         {
             Toast.makeText(this, getString(R.string.clearing_list), Toast.LENGTH_SHORT).show();
             EventRepository repository = new EventRepository(this);
-            repository.deleteAll();
+            repository.deleteAlerts();
 
             return true;
         }
