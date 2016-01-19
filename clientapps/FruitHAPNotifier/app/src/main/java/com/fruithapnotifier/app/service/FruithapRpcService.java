@@ -22,7 +22,6 @@ public class FruithapRpcService extends IntentService
     private static final String ACTION_SENSOR = "com.fruithapnotifier.app.service.rpc.action.RPC_SENSOR";
 
     private static final String REQUEST = "com.fruithapnotifier.app.service.rpc.parameter.REQUEST";
-    private static final String CONNECTION_PARAMETERS = "com.fruithapnotifier.app.service.rpc.parameter.CONNECTION_PARAMETERS";
 
     private static final String RESULT_RECEIVER = "com.fruithapnotifier.app.service.rpc.parameter.RESULT_RECEIVER" ;
     private static final String CONFIGURATION_ROUTINGKEY = "FruitHAP_RpcQueue.FruitHAP.Core.Action.ConfigurationMessage";
@@ -43,7 +42,7 @@ public class FruithapRpcService extends IntentService
         Intent intent = new Intent(context, FruithapRpcService.class);
         intent.setAction(ACTION_CONFIGURATION);
         intent.putExtra(REQUEST, request);
-        intent.putExtra(CONNECTION_PARAMETERS, connectionParams);
+        intent.putExtra(Constants.MQ_CONNECTION_PARAMETERS, connectionParams);
         context.startService(intent);
     }
 
@@ -58,7 +57,7 @@ public class FruithapRpcService extends IntentService
         Intent intent = new Intent(context, FruithapRpcService.class);
         intent.setAction(ACTION_SENSOR);
         intent.putExtra(REQUEST, request);
-        intent.putExtra(CONNECTION_PARAMETERS, connectionParams);
+        intent.putExtra(Constants.MQ_CONNECTION_PARAMETERS, connectionParams);
         context.startService(intent);
     }
 
@@ -73,7 +72,7 @@ public class FruithapRpcService extends IntentService
         if (intent != null)
         {
             final String request = intent.getStringExtra(REQUEST);
-            final Bundle connectionParameters = intent.getBundleExtra(CONNECTION_PARAMETERS);
+            final Bundle connectionParameters = intent.getBundleExtra(Constants.MQ_CONNECTION_PARAMETERS);
             final ResultReceiver resultReceiver = intent.getParcelableExtra(RESULT_RECEIVER);
             String result = null;
 
@@ -107,11 +106,11 @@ public class FruithapRpcService extends IntentService
     {
         String result = null;
         final MqProvider mqProvider = MqProviderFactory.getMqProviderInstance();
-        String host = connectParameters.getString(Constants.MQHOST, "");
-        int port = connectParameters.getInt(Constants.MQPORT, 0);
-        String username = connectParameters.getString(Constants.MQUSERNAME, "");
-        String password = connectParameters.getString(Constants.MQPASSWORD, "");
-        String vhost = connectParameters.getString(Constants.MQVHOST, "");
+        String host = connectParameters.getString(Constants.MQ_HOST, "");
+        int port = connectParameters.getInt(Constants.MQ_PORT, 0);
+        String username = connectParameters.getString(Constants.MQ_USERNAME, "");
+        String password = connectParameters.getString(Constants.MQ_PASSWORD, "");
+        String vhost = connectParameters.getString(Constants.MQ_VHOST, "");
         String rpcExchange = connectParameters.getString(Constants.MQ_RPCEXCHANGE, "");
         try
         {

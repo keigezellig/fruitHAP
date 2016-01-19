@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -130,6 +131,7 @@ public class FruithapNotificationService extends Service
     {
         PendingIntent stopServicePendingIntent = getStopServicePendingIntent();
         PendingIntent startServiceControlActivityIntent = getServiceControlActivityIntent();
+        final Bundle connectionParameters = intent.getBundleExtra(Constants.MQ_CONNECTION_PARAMETERS);
 
         notifyBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle(getString(R.string.notification_service_name))
@@ -144,11 +146,17 @@ public class FruithapNotificationService extends Service
                 notifyBuilder.build());
 
 
-        String amqpUrl = "amqp://admin:admin@192.168.1.81";
-        String exchangeName = "FruitHAP_PubSubExchange";
-        String topic = "alerts";
 
-        fruithapNotificationTask.execute(amqpUrl, exchangeName, topic);
+        String amqpUrl = "amqp://admin:admin@192.168.1.81";
+        connectionParameters.getString(Constants.MQ_HOST);
+
+        String exchangeName = "FruitHAP_PubSubExchange";
+        String[] topics = new String[]{"alerts"};
+
+        fruithapNotificationTask.execute
+                (connectionParameters.getString(Constants.MQ_HOST),
+                connectionParameters.getInt(Constants.MQ_PORT), connectionParameters.getString(Constants.MQ_USERNAME), connectionParameters.getString(Constants.MQ_PASSWORD),
+                connectionParameters.getString(Constants.MQ_VHOST), connectionParameters.getString(Constants.MQ_PUBSUBEXCHANGE), connectionParameters.getStringArrayList(Constants.MQ_PUBSUB_TOPICS_TO_SUBCRIBE));
 
         Toast.makeText(this, R.string.notification_service_started, Toast.LENGTH_SHORT).show();
 

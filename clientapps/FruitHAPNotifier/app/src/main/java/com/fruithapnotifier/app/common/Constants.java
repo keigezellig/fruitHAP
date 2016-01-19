@@ -7,21 +7,27 @@ import android.content.Intent;
  */
 public class Constants
 {
-    public static final String RPC_RESULTDATA = "com.fruithapnotifier.app.service.rpc.RESULT_DATA";
+    public static final String MQ_CONNECTION_PARAMETERS = "com.fruithapnotifier.app.service.messaging.parameter.MQ_CONNECTION_PARAMETERS";
+    public static final java.lang.String MQ_HOST = "com.fruithapnotifier.app.service.messaging.connection.MQ_HOST" ;
+    public static final java.lang.String MQ_PORT = "com.fruithapnotifier.app.service.messaging.connection.MQ_PORT";
+    public static final java.lang.String MQ_USERNAME = "com.fruithapnotifier.app.service.messaging.connection.MQ_USERNAME";
+    public static final java.lang.String MQ_PASSWORD = "com.fruithapnotifier.app.service.messaging.connection.MQ_PASSWORD";
+    public static final java.lang.String MQ_VHOST = "com.fruithapnotifier.app.service.messaging.connection.MQ_VHOST";
+    public static final java.lang.String MQ_RPCEXCHANGE = "com.fruithapnotifier.app.service.messaging.connection.MQ_RPC_EXCHANGE" ;
+    public static final java.lang.String MQ_PUBSUBEXCHANGE = "com.fruithapnotifier.app.service.messaging.connection.MQ_PUBSUB_EXCHANGE" ;
+    public static final String MQ_PUBSUB_TOPICS_TO_SUBCRIBE = "com.fruithapnotifier.app.service.messaging.connection.MQ_PUBSUB_TOPICS_TO_SUBCRIBE";
+
+    public static final String MQ_PUBSUB_TOPIC = "com.fruithapnotifier.app.service.messaging.MQ_PUBSUB_TOPIC";
+    public static final String MQ_PUBSUB_MESSAGE = "com.fruithapnotifier.app.service.messaging.MQ_PUBSUB_MESSAGE";
+    public static final String RPC_RESULTDATA = "com.fruithapnotifier.app.service.messaging.RPC_RESULT_DATA";
     public static final int RPC_REQUEST_OK = 0;
     public static final int RPC_REQUEST_FAILED = -1;
-    public static final java.lang.String MQHOST = "com.fruithapnotifier.app.service.rpc.connection.MQHOST" ;
-    public static final java.lang.String MQPORT = "com.fruithapnotifier.app.service.rpc.connection.MQPORT";
-    public static final java.lang.String MQUSERNAME = "com.fruithapnotifier.app.service.rpc.connection.MQUSERNAME";
-    public static final java.lang.String MQPASSWORD = "com.fruithapnotifier.app.service.rpc.connection.MQPASSWORD";
-    public static final java.lang.String MQVHOST = "com.fruithapnotifier.app.service.rpc.connection.MQVHOST";
-    public static final java.lang.String MQ_RPCEXCHANGE = "com.fruithapnotifier.app.service.rpc.connection.MQ_RPCEXCHANGE" ;
-    public static final String MQ_PUBSUB_TOPIC = "com.fruithapnotifier.app.service.pubsub.MQ_PUBSUB_TOPIC";
-    public static final String MQ_PUBSUB_MESSAGE = "com.fruithapnotifier.app.service.pubsub.MQ_PUBSUB_MESSAGE";
+
+
     public static final String ALERT_INSERTED = "com.fruithapnotifier.app.action.ALERT_INSERTED";
     public static final String ALERT_DELETED = "com.fruithapnotifier.app.action.ALERT_DELETED";
     public static final String ALERTS_CLEARED = "com.fruithapnotifier.app.action.ALERTS_DELETED";
-    public static String START_ACTION = "com.fruithapnotifier.app.action.START_SERVICE";
+
     public static String STOP_ACTION = "com.fruithapnotifier.app.action.STOP_SERVICE";
     public static String FRUITHAP_NOTIFICATION_ACTION = "com.fruithapnotifier.app.action.FRUITHAP_NOTIFICATION";
     public static int SERVICE_STATE_NOTIFICATIONID = 1;
