@@ -5,10 +5,9 @@ import com.fruithapnotifier.app.common.MqProvider;
 import com.fruithapnotifier.app.common.MessageCallback;
 import com.rabbitmq.client.*;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -86,7 +85,7 @@ public class RabbitMqProvider implements MqProvider
 
     }
 
-    public void subscribe(ArrayList<String> topics, MessageCallback receiver) throws Exception
+    public void subscribe(List<String> topics, MessageCallback receiver) throws Exception
     {
         if (receiver == null)
         {

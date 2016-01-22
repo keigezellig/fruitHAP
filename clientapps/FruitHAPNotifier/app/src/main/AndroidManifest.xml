@@ -23,7 +23,7 @@
         </activity>
 
         <service
-            android:name=".service.FruithapNotificationService"
+            android:name=".service.FruithapPubSubService"
             android:enabled="true"
             android:exported="false" >
         </service>

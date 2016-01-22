@@ -12,12 +12,10 @@ import com.fruithapnotifier.app.common.MessageCallback;
 import com.fruithapnotifier.app.common.MqProvider;
 import com.fruithapnotifier.app.mqproviders.MqProviderFactory;
 
-import java.util.ArrayList;
-
 /**
  * Created by developer on 12/5/15.
  */
-public class FruithapNotificationTask extends AsyncTask<String, Void, Void>
+public class FruithapNotificationTask extends AsyncTask<ConnectionParameters, Void, Void>
 {
     private final MqProvider mqProvider;
     private final Context context;
@@ -37,11 +35,11 @@ public class FruithapNotificationTask extends AsyncTask<String, Void, Void>
 
 
     @Override
-    public Void doInBackground(String... parameters)
+    public Void doInBackground(ConnectionParameters... parameters)
     {
         try
         {
-            initialize(parameters);
+            initialize(parameters[0]);
             while (!isCancelled())
             {
                 doWork();
@@ -67,7 +65,7 @@ public class FruithapNotificationTask extends AsyncTask<String, Void, Void>
         if (!isCancelled()) //Terminated in an error so stop the service
         {
             Toast.makeText(context, R.string.notification_service_error,Toast.LENGTH_SHORT).show();
-            context.stopService(new Intent(context, FruithapNotificationService.class));
+            context.stopService(new Intent(context, FruithapPubSubService.class));
         }
         else
         {
@@ -75,20 +73,12 @@ public class FruithapNotificationTask extends AsyncTask<String, Void, Void>
         }
     }
 
-    private void initialize(String[] parameters) throws Exception
+    private void initialize(ConnectionParameters parameters) throws Exception
     {
-        String amqpUri = parameters[0];
-        String exchangeName = parameters[1];
 
-        ArrayList<String> topics = new ArrayList<String>();
-        for (int i = 2; i < parameters.length; i++)
-        {
-            topics.add(parameters[i]);
-        }
-
-        mqProvider.initialize(amqpUri);
-        mqProvider.setPubSubExchange(exchangeName);
-        mqProvider.subscribe(topics, new MessageCallback()
+        mqProvider.initialize(parameters.getHost(),parameters.getPort(),parameters.getUserName(),parameters.getPassword(),parameters.getvHost());
+        mqProvider.setPubSubExchange(parameters.getPubSubExchange());
+        mqProvider.subscribe(parameters.getPubSubTopics(), new MessageCallback()
         {
             @Override
             public void onMessageReceived(String topic, String message)

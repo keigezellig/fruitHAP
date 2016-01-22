@@ -25,7 +25,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.fruithapnotifier.app.R;
-import com.fruithapnotifier.app.service.FruithapNotificationService;
+import com.fruithapnotifier.app.common.Constants;
+import com.fruithapnotifier.app.service.FruithapPubSubService;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -73,12 +74,13 @@ public class NavigationDrawerFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        serviceIntent = new Intent(getActivity(), FruithapNotificationService.class);
+
+
 
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mUserLearnedDrawer = preferences.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 
         if (savedInstanceState != null)
         {
@@ -88,6 +90,24 @@ public class NavigationDrawerFragment extends Fragment
 
         // Select either the default item (0) or the last selected item.
         selectItem(mCurrentSelectedPosition);
+
+        serviceIntent = new Intent(getActivity(), FruithapPubSubService.class);
+        Bundle connectionParameters = getPubSubServiceConnectionParameters(preferences);
+        serviceIntent.putExtra(Constants.MQ_CONNECTION_PARAMETERS, connectionParameters);
+    }
+
+    private Bundle getPubSubServiceConnectionParameters(SharedPreferences preferences)
+    {
+        Bundle result = new Bundle();
+        result.putString(Constants.MQ_HOST,preferences.getString(Constants.MQ_HOST,"192.168.1.81"));
+        result.putInt(Constants.MQ_PORT,preferences.getInt(Constants.MQ_PORT,5672));
+        result.putString(Constants.MQ_USERNAME,preferences.getString(Constants.MQ_USERNAME,"admin"));
+        result.putString(Constants.MQ_PASSWORD,preferences.getString(Constants.MQ_PASSWORD,"admin"));
+        result.putString(Constants.MQ_VHOST,preferences.getString(Constants.MQ_VHOST,"/"));
+        result.putString(Constants.MQ_PUBSUBEXCHANGE,preferences.getString(Constants.MQ_PUBSUBEXCHANGE,"FruitHAP_PubSubExchange"));
+        result.putString(Constants.MQ_PUBSUB_TOPICS_TO_SUBCRIBE,"alerts");
+        return result;
+
     }
 
     @Override

@@ -23,9 +23,9 @@ import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
 import org.json.JSONException;
 
-public class FruithapNotificationService extends Service
+public class FruithapPubSubService extends Service
 {
-    private static String LOGTAG = "FruithapNotificationService";
+    private static String LOGTAG = "FruithapPubSubService";
 
 
     private FruithapNotificationTask fruithapNotificationTask;
@@ -37,7 +37,7 @@ public class FruithapNotificationService extends Service
     private LocalBroadcastManager broadcastManager;
 
 
-    public FruithapNotificationService()
+    public FruithapPubSubService()
     {
     }
 
@@ -131,7 +131,7 @@ public class FruithapNotificationService extends Service
     {
         PendingIntent stopServicePendingIntent = getStopServicePendingIntent();
         PendingIntent startServiceControlActivityIntent = getServiceControlActivityIntent();
-        final Bundle connectionParameters = intent.getBundleExtra(Constants.MQ_CONNECTION_PARAMETERS);
+        final Bundle connectionParametersBundle = intent.getBundleExtra(Constants.MQ_CONNECTION_PARAMETERS);
 
         notifyBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle(getString(R.string.notification_service_name))
@@ -148,15 +148,17 @@ public class FruithapNotificationService extends Service
 
 
         String amqpUrl = "amqp://admin:admin@192.168.1.81";
-        connectionParameters.getString(Constants.MQ_HOST);
 
         String exchangeName = "FruitHAP_PubSubExchange";
         String[] topics = new String[]{"alerts"};
 
-        fruithapNotificationTask.execute
-                (connectionParameters.getString(Constants.MQ_HOST),
-                connectionParameters.getInt(Constants.MQ_PORT), connectionParameters.getString(Constants.MQ_USERNAME), connectionParameters.getString(Constants.MQ_PASSWORD),
-                connectionParameters.getString(Constants.MQ_VHOST), connectionParameters.getString(Constants.MQ_PUBSUBEXCHANGE), connectionParameters.getStringArrayList(Constants.MQ_PUBSUB_TOPICS_TO_SUBCRIBE));
+
+        ConnectionParameters parameters = new ConnectionParameters(connectionParametersBundle.getString(Constants.MQ_HOST),
+                connectionParametersBundle.getInt(Constants.MQ_PORT), connectionParametersBundle.getString(Constants.MQ_USERNAME), connectionParametersBundle.getString(Constants.MQ_PASSWORD),
+                connectionParametersBundle.getString(Constants.MQ_VHOST), connectionParametersBundle.getString(Constants.MQ_PUBSUBEXCHANGE), connectionParametersBundle.getStringArrayList(Constants.MQ_PUBSUB_TOPICS_TO_SUBCRIBE));
+
+        fruithapNotificationTask.execute(parameters);
+
 
         Toast.makeText(this, R.string.notification_service_started, Toast.LENGTH_SHORT).show();
 

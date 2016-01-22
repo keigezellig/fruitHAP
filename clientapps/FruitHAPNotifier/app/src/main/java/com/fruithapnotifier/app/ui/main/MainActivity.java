@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.persistence.EventRepository;
-import com.fruithapnotifier.app.service.FruithapNotificationService;
+import com.fruithapnotifier.app.service.FruithapPubSubService;
 import com.fruithapnotifier.app.ui.alerts.AlertDetailActivity;
 import com.fruithapnotifier.app.ui.alerts.AlertDetailFragment;
 import com.fruithapnotifier.app.ui.alerts.AlertListFragment;
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        serviceIntent = new Intent(MainActivity.this, FruithapNotificationService.class);
+        serviceIntent = new Intent(MainActivity.this, FruithapPubSubService.class);
         setContentView(R.layout.main_activity_main);
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
