@@ -88,6 +88,7 @@ public class AlertListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        broadcastManager = LocalBroadcastManager.getInstance(getActivity());
         datasource = new EventRepository(getActivity());
         adapter = new AlertAdapter(getActivity(),android.R.layout.simple_list_item_activated_1,datasource.getAllAlerts());
         setListAdapter(adapter);

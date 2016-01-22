@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.service.FruithapPubSubService;
+import com.fruithapnotifier.app.ui.main.settings.ApplicationSettingsActivity;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -305,6 +306,12 @@ public class NavigationDrawerFragment extends Fragment
         if (mDrawerToggle.onOptionsItemSelected(item))
         {
             return true;
+        }
+
+        if (item.getItemId() == R.id.action_settings)
+        {
+            Intent intent = new Intent(getActivity(), ApplicationSettingsActivity.class);
+            startActivity(intent);
         }
 
         if (item.getItemId() == R.id.action_turnonservice)

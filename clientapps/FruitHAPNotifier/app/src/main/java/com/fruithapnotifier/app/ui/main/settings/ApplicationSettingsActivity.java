@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 import com.fruithapnotifier.app.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,19 +34,29 @@ public class ApplicationSettingsActivity extends PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupActionBar();
+//        setupActionBar();
     }
 
+    @Override
+    protected boolean isValidFragment(String fragmentName)
+    {
+        ArrayList<Header> target = new ArrayList<>();
+        loadHeadersFromResource(R.xml.pref_headers, target);
+        for (Header h : target) {
+            if (fragmentName.equals(h.fragment)) return true;
+        }
+        return false;
+    }
     /**
      * Set up the {@link android.app.ActionBar}, if the API is available.
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void setupActionBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            // Show the Up button in the action bar.
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-    }
+//    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+//    private void setupActionBar() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+//            // Show the Up button in the action bar.
+//            getActionBar().setDisplayHomeAsUpEnabled(true);
+//        }
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -170,8 +181,8 @@ public class ApplicationSettingsActivity extends PreferenceActivity {
             bindPreferenceSummaryToValue(findPreference("pref_server_vhost"));
             bindPreferenceSummaryToValue(findPreference("pref_server_event_exchange"));
             bindPreferenceSummaryToValue(findPreference("pref_server_rpc_exchange"));
-            bindPreferenceSummaryToValue(findPreference("pref_alert_topic"));
-            bindPreferenceSummaryToValue(findPreference("pref_event_topic"));
+            bindPreferenceSummaryToValue(findPreference("pref_server_alert_topic"));
+            bindPreferenceSummaryToValue(findPreference("pref_server_event_topic"));
         }
     }
 
