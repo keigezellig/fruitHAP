@@ -52,12 +52,11 @@ public class RabbitMqProvider implements MqProvider
     @Override
     public void initialize(String host, int port, String username, String password, String vpath)
     {
-        if (this.factory != null)
+        if (this.factory == null)
         {
-            return;
+            factory = new ConnectionFactory();
         }
 
-        factory = new ConnectionFactory();
         if (host != null && !host.isEmpty())
         {
             factory.setHost(host);

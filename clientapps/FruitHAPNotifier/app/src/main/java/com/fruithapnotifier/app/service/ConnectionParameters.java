@@ -81,5 +81,18 @@ public class ConnectionParameters
     }
 
 
-
+    @Override
+    public String toString()
+    {
+        return "ConnectionParameters{" +
+                "host='" + host + '\'' +
+                ", port=" + port +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", vHost='" + vHost + '\'' +
+                ", rpcExchange='" + rpcExchange + '\'' +
+                ", pubSubExchange='" + pubSubExchange + '\'' +
+                ", pubSubTopics=" + pubSubTopics +
+                '}';
+    }
 }

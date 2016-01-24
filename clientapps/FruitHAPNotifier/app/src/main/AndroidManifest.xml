@@ -16,10 +16,10 @@
         <activity
             android:name=".ui.alerts.AlertDetailActivity"
             android:label="@string/alert_details_title"
-            android:parentActivityName=".ui.alerts.AlertListActivity" >
+            android:parentActivityName=".ui.main.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.alerts.AlertListActivity" />
+                android:value=".ui.main.MainActivity" />
         </activity>
 
         <service

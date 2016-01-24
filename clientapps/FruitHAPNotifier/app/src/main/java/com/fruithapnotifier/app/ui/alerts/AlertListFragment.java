@@ -49,7 +49,6 @@ public class AlertListFragment extends ListFragment {
      */
     private int mActivatedPosition = ListView.INVALID_POSITION;
     private EventRepository datasource;
-    private List<Alert> values;
     private AlertAdapter adapter;
     private LocalBroadcastManager broadcastManager;
     private BroadcastReceiver onAlertDbChanged;
@@ -165,7 +164,10 @@ public class AlertListFragment extends ListFragment {
             }
             mCallbacks = (Callbacks) activity;
 
-            ((MainActivity) activity).onSectionAttached(Constants.MainScreenSection.ALERT_LIST);
+            if (activity instanceof  MainActivity)
+            {
+                ((MainActivity) activity).onSectionAttached(Constants.MainScreenSection.ALERT_LIST);
+            }
         }
 
     }
@@ -192,7 +194,7 @@ public class AlertListFragment extends ListFragment {
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
         Log.d("listfrag", "position: " + position + " id: " + id);
-        mCallbacks.onItemSelected(values.get(position).getId());
+        mCallbacks.onItemSelected(adapter.getItem(position).getId());
     }
 
     @Override

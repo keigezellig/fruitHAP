@@ -1,13 +1,11 @@
 package com.fruithapnotifier.app.service;
 
 import android.app.*;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -23,6 +21,8 @@ import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
 import org.json.JSONException;
 
+import java.util.ArrayList;
+
 public class FruithapPubSubService extends Service
 {
     private static String LOGTAG = "FruithapPubSubService";
@@ -35,6 +35,7 @@ public class FruithapPubSubService extends Service
     private BroadcastReceiver eventNotificationReceiver;
     private EventRepository datasource;
     private LocalBroadcastManager broadcastManager;
+    private SharedPreferences preferences;
 
 
     public FruithapPubSubService()
@@ -54,6 +55,7 @@ public class FruithapPubSubService extends Service
         notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         broadcastManager = LocalBroadcastManager.getInstance(this);
         datasource = new EventRepository(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         fruithapNotificationTask = new FruithapNotificationTask(this);
         eventNotificationReceiver = new BroadcastReceiver()
@@ -65,8 +67,8 @@ public class FruithapPubSubService extends Service
                 {
                     String topic = intent.getStringExtra(Constants.MQ_PUBSUB_TOPIC);
                     String message = intent.getStringExtra(Constants.MQ_PUBSUB_MESSAGE);
-
-                    if (topic.equals("alerts") && !message.isEmpty())
+                    String alertTopic = preferences.getString("pref_server_alert_topic","alerts");
+                    if (topic.equals(alertTopic) && !message.isEmpty())
                     {
                         try
                         {
@@ -131,7 +133,6 @@ public class FruithapPubSubService extends Service
     {
         PendingIntent stopServicePendingIntent = getStopServicePendingIntent();
         PendingIntent startServiceControlActivityIntent = getServiceControlActivityIntent();
-        final Bundle connectionParametersBundle = intent.getBundleExtra(Constants.MQ_CONNECTION_PARAMETERS);
 
         notifyBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle(getString(R.string.notification_service_name))
@@ -147,15 +148,9 @@ public class FruithapPubSubService extends Service
 
 
 
-        String amqpUrl = "amqp://admin:admin@192.168.1.81";
+        ConnectionParameters parameters = getConnectionParameters();
 
-        String exchangeName = "FruitHAP_PubSubExchange";
-        String[] topics = new String[]{"alerts"};
-
-
-        ConnectionParameters parameters = new ConnectionParameters(connectionParametersBundle.getString(Constants.MQ_HOST),
-                connectionParametersBundle.getInt(Constants.MQ_PORT), connectionParametersBundle.getString(Constants.MQ_USERNAME), connectionParametersBundle.getString(Constants.MQ_PASSWORD),
-                connectionParametersBundle.getString(Constants.MQ_VHOST), connectionParametersBundle.getString(Constants.MQ_PUBSUBEXCHANGE), connectionParametersBundle.getStringArrayList(Constants.MQ_PUBSUB_TOPICS_TO_SUBCRIBE));
+        Log.d(getClass().getName(), parameters.toString());
 
         fruithapNotificationTask.execute(parameters);
 
@@ -163,6 +158,22 @@ public class FruithapPubSubService extends Service
         Toast.makeText(this, R.string.notification_service_started, Toast.LENGTH_SHORT).show();
 
         return START_NOT_STICKY;
+    }
+
+    private ConnectionParameters getConnectionParameters()
+    {
+
+        ArrayList<String> topics = new ArrayList<String>();
+        topics.add(preferences.getString("pref_server_alert_topic","alerts"));
+        topics.add(preferences.getString("pref_server_event_topic","events"));
+
+        return new ConnectionParameters(preferences.getString("pref_server_hostname","192.168.1.81"),
+                Integer.valueOf(preferences.getString("pref_server_port","5672")),
+                preferences.getString("pref_server_username","admin"),
+                preferences.getString("pref_server_password","admin"),
+                preferences.getString("pref_server_vhost","/"),
+                preferences.getString("pref_server_event_exchange","FruitHAP_PubSubExchange"),
+                topics);
     }
 
     private PendingIntent getServiceControlActivityIntent()

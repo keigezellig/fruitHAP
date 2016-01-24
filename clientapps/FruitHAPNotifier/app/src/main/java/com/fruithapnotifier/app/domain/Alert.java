@@ -66,7 +66,7 @@ public class Alert implements Parcelable {
 
     public AlertPriority getNotificationPriority() throws JSONException
     {
-        return AlertPriority.values()[eventData.getJSONObject("Data").getInt("AlertPriority")];
+        return AlertPriority.values()[eventData.getJSONObject("Data").getInt("Priority")];
     }
 
     public JSONObject getOptionalData() throws JSONException

@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 
 import android.view.MenuItem;
 import com.fruithapnotifier.app.R;
+import com.fruithapnotifier.app.ui.main.MainActivity;
 
 
 /**
@@ -60,7 +61,7 @@ public class AlertDetailActivity extends ActionBarActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            navigateUpTo(new Intent(this, AlertListActivity.class));
+            navigateUpTo(new Intent(this, MainActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
