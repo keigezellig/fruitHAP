@@ -2,6 +2,7 @@ package com.fruithapnotifier.app.service;
 
 import android.app.*;
 import android.content.*;
+import android.media.RingtoneManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -78,15 +79,17 @@ public class FruithapPubSubService extends Service
 
                             if (alert.getNotificationText()!= null)
                             {
-                                String messageText = alert.getNotificationText();
+
                                 AlertPriority prio = alert.getNotificationPriority();
                                 int color = PriorityHelpers.ConvertToColor(prio);
 
                                 NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context)
-                                        .setContentTitle(messageText)
+                                        .setContentTitle(alert.getNotificationText())
                                         .setContentText(alert.getSensorName())
                                         .setContentIntent(getEventDetailActivityIntent(alert.getId()))
                                         .setSmallIcon(R.mipmap.ic_launcher)
+                                        .setAutoCancel(true)
+                                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                                         .setLights(color, 1000, 1000)
                                         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
@@ -131,33 +134,42 @@ public class FruithapPubSubService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        PendingIntent stopServicePendingIntent = getStopServicePendingIntent();
-        PendingIntent startServiceControlActivityIntent = getServiceControlActivityIntent();
+        if (intent != null && intent.getAction() != null && intent.getAction().equals(Constants.STOP_ACTION))
+        {
+            stopSelf();
+        }
 
-        notifyBuilder = new NotificationCompat.Builder(this)
-                .setContentTitle(getString(R.string.notification_service_name))
-                .setSmallIcon(R.mipmap.strawberry)
-                .setContentIntent(startServiceControlActivityIntent)
-                .setOngoing(true)
-                .addAction(R.drawable.ic_drawer, getString(R.string.turn_off_notification_service), stopServicePendingIntent)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        if (fruithapNotificationTask.getStatus() != AsyncTask.Status.RUNNING )
+        {
+            PendingIntent stopServicePendingIntent = getStopServicePendingIntent();
+            PendingIntent startServiceControlActivityIntent = getServiceControlActivityIntent();
 
-        notificationManager.notify(
-                Constants.SERVICE_STATE_NOTIFICATIONID,
-                notifyBuilder.build());
+            notifyBuilder = new NotificationCompat.Builder(this)
+                    .setContentTitle(getString(R.string.notification_service_name))
+                    .setSmallIcon(R.mipmap.strawberry)
+                    .setContentIntent(startServiceControlActivityIntent)
+                    .setOngoing(true)
+                    .addAction(R.drawable.ic_drawer, getString(R.string.turn_off_notification_service), stopServicePendingIntent)
+                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
-
-
-        ConnectionParameters parameters = getConnectionParameters();
-
-        Log.d(getClass().getName(), parameters.toString());
-
-        fruithapNotificationTask.execute(parameters);
+            notificationManager.notify(
+                    Constants.SERVICE_STATE_NOTIFICATIONID,
+                    notifyBuilder.build());
 
 
-        Toast.makeText(this, R.string.notification_service_started, Toast.LENGTH_SHORT).show();
+            ConnectionParameters parameters = getConnectionParameters();
 
-        return START_NOT_STICKY;
+            Log.d(getClass().getName(), parameters.toString());
+
+            Log.d(getClass().getName(), "Starting task...");
+            fruithapNotificationTask.execute(parameters);
+        }
+        else
+        {
+            Log.d(getClass().getName(), "Task already running");
+        }
+
+        return START_STICKY;
     }
 
     private ConnectionParameters getConnectionParameters()
@@ -190,8 +202,9 @@ public class FruithapPubSubService extends Service
 
     private PendingIntent getStopServicePendingIntent()
     {
-        Intent stopServiceIntent = new Intent(Constants.STOP_ACTION);
-        return PendingIntent.getBroadcast(this, -1, stopServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent stopServiceIntent = new Intent(this, FruithapPubSubService.class);
+        stopServiceIntent.setAction(Constants.STOP_ACTION);
+        return PendingIntent.getService(this, -1, stopServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private PendingIntent getEventDetailActivityIntent(int eventId)
@@ -218,5 +231,8 @@ public class FruithapPubSubService extends Service
     {
         broadcastManager.unregisterReceiver(eventNotificationReceiver);
     }
+
+
+
 
 }

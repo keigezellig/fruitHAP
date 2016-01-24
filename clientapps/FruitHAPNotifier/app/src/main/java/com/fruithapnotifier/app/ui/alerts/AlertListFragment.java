@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.View;
 import android.widget.ListView;
 
@@ -63,7 +64,8 @@ public class AlertListFragment extends ListFragment {
          * Callback for when an item has been selected.
          * @param id
          */
-        public void onItemSelected(int id);
+        void onItemSelected(int id);
+        
     }
 
     /**
@@ -196,6 +198,7 @@ public class AlertListFragment extends ListFragment {
         Log.d("listfrag", "position: " + position + " id: " + id);
         mCallbacks.onItemSelected(adapter.getItem(position).getId());
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

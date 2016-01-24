@@ -33,6 +33,18 @@ public class FruithapNotificationTask extends AsyncTask<ConnectionParameters, Vo
     }
 
 
+    @Override
+    protected void onPreExecute()
+    {
+        Toast.makeText(context, R.string.notification_service_started, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onCancelled(Void aVoid)
+    {
+        Toast.makeText(context, R.string.notification_service_stopped, Toast.LENGTH_SHORT).show();
+    }
+
 
     @Override
     public Void doInBackground(ConnectionParameters... parameters)
@@ -67,10 +79,6 @@ public class FruithapNotificationTask extends AsyncTask<ConnectionParameters, Vo
             Toast.makeText(context, R.string.notification_service_error,Toast.LENGTH_SHORT).show();
             context.stopService(new Intent(context, FruithapPubSubService.class));
         }
-        else
-        {
-            Toast.makeText(context, R.string.notification_service_stopped, Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void initialize(ConnectionParameters parameters) throws Exception
@@ -88,7 +96,6 @@ public class FruithapNotificationTask extends AsyncTask<ConnectionParameters, Vo
                 broadcastManager.sendBroadcast(intent);
             }
         });
-
     }
 
     private void doWork() throws Exception

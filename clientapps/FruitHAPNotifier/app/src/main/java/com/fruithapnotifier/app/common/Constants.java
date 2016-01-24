@@ -1,5 +1,6 @@
 package com.fruithapnotifier.app.common;
 
+import android.content.Context;
 import android.content.Intent;
 
 /**
@@ -27,6 +28,7 @@ public class Constants
     public static final String ALERT_INSERTED = "com.fruithapnotifier.app.action.ALERT_INSERTED";
     public static final String ALERT_DELETED = "com.fruithapnotifier.app.action.ALERT_DELETED";
     public static final String ALERTS_CLEARED = "com.fruithapnotifier.app.action.ALERTS_DELETED";
+    public static final String SERVICE_STOPPED_ACTION = "com.fruithapnotifier.app.action.SERVICE_STOPPED_ACTION";
 
     public static String STOP_ACTION = "com.fruithapnotifier.app.action.STOP_SERVICE";
     public static String FRUITHAP_NOTIFICATION_ACTION = "com.fruithapnotifier.app.action.FRUITHAP_NOTIFICATION";

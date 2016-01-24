@@ -18,8 +18,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
-    <string name="turn_on_notification_service">Enable notification service</string>
-    <string name="turn_off_notification_service">Disable notification service</string>
+    <string name="turn_on_notification_service">Start notification service</string>
+    <string name="turn_off_notification_service">Stop notification service</string>
     <string name="action_clear_list">Clear list</string>
     <string name="action_general_settings">General settings</string>
     <string name="clearing_list">Clearing list</string>
@@ -29,9 +29,10 @@
 
 
 
-    <string name="notification_service_started">Enabled notification service</string>
-    <string name="notification_service_stopped">Disabled notification service</string>
-    <string name="notification_service_error">Error running notification service</string>
-    <string name="notification_service_name">FruitHAP Notification Service</string>
+    <string name="notification_service_started">Started notification service</string>
+    <string name="notification_service_stopped">Stopped notification service</string>
+    <string name="notification_service_error">Error starting/stopping notification service</string>
+    <string name="notification_service_name">FruitHAP</string>
     <string name="notification_service_stopwarning">Are you sure you want to turn off the notification service? No alerts will be received and the dashboard won\'t be updated properly</string>
+    <string name="notification_service_already_running">Notification service is already running</string>
 </resources>

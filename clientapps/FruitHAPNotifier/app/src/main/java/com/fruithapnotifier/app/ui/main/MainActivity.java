@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         serviceIntent = new Intent(MainActivity.this, FruithapPubSubService.class);
+        startService(serviceIntent);
         setContentView(R.layout.main_activity_main);
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
+
+
 
     /**
      * Callback method from {@link AlertListFragment.Callbacks}
@@ -184,7 +187,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_clear_list)
+        if (id == R.id.action_alert_clear_list)
         {
             Toast.makeText(this, getString(R.string.clearing_list), Toast.LENGTH_SHORT).show();
             EventRepository repository = new EventRepository(this);
@@ -197,6 +200,8 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     /**
      * A placeholder fragment containing a simple view.
