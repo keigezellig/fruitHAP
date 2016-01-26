@@ -4,18 +4,15 @@ import android.app.*;
 import android.content.*;
 import android.media.RingtoneManager;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.domain.AlertPriority;
 import com.fruithapnotifier.app.domain.Alert;
 import com.fruithapnotifier.app.persistence.EventRepository;
-import com.fruithapnotifier.app.ui.alerts.AlertDetailActivity;
 import com.fruithapnotifier.app.ui.alerts.AlertDetailFragment;
 import com.fruithapnotifier.app.ui.main.MainActivity;
 import com.fruithapnotifier.app.common.Constants;
@@ -209,12 +206,12 @@ public class FruithapPubSubService extends Service
 
     private PendingIntent getEventDetailActivityIntent(int eventId)
     {
-        Intent eventDetailActivityIntent = new Intent(this, AlertDetailActivity.class);
+        Intent eventDetailActivityIntent = new Intent(this, MainActivity.class);
         eventDetailActivityIntent.putExtra(AlertDetailFragment.ARG_ITEM_ID,eventId);
         eventDetailActivityIntent.putExtra(AlertDetailFragment.SHOULD_CLEAR_NOTIFICATION,true);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 // Adds the back stack
-        stackBuilder.addParentStack(AlertDetailActivity.class);
+        stackBuilder.addParentStack(MainActivity.class);
 // Adds the Intent to the top of the stack
         stackBuilder.addNextIntent(eventDetailActivityIntent);
 // Gets a PendingIntent containing the entire back stack

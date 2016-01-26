@@ -19,12 +19,11 @@ import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.persistence.EventRepository;
 import com.fruithapnotifier.app.service.FruithapPubSubService;
-import com.fruithapnotifier.app.ui.alerts.AlertDetailActivity;
 import com.fruithapnotifier.app.ui.alerts.AlertDetailFragment;
-import com.fruithapnotifier.app.ui.alerts.AlertListFragment;
+import com.fruithapnotifier.app.ui.alerts.AlertRecyclerListFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, AlertListFragment.Callbacks
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks
 
 {
 
@@ -57,57 +56,10 @@ public class MainActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        if (findViewById(R.id.alert_detail_container) != null)
-        {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-large and
-            // res/values-sw600dp). If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
 
-            // In two-pane mode, list items should be given the
-            // 'activated' state when touched.
-            ((AlertListFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.alert_list))
-                    .setActivateOnItemClick(true);
-        }
 
     }
 
-
-
-    /**
-     * Callback method from {@link AlertListFragment.Callbacks}
-     * indicating that the item with the given ID was selected.
-     *
-     * @param id
-     */
-    @Override
-    public void onItemSelected(int id)
-    {
-        if (mTwoPane)
-        {
-            // In two-pane mode, show the detail view in this activity by
-            // adding or replacing the detail fragment using a
-            // fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putInt(AlertDetailFragment.ARG_ITEM_ID, id);
-            AlertDetailFragment fragment = new AlertDetailFragment();
-            fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.alert_detail_container, fragment)
-                    .commit();
-
-        }
-        else
-        {
-            // In single-pane mode, simply start the detail activity
-            // for the selected item ID.
-            Intent detailIntent = new Intent(this, AlertDetailActivity.class);
-            detailIntent.putExtra(AlertDetailFragment.ARG_ITEM_ID, id);
-            startActivity(detailIntent);
-        }
-    }
 
     @Override
     public void onNavigationDrawerItemSelected(int position)
@@ -119,7 +71,7 @@ public class MainActivity extends AppCompatActivity
             case 0:
                 //Home
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, new AlertListFragment())
+                        .replace(R.id.container, new AlertRecyclerListFragment())
                         .commit();
                 break;
             case 1:

@@ -35,4 +35,7 @@
     <string name="notification_service_name">FruitHAP</string>
     <string name="notification_service_stopwarning">Are you sure you want to turn off the notification service? No alerts will be received and the dashboard won\'t be updated properly</string>
     <string name="notification_service_already_running">Notification service is already running</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
