@@ -9,7 +9,7 @@ import com.fruithapnotifier.app.domain.AlertPriority;
  */
 public class PriorityHelpers
 {
-    public static int ConvertToColor(AlertPriority priority)
+    public static int convertToColor(AlertPriority priority)
     {
         switch (priority)
         {
@@ -24,7 +24,7 @@ public class PriorityHelpers
         }
     }
 
-    public static int GetTextResource(AlertPriority priority)
+    public static int getTextResource(AlertPriority priority)
     {
         switch (priority)
         {
@@ -36,6 +36,21 @@ public class PriorityHelpers
                 return R.string.alert_details_priority_high;
             default:
                 return -1;
+        }
+    }
+
+    public static String getText(AlertPriority priority)
+    {
+        switch (priority)
+        {
+            case Low:
+                return "Low";
+            case Medium:
+                return "Medium";
+            case High:
+                return "High";
+            default:
+                return "";
         }
     }
 

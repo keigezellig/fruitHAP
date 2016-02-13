@@ -38,12 +38,14 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/MessageGenerator" />
             <option value="$PROJECT_DIR$/app" />
           </set>
         </option>
         <option name="myModules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/MessageGenerator" />
             <option value="$PROJECT_DIR$/app" />
           </set>
         </option>
@@ -62,13 +64,6 @@
     <option name="PROJECT_PROFILE" value="Project Default" />
     <option name="USE_PROJECT_PROFILE" value="true" />
     <version value="1.0" />
-  </component>
-  <component name="MavenImportPreferences">
-    <option name="generalSettings">
-      <MavenGeneralSettings>
-        <option name="mavenHome" value="Bundled (Maven 3)" />
-      </MavenGeneralSettings>
-    </option>
   </component>
   <component name="Palette2">
     <group name="Swing">
@@ -215,6 +210,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FruitHAPNotifier.iml" filepath="$PROJECT_DIR$/FruitHAPNotifier.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MessageGenerator/com.fruithapnotifier.messageGenerator.iml" filepath="$PROJECT_DIR$/MessageGenerator/com.fruithapnotifier.messageGenerator.iml" />
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
@@ -264,7 +260,9 @@
         <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.1.1/res" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/apps/android-sdk-linux/extras/android/m2repository/com/android/support/cardview-v7/23.1.1/cardview-v7-23.1.1-sources.jar!/" />
+      </SOURCES>
     </library>
     <library name="commons-lang3-3.4">
       <CLASSES>
@@ -274,6 +272,14 @@
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.4/b49dafc9cfef24c356827f322e773e7c26725dd2/commons-lang3-3.4-sources.jar!/" />
       </SOURCES>
+    </library>
+    <library name="expandablerecyclerview-2.1.0">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.bignerdranch.android/expandablerecyclerview/2.1.0/res" />
+        <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.bignerdranch.android/expandablerecyclerview/2.1.0/classes.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
     </library>
     <library name="joda-time-2.9.1">
       <CLASSES>
@@ -285,12 +291,17 @@
       </SOURCES>
     </library>
     <library name="recyclerview-v7-23.1.1">
+      <ANNOTATIONS>
+        <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.1.1/annotations.zip!/" />
+      </ANNOTATIONS>
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.1.1/classes.jar!/" />
         <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.1.1/res" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/apps/android-sdk-linux/extras/android/m2repository/com/android/support/recyclerview-v7/23.1.1/recyclerview-v7-23.1.1-sources.jar!/" />
+      </SOURCES>
     </library>
     <library name="support-annotations-23.1.1">
       <CLASSES>

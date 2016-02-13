@@ -78,7 +78,7 @@ public class FruithapPubSubService extends Service
                             {
 
                                 AlertPriority prio = alert.getNotificationPriority();
-                                int color = PriorityHelpers.ConvertToColor(prio);
+                                int color = PriorityHelpers.convertToColor(prio);
 
                                 NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context)
                                         .setContentTitle(alert.getNotificationText())

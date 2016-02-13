@@ -69,13 +69,13 @@ public class MainActivity extends AppCompatActivity
         switch (position)
         {
             case 0:
-                //Home
+                //Alert list
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, new AlertRecyclerListFragment())
                         .commit();
                 break;
             case 1:
-                //About
+                //DASHBOARD
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, PlaceholderFragment.newInstance(position))
                         .commit();

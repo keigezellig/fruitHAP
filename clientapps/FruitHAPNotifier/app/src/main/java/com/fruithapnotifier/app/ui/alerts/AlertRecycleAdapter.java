@@ -53,8 +53,8 @@ public class AlertRecycleAdapter extends RecyclerView.Adapter<AlertRecycleAdapte
             if (event != null)
             {
                 GradientDrawable background = (GradientDrawable) alertViewHolder.txtPriority.getBackground();
-                background.setColor(PriorityHelpers.ConvertToColor(event.getNotificationPriority()));
-                alertViewHolder.txtPriority.setText(PriorityHelpers.GetTextResource(event.getNotificationPriority()));
+                background.setColor(PriorityHelpers.convertToColor(event.getNotificationPriority()));
+                alertViewHolder.txtPriority.setText(PriorityHelpers.getTextResource(event.getNotificationPriority()));
                 alertViewHolder.txtTimestamp.setText(DateTimeFormat.forStyle("SL").print(event.getTimestamp()));
                 alertViewHolder.txtMessage.setText(event.getNotificationText());
             }

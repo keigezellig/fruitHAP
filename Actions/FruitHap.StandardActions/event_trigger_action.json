@@ -2,6 +2,6 @@
 "RoutingKey":"alerts",
 "Sensors":
 	[		
-		{"SensorName":"IpCamMotionDetect","NotificationText":"Intruder alert","Priority":"High"}
+		{"SensorName":"PIR","NotificationText":"Intruder alert","Priority":"High"}
 	]
 }

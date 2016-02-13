@@ -89,8 +89,8 @@ public class AlertDetailFragment extends Fragment {
             {
                 TextView txtPriority = (TextView) rootView.findViewById(R.id.alert_detail_txtPriority);
                 GradientDrawable background = (GradientDrawable) txtPriority.getBackground();
-                background.setColor(PriorityHelpers.ConvertToColor(mItem.getNotificationPriority()));
-                txtPriority.setText(PriorityHelpers.GetTextResource(mItem.getNotificationPriority()));
+                background.setColor(PriorityHelpers.convertToColor(mItem.getNotificationPriority()));
+                txtPriority.setText(PriorityHelpers.getTextResource(mItem.getNotificationPriority()));
 
                 TextView txtTimestamp = (TextView) rootView.findViewById(R.id.alert_detail_txtTimestamp);
                 txtTimestamp.setText(DateTimeFormat.forStyle("SL").print(mItem.getTimestamp()));

@@ -71,6 +71,11 @@ public class Alert implements Parcelable {
 
     public JSONObject getOptionalData() throws JSONException
     {
+        if (eventData.getJSONObject("Data").isNull("OptionalData"))
+        {
+            return null;
+        }
+
         return eventData.getJSONObject("Data").getJSONObject("OptionalData");
     }
 
