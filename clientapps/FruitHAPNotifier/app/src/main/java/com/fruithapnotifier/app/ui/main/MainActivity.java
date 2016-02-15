@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity
             case 0:
                 //Alert list
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, new AlertRecyclerListFragment())
+                        .replace(R.id.container, AlertRecyclerListFragment.newInstance(-1))
                         .commit();
                 break;
             case 1:

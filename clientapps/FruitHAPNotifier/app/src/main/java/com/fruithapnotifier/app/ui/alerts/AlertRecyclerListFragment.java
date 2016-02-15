@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bignerdranch.expandablerecyclerview.Adapter.ExpandableRecyclerAdapter;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.domain.Alert;
@@ -36,11 +37,22 @@ import java.util.List;
 public class AlertRecyclerListFragment extends Fragment
 {
 
+    private static final String ARG_EXPANDED_ALERTID = "expanded_alertId";
+
     private RecyclerView alertListView;
     private LocalBroadcastManager broadcastManager;
     private BroadcastReceiver onAlertDbChanged;
     private AlertExpandableRecycleAdapter adapter;
     private FragmentCallbacks mCallbacks;
+
+    public static AlertRecyclerListFragment newInstance(int alertIdThatShouldBeExpanded)
+    {
+        Bundle args = new Bundle();
+        args.putInt(ARG_EXPANDED_ALERTID,alertIdThatShouldBeExpanded);
+        AlertRecyclerListFragment fragment = new AlertRecyclerListFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     public AlertRecyclerListFragment()
     {
@@ -105,18 +117,7 @@ public class AlertRecyclerListFragment extends Fragment
         BroadcastReceiver receiver = new BroadcastReceiver() {
             final List<AlertListItemViewModel> adapterItems = (List<AlertListItemViewModel>)adapter.getParentItemList();
 
-            private AlertListItemViewModel findAlertByIdInAdapter(int id)
-            {
-                for (AlertListItemViewModel item: adapterItems)
-                {
-                    if (item.getId() == id)
-                    {
-                        return item;
-                    }
-                }
 
-                return null;
-            }
 
             @Override
             public void onReceive(Context context, Intent intent)
@@ -137,7 +138,7 @@ public class AlertRecyclerListFragment extends Fragment
                 {
                     Alert alert = intent.getParcelableExtra("ALERTDATA");
 
-                    int position = adapterItems.indexOf(findAlertByIdInAdapter(alert.getId()));
+                    int position = adapterItems.indexOf(adapter.findAlertByIdInAdapter(alert.getId()));
                     if (position > -1)
                     {
                         adapterItems.remove(position);
@@ -188,8 +189,23 @@ public class AlertRecyclerListFragment extends Fragment
             {
                 adapter.notifyParentItemRangeChanged(0,adapter.getParentItemList().size());
             }
-
         }
+        int alertIdToBeExpanded = getArguments().getInt(ARG_EXPANDED_ALERTID,-1);
+
+        if (alertIdToBeExpanded > -1)
+        {
+            int pos = adapter.getParentItemList().indexOf(adapter.findAlertByIdInAdapter(alertIdToBeExpanded));
+            if (pos != -1)
+            {
+                adapter.expandParent(pos);
+                alertListView.scrollToPosition(pos);
+            }
+        }
+        else
+        {
+            adapter.collapseAllParents();
+        }
+
     }
 
 

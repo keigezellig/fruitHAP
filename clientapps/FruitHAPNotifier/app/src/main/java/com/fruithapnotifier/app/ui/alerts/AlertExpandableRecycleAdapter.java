@@ -66,7 +66,7 @@ public class AlertExpandableRecycleAdapter extends ExpandableRecyclerAdapter<Ale
         background.setColor(listItem.getPriorityColor());
         alertListItemViewHolder.getTxtPriority().setText(listItem.getPriorityText());
         alertListItemViewHolder.getTxtTimestamp().setText(listItem.getTimestamp());
-        alertListItemViewHolder.getTxtMessage().setText(listItem.getNotificationText());
+        alertListItemViewHolder.getTxtMessage().setText(listItem.getId() + "." + listItem.getNotificationText());
         Log.d("AAAA",""+i);
     }
 
@@ -89,6 +89,19 @@ public class AlertExpandableRecycleAdapter extends ExpandableRecyclerAdapter<Ale
             ImageView imgOptional = alertListItemDetailViewHolder.getImgOptional();
             imgOptional.setImageBitmap(decodedImage);
         }
+    }
+
+    public AlertListItemViewModel findAlertByIdInAdapter(int id)
+    {
+        for (AlertListItemViewModel item: (List<AlertListItemViewModel>)this.getParentItemList())
+        {
+            if (item.getId() == id)
+            {
+                return item;
+            }
+        }
+
+        return null;
     }
 
 
