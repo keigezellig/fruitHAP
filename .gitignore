@@ -14,3 +14,5 @@ build*
 *.iws
 *.class
 .idea
+out
+target

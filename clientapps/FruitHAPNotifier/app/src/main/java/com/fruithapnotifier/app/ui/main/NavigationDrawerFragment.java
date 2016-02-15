@@ -25,11 +25,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.fruithapnotifier.app.R;
-import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.service.FruithapPubSubService;
 import com.fruithapnotifier.app.ui.main.settings.ApplicationSettingsActivity;
-
-import java.util.ArrayList;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -372,14 +369,4 @@ public class NavigationDrawerFragment extends Fragment
         return ((AppCompatActivity) getActivity()).getSupportActionBar();
     }
 
-    /**
-     * Callbacks interface that all activities using this fragment must implement.
-     */
-    public static interface NavigationDrawerCallbacks
-    {
-        /**
-         * Called when an item in the navigation drawer is selected.
-         */
-        void onNavigationDrawerItemSelected(int position);
-    }
 }

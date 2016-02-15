@@ -35,7 +35,7 @@ public class Constants
     public static int SERVICE_STATE_NOTIFICATIONID = 1;
     public static int INCOMING_EVENT_NOTIFICATIONID = 2;
 
-    public enum MainScreenSection
+    public enum Section
     {
         ALERT_LIST,
         DASHBOARD

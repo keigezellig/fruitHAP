@@ -19,14 +19,13 @@ import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.persistence.EventRepository;
 import com.fruithapnotifier.app.service.FruithapPubSubService;
-import com.fruithapnotifier.app.ui.alerts.AlertDetailFragment;
 import com.fruithapnotifier.app.ui.alerts.AlertRecyclerListFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks
+        implements NavigationDrawerCallbacks, FragmentCallbacks
+
 
 {
-
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -36,7 +35,7 @@ public class MainActivity extends AppCompatActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-    private Constants.MainScreenSection currentSection;
+    private Constants.Section currentSection;
     private Intent serviceIntent;
 
 
@@ -55,8 +54,6 @@ public class MainActivity extends AppCompatActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-
-
 
     }
 
@@ -83,7 +80,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void onSectionAttached(Constants.MainScreenSection section)
+    public void onSectionAttached(Constants.Section section)
     {
         switch (section)
         {
@@ -97,7 +94,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         currentSection = section;
-
 
     }
 
@@ -119,7 +115,7 @@ public class MainActivity extends AppCompatActivity
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
 
-            if (currentSection == Constants.MainScreenSection.ALERT_LIST)
+            if (currentSection == Constants.Section.ALERT_LIST)
             {
                 getMenuInflater().inflate(R.menu.menu_alertlist, menu);
             }
@@ -198,7 +194,7 @@ public class MainActivity extends AppCompatActivity
         public void onAttach(Activity activity)
         {
             super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(Constants.MainScreenSection.DASHBOARD);
+            ((MainActivity) activity).onSectionAttached(Constants.Section.DASHBOARD);
         }
     }
 

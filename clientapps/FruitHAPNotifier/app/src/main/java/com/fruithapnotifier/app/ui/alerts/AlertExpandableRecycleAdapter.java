@@ -67,7 +67,7 @@ public class AlertExpandableRecycleAdapter extends ExpandableRecyclerAdapter<Ale
         alertListItemViewHolder.getTxtPriority().setText(listItem.getPriorityText());
         alertListItemViewHolder.getTxtTimestamp().setText(listItem.getTimestamp());
         alertListItemViewHolder.getTxtMessage().setText(listItem.getNotificationText());
-
+        Log.d("AAAA",""+i);
     }
 
     @Override

@@ -5,8 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,9 +22,10 @@ import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.domain.Alert;
 import com.fruithapnotifier.app.persistence.EventRepository;
+import com.fruithapnotifier.app.ui.alerts.viewmodels.AlertListItemDetailViewModel;
 import com.fruithapnotifier.app.ui.alerts.viewmodels.AlertListItemViewModel;
 import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
-import com.fruithapnotifier.app.ui.main.MainActivity;
+import com.fruithapnotifier.app.ui.main.FragmentCallbacks;
 import org.joda.time.format.DateTimeFormat;
 import org.json.JSONException;
 
@@ -39,6 +40,7 @@ public class AlertRecyclerListFragment extends Fragment
     private LocalBroadcastManager broadcastManager;
     private BroadcastReceiver onAlertDbChanged;
     private AlertExpandableRecycleAdapter adapter;
+    private FragmentCallbacks mCallbacks;
 
     public AlertRecyclerListFragment()
     {
@@ -55,10 +57,11 @@ public class AlertRecyclerListFragment extends Fragment
     {
         try
         {
+            int id = alert.getId();
             String timestamp = DateTimeFormat.forStyle("SL").print(alert.getTimestamp());
             String sensorName = alert.getSensorName();
             String notificationText = alert.getNotificationText();
-            String priorityText = getActivity().getString(PriorityHelpers.getTextResource(alert.getNotificationPriority()));
+            String priorityText = getString(PriorityHelpers.getTextResource(alert.getNotificationPriority()));
             int priorityColor = PriorityHelpers.convertToColor(alert.getNotificationPriority());
             byte[] image = null;
 
@@ -67,7 +70,10 @@ public class AlertRecyclerListFragment extends Fragment
                 String imageString = alert.getOptionalData().getString("$value");
                 image = Base64.decode(imageString, Base64.DEFAULT);
             }
-            AlertListItemViewModel result = new AlertListItemViewModel(timestamp, sensorName, notificationText,priorityText,priorityColor, image);
+            AlertListItemViewModel result = new AlertListItemViewModel(id, timestamp, notificationText,priorityText,priorityColor);
+            ArrayList<AlertListItemDetailViewModel> childList = new ArrayList<>();
+            childList.add(new AlertListItemDetailViewModel(timestamp,sensorName,notificationText,priorityText,priorityColor,image));
+            result.setChildItemList(childList);
             return result;
         }
         catch (JSONException e)
@@ -78,8 +84,9 @@ public class AlertRecyclerListFragment extends Fragment
 
     }
 
-    private void registerBroadcastListener()
+    private void registerBroadcastReceiver()
     {
+        broadcastManager = LocalBroadcastManager.getInstance(getActivity());
         IntentFilter alertDbChangedIntentFilter = new IntentFilter();
         alertDbChangedIntentFilter.addAction(Constants.ALERT_INSERTED);
         alertDbChangedIntentFilter.addAction(Constants.ALERT_DELETED);
@@ -92,78 +99,112 @@ public class AlertRecyclerListFragment extends Fragment
         broadcastManager.unregisterReceiver(onAlertDbChanged);
     }
 
-
-
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState)
+    private BroadcastReceiver setupBroadcastReceiver()
     {
-        super.onActivityCreated(savedInstanceState);
 
-        broadcastManager = LocalBroadcastManager.getInstance(getActivity());
-        EventRepository datasource = new EventRepository(getActivity());
-        List<Alert> alerts = datasource.getAllAlerts();
-        final List<AlertListItemViewModel> viewItems = new ArrayList<AlertListItemViewModel>();
-        for (Alert alert : alerts)
-        {
-            AlertListItemViewModel viewItem = convertToViewModel(alert);
-            if (viewItem != null)
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            final List<AlertListItemViewModel> adapterItems = (List<AlertListItemViewModel>)adapter.getParentItemList();
+
+            private AlertListItemViewModel findAlertByIdInAdapter(int id)
             {
-                viewItems.add(viewItem);
+                for (AlertListItemViewModel item: adapterItems)
+                {
+                    if (item.getId() == id)
+                    {
+                        return item;
+                    }
+                }
+
+                return null;
             }
-        }
 
-        adapter = new AlertExpandableRecycleAdapter(getActivity(),viewItems);
-
-        onAlertDbChanged = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent)
             {
                 if (intent.getAction().equals(Constants.ALERT_INSERTED))
                 {
-                    if ((getActivity() instanceof MainActivity ))
-                    {
-                        Alert alert = intent.getParcelableExtra("ALERTDATA");
-                        AlertListItemViewModel item = convertToViewModel(alert);
-                        if (item != null)
-                        {
-                            viewItems.add(item);
-                            adapter.notifyParentItemInserted(viewItems.size() - 1);
-                        }
-                    }
 
+                    Alert alert = intent.getParcelableExtra("ALERTDATA");
+                    AlertListItemViewModel item = convertToViewModel(alert);
+                    if (item != null)
+                    {
+                        adapterItems.add(item);
+                        adapter.notifyParentItemInserted(adapterItems.size() - 1);
+                    }
                 }
 
-//                if (intent.getAction().equals(Constants.ALERT_DELETED))
-//                {
-//                    Alert alert = intent.getParcelableExtra("ALERTDATA");
-//                    adapter.onItemDeleted(alert);
-//                }
+                if (intent.getAction().equals(Constants.ALERT_DELETED))
+                {
+                    Alert alert = intent.getParcelableExtra("ALERTDATA");
+
+                    int position = adapterItems.indexOf(findAlertByIdInAdapter(alert.getId()));
+                    if (position > -1)
+                    {
+                        adapterItems.remove(position);
+                        adapter.notifyParentItemRemoved(position);
+                    }
+                }
 
                 if (intent.getAction().equals(Constants.ALERTS_CLEARED))
                 {
-                    adapter.notifyParentItemRangeRemoved(0,viewItems.size());
-                    viewItems.clear();
-
+                    if (adapter.getParentItemList().size() > 0)
+                    {
+                        int itemsToBeRemoved = adapterItems.size();
+                        adapterItems.clear();
+                        adapter.notifyParentItemRangeRemoved(0, itemsToBeRemoved);
+                    }
                 }
 
             }
         };
 
+        return receiver;
+    }
 
-        registerBroadcastListener();
 
-        alertListView = (RecyclerView) getActivity().findViewById(R.id.alertList);
-        alertListView.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        alertListView.setLayoutManager(llm);
-        ItemTouchHelper.Callback callback = new AlertListTouchHelper(adapter);
-        ItemTouchHelper helper = new ItemTouchHelper(callback);
-        helper.attachToRecyclerView(alertListView);
+    private void updateAdapter()
+    {
 
-        alertListView.setAdapter(adapter);
+        if (adapter == null)
+        {
+            final List<Alert> alerts = getAlertsFromDatasource();
+            final List<AlertListItemViewModel> viewItems = new ArrayList<>();
+            for (Alert alert : alerts)
+            {
+                AlertListItemViewModel viewItem = convertToViewModel(alert);
+                if (viewItem != null)
+                {
+                    viewItems.add(viewItem);
+                }
+            }
+            adapter = new AlertExpandableRecycleAdapter(getActivity(), viewItems);
+            alertListView.setAdapter(adapter);
+            onAlertDbChanged = setupBroadcastReceiver();
+            registerBroadcastReceiver();
+        }
+        else
+        {
+            if (adapter.getParentItemList().size() > 0)
+            {
+                adapter.notifyParentItemRangeChanged(0,adapter.getParentItemList().size());
+            }
 
+        }
+    }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        updateAdapter();
+    }
+
+    private List<Alert> getAlertsFromDatasource()
+    {
+        EventRepository datasource = new EventRepository(getActivity());
+        List<Alert> alerts = datasource.getAllAlerts();
+        return alerts;
     }
 
     @Override
@@ -171,8 +212,19 @@ public class AlertRecyclerListFragment extends Fragment
                              Bundle savedInstanceState)
     {
 
+        View view = inflater.inflate(R.layout.alert_fragment_list, container, false);
+        alertListView = (RecyclerView) view.findViewById(R.id.alertList);
+        alertListView.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        alertListView.setLayoutManager(llm);
 
-        return inflater.inflate(R.layout.alert_fragment_list, container, false);
+//        ItemTouchHelper.Callback callback = new AlertListTouchHelper(adapter);
+//        ItemTouchHelper helper = new ItemTouchHelper(callback);
+//        helper.attachToRecyclerView(alertListView);
+
+        updateAdapter();
+
+        return view;
     }
 
 
@@ -186,13 +238,18 @@ public class AlertRecyclerListFragment extends Fragment
         if (context instanceof Activity)
         {
             activity = (Activity) context;
-
-
-
-            if (activity instanceof MainActivity)
+            try
             {
-                ((MainActivity) activity).onSectionAttached(Constants.MainScreenSection.ALERT_LIST);
+                mCallbacks = (FragmentCallbacks) activity;
+                mCallbacks.onSectionAttached(Constants.Section.ALERT_LIST);
             }
+            catch (ClassCastException e)
+            {
+                throw new ClassCastException("Activity must implement FragmentCallbacks.");
+            }
+
+
+
         }
     }
 
@@ -200,7 +257,11 @@ public class AlertRecyclerListFragment extends Fragment
     public void onDetach()
     {
         super.onDetach();
+        unregisterBroadcastReceiver();
 
     }
+
+
+
 
 }

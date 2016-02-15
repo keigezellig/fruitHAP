@@ -2,6 +2,7 @@ package com.fruithapnotifier.app.ui.alerts.viewholders;
 
 import android.view.View;
 import android.widget.TextView;
+import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
 import com.bignerdranch.expandablerecyclerview.ViewHolder.ParentViewHolder;
 import com.fruithapnotifier.app.R;
 
@@ -37,5 +38,7 @@ public class AlertListItemViewHolder extends ParentViewHolder
     {
         return txtMessage;
     }
+
+
 
 }

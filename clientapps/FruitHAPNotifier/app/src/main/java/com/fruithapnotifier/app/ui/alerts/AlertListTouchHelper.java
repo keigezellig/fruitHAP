@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import com.bignerdranch.expandablerecyclerview.Adapter.ExpandableRecyclerAdapter;
+import com.bignerdranch.expandablerecyclerview.ViewHolder.ParentViewHolder;
 import com.fruithapnotifier.app.ui.alerts.viewholders.AlertListItemDetailViewHolder;
 import com.fruithapnotifier.app.ui.alerts.viewholders.AlertListItemViewHolder;
 import com.fruithapnotifier.app.ui.alerts.viewmodels.AlertListItemViewModel;
@@ -27,14 +28,12 @@ public class AlertListTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        Log.d(getClass().getName(),"Swiped: "+viewHolder.getAdapterPosition() + " "+alertRecycleAdapter.getItemId(viewHolder.getAdapterPosition()));
-        //viewHolder.
-        AlertListItemViewModel bla = (AlertListItemViewModel)alertRecycleAdapter.getParentItemList().get(viewHolder.getAdapterPosition());
-        Log.d(getClass().getName(),"Swiped: "+bla.getTimestamp());
+        AlertListItemViewModel parent = (AlertListItemViewModel)alertRecycleAdapter.getParentItemList().get(viewHolder.getAdapterPosition());
+        alertRecycleAdapter.collapseParent(parent);
+        int idx = alertRecycleAdapter.getParentItemList().indexOf(parent);
+        Log.d(getClass().getName(),"Swiped: "+idx);
+        alertRecycleAdapter.notifyParentItemRemoved(idx);
 
-
-        //alertRecycleAdapter.collapseAllParents();
-//        alertRecycleAdapter.notifyParentItemRemoved(viewHolder.getAdapterPosition());
 
     }
 

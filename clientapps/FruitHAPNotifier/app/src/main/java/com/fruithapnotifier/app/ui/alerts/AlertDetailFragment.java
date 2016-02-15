@@ -29,6 +29,7 @@ import org.joda.time.format.DateTimeFormat;
  * in two-pane mode (on tablets) or a {@link AlertDetailActivity}
  * on handsets.
  */
+@Deprecated
 public class AlertDetailFragment extends Fragment {
     /**
      * The fragment argument representing the item ID that this fragment
