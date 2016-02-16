@@ -1,6 +1,7 @@
 package com.fruithapnotifier.app.ui.alerts;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -131,6 +132,7 @@ public class AlertRecyclerListFragment extends Fragment
                     {
                         adapterItems.add(item);
                         adapter.notifyParentItemInserted(adapterItems.size() - 1);
+                        alertListView.scrollToPosition(adapterItems.size() - 1);
                     }
                 }
 
@@ -143,6 +145,8 @@ public class AlertRecyclerListFragment extends Fragment
                     {
                         adapterItems.remove(position);
                         adapter.notifyParentItemRemoved(position);
+                        NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.cancel(Constants.INCOMING_EVENT_NOTIFICATIONID);
                     }
                 }
 
@@ -153,6 +157,8 @@ public class AlertRecyclerListFragment extends Fragment
                         int itemsToBeRemoved = adapterItems.size();
                         adapterItems.clear();
                         adapter.notifyParentItemRangeRemoved(0, itemsToBeRemoved);
+                        NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.cancel(Constants.INCOMING_EVENT_NOTIFICATIONID);
                     }
                 }
 
@@ -180,6 +186,9 @@ public class AlertRecyclerListFragment extends Fragment
             }
             adapter = new AlertExpandableRecycleAdapter(getActivity(), viewItems);
             alertListView.setAdapter(adapter);
+            ItemTouchHelper.Callback callback = new AlertListTouchHelper(adapter,getActivity());
+            ItemTouchHelper helper = new ItemTouchHelper(callback);
+            helper.attachToRecyclerView(alertListView);
             onAlertDbChanged = setupBroadcastReceiver();
             registerBroadcastReceiver();
         }
@@ -234,11 +243,8 @@ public class AlertRecyclerListFragment extends Fragment
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         alertListView.setLayoutManager(llm);
 
-//        ItemTouchHelper.Callback callback = new AlertListTouchHelper(adapter);
-//        ItemTouchHelper helper = new ItemTouchHelper(callback);
-//        helper.attachToRecyclerView(alertListView);
-
         updateAdapter();
+
 
         return view;
     }

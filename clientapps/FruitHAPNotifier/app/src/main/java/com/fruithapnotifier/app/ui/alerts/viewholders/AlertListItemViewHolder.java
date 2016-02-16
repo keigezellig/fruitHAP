@@ -1,5 +1,6 @@
 package com.fruithapnotifier.app.ui.alerts.viewholders;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
@@ -22,6 +23,7 @@ public class AlertListItemViewHolder extends ParentViewHolder
         txtPriority = (TextView) itemView.findViewById(R.id.alert_listitem_txtPriority);
         txtTimestamp = (TextView) itemView.findViewById(R.id.alert_listitem_txtTimestamp);
         txtMessage = (TextView) itemView.findViewById(R.id.alert_listitem_txtMessage);
+
     }
 
     public TextView getTxtPriority()
@@ -38,7 +40,5 @@ public class AlertListItemViewHolder extends ParentViewHolder
     {
         return txtMessage;
     }
-
-
 
 }
