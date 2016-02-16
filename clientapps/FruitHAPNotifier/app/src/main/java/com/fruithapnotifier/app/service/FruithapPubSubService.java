@@ -207,14 +207,10 @@ public class FruithapPubSubService extends Service
     private PendingIntent getEventDetailActivityIntent(int eventId)
     {
         Intent eventDetailActivityIntent = new Intent(this, MainActivity.class);
-        eventDetailActivityIntent.putExtra(AlertDetailFragment.ARG_ITEM_ID,eventId);
-        eventDetailActivityIntent.putExtra(AlertDetailFragment.SHOULD_CLEAR_NOTIFICATION,true);
+        eventDetailActivityIntent.putExtra(Constants.EXPANDED_ALERTID,eventId);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-// Adds the back stack
         stackBuilder.addParentStack(MainActivity.class);
-// Adds the Intent to the top of the stack
         stackBuilder.addNextIntent(eventDetailActivityIntent);
-// Gets a PendingIntent containing the entire back stack
         return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 

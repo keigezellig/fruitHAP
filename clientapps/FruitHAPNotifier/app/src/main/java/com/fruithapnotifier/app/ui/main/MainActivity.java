@@ -1,6 +1,8 @@
 package com.fruithapnotifier.app.ui.main;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
@@ -37,23 +39,25 @@ public class MainActivity extends AppCompatActivity
     private CharSequence mTitle;
     private Constants.Section currentSection;
     private Intent serviceIntent;
+    private FragmentManager fragmentManager;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        fragmentManager = getSupportFragmentManager();
         serviceIntent = new Intent(MainActivity.this, FruithapPubSubService.class);
         startService(serviceIntent);
         setContentView(R.layout.main_activity_main);
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mNavigationDrawerFragment = (NavigationDrawerFragment) fragmentManager.findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
 
     }
 
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity
     public void onNavigationDrawerItemSelected(int position)
     {
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+
         switch (position)
         {
             case 0:
@@ -149,7 +153,21 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        int expandedAlertId = getIntent().getIntExtra(Constants.EXPANDED_ALERTID,-1);
+        if (expandedAlertId > -1)
+        {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, AlertRecyclerListFragment.newInstance(expandedAlertId))
+                    .commit();
 
+            NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(Constants.INCOMING_EVENT_NOTIFICATIONID);
+        }
+    }
 
     /**
      * A placeholder fragment containing a simple view.
