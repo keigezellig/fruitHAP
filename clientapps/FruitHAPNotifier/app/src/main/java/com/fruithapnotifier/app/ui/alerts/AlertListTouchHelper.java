@@ -4,11 +4,8 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import com.bignerdranch.expandablerecyclerview.Adapter.ExpandableRecyclerAdapter;
-import com.bignerdranch.expandablerecyclerview.ViewHolder.ParentViewHolder;
-import com.fruithapnotifier.app.persistence.EventRepository;
+import com.fruithapnotifier.app.persistence.AlertRepository;
 import com.fruithapnotifier.app.ui.alerts.viewholders.AlertListItemDetailViewHolder;
-import com.fruithapnotifier.app.ui.alerts.viewholders.AlertListItemViewHolder;
 import com.fruithapnotifier.app.ui.alerts.viewmodels.AlertListItemViewModel;
 
 /**
@@ -35,7 +32,7 @@ public class AlertListTouchHelper extends ItemTouchHelper.SimpleCallback {
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
        AlertListItemViewModel parent = (AlertListItemViewModel)alertRecycleAdapter.getParentItemList().get(viewHolder.getAdapterPosition());
        Log.d(getClass().getName(),"Deleting: "+parent.getId());
-        EventRepository datasource = new EventRepository(ctx);
+        AlertRepository datasource = new AlertRepository(ctx);
         datasource.deleteAlert(datasource.getAlertById(parent.getId()));
 
 

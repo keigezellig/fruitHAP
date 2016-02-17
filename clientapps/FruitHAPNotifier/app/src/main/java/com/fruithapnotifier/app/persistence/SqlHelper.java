@@ -10,10 +10,13 @@ import android.util.Log;
  */
 public class SqlHelper extends SQLiteOpenHelper {
 
-    public static final String TABLE_EVENTS = "events";
-    public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_EVENTDATA = "eventData";
-    public static final String COLUMN_TYPE = "type";
+    public static final String TABLE_ALERTS = "alerts";
+    public static final String COLUMN_ALERT_ID = "_id";
+    public static final String COLUMN_ALERT_TIMESTAMP = "timestamp";
+    public static final String COLUMN_ALERT_SENSORNAME = "sensorName";
+    public static final String COLUMN_ALERT_TEXT = "text";
+    public static final String COLUMN_ALERT_PRIORITY = "priority";
+    public static final String COLUMN_ALERT_OPTIONALDATA = "optionalData";
     private static final String DATABASE_NAME = "fruithap.db";
     private static final int DATABASE_VERSION = 3;
 
@@ -21,13 +24,18 @@ public class SqlHelper extends SQLiteOpenHelper {
 
     // Database creation sql statement
     private static final String DATABASE_CREATE = "create table "
-            + TABLE_EVENTS + "(" + COLUMN_ID
+            + TABLE_ALERTS + "(" + COLUMN_ALERT_ID
             + " integer primary key autoincrement, "
-            + COLUMN_EVENTDATA
+            + COLUMN_ALERT_TIMESTAMP
+            + " integer not null, "
+            + COLUMN_ALERT_SENSORNAME
             + " text not null, "
-            + COLUMN_TYPE
-            + " integer "
-
+            + COLUMN_ALERT_TEXT
+            + " text null, "
+            + COLUMN_ALERT_PRIORITY
+            + " integer, "
+            + COLUMN_ALERT_OPTIONALDATA
+            + " text "
             +");";
 
     public SqlHelper(Context context) {
@@ -44,7 +52,7 @@ public class SqlHelper extends SQLiteOpenHelper {
         Log.w(SqlHelper.class.getName(),
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data");
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_EVENTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALERTS);
         onCreate(db);
     }
 

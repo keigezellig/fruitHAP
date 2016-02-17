@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.domain.Alert;
-import com.fruithapnotifier.app.persistence.EventRepository;
+import com.fruithapnotifier.app.persistence.AlertRepository;
 import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
 import org.joda.time.format.DateTimeFormat;
 
@@ -42,7 +42,7 @@ public class AlertDetailFragment extends Fragment {
      * The dummy content this fragment is presenting.
      */
     private Alert mItem;
-    private EventRepository datasource;
+    private AlertRepository datasource;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -55,7 +55,7 @@ public class AlertDetailFragment extends Fragment {
     public void onAttach(Context context)
     {
         super.onAttach(context);
-        datasource = new EventRepository(context);
+        datasource = new AlertRepository(context);
 
     }
 

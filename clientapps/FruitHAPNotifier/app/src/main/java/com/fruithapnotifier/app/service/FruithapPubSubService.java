@@ -12,12 +12,12 @@ import android.util.Log;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.domain.AlertPriority;
 import com.fruithapnotifier.app.domain.Alert;
-import com.fruithapnotifier.app.persistence.EventRepository;
-import com.fruithapnotifier.app.ui.alerts.AlertDetailFragment;
+import com.fruithapnotifier.app.persistence.AlertRepository;
 import com.fruithapnotifier.app.ui.main.MainActivity;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -31,7 +31,7 @@ public class FruithapPubSubService extends Service
     private NotificationCompat.Builder notifyBuilder;
 
     private BroadcastReceiver eventNotificationReceiver;
-    private EventRepository datasource;
+    private AlertRepository datasource;
     private LocalBroadcastManager broadcastManager;
     private SharedPreferences preferences;
 
@@ -52,15 +52,47 @@ public class FruithapPubSubService extends Service
         super.onCreate();
         notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         broadcastManager = LocalBroadcastManager.getInstance(this);
-        datasource = new EventRepository(this);
+        datasource = new AlertRepository(this);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         fruithapNotificationTask = new FruithapNotificationTask(this);
+
+
         eventNotificationReceiver = new BroadcastReceiver()
         {
             @Override
             public void onReceive(Context context, Intent intent)
             {
+
+                if (intent.getAction().equals(Constants.ALERT_INSERTED))
+                {
+                    Alert alert = intent.getParcelableExtra("ALERTDATA");
+                    Log.d(LOGTAG, alert.toString());
+
+                    if (alert.getNotificationText()!= null)
+                    {
+
+                        AlertPriority prio = alert.getNotificationPriority();
+                        int color = PriorityHelpers.convertToColor(prio);
+
+                        NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context)
+                                .setContentTitle(alert.getNotificationText())
+                                .setContentText(alert.getSensorName())
+                                .setContentIntent(getEventDetailActivityIntent(alert.getId()))
+                                .setSmallIcon(R.mipmap.ic_launcher)
+                                .setAutoCancel(true)
+                                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                                .setLights(color, 1000, 1000)
+                                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+
+                        notificationManager.notify(
+                                Constants.INCOMING_EVENT_NOTIFICATIONID,
+                                notifyBuilder.build());
+                    }
+
+
+                }
+
                 if (intent.getAction().equals(Constants.FRUITHAP_NOTIFICATION_ACTION))
                 {
                     String topic = intent.getStringExtra(Constants.MQ_PUBSUB_TOPIC);
@@ -70,32 +102,9 @@ public class FruithapPubSubService extends Service
                     {
                         try
                         {
-                            Alert alert = datasource.insertAlert(message);
-
-                            Log.d(LOGTAG, alert.toString());
-
-                            if (alert.getNotificationText()!= null)
-                            {
-
-                                AlertPriority prio = alert.getNotificationPriority();
-                                int color = PriorityHelpers.convertToColor(prio);
-
-                                NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context)
-                                        .setContentTitle(alert.getNotificationText())
-                                        .setContentText(alert.getSensorName())
-                                        .setContentIntent(getEventDetailActivityIntent(alert.getId()))
-                                        .setSmallIcon(R.mipmap.ic_launcher)
-                                        .setAutoCancel(true)
-                                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                                        .setLights(color, 1000, 1000)
-                                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-
-                                notificationManager.notify(
-                                        Constants.INCOMING_EVENT_NOTIFICATIONID,
-                                        notifyBuilder.build());
-                            }
-
-
+                            JSONObject eventData = new JSONObject(message);
+                            Alert alert = Alert.createAlertFromEventData(eventData);
+                            datasource.insertAlert(alert);
                         }
                         catch (JSONException e)
                         {

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.domain.Alert;
-import com.fruithapnotifier.app.persistence.EventRepository;
+import com.fruithapnotifier.app.persistence.AlertRepository;
 import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
 import org.joda.time.format.DateTimeFormat;
 import org.json.JSONException;
@@ -22,10 +22,10 @@ import java.util.List;
 @Deprecated
 public class AlertRecycleAdapter extends RecyclerView.Adapter<AlertRecycleAdapter.AlertViewHolder>
 {
-    private final EventRepository repository;
+    private final AlertRepository repository;
     private List<Alert> alertList;
 
-    public AlertRecycleAdapter(List<Alert> alertList, EventRepository repository)
+    public AlertRecycleAdapter(List<Alert> alertList, AlertRepository repository)
     {
         this.alertList = alertList;
         this.repository = repository;
@@ -60,7 +60,7 @@ public class AlertRecycleAdapter extends RecyclerView.Adapter<AlertRecycleAdapte
                 alertViewHolder.txtMessage.setText(event.getNotificationText());
             }
         }
-        catch (JSONException e)
+        catch (Exception e)
         {
             Log.e(this.getClass().getName(),"Error:",e);
         }

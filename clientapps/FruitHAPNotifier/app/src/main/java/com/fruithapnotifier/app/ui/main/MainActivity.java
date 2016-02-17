@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
-import com.fruithapnotifier.app.persistence.EventRepository;
+import com.fruithapnotifier.app.persistence.AlertRepository;
 import com.fruithapnotifier.app.service.FruithapPubSubService;
 import com.fruithapnotifier.app.ui.alerts.AlertRecyclerListFragment;
 
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_alert_clear_list)
         {
             Toast.makeText(this, getString(R.string.clearing_list), Toast.LENGTH_SHORT).show();
-            EventRepository repository = new EventRepository(this);
+            AlertRepository repository = new AlertRepository(this);
             repository.deleteAlerts();
 
             return true;

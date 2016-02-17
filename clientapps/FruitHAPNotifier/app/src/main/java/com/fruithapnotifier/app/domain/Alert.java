@@ -142,7 +142,8 @@ public class Alert implements Parcelable {
            String text = eventData.getJSONObject("Data").getString("NotificationText");
            JSONObject optionalData = null;
 
-           if (eventData.getJSONObject("Data").isNull("OptionalData")) {
+           if (!eventData.getJSONObject("Data").isNull("OptionalData"))
+           {
                optionalData = eventData.getJSONObject("Data").getJSONObject("OptionalData");
            }
 
@@ -150,7 +151,7 @@ public class Alert implements Parcelable {
        }
        catch (JSONException ex)
        {
-           Log.e(TAG,"Cannot parse event data");
+           Log.e(TAG,"Cannot parse event data",ex);
        }
 
         return null;

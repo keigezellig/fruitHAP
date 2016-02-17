@@ -5,26 +5,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import com.bignerdranch.expandablerecyclerview.Adapter.ExpandableRecyclerAdapter;
 import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
 import com.fruithapnotifier.app.R;
-import com.fruithapnotifier.app.domain.Alert;
-import com.fruithapnotifier.app.persistence.EventRepository;
 import com.fruithapnotifier.app.ui.alerts.viewholders.AlertListItemDetailViewHolder;
 import com.fruithapnotifier.app.ui.alerts.viewholders.AlertListItemViewHolder;
 import com.fruithapnotifier.app.ui.alerts.viewmodels.AlertListItemDetailViewModel;
 import com.fruithapnotifier.app.ui.alerts.viewmodels.AlertListItemViewModel;
-import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
-import org.joda.time.format.DateTimeFormat;
-import org.json.JSONException;
 
 import java.util.List;
 

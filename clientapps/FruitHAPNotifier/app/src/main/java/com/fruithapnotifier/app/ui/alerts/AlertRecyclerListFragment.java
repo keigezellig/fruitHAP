@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -19,11 +18,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bignerdranch.expandablerecyclerview.Adapter.ExpandableRecyclerAdapter;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.domain.Alert;
-import com.fruithapnotifier.app.persistence.EventRepository;
+import com.fruithapnotifier.app.persistence.AlertRepository;
 import com.fruithapnotifier.app.ui.alerts.viewmodels.AlertListItemDetailViewModel;
 import com.fruithapnotifier.app.ui.alerts.viewmodels.AlertListItemViewModel;
 import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
@@ -227,7 +225,7 @@ public class AlertRecyclerListFragment extends Fragment
 
     private List<Alert> getAlertsFromDatasource()
     {
-        EventRepository datasource = new EventRepository(getActivity());
+        AlertRepository datasource = new AlertRepository(getActivity());
         List<Alert> alerts = datasource.getAllAlerts();
         return alerts;
     }
