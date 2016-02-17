@@ -17,6 +17,7 @@ import org.joda.time.DateTime;
  */
 public class Alert implements Parcelable {
 
+   public static String TAG = Alert.class.getName();
     public static final Creator<Alert> CREATOR = new Creator<Alert>()
     {
         public Alert createFromParcel(Parcel source)
@@ -29,76 +30,36 @@ public class Alert implements Parcelable {
             return new Alert[size];
         }
     };
+
     private int id;
-    private JSONObject eventData;
+    private String sensorName;
+    private DateTime timestamp;
+    private String notificationText;
+    private AlertPriority notificationPriority;
+    private JSONObject optionalData;
 
 
-
-    public Alert(int id, JSONObject eventData)
+    public Alert(int id, DateTime timestamp, String sensorName, String notificationText, AlertPriority notificationPriority, JSONObject optionalData)
     {
-        this.eventData = eventData;
         this.id = id;
+        this.sensorName = sensorName;
+        this.timestamp = timestamp;
+        this.notificationText = notificationText;
+        this.notificationPriority = notificationPriority;
+        this.optionalData = optionalData;
     }
 
 
     protected Alert(Parcel in)
     {
         this.id = in.readInt();
-        this.eventData = in.readParcelable(JSONObject.class.getClassLoader());
+        this.timestamp = (DateTime) in.readValue(DateTime.class.getClassLoader());
+        this.sensorName = in.readString();
+        this.notificationText = in.readString();
+        this.notificationPriority = AlertPriority.values()[in.readInt()];
+        this.optionalData = (JSONObject) in.readValue(JSONObject.class.getClassLoader());
     }
 
-    public String getSensorName() throws JSONException
-    {
-        return eventData.getString("SensorName");
-    }
-
-    public DateTime getTimestamp() throws JSONException
-    {
-        DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
-        DateTime timestamp = new DateTime(fmt.parseDateTime(eventData.getString("TimeStamp")));
-        return timestamp;
-    }
-
-    public String getNotificationText() throws JSONException
-    {
-        return eventData.getJSONObject("Data").getString("NotificationText");
-    }
-
-    public AlertPriority getNotificationPriority() throws JSONException
-    {
-        return AlertPriority.values()[eventData.getJSONObject("Data").getInt("Priority")];
-    }
-
-    public JSONObject getOptionalData() throws JSONException
-    {
-        if (eventData.getJSONObject("Data").isNull("OptionalData"))
-        {
-            return null;
-        }
-
-        return eventData.getJSONObject("Data").getJSONObject("OptionalData");
-    }
-
-    @Override
-    public String toString()
-    {
-        try
-        {
-            String dt = DateTimeFormat.forStyle("SS").print(getTimestamp());
-            return String.format("%s %s %s",getNotificationPriority(),dt,getNotificationText());
-        }
-        catch (JSONException e)
-        {
-            Log.e(this.getClass().getName(),"Error",e);
-            return "";
-        }
-
-    }
-
-    public int getId()
-    {
-        return id;
-    }
 
     @Override
     public int describeContents()
@@ -110,6 +71,89 @@ public class Alert implements Parcelable {
     public void writeToParcel(Parcel dest, int flags)
     {
         dest.writeInt(this.id);
-        dest.writeString(this.eventData.toString());
+        dest.writeValue(this.timestamp);
+        dest.writeString(this.sensorName);
+        dest.writeString(this.notificationText);
+        dest.writeInt(this.notificationPriority.ordinal());
+        dest.writeValue(this.optionalData);
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public String getSensorName() {
+        return sensorName;
+    }
+
+    public DateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public String getNotificationText() {
+        return notificationText;
+    }
+
+    public AlertPriority getNotificationPriority() {
+        return notificationPriority;
+    }
+
+    public JSONObject getOptionalData() {
+        return optionalData;
+    }
+
+    @Override
+    public String toString() {
+        return "Alert{" +
+                "id=" + id +
+                ", sensorName='" + sensorName + '\'' +
+                ", timestamp=" + timestamp +
+                ", notificationText='" + notificationText + '\'' +
+                ", notificationPriority=" + notificationPriority +
+                ", optionalData=" + optionalData +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Alert alert = (Alert) o;
+
+        return id == alert.id;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    public static Alert createAlertFromEventData(JSONObject eventData)
+    {
+       try {
+           int id = -1;
+           String sensorName = eventData.getString("SensorName");
+           DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+           DateTime timestamp = new DateTime(fmt.parseDateTime(eventData.getString("TimeStamp")));
+           AlertPriority prio = AlertPriority.values()[eventData.getJSONObject("Data").getInt("Priority")];
+           String text = eventData.getJSONObject("Data").getString("NotificationText");
+           JSONObject optionalData = null;
+
+           if (eventData.getJSONObject("Data").isNull("OptionalData")) {
+               optionalData = eventData.getJSONObject("Data").getJSONObject("OptionalData");
+           }
+
+           return new Alert(id, timestamp, sensorName, text, prio, optionalData);
+       }
+       catch (JSONException ex)
+       {
+           Log.e(TAG,"Cannot parse event data");
+       }
+
+        return null;
+
     }
 }

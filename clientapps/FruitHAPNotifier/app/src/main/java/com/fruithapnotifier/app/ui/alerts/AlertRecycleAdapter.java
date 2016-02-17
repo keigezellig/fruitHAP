@@ -19,6 +19,7 @@ import java.util.List;
 /**
  * Created by developer on 1/26/16.
  */
+@Deprecated
 public class AlertRecycleAdapter extends RecyclerView.Adapter<AlertRecycleAdapter.AlertViewHolder>
 {
     private final EventRepository repository;
