@@ -83,7 +83,7 @@ public class AlertListFragment extends Fragment
                 String imageString = alert.getOptionalData().getString("$value");
                 image = Base64.decode(imageString, Base64.DEFAULT);
             }
-            AlertListItemViewModel result = new AlertListItemViewModel(id, timestamp, notificationText,priorityText,priorityColor);
+            AlertListItemViewModel result = new AlertListItemViewModel(id, timestamp, notificationText,priorityText,priorityColor,alert.isRead());
             ArrayList<AlertListItemDetailViewModel> childList = new ArrayList<>();
             childList.add(new AlertListItemDetailViewModel(timestamp,sensorName,notificationText,priorityText,priorityColor,image));
             result.setChildItemList(childList);
@@ -129,9 +129,8 @@ public class AlertListFragment extends Fragment
                     AlertListItemViewModel item = convertToViewModel(alert);
                     if (item != null)
                     {
-                        adapterItems.add(item);
-                        adapter.notifyParentItemInserted(adapterItems.size() - 1);
-                        alertListView.scrollToPosition(adapterItems.size() - 1);
+                        adapterItems.add(0,item);
+                        adapter.notifyParentItemInserted(0);
                     }
                 }
 
