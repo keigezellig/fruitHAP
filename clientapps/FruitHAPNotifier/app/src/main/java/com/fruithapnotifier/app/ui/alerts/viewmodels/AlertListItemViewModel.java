@@ -17,15 +17,17 @@ public class AlertListItemViewModel implements ParentListItem
     private final String notificationText;
     private final String priorityText;
     private final int priorityColor;
+    private boolean isRead;
     private List<AlertListItemDetailViewModel> childList;
 
-    public AlertListItemViewModel(int id, String timestamp, String notificationText, String priorityText, int priorityColor)
+    public AlertListItemViewModel(int id, String timestamp, String notificationText, String priorityText, int priorityColor, boolean isRead)
     {
         this.id = id;
         this.timestamp = timestamp;
         this.notificationText = notificationText;
         this.priorityText = priorityText;
         this.priorityColor = priorityColor;
+        this.isRead = isRead;
     }
 
 
@@ -63,6 +65,10 @@ public class AlertListItemViewModel implements ParentListItem
         childList = list;
     }
 
+    public boolean isRead() {
+        return isRead;
+    }
+
 
     @Override
     public boolean isInitiallyExpanded()
@@ -93,4 +99,6 @@ public class AlertListItemViewModel implements ParentListItem
     {
         return id;
     }
+
+
 }

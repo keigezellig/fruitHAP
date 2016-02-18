@@ -55,7 +55,7 @@ public class AlertRepository
         values.put(SqlHelper.COLUMN_ALERT_TEXT,alert.getNotificationText());
         values.put(SqlHelper.COLUMN_ALERT_PRIORITY,alert.getNotificationPriority().ordinal());
         values.put(SqlHelper.COLUMN_ALERT_OPTIONALDATA,alert.getOptionalData().toString());
-
+        values.put(SqlHelper.COLUMN_ALERT_HASBEENREAD,alert.isRead());
 
 
         long insertId = database.insert(SqlHelper.TABLE_ALERTS, null,
@@ -85,13 +85,33 @@ public class AlertRepository
     {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         long id = alert.getId();
-        Log.d("repos","Event deleted with id: " + id);
         database.delete(SqlHelper.TABLE_ALERTS, dbHelper.COLUMN_ALERT_ID
                 + " = " + id, null);
         dbHelper.close();
         Intent intent = new Intent(Constants.ALERT_DELETED);
         intent.putExtra("ALERTDATA",alert);
         broadcastManager.sendBroadcast(intent);
+        Log.d("repos","Event deleted with id: " + id);
+    }
+
+    public void updateAlert(Alert alert)
+    {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        long id = alert.getId();
+        ContentValues values = new ContentValues();
+        values.put(SqlHelper.COLUMN_ALERT_TIMESTAMP, alert.getTimestamp().getMillis());
+        values.put(SqlHelper.COLUMN_ALERT_SENSORNAME,alert.getSensorName());
+        values.put(SqlHelper.COLUMN_ALERT_TEXT,alert.getNotificationText());
+        values.put(SqlHelper.COLUMN_ALERT_PRIORITY,alert.getNotificationPriority().ordinal());
+        values.put(SqlHelper.COLUMN_ALERT_OPTIONALDATA,alert.getOptionalData().toString());
+        values.put(SqlHelper.COLUMN_ALERT_HASBEENREAD,alert.isRead());
+        database.update(SqlHelper.TABLE_ALERTS,values,dbHelper.COLUMN_ALERT_ID + "=?",new String[] {""+id});
+
+        Intent intent = new Intent(Constants.ALERT_UPDATED);
+        intent.putExtra("ALERTDATA",alert);
+        broadcastManager.sendBroadcast(intent);
+        Log.d("repos","Event updated. id: " + id);
+
     }
 
     public List<Alert> getAllAlerts()
@@ -162,7 +182,6 @@ public class AlertRepository
             Log.e("AlertRepository", "Cannot retrieve alert:",e);
             return null;
         }
-
     }
 
     public void deleteAlerts()

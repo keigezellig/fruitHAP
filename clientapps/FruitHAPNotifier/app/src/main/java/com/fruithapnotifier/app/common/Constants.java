@@ -30,6 +30,7 @@ public class Constants
     public static final String ALERTS_CLEARED = "com.fruithapnotifier.app.action.ALERTS_DELETED";
     public static final String SERVICE_STOPPED_ACTION = "com.fruithapnotifier.app.action.SERVICE_STOPPED_ACTION";
     public static final String EXPANDED_ALERTID = "com.fruithapnotifier.app.gui.EXPANDED_ALERTID" ;
+    public static final String ALERT_UPDATED = "com.fruithapnotifier.app.action.ALERT_INSERTED";
 
     public static String STOP_ACTION = "com.fruithapnotifier.app.action.STOP_SERVICE";
     public static String INCOMING_ALERT = "com.fruithapnotifier.app.action.INCOMING_ALERT";

@@ -30,6 +30,7 @@ public class Alert implements Parcelable {
             return new Alert[size];
         }
     };
+    private boolean isRead;
 
     private int id;
     private String sensorName;
@@ -47,6 +48,7 @@ public class Alert implements Parcelable {
         this.notificationText = notificationText;
         this.notificationPriority = notificationPriority;
         this.optionalData = optionalData;
+        this.isRead = false;
     }
 
 
@@ -58,6 +60,7 @@ public class Alert implements Parcelable {
         this.notificationText = in.readString();
         this.notificationPriority = AlertPriority.values()[in.readInt()];
         this.optionalData = (JSONObject) in.readValue(JSONObject.class.getClassLoader());
+        this.isRead = in.readInt() != 0;
     }
 
 
@@ -76,6 +79,7 @@ public class Alert implements Parcelable {
         dest.writeString(this.notificationText);
         dest.writeInt(this.notificationPriority.ordinal());
         dest.writeValue(this.optionalData);
+        dest.writeInt((int) (this.isRead ? 1 : 0));
     }
 
 
@@ -101,6 +105,16 @@ public class Alert implements Parcelable {
 
     public JSONObject getOptionalData() {
         return optionalData;
+    }
+
+    public boolean isRead()
+    {
+        return isRead;
+    }
+
+    public void setRead(boolean read)
+    {
+        isRead = read;
     }
 
     @Override

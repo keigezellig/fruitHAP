@@ -17,8 +17,9 @@ public class SqlHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ALERT_TEXT = "text";
     public static final String COLUMN_ALERT_PRIORITY = "priority";
     public static final String COLUMN_ALERT_OPTIONALDATA = "optionalData";
+    public static final String COLUMN_ALERT_HASBEENREAD = "hasBeenRead";
     private static final String DATABASE_NAME = "fruithap.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
 
 
@@ -35,7 +36,9 @@ public class SqlHelper extends SQLiteOpenHelper {
             + COLUMN_ALERT_PRIORITY
             + " integer, "
             + COLUMN_ALERT_OPTIONALDATA
-            + " text "
+            + " text, "
+            + COLUMN_ALERT_HASBEENREAD
+            + " int "
             +");";
 
     public SqlHelper(Context context) {

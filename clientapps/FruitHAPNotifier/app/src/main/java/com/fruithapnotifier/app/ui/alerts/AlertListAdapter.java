@@ -3,6 +3,7 @@ package com.fruithapnotifier.app.ui.alerts;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -58,6 +59,18 @@ public class AlertListAdapter extends ExpandableRecyclerAdapter<AlertListItemVie
         alertListItemViewHolder.getTxtPriority().setText(listItem.getPriorityText());
         alertListItemViewHolder.getTxtTimestamp().setText(listItem.getTimestamp());
         alertListItemViewHolder.getTxtMessage().setText(listItem.getId() + "." + listItem.getNotificationText());
+
+        if (!listItem.isRead())
+        {
+            alertListItemViewHolder.getTxtTimestamp().setTypeface(alertListItemViewHolder.getTxtTimestamp().getTypeface(), Typeface.BOLD);
+            alertListItemViewHolder.getTxtMessage().setTypeface(alertListItemViewHolder.getTxtMessage().getTypeface(), Typeface.BOLD);
+        }
+        else
+        {
+            alertListItemViewHolder.getTxtTimestamp().setTypeface(alertListItemViewHolder.getTxtTimestamp().getTypeface(), Typeface.NORMAL);
+            alertListItemViewHolder.getTxtMessage().setTypeface(alertListItemViewHolder.getTxtMessage().getTypeface(), Typeface.NORMAL);
+
+        }
     }
 
     @Override

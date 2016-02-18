@@ -18,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bignerdranch.expandablerecyclerview.Adapter.ExpandableRecyclerAdapter;
+import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.domain.Alert;
@@ -123,7 +125,6 @@ public class AlertListFragment extends Fragment
             {
                 if (intent.getAction().equals(Constants.ALERT_INSERTED))
                 {
-
                     Alert alert = intent.getParcelableExtra("ALERTDATA");
                     AlertListItemViewModel item = convertToViewModel(alert);
                     if (item != null)
@@ -132,6 +133,20 @@ public class AlertListFragment extends Fragment
                         adapter.notifyParentItemInserted(adapterItems.size() - 1);
                         alertListView.scrollToPosition(adapterItems.size() - 1);
                     }
+                }
+
+                if (intent.getAction().equals(Constants.ALERT_UPDATED))
+                {
+                    Alert alert = intent.getParcelableExtra("ALERTDATA");
+
+                    int position = adapterItems.indexOf(adapter.findAlertByIdInAdapter(alert.getId()));
+                    if (position > -1)
+                    {
+                        AlertListItemViewModel newItem = convertToViewModel(alert);
+                        adapterItems.set(position,newItem);
+                        adapter.notifyParentItemChanged(position);
+                    }
+
                 }
 
                 if (intent.getAction().equals(Constants.ALERT_DELETED))
@@ -183,6 +198,23 @@ public class AlertListFragment extends Fragment
                 }
             }
             adapter = new AlertListAdapter(getActivity(), viewItems);
+            adapter.setExpandCollapseListener(new ExpandableRecyclerAdapter.ExpandCollapseListener() {
+                @Override
+                public void onListItemExpanded(int i)
+                {
+                    AlertListItemViewModel item = (AlertListItemViewModel)adapter.getParentItemList().get(i);
+                    int id = item.getId();
+                    AlertRepository repos = new AlertRepository(getActivity());
+                    Alert toBeUpdated = repos.getAlertById(id);
+                    toBeUpdated.setRead(true);
+                    repos.updateAlert(toBeUpdated);
+                }
+
+                @Override
+                public void onListItemCollapsed(int i) {
+
+                }
+            });
             alertListView.setAdapter(adapter);
             ItemTouchHelper.Callback callback = new AlertListTouchHelper(adapter,getActivity());
             ItemTouchHelper helper = new ItemTouchHelper(callback);
