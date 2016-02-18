@@ -13,9 +13,9 @@ import com.fruithapnotifier.app.ui.alerts.viewmodels.AlertListItemViewModel;
  */
 public class AlertListTouchHelper extends ItemTouchHelper.SimpleCallback {
     private final Context ctx;
-    private AlertExpandableRecycleAdapter alertRecycleAdapter;
+    private AlertListAdapter alertRecycleAdapter;
 
-    public AlertListTouchHelper(AlertExpandableRecycleAdapter alertRecycleAdapter, Context ctx){
+    public AlertListTouchHelper(AlertListAdapter alertRecycleAdapter, Context ctx){
         super(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         this.alertRecycleAdapter = alertRecycleAdapter;
         this.ctx = ctx;

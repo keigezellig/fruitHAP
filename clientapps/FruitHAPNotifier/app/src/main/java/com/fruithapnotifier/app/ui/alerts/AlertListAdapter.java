@@ -22,13 +22,13 @@ import java.util.List;
 /**
  * Created by developer on 1/26/16.
  */
-public class AlertExpandableRecycleAdapter extends ExpandableRecyclerAdapter<AlertListItemViewHolder, AlertListItemDetailViewHolder>
+public class AlertListAdapter extends ExpandableRecyclerAdapter<AlertListItemViewHolder, AlertListItemDetailViewHolder>
 {
 
     private final LayoutInflater inflater;
     private Context context;
 
-    public AlertExpandableRecycleAdapter(Context context, @NonNull List<? extends ParentListItem> parentItemList)
+    public AlertListAdapter(Context context, @NonNull List<? extends ParentListItem> parentItemList)
     {
         super(parentItemList);
         this.context = context;

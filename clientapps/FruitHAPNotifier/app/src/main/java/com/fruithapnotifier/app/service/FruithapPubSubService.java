@@ -71,7 +71,6 @@ public class FruithapPubSubService extends Service
 
                     if (alert.getNotificationText()!= null)
                     {
-
                         AlertPriority prio = alert.getNotificationPriority();
                         int color = PriorityHelpers.convertToColor(prio);
 
@@ -86,14 +85,14 @@ public class FruithapPubSubService extends Service
                                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
                         notificationManager.notify(
-                                Constants.INCOMING_EVENT_NOTIFICATIONID,
+                                Constants.INCOMING_ALERT_NOTIFICATION,
                                 notifyBuilder.build());
                     }
 
 
                 }
 
-                if (intent.getAction().equals(Constants.FRUITHAP_NOTIFICATION_ACTION))
+                if (intent.getAction().equals(Constants.INCOMING_ALERT))
                 {
                     String topic = intent.getStringExtra(Constants.MQ_PUBSUB_TOPIC);
                     String message = intent.getStringExtra(Constants.MQ_PUBSUB_MESSAGE);
@@ -104,7 +103,10 @@ public class FruithapPubSubService extends Service
                         {
                             JSONObject eventData = new JSONObject(message);
                             Alert alert = Alert.createAlertFromEventData(eventData);
-                            datasource.insertAlert(alert);
+                            if (alert != null)
+                            {
+                                datasource.insertAlert(alert);
+                            }
                         }
                         catch (JSONException e)
                         {
@@ -226,7 +228,7 @@ public class FruithapPubSubService extends Service
 
     private void registerBroadcastListener()
     {
-        broadcastManager.registerReceiver(eventNotificationReceiver, new IntentFilter(Constants.FRUITHAP_NOTIFICATION_ACTION));
+        broadcastManager.registerReceiver(eventNotificationReceiver, new IntentFilter(Constants.INCOMING_ALERT));
     }
 
     private void unregisterBroadcastReceiver()

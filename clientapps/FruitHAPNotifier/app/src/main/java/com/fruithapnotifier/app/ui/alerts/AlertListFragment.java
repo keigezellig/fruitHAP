@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AlertRecyclerListFragment extends Fragment
+public class AlertListFragment extends Fragment
 {
 
     private static final String ARG_EXPANDED_ALERTID = "expanded_alertId";
@@ -41,19 +41,19 @@ public class AlertRecyclerListFragment extends Fragment
     private RecyclerView alertListView;
     private LocalBroadcastManager broadcastManager;
     private BroadcastReceiver onAlertDbChanged;
-    private AlertExpandableRecycleAdapter adapter;
+    private AlertListAdapter adapter;
     private FragmentCallbacks mCallbacks;
 
-    public static AlertRecyclerListFragment newInstance(int alertIdThatShouldBeExpanded)
+    public static AlertListFragment newInstance(int alertIdThatShouldBeExpanded)
     {
         Bundle args = new Bundle();
         args.putInt(ARG_EXPANDED_ALERTID,alertIdThatShouldBeExpanded);
-        AlertRecyclerListFragment fragment = new AlertRecyclerListFragment();
+        AlertListFragment fragment = new AlertListFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public AlertRecyclerListFragment()
+    public AlertListFragment()
     {
         // Required empty public constructor
     }
@@ -144,7 +144,7 @@ public class AlertRecyclerListFragment extends Fragment
                         adapterItems.remove(position);
                         adapter.notifyParentItemRemoved(position);
                         NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-                        notificationManager.cancel(Constants.INCOMING_EVENT_NOTIFICATIONID);
+                        notificationManager.cancel(Constants.INCOMING_ALERT_NOTIFICATION);
                     }
                 }
 
@@ -156,7 +156,7 @@ public class AlertRecyclerListFragment extends Fragment
                         adapterItems.clear();
                         adapter.notifyParentItemRangeRemoved(0, itemsToBeRemoved);
                         NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-                        notificationManager.cancel(Constants.INCOMING_EVENT_NOTIFICATIONID);
+                        notificationManager.cancel(Constants.INCOMING_ALERT_NOTIFICATION);
                     }
                 }
 
@@ -182,7 +182,7 @@ public class AlertRecyclerListFragment extends Fragment
                     viewItems.add(viewItem);
                 }
             }
-            adapter = new AlertExpandableRecycleAdapter(getActivity(), viewItems);
+            adapter = new AlertListAdapter(getActivity(), viewItems);
             alertListView.setAdapter(adapter);
             ItemTouchHelper.Callback callback = new AlertListTouchHelper(adapter,getActivity());
             ItemTouchHelper helper = new ItemTouchHelper(callback);

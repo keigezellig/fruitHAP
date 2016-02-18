@@ -32,9 +32,9 @@ public class Constants
     public static final String EXPANDED_ALERTID = "com.fruithapnotifier.app.gui.EXPANDED_ALERTID" ;
 
     public static String STOP_ACTION = "com.fruithapnotifier.app.action.STOP_SERVICE";
-    public static String FRUITHAP_NOTIFICATION_ACTION = "com.fruithapnotifier.app.action.FRUITHAP_NOTIFICATION";
+    public static String INCOMING_ALERT = "com.fruithapnotifier.app.action.INCOMING_ALERT";
     public static int SERVICE_STATE_NOTIFICATIONID = 1;
-    public static int INCOMING_EVENT_NOTIFICATIONID = 2;
+    public static int INCOMING_ALERT_NOTIFICATION = 2;
 
     public enum Section
     {

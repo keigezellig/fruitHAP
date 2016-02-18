@@ -21,7 +21,7 @@ import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.persistence.AlertRepository;
 import com.fruithapnotifier.app.service.FruithapPubSubService;
-import com.fruithapnotifier.app.ui.alerts.AlertRecyclerListFragment;
+import com.fruithapnotifier.app.ui.alerts.AlertListFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerCallbacks, FragmentCallbacks
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
             case 0:
                 //Alert list
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, AlertRecyclerListFragment.newInstance(-1))
+                        .replace(R.id.container, AlertListFragment.newInstance(-1))
                         .commit();
                 break;
             case 1:
@@ -161,11 +161,11 @@ public class MainActivity extends AppCompatActivity
         if (expandedAlertId > -1)
         {
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, AlertRecyclerListFragment.newInstance(expandedAlertId))
+                    .replace(R.id.container, AlertListFragment.newInstance(expandedAlertId))
                     .commit();
 
             NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancel(Constants.INCOMING_EVENT_NOTIFICATIONID);
+            notificationManager.cancel(Constants.INCOMING_ALERT_NOTIFICATION);
         }
     }
 
