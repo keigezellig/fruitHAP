@@ -29,6 +29,7 @@ import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
 import com.fruithapnotifier.app.ui.main.FragmentCallbacks;
 import org.joda.time.format.DateTimeFormat;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,16 +79,25 @@ public class AlertListFragment extends Fragment
             int priorityColor = PriorityHelpers.convertToColor(alert.getNotificationPriority());
             byte[] image = null;
 
-            if (alert.getOptionalData() != null && !alert.getOptionalData().isNull("$type") && (alert.getOptionalData().getString("$type").contains("Byte")))
+            if (alert.getOptionalData() != null)
             {
-                String imageString = alert.getOptionalData().getString("$value");
-                image = Base64.decode(imageString, Base64.DEFAULT);
+                JSONObject content = alert.getOptionalData().optJSONObject("Content");
+                if (content != null)
+                {
+                    if (content.has("$type") && content.getString("$type").contains("Byte"))
+                    {
+                        String imageString = content.getString("$value");
+                        image = Base64.decode(imageString, Base64.DEFAULT);
+                    }
+                }
+
             }
             AlertListItemViewModel result = new AlertListItemViewModel(id, timestamp, notificationText,priorityText,priorityColor,alert.isRead());
             ArrayList<AlertListItemDetailViewModel> childList = new ArrayList<>();
             childList.add(new AlertListItemDetailViewModel(timestamp,sensorName,notificationText,priorityText,priorityColor,image));
             result.setChildItemList(childList);
             return result;
+
         }
         catch (JSONException e)
         {

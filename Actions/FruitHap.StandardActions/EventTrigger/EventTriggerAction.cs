@@ -15,6 +15,7 @@ using Microsoft.Practices.Prism.PubSubEvents;
 using System.Collections.Generic;
 using FruitHAP.Core.SensorEventPublisher;
 using FruitHAP.Common.Helpers;
+using Newtonsoft.Json;
 
 
 namespace FruitHap.StandardActions.EventTrigger
@@ -102,9 +103,11 @@ namespace FruitHap.StandardActions.EventTrigger
 			return new EventTriggerResponse () {
 				NotificationText = responseConfig.NotificationText,
 				Priority = (NotificationPriority)((int)responseConfig.Priority),
-				OptionalData = data.OptionalData
+				OptionalData = new DataContents(data.OptionalData)
 			};
 		}
+
+
 
         public void Dispose()
         {

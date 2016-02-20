@@ -25,19 +25,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="334aeb7a-808f-417c-b7af-e6c012fa1e60" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../Actions/FruitHap.StandardActions/EventTrigger/DataContents.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../Actions/FruitHap.StandardActions/EventTrigger/EventTriggerAction.cs" afterPath="$PROJECT_DIR$/../../Actions/FruitHap.StandardActions/EventTrigger/EventTriggerAction.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../Actions/FruitHap.StandardActions/FruitHap.StandardActions.csproj" afterPath="$PROJECT_DIR$/../../Actions/FruitHap.StandardActions/FruitHap.StandardActions.csproj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../Actions/FruitHap.StandardActions/event_trigger_action.json" afterPath="$PROJECT_DIR$/../../Actions/FruitHap.StandardActions/event_trigger_action.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../Engine/FruitHAP.Startup/sensors.json" afterPath="$PROJECT_DIR$/../../Engine/FruitHAP.Startup/sensors.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FruitHAPNotifier.iws" afterPath="$PROJECT_DIR$/FruitHAPNotifier.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/common/Constants.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/common/Constants.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/domain/Alert.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/domain/Alert.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/persistence/AlertRepository.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/persistence/AlertRepository.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/persistence/SqlHelper.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/persistence/SqlHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/service/FruithapPubSubService.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/service/FruithapPubSubService.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/AlertListFragment.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/AlertListFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/AlertListTouchHelper.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/AlertListTouchHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/main/FragmentCallbacks.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/main/FragmentCallbacks.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/main/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/main/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/menu/menu_alertlist.xml" afterPath="$PROJECT_DIR$/app/src/main/res/menu/menu_alertlist.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values-w820dp/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values-w820dp/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
     </list>
     <ignored path="FruitHAPNotifier.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -94,28 +89,15 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="AlertListFragment.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="AlertListFragment.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/AlertListFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-32.566666">
-              <caret line="191" column="0" selection-start-line="191" selection-start-column="0" selection-end-line="191" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.5782074">
+              <caret line="87" column="21" selection-start-line="87" selection-start-column="21" selection-end-line="87" selection-end-column="21" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#11546#11581#0" expanded="true" />
-                <element signature="e#13145#13180#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="menu_alertlist.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/menu_alertlist.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.6666667">
-              <caret line="4" column="52" selection-start-line="4" selection-start-column="28" selection-end-line="4" selection-end-column="52" />
-              <folding>
-                <element signature="e#297#324#0" expanded="true" />
-                <element signature="e#459#488#0" expanded="true" />
+                <element signature="e#11764#11799#0" expanded="true" />
+                <element signature="e#13363#13398#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -134,29 +116,38 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main_fragment_navigation_drawer.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main_fragment_navigation_drawer.xml">
-          <provider editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+      <file leaf-file-name="Alert.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/domain/Alert.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="150" column="13" selection-start-line="150" selection-start-column="13" selection-end-line="150" selection-end-column="13" />
               <folding />
             </state>
-          </provider>
-          <provider selected="true" editor-type-id="android-designer">
-            <state />
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="alert_fragment_list.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/alert_fragment_list.xml">
-          <provider editor-type-id="text-editor">
+      <file leaf-file-name="AlertListItemDetailViewHolder.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/viewholders/AlertListItemDetailViewHolder.java">
+          <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
+              <caret line="31" column="5" selection-start-line="31" selection-start-column="5" selection-end-line="31" selection-end-column="5" />
+              <folding>
+                <element signature="e#1185#1186#0" expanded="true" />
+              </folding>
             </state>
           </provider>
-          <provider selected="true" editor-type-id="android-designer">
-            <state />
+        </entry>
+      </file>
+      <file leaf-file-name="AlertListItemDetailViewModel.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/viewmodels/AlertListItemDetailViewModel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="47" column="14" selection-start-line="47" selection-start-column="14" selection-end-line="47" selection-end-column="14" />
+              <folding>
+                <element signature="e#1156#1157#0" expanded="true" />
+                <element signature="e#1192#1193#0" expanded="true" />
+              </folding>
+            </state>
           </provider>
         </entry>
       </file>
@@ -177,7 +168,7 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/service/FruithapPubSubService.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="68" column="80" selection-start-line="68" selection-start-column="80" selection-end-line="68" selection-end-column="80" />
+              <caret line="104" column="62" selection-start-line="104" selection-start-column="62" selection-end-line="104" selection-end-column="62" />
               <folding />
             </state>
           </provider>
@@ -193,10 +184,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SqlHelper.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SqlHelper.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/persistence/SqlHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.0217029">
+            <state vertical-scroll-proportion="0.0">
               <caret line="37" column="39" selection-start-line="37" selection-start-column="39" selection-end-line="37" selection-end-column="39" />
               <folding />
             </state>
@@ -1664,15 +1655,15 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/viewholders/AlertListItemViewHolder.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/AlertListAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/AlertListTouchHelper.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/domain/Alert.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/persistence/SqlHelper.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/main/FragmentCallbacks.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/menu/menu_alertlist.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/main/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/common/Constants.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/AlertListFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/service/FruithapPubSubService.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/persistence/AlertRepository.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/domain/Alert.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/AlertListFragment.java" />
       </list>
     </option>
   </component>
@@ -2597,7 +2588,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3278328" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32762313" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32762313" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -2662,12 +2653,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/AlertListFragment.java</url>
-          <line>187</line>
+          <line>197</line>
           <properties />
           <option name="timeStamp" value="43" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="45" />
+      <option name="time" value="46" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -2733,8 +2724,8 @@
           <caret line="126" column="0" selection-start-line="126" selection-start-column="0" selection-end-line="127" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#11546#11581#0" expanded="true" />
-            <element signature="e#13145#13180#0" expanded="true" />
+            <element signature="e#11764#11799#0" expanded="true" />
+            <element signature="e#13363#13398#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2816,8 +2807,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#11546#11581#0" expanded="true" />
-            <element signature="e#13145#13180#0" expanded="true" />
+            <element signature="e#11764#11799#0" expanded="true" />
+            <element signature="e#13363#13398#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2943,35 +2934,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/viewmodels/AlertListItemDetailViewModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="47" column="14" selection-start-line="47" selection-start-column="14" selection-end-line="47" selection-end-column="14" />
-          <folding>
-            <element signature="e#1156#1157#0" expanded="false" />
-            <element signature="e#1192#1193#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/viewholders/AlertListItemDetailViewHolder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="31" column="5" selection-start-line="31" selection-start-column="5" selection-end-line="31" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#1230#1231#0" expanded="false" />
-            <element signature="e#1265#1266#0" expanded="false" />
-            <element signature="e#1311#1312#0" expanded="false" />
-            <element signature="e#1347#1348#0" expanded="false" />
-            <element signature="e#1390#1391#0" expanded="false" />
-            <element signature="e#1423#1424#0" expanded="false" />
-            <element signature="e#1468#1469#0" expanded="false" />
-            <element signature="e#1502#1503#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/viewmodels/AlertListItemViewModel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2996,14 +2958,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="25" column="122" selection-start-line="25" selection-start-column="122" selection-end-line="25" selection-end-column="122" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/domain/Alert.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="153" column="98" selection-start-line="152" selection-start-column="10" selection-end-line="153" selection-end-column="98" />
           <folding />
         </state>
       </provider>
@@ -3117,26 +3071,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/service/FruithapPubSubService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="68" column="80" selection-start-line="68" selection-start-column="80" selection-end-line="68" selection-end-column="80" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/AlertListFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-32.566666">
-          <caret line="191" column="0" selection-start-line="191" selection-start-column="0" selection-end-line="191" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#11546#11581#0" expanded="true" />
-            <element signature="e#13145#13180#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/main/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -3158,9 +3092,58 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/persistence/SqlHelper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.0217029">
+        <state vertical-scroll-proportion="0.0">
           <caret line="37" column="39" selection-start-line="37" selection-start-column="39" selection-end-line="37" selection-end-column="39" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/service/FruithapPubSubService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="104" column="62" selection-start-line="104" selection-start-column="62" selection-end-line="104" selection-end-column="62" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/domain/Alert.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="150" column="13" selection-start-line="150" selection-start-column="13" selection-end-line="150" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/viewholders/AlertListItemDetailViewHolder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="31" column="5" selection-start-line="31" selection-start-column="5" selection-end-line="31" selection-end-column="5" />
+          <folding>
+            <element signature="e#1185#1186#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/viewmodels/AlertListItemDetailViewModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="47" column="14" selection-start-line="47" selection-start-column="14" selection-end-line="47" selection-end-column="14" />
+          <folding>
+            <element signature="e#1156#1157#0" expanded="true" />
+            <element signature="e#1192#1193#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/AlertListFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5782074">
+          <caret line="87" column="21" selection-start-line="87" selection-start-column="21" selection-end-line="87" selection-end-column="21" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#11764#11799#0" expanded="true" />
+            <element signature="e#13363#13398#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

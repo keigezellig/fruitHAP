@@ -147,7 +147,8 @@ public class Alert implements Parcelable {
 
     public static Alert createAlertFromEventData(JSONObject eventData)
     {
-       try {
+       Log.d(TAG,eventData.toString());
+        try {
            int id = -1;
            String sensorName = eventData.getString("SensorName");
            DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
