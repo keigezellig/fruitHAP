@@ -6,6 +6,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import com.fruithapnotifier.app.persistence.AlertRepository;
 import com.fruithapnotifier.app.ui.alerts.viewholders.AlertListItemDetailViewHolder;
+import com.fruithapnotifier.app.ui.alerts.viewholders.AlertListItemViewHolder;
 import com.fruithapnotifier.app.ui.alerts.viewmodels.AlertListItemViewModel;
 
 /**
@@ -29,21 +30,30 @@ public class AlertListTouchHelper extends ItemTouchHelper.SimpleCallback {
 
 
     @Override
-    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-       AlertListItemViewModel parent = (AlertListItemViewModel)alertRecycleAdapter.getParentItemList().get(viewHolder.getAdapterPosition());
-       Log.d(getClass().getName(),"Deleting: "+parent.getId());
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction)
+    {
+        AlertListItemViewHolder vh = (AlertListItemViewHolder) viewHolder;
+        AlertListItemViewModel parent = vh.getItem();
+        Log.d(getClass().getName(), "Deleting: " + parent.getId());
         AlertRepository datasource = new AlertRepository(ctx);
         datasource.deleteAlert(datasource.getAlertById(parent.getId()));
-
-
-
-
     }
 
     @Override
     public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder)
     {
-        if (viewHolder instanceof AlertListItemDetailViewHolder) return 0;
+        if (viewHolder instanceof AlertListItemDetailViewHolder)
+        {
+            return 0;
+        }
+
+        AlertListItemViewHolder vh = (AlertListItemViewHolder)viewHolder;
+        if (vh.isExpanded())
+        {
+            return 0;
+        }
+
+
         return super.getSwipeDirs(recyclerView, viewHolder);
     }
 }

@@ -6,6 +6,7 @@ import android.widget.TextView;
 import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
 import com.bignerdranch.expandablerecyclerview.ViewHolder.ParentViewHolder;
 import com.fruithapnotifier.app.R;
+import com.fruithapnotifier.app.ui.alerts.viewmodels.AlertListItemViewModel;
 
 /**
  * Created by developer on 2/2/16.
@@ -16,6 +17,7 @@ public class AlertListItemViewHolder extends ParentViewHolder
     private TextView txtPriority;
     private TextView txtTimestamp;
     private TextView txtMessage;
+    private AlertListItemViewModel item;
 
     public AlertListItemViewHolder(View itemView)
     {
@@ -41,4 +43,13 @@ public class AlertListItemViewHolder extends ParentViewHolder
         return txtMessage;
     }
 
+    public void setItem(AlertListItemViewModel item)
+    {
+        this.item = item;
+    }
+
+    public AlertListItemViewModel getItem()
+    {
+        return item;
+    }
 }

@@ -54,7 +54,10 @@ public class AlertRepository
         values.put(SqlHelper.COLUMN_ALERT_SENSORNAME,alert.getSensorName());
         values.put(SqlHelper.COLUMN_ALERT_TEXT,alert.getNotificationText());
         values.put(SqlHelper.COLUMN_ALERT_PRIORITY,alert.getNotificationPriority().ordinal());
-        values.put(SqlHelper.COLUMN_ALERT_OPTIONALDATA,alert.getOptionalData().toString());
+        if (alert.getOptionalData() != null)
+        {
+            values.put(SqlHelper.COLUMN_ALERT_OPTIONALDATA, alert.getOptionalData().toString());
+        }
         values.put(SqlHelper.COLUMN_ALERT_HASBEENREAD,alert.isRead());
 
 

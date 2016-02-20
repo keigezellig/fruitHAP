@@ -59,6 +59,7 @@ public class AlertListAdapter extends ExpandableRecyclerAdapter<AlertListItemVie
         alertListItemViewHolder.getTxtPriority().setText(listItem.getPriorityText());
         alertListItemViewHolder.getTxtTimestamp().setText(listItem.getTimestamp());
         alertListItemViewHolder.getTxtMessage().setText(listItem.getId() + "." + listItem.getNotificationText());
+        alertListItemViewHolder.setItem(listItem);
 
         if (!listItem.isRead())
         {
@@ -96,7 +97,8 @@ public class AlertListAdapter extends ExpandableRecyclerAdapter<AlertListItemVie
 
     public AlertListItemViewModel findAlertByIdInAdapter(int id)
     {
-        for (AlertListItemViewModel item: (List<AlertListItemViewModel>)this.getParentItemList())
+        List<AlertListItemViewModel> itemList = (List<AlertListItemViewModel>)this.getParentItemList();
+        for (AlertListItemViewModel item: itemList)
         {
             if (item.getId() == id)
             {

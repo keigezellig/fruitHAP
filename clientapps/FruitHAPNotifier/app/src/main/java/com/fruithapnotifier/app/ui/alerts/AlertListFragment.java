@@ -134,19 +134,19 @@ public class AlertListFragment extends Fragment
                     }
                 }
 
-                if (intent.getAction().equals(Constants.ALERT_UPDATED))
-                {
-                    Alert alert = intent.getParcelableExtra("ALERTDATA");
-
-                    int position = adapterItems.indexOf(adapter.findAlertByIdInAdapter(alert.getId()));
-                    if (position > -1)
-                    {
-                        AlertListItemViewModel newItem = convertToViewModel(alert);
-                        adapterItems.set(position,newItem);
-                        adapter.notifyParentItemChanged(position);
-                    }
-
-                }
+//                if (intent.getAction().equals(Constants.ALERT_UPDATED))
+//                {
+//                    Alert alert = intent.getParcelableExtra("ALERTDATA");
+//
+//                    int position = adapterItems.indexOf(adapter.findAlertByIdInAdapter(alert.getId()));
+//                    if (position > -1)
+//                    {
+//                        AlertListItemViewModel newItem = convertToViewModel(alert);
+//                        adapterItems.set(position,newItem);
+//                        adapter.notifyParentItemChanged(position);
+//                    }
+//
+//                }
 
                 if (intent.getAction().equals(Constants.ALERT_DELETED))
                 {
@@ -201,12 +201,12 @@ public class AlertListFragment extends Fragment
                 @Override
                 public void onListItemExpanded(int i)
                 {
-                    AlertListItemViewModel item = (AlertListItemViewModel)adapter.getParentItemList().get(i);
-                    int id = item.getId();
-                    AlertRepository repos = new AlertRepository(getActivity());
-                    Alert toBeUpdated = repos.getAlertById(id);
-                    toBeUpdated.setRead(true);
-                    repos.updateAlert(toBeUpdated);
+//                    AlertListItemViewModel item = (AlertListItemViewModel)adapter.getParentItemList().get(i);
+//                    int id = item.getId();
+//                    AlertRepository repos = new AlertRepository(getActivity());
+//                    Alert toBeUpdated = repos.getAlertById(id);
+//                    toBeUpdated.setRead(true);
+//                    repos.updateAlert(toBeUpdated);
                 }
 
                 @Override
