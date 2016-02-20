@@ -84,21 +84,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void onSectionAttached(Constants.Section section)
+    public void onSectionAttached(Constants.Section section, String title)
     {
-        switch (section)
-        {
-            case ALERT_LIST:
-                mTitle = getString(R.string.title_alertlist);
-                break;
-            case DASHBOARD:
-                mTitle = getString(R.string.title_dashboard);
-                break;
-
-        }
-
+        mTitle = title;
         currentSection = section;
-
     }
 
     public void restoreActionBar()
@@ -107,6 +96,12 @@ public class MainActivity extends AppCompatActivity
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
+    }
+
+    public void updateTitle(String title)
+    {
+        mTitle = title;
+        restoreActionBar();
     }
 
 
@@ -136,15 +131,21 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        AlertRepository repository = new AlertRepository(this);
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_alert_clear_list)
         {
             Toast.makeText(this, getString(R.string.clearing_list), Toast.LENGTH_SHORT).show();
-            AlertRepository repository = new AlertRepository(this);
             repository.deleteAlerts();
 
+            return true;
+        }
+
+        if (id == R.id.action_alert_mark_as_read)
+        {
+            repository.markAllAsRead();
             return true;
         }
 
@@ -179,6 +180,7 @@ public class MainActivity extends AppCompatActivity
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private String mTitle;
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -186,6 +188,7 @@ public class MainActivity extends AppCompatActivity
          */
         public static PlaceholderFragment newInstance(int sectionNumber)
         {
+
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -205,6 +208,7 @@ public class MainActivity extends AppCompatActivity
             TextView label = (TextView) rootView.findViewById(R.id.section_label);
             label.setText("This is section " + getArguments().getInt(ARG_SECTION_NUMBER));
 
+
             return rootView;
         }
 
@@ -212,7 +216,8 @@ public class MainActivity extends AppCompatActivity
         public void onAttach(Activity activity)
         {
             super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(Constants.Section.DASHBOARD);
+            mTitle = activity.getString(R.string.title_dashboard);
+            ((MainActivity) activity).onSectionAttached(Constants.Section.DASHBOARD,mTitle);
         }
     }
 

@@ -40,7 +40,7 @@ public class Alert implements Parcelable {
     private JSONObject optionalData;
 
 
-    public Alert(int id, DateTime timestamp, String sensorName, String notificationText, AlertPriority notificationPriority, JSONObject optionalData)
+    public Alert(int id, DateTime timestamp, String sensorName, String notificationText, AlertPriority notificationPriority, JSONObject optionalData, boolean hasBeenRead)
     {
         this.id = id;
         this.sensorName = sensorName;
@@ -48,7 +48,7 @@ public class Alert implements Parcelable {
         this.notificationText = notificationText;
         this.notificationPriority = notificationPriority;
         this.optionalData = optionalData;
-        this.isRead = false;
+        this.isRead = hasBeenRead;
     }
 
 
@@ -161,7 +161,7 @@ public class Alert implements Parcelable {
                optionalData = eventData.getJSONObject("Data").getJSONObject("OptionalData");
            }
 
-           return new Alert(id, timestamp, sensorName, text, prio, optionalData);
+           return new Alert(id, timestamp, sensorName, text, prio,optionalData, false);
        }
        catch (JSONException ex)
        {

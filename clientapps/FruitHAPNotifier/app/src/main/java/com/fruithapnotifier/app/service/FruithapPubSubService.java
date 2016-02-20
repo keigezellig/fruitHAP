@@ -66,7 +66,7 @@ public class FruithapPubSubService extends Service
 
                 if (intent.getAction().equals(Constants.ALERT_INSERTED))
                 {
-                    Alert alert = intent.getParcelableExtra("ALERTDATA");
+                    Alert alert = intent.getParcelableExtra(Constants.ALERT_DATA);
                     Log.d(LOGTAG, alert.toString());
 
                     if (alert.getNotificationText()!= null)
@@ -229,6 +229,7 @@ public class FruithapPubSubService extends Service
     private void registerBroadcastListener()
     {
         broadcastManager.registerReceiver(eventNotificationReceiver, new IntentFilter(Constants.INCOMING_ALERT));
+        broadcastManager.registerReceiver(eventNotificationReceiver, new IntentFilter(Constants.ALERT_INSERTED));
     }
 
     private void unregisterBroadcastReceiver()

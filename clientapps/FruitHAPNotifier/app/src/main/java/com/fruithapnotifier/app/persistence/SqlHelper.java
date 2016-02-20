@@ -19,7 +19,7 @@ public class SqlHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ALERT_OPTIONALDATA = "optionalData";
     public static final String COLUMN_ALERT_HASBEENREAD = "hasBeenRead";
     private static final String DATABASE_NAME = "fruithap.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 6;
 
 
 
@@ -28,7 +28,7 @@ public class SqlHelper extends SQLiteOpenHelper {
             + TABLE_ALERTS + "(" + COLUMN_ALERT_ID
             + " integer primary key autoincrement, "
             + COLUMN_ALERT_TIMESTAMP
-            + " integer not null, "
+            + " text not null, "
             + COLUMN_ALERT_SENSORNAME
             + " text not null, "
             + COLUMN_ALERT_TEXT

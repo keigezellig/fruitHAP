@@ -2,5 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context="com.fruithapnotifier.app.ui.main.MainActivity">
     <item android:id="@+id/action_alert_clear_list" android:title="@string/action_clear_list" android:orderInCategory="100"
         app:showAsAction="never" />
+    <item android:id="@+id/action_alert_mark_as_read" android:title="@string/action_mark_as_read" android:orderInCategory="100"
+        app:showAsAction="never" />
 
 </menu>

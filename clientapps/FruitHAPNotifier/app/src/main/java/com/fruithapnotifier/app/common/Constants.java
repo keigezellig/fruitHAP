@@ -27,10 +27,13 @@ public class Constants
 
     public static final String ALERT_INSERTED = "com.fruithapnotifier.app.action.ALERT_INSERTED";
     public static final String ALERT_DELETED = "com.fruithapnotifier.app.action.ALERT_DELETED";
-    public static final String ALERTS_CLEARED = "com.fruithapnotifier.app.action.ALERTS_DELETED";
+    public static final String ALERTS_CLEARED = "com.fruithapnotifier.app.action.ALERTS_CLEARED";
     public static final String SERVICE_STOPPED_ACTION = "com.fruithapnotifier.app.action.SERVICE_STOPPED_ACTION";
     public static final String EXPANDED_ALERTID = "com.fruithapnotifier.app.gui.EXPANDED_ALERTID" ;
-    public static final String ALERT_UPDATED = "com.fruithapnotifier.app.action.ALERT_INSERTED";
+    public static final String ALERT_UPDATED = "com.fruithapnotifier.app.action.ALERT_UPDATED";
+    public static final String ALERTS_RANGEUPDATED = "com.fruithapnotifier.app.action.ALERTS_RANGEUPDATED";
+    public static final String ALERT_RANGEDATA = "com.fruithapnotifier.app.data.ALERT_RANGEDATA";
+    public static final String ALERT_DATA = "com.fruithapnotifier.app.data.ALERT_DATA";
 
     public static String STOP_ACTION = "com.fruithapnotifier.app.action.STOP_SERVICE";
     public static String INCOMING_ALERT = "com.fruithapnotifier.app.action.INCOMING_ALERT";
@@ -41,5 +44,9 @@ public class Constants
     {
         ALERT_LIST,
         DASHBOARD
+    }
+
+    public class ALERTRANGE
+    {
     }
 }

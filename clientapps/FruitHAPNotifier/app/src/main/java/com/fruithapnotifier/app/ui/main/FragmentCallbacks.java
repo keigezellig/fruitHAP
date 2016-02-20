@@ -7,5 +7,6 @@ import com.fruithapnotifier.app.common.Constants;
  */
 public interface FragmentCallbacks
 {
-    void onSectionAttached(Constants.Section section);
+    void onSectionAttached(Constants.Section section, String title);
+    void updateTitle(String title);
 }

@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bignerdranch.expandablerecyclerview.Adapter.ExpandableRecyclerAdapter;
-import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.domain.Alert;
@@ -45,6 +44,7 @@ public class AlertListFragment extends Fragment
     private BroadcastReceiver onAlertDbChanged;
     private AlertListAdapter adapter;
     private FragmentCallbacks mCallbacks;
+    private String title;
 
     public static AlertListFragment newInstance(int alertIdThatShouldBeExpanded)
     {
@@ -104,6 +104,8 @@ public class AlertListFragment extends Fragment
         alertDbChangedIntentFilter.addAction(Constants.ALERT_INSERTED);
         alertDbChangedIntentFilter.addAction(Constants.ALERT_DELETED);
         alertDbChangedIntentFilter.addAction(Constants.ALERTS_CLEARED);
+        alertDbChangedIntentFilter.addAction(Constants.ALERT_UPDATED);
+        alertDbChangedIntentFilter.addAction(Constants.ALERTS_RANGEUPDATED);
         broadcastManager.registerReceiver(onAlertDbChanged, alertDbChangedIntentFilter);
     }
 
@@ -125,32 +127,37 @@ public class AlertListFragment extends Fragment
             {
                 if (intent.getAction().equals(Constants.ALERT_INSERTED))
                 {
-                    Alert alert = intent.getParcelableExtra("ALERTDATA");
+                    Alert alert = intent.getParcelableExtra(Constants.ALERT_DATA);
                     AlertListItemViewModel item = convertToViewModel(alert);
                     if (item != null)
                     {
                         adapterItems.add(0,item);
                         adapter.notifyParentItemInserted(0);
+                        alertListView.scrollToPosition(0);
+                        updateCounters();
                     }
+
                 }
 
-//                if (intent.getAction().equals(Constants.ALERT_UPDATED))
-//                {
-//                    Alert alert = intent.getParcelableExtra("ALERTDATA");
-//
-//                    int position = adapterItems.indexOf(adapter.findAlertByIdInAdapter(alert.getId()));
-//                    if (position > -1)
-//                    {
-//                        AlertListItemViewModel newItem = convertToViewModel(alert);
-//                        adapterItems.set(position,newItem);
-//                        adapter.notifyParentItemChanged(position);
-//                    }
-//
-//                }
+                if (intent.getAction().equals(Constants.ALERT_UPDATED))
+                {
+                    Alert alert = intent.getParcelableExtra(Constants.ALERT_DATA);
+
+                    int position = adapterItems.indexOf(adapter.findAlertByIdInAdapter(alert.getId()));
+                    if (position > -1)
+                    {
+                        AlertListItemViewModel newItem = convertToViewModel(alert);
+                        adapterItems.set(position,newItem);
+                        adapter.notifyParentItemRangeChanged(0, adapterItems.size());
+                        updateCounters();
+
+                    }
+
+                }
 
                 if (intent.getAction().equals(Constants.ALERT_DELETED))
                 {
-                    Alert alert = intent.getParcelableExtra("ALERTDATA");
+                    Alert alert = intent.getParcelableExtra(Constants.ALERT_DATA);
 
                     int position = adapterItems.indexOf(adapter.findAlertByIdInAdapter(alert.getId()));
                     if (position > -1)
@@ -159,6 +166,7 @@ public class AlertListFragment extends Fragment
                         adapter.notifyParentItemRemoved(position);
                         NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                         notificationManager.cancel(Constants.INCOMING_ALERT_NOTIFICATION);
+                        updateCounters();
                     }
                 }
 
@@ -171,6 +179,27 @@ public class AlertListFragment extends Fragment
                         adapter.notifyParentItemRangeRemoved(0, itemsToBeRemoved);
                         NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                         notificationManager.cancel(Constants.INCOMING_ALERT_NOTIFICATION);
+                        updateCounters();
+                    }
+                }
+
+                if (intent.getAction().equals(Constants.ALERTS_RANGEUPDATED))
+                {
+                    if (adapterItems.size() > 0)
+                    {
+                        ArrayList<Alert> updated = intent.getParcelableArrayListExtra(Constants.ALERT_RANGEDATA);
+
+                        for (Alert alert: updated)
+                        {
+                            int position = adapterItems.indexOf(adapter.findAlertByIdInAdapter(alert.getId()));
+                            AlertListItemViewModel newItem = convertToViewModel(alert);
+                            adapterItems.set(position,newItem);
+                        }
+
+                        adapter.notifyParentItemRangeChanged(0, adapterItems.size());
+                        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.cancel(Constants.INCOMING_ALERT_NOTIFICATION);
+                        updateCounters();
                     }
                 }
 
@@ -201,12 +230,9 @@ public class AlertListFragment extends Fragment
                 @Override
                 public void onListItemExpanded(int i)
                 {
-//                    AlertListItemViewModel item = (AlertListItemViewModel)adapter.getParentItemList().get(i);
-//                    int id = item.getId();
-//                    AlertRepository repos = new AlertRepository(getActivity());
-//                    Alert toBeUpdated = repos.getAlertById(id);
-//                    toBeUpdated.setRead(true);
-//                    repos.updateAlert(toBeUpdated);
+                    AlertListItemViewModel item = (AlertListItemViewModel)adapter.getParentItemList().get(i);
+                    int id = item.getId();
+                    updateReadStatus(id);
                 }
 
                 @Override
@@ -228,6 +254,8 @@ public class AlertListFragment extends Fragment
                 adapter.notifyParentItemRangeChanged(0,adapter.getParentItemList().size());
             }
         }
+        updateCounters();
+
         int alertIdToBeExpanded = getArguments().getInt(ARG_EXPANDED_ALERTID,-1);
 
         if (alertIdToBeExpanded > -1)
@@ -235,6 +263,9 @@ public class AlertListFragment extends Fragment
             int pos = adapter.getParentItemList().indexOf(adapter.findAlertByIdInAdapter(alertIdToBeExpanded));
             if (pos != -1)
             {
+                AlertListItemViewModel item = (AlertListItemViewModel)adapter.getParentItemList().get(pos);
+                int id = item.getId();
+                updateReadStatus(id);
                 adapter.expandParent(pos);
                 alertListView.scrollToPosition(pos);
             }
@@ -244,6 +275,40 @@ public class AlertListFragment extends Fragment
             adapter.collapseAllParents();
         }
 
+    }
+
+    private void updateReadStatus(int id)
+    {
+        AlertRepository repos = new AlertRepository(getActivity());
+        Alert toBeUpdated = repos.getAlertById(id);
+        if (!toBeUpdated.isRead())
+        {
+            toBeUpdated.setRead(true);
+            repos.updateAlert(toBeUpdated);
+        }
+
+    }
+
+    private void updateCounters()
+    {
+        int unReadAlerts = getUnreadAlerts();
+
+        String title = getString(R.string.title_alertlist) + " (" + unReadAlerts + ")";
+        mCallbacks.updateTitle(title);
+    }
+
+    private int getUnreadAlerts()
+    {
+        int number = 0;
+        List<AlertListItemViewModel> viewItems = (List<AlertListItemViewModel>)adapter.getParentItemList();
+        for (AlertListItemViewModel item : viewItems)
+        {
+            if (!item.isRead())
+            {
+                number++;
+            }
+        }
+        return number;
     }
 
 
@@ -291,8 +356,9 @@ public class AlertListFragment extends Fragment
             activity = (Activity) context;
             try
             {
+                title = getString(R.string.title_alertlist);
                 mCallbacks = (FragmentCallbacks) activity;
-                mCallbacks.onSectionAttached(Constants.Section.ALERT_LIST);
+                mCallbacks.onSectionAttached(Constants.Section.ALERT_LIST,title);
             }
             catch (ClassCastException e)
             {

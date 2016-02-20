@@ -24,7 +24,6 @@ public class AlertListTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-        //TODO: Not implemented here
         return false;
     }
 
@@ -52,7 +51,6 @@ public class AlertListTouchHelper extends ItemTouchHelper.SimpleCallback {
         {
             return 0;
         }
-
 
         return super.getSwipeDirs(recyclerView, viewHolder);
     }
