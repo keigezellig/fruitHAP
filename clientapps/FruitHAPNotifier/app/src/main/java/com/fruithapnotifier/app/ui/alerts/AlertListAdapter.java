@@ -58,7 +58,7 @@ public class AlertListAdapter extends ExpandableRecyclerAdapter<AlertListItemVie
         background.setColor(listItem.getPriorityColor());
         alertListItemViewHolder.getTxtPriority().setText(listItem.getPriorityText());
         alertListItemViewHolder.getTxtTimestamp().setText(listItem.getTimestamp());
-        alertListItemViewHolder.getTxtMessage().setText(listItem.getId() + "." + listItem.getNotificationText());
+        alertListItemViewHolder.getTxtMessage().setText(listItem.getNotificationText());
         alertListItemViewHolder.setItem(listItem);
 
         if (!listItem.isRead())
