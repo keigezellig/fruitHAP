@@ -87,11 +87,15 @@ public class AlertListAdapter extends ExpandableRecyclerAdapter<AlertListItemVie
         alertListItemDetailViewHolder.getTxtMessage().setText(detailItem.getNotificationText());
 
         byte[] imageBytes = detailItem.getImage();
+        ImageView imgOptional = alertListItemDetailViewHolder.getImgOptional();
         if ( imageBytes != null)
         {
             Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-            ImageView imgOptional = alertListItemDetailViewHolder.getImgOptional();
             imgOptional.setImageBitmap(decodedImage);
+        }
+        else
+        {
+            imgOptional.setImageBitmap(null);
         }
     }
 

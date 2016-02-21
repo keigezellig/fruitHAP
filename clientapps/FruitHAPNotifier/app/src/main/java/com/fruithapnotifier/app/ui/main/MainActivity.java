@@ -75,12 +75,6 @@ public class MainActivity extends AppCompatActivity
                         .replace(R.id.container, AlertListFragment.newInstance(-1))
                         .commit();
                 break;
-            case 1:
-                //DASHBOARD
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, PlaceholderFragment.newInstance(position))
-                        .commit();
-                break;
         }
     }
 
@@ -170,55 +164,5 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment
-    {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-        private String mTitle;
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber)
-        {
-
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment()
-        {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState)
-        {
-            View rootView = inflater.inflate(R.layout.main_fragment_main, container, false);
-            TextView label = (TextView) rootView.findViewById(R.id.section_label);
-            label.setText("This is section " + getArguments().getInt(ARG_SECTION_NUMBER));
-
-
-            return rootView;
-        }
-
-        @Override
-        public void onAttach(Activity activity)
-        {
-            super.onAttach(activity);
-            mTitle = activity.getString(R.string.title_dashboard);
-            ((MainActivity) activity).onSectionAttached(Constants.Section.DASHBOARD,mTitle);
-        }
-    }
 
 }

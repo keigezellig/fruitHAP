@@ -2,7 +2,7 @@
 "RoutingKey":"alerts",
 "Sensors":
 	[		
-		{"SensorName":"PIR","NotificationText":"Motion detected","Priority":"Medium"},
-		{"SensorName":"DoorbellMonitor","NotificationText":"Intruder alert","Priority":"High"}
+		{"SensorName":"PIR","NotificationText":"Beweging gedetecteerd","Priority":"Medium"},
+		{"SensorName":"Deurbel","NotificationText":"Er staat iemand voor de deur","Priority":"High"}
 	]
 }
