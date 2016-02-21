@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FruitHAP Notifier</string>
+
+    <string name="title_activity_test">TestActivity</string>
+
+
+    <string name="alert_details_title">Alert details</string>
+    <string name="alert_details_priority_label">Priority</string>
+    <string name="alert_details_priority_low">Low</string>
+    <string name="alert_details_priority_medium">Medium</string>
+    <string name="alert_details_priority_high">High</string>
+    <string name="alert_details_time">Time</string>
+    <string name="alert_details_source">Source</string>
+    <string name="alert_details_message">Message</string>
+
+    <string name="title_alertlist">Alert list</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="turn_on_notification_service">Turn on service</string>
+    <string name="turn_off_notification_service">Turn off service</string>
+    <string name="action_clear_list">Clear list</string>
+    <string name="action_general_settings">General settings</string>
+    <string name="action_mark_as_read">Mark all alerts as read</string>
+</resources>

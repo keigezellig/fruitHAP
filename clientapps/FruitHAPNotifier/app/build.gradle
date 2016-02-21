@@ -1,0 +1,49 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.2.3'
+    }
+}
+apply plugin: 'com.android.application'
+
+repositories {
+    jcenter()
+}
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        applicationId "com.fruithapnotifier.app"
+        minSdkVersion 19
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:support-v4:23.1.1'
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'com.rabbitmq:amqp-client:3.5.6'
+    compile 'joda-time:joda-time:2.9.1'
+    compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.android.support:cardview-v7:23.1.1'
+    compile 'com.bignerdranch.android:expandablerecyclerview:2.1.0'
+}
+

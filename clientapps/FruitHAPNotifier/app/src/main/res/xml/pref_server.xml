@@ -1,0 +1,72 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+    <EditTextPreference
+        android:key="pref_server_hostname"
+        android:title="@string/pref_server_title_hostname"
+        android:defaultValue="@string/pref_general_default_hostname"
+        android:singleLine="true"
+        android:maxLines="1" />
+
+    <EditTextPreference
+        android:key="pref_server_port"
+        android:title="@string/pref_server_title_port"
+        android:defaultValue="@string/pref_general_default_port"
+        android:singleLine="true"
+        android:numeric="integer"
+        android:maxLines="1" />
+
+    <EditTextPreference
+        android:key="pref_server_username"
+        android:title="@string/pref_server_title_username"
+        android:defaultValue="@string/pref_server_default_username"
+        android:singleLine="true"
+        android:maxLines="1" />
+
+    <EditTextPreference
+        android:key="pref_server_password"
+        android:title="@string/pref_server_title_password"
+        android:defaultValue="@string/pref_server_default_password"
+        android:singleLine="true"
+        android:password="true"
+        android:maxLines="1" />
+
+    <EditTextPreference
+        android:key="pref_server_vhost"
+        android:title="@string/pref_server_title_vhost"
+        android:defaultValue="@string/pref_server_default_vhost"
+        android:singleLine="true"
+        android:maxLines="1" />
+
+
+    <EditTextPreference
+        android:key="pref_server_event_exchange"
+        android:title="@string/pref_server_title_event_exchange"
+        android:defaultValue="@string/pref_server_default_event_exchange"
+        android:singleLine="true"
+        android:maxLines="1" />
+
+    <EditTextPreference
+        android:key="pref_server_rpc_exchange"
+        android:title="@string/pref_server_title_rpc_exchange"
+        android:defaultValue="@string/pref_server_default_rpc_exchange"
+        android:singleLine="true"
+        android:maxLines="1" />
+
+    <EditTextPreference
+        android:key="pref_server_alert_topic"
+        android:title="@string/pref_server_title_alert_topic"
+        android:defaultValue="@string/pref_server_default_alert_topic"
+        android:singleLine="true"
+        android:maxLines="1" />
+
+    <EditTextPreference
+        android:key="pref_server_event_topic"
+        android:title="@string/pref_server_title_event_topic"
+        android:defaultValue="@string/pref_server_default_event_topic"
+        android:singleLine="true"
+        android:maxLines="1" />
+
+
+</PreferenceScreen>

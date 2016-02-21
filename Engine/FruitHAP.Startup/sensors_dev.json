@@ -1,0 +1,5 @@
+[{"Type":"KakuButton","IsAggegrate":false,"Parameters":{"Command":4,"Name":"DoorbellButton","Description":"My doorbell","DeviceId":14948386,"UnitCode":1}},
+ {"Type":"IpCamera","IsAggegrate":false,"Parameters":{"Name":"DoorCamera","Description":"My doorcam","Url":"http://bihac/snapshot.cgi","Username":"visitor","Password":"visitor"}},
+ {"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"ProximityDetector","Description":"My proximity detector","DeviceId":0xD9D6DA,"UnitCode":10}},
+ {"Type":"ButtonWithCameraSensor","IsAggegrate":true,"Parameters":{"Name":"DoorbellMonitor","Description":"My doorbell monitor","Inputs":["DoorbellButton","DoorCamera"]}}
+]

@@ -60,6 +60,7 @@
     <Compile Include="IncomingRequest\RequestDataType.cs" />
     <Compile Include="IncomingRequest\RequestHandlers\CommandResult.cs" />
     <Compile Include="ConfigurationRequest\ConfigurationRequestAction.cs" />
+    <Compile Include="EventTrigger\DataContents.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -23,7 +23,7 @@ namespace FruitHap.StandardActions.EventTrigger.Configuration
 
 		protected override EventTriggerActionConfiguration LoadDefaultConfig()
 		{
-			return new EventTriggerActionConfiguration() { RoutingKey = "alerts", Sensors = new System.Collections.Generic.List<string>()};
+			return new EventTriggerActionConfiguration() { RoutingKey = "alerts", Sensors = new System.Collections.Generic.List<EventNotificationConfiguration>()};
 		}
 		
 	}

@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="rabbitmqtest:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/rabbitmqtest_jar</output-path>
+    <root id="archive" name="rabbitmqtest.jar">
+      <element id="module-output" name="rabbitmqtest" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/junit/junit/4.10/junit-4.10.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/sf/jopt-simple/jopt-simple/5.0-beta-1/jopt-simple-5.0-beta-1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/rabbitmq/amqp-client/3.5.6/amqp-client-3.5.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/joda-time/joda-time/2.9.1/joda-time-2.9.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

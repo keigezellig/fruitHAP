@@ -14,6 +14,8 @@ using System.Reflection;
 using Microsoft.Practices.Prism.PubSubEvents;
 using System.Collections.Generic;
 using FruitHAP.Core.SensorEventPublisher;
+using FruitHAP.Common.Helpers;
+using Newtonsoft.Json;
 
 
 namespace FruitHap.StandardActions.EventTrigger
@@ -50,7 +52,7 @@ namespace FruitHap.StandardActions.EventTrigger
 			logger.InfoFormat ("Loading configuration");
 			configuration = configurationProvider.LoadConfigFromFile (Path.Combine (Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location), CONFIG_FILENAME));
 
-			bool isAnyActionTriggered = sensorRepository.GetSensors ().Any (sns => this.configuration.Sensors.Contains (sns.Name));
+			bool isAnyActionTriggered = sensorRepository.GetSensors ().Any (sns => this.configuration.Sensors.Select(g => g.SensorName).Contains (sns.Name));
 			if (!isAnyActionTriggered) 
 			{
 				logger.Warn ("This action will never be triggered. If this isn't correct, please check your configuration");
@@ -59,13 +61,13 @@ namespace FruitHap.StandardActions.EventTrigger
 			Subscribe (this.configuration.Sensors);
 		}
 
-		 void Subscribe (List<string> sensorNames)
+		void Subscribe (List<EventNotificationConfiguration> sensors)
 		{
 			tokens = new List<SubscriptionToken> ();
 			logger.Debug ("Subscribing to sensor events");
-			foreach (string name in sensorNames) 
+			foreach (var sensor in sensors) 
 			{
-				tokens.Add (eventPublisher.SubscribeWithToken<SensorEvent> (HandleSensorMessage, f => f.Sender.Name == name));
+				tokens.Add (eventPublisher.SubscribeWithToken<SensorEvent> (HandleSensorMessage, f => f.Sender.Name == sensor.SensorName));
 			}
 
 		} 
@@ -86,13 +88,25 @@ namespace FruitHap.StandardActions.EventTrigger
 			{
 				TimeStamp = DateTime.Now,
 				SensorName = data.Sender.Name,
-				Data = data.OptionalData,
+				Data = CreateResponse(data),
 				EventType = data.EventName
 			};
 			logger.Info ("Message sent to MQ");
 			logger.DebugFormat ("Message sent {0}", sensorMessage);
 			mqProvider.Publish (sensorMessage, configuration.RoutingKey);
 		}
+
+
+		private EventTriggerResponse CreateResponse (EventData data)
+		{
+			var responseConfig = configuration.Sensors.Single (f => f.SensorName == data.Sender.Name);
+			return new EventTriggerResponse () {
+				NotificationText = responseConfig.NotificationText,
+				Priority = (NotificationPriority)((int)responseConfig.Priority),
+				OptionalData = new DataContents(data.OptionalData)
+			};
+		}
+
 
 
         public void Dispose()
@@ -105,5 +119,19 @@ namespace FruitHap.StandardActions.EventTrigger
 
 		}
 	}
+
+
+	public class EventTriggerResponse
+	{		
+		public string NotificationText { get; set;}
+		public NotificationPriority Priority {get; set;}
+		public object OptionalData {get; set;}
+	}
+
+	public enum NotificationPriority
+	{
+		Low, Medium, High
+	}
+
 }
 

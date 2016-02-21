@@ -9,3 +9,10 @@ packages
 node_modules
 *.dev.json
 build*
+*.iml
+*.ipr
+*.iws
+*.class
+.idea
+out
+target
