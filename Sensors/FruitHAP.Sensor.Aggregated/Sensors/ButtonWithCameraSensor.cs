@@ -6,21 +6,21 @@ using System.Collections.Generic;
 using FruitHAP.Core.SensorRepository;
 using FruitHAP.Core.Sensor.SensorTypes;
 using System.Linq;
-using FruitHAP.Core.SensorEventPublisher;
+using FruitHAP.Common.EventBus;
 
 namespace FruitHAP.Sensor.Aggregated.Sensors
 {
-	public class ButtonWithCameraSensor : IAggregatedSensor, ICloneable
+	public class ButtonWithCameraSensor : IAggregatedSensor
 	{
 		private IButton button;
 		private ICamera camera;
 		private ILogger logger;
 		private List<ISensor> inputs;
-		private ISensorEventPublisher sensorEventPublisher;
+		private IEventBus eventBus;
 
-		public ButtonWithCameraSensor (ISensorEventPublisher sensorEventPublisher, ILogger logger)
+		public ButtonWithCameraSensor (IEventBus eventBus, ILogger logger)
 		{
-			this.sensorEventPublisher = sensorEventPublisher;
+			this.eventBus = eventBus;
 			this.logger = logger;
 		}
 
@@ -57,13 +57,20 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 			this.button = inputs.Single (f => f is IButton) as IButton;
 			this.camera = inputs.Single (f => f is ICamera) as ICamera;
 
-			sensorEventPublisher.Subscribe<SensorEvent> (OnButtonPressed, f => f.Sender == this.button);
+			eventBus.Subscribe<SensorEventData> (OnButtonPressed, f => f.Sender == this.button);
 		}
 
-		void OnButtonPressed (EventData data)
+		void OnButtonPressed (SensorEventData data)
 		{
 			var image = this.camera.GetImageAsync ().Result;
-			sensorEventPublisher.Publish<SensorEvent> (this, image);
+			SensorEventData sensorEvent = new SensorEventData () {
+				TimeStamp = data.TimeStamp,
+				Sender = data.Sender,
+				EventName = data.EventName,
+				OptionalData = image
+			};
+					
+			eventBus.Publish(sensorEvent);
 		}
 		#endregion
 
@@ -71,7 +78,7 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 
 		public object Clone ()
 		{
-			return new ButtonWithCameraSensor (sensorEventPublisher, logger);
+			return new ButtonWithCameraSensor (eventBus, logger);
 		}
 
 		#endregion
@@ -86,7 +93,7 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 		public void Dispose ()
 		{
 			logger.Debug ("Unsubscribing from events");
-			sensorEventPublisher.Unsubscribe<SensorEvent> (OnButtonPressed);
+			eventBus.Unsubscribe<SensorEventData> (OnButtonPressed);
 		}
 	}
 }

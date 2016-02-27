@@ -9,13 +9,14 @@ using FruitHAP.Common.Helpers;
 using FruitHAP.Core.Sensor.PacketData.ImageCapture;
 using FruitHAP.Core.Controller;
 using Microsoft.Practices.Prism.PubSubEvents;
+using FruitHAP.Common.EventBus;
 
 namespace FruitHAP.Sensor.Camera.Devices
 {
-	public class Camera : ICamera, ICloneable
+	public class Camera : ICamera
     {
         private readonly ILogger logger;
-        private readonly IEventAggregator aggregator;
+		private readonly IEventBus eventBus;
         private byte[] receivedImageData;
         private bool isReceived;
 
@@ -41,11 +42,11 @@ namespace FruitHAP.Sensor.Camera.Devices
         }
 
 
-        public Camera(ILogger logger, IEventAggregator aggregator)
+        public Camera(ILogger logger, IEventBus eventBus)
         {
             this.logger = logger;
-            this.aggregator = aggregator;
-            aggregator.GetEvent<ImageResponsePacketEvent>().Subscribe(HandleIncomingResponse, ThreadOption.PublisherThread, false, f => f.Direction == Direction.FromController && f.Payload.DestinationSensor == Name);
+			this.eventBus = eventBus;
+			eventBus.Subscribe<ControllerEventData<ImageResponsePacket>>(HandleIncomingResponse, f => f.Direction == Direction.FromController && f.Payload.DestinationSensor == Name);
         }
 
 
@@ -59,7 +60,7 @@ namespace FruitHAP.Sensor.Camera.Devices
 
         public async Task<byte[]> GetImageAsync()
         {
-            aggregator.GetEvent<ImageRequestPacketEvent>().Publish(new ControllerEventData<ImageRequestPacket>()
+			eventBus.Publish(new ControllerEventData<ImageRequestPacket> ()
             {
                 Direction = Direction.ToController,
                 Payload = new ImageRequestPacket()
@@ -89,7 +90,7 @@ namespace FruitHAP.Sensor.Camera.Devices
 
         public object Clone()
         {
-            return new Camera(this.logger, this.aggregator);
+            return new Camera(this.logger, this.eventBus);
         }
 
         public object GetValue()
@@ -102,5 +103,10 @@ namespace FruitHAP.Sensor.Camera.Devices
         {
             return string.Format("[IpCamera: Name={0}, Description={1}, Url={2}, UserName={3}, Password={4}]", Name, Description, Url, Username, Password);
         }
+
+		public void Dispose ()
+		{
+			eventBus.Unsubscribe<ControllerEventData<ImageResponsePacket>> (HandleIncomingResponse);
+		}
     }
 }

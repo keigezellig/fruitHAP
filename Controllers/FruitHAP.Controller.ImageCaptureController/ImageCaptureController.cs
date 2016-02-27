@@ -3,14 +3,14 @@ using FruitHAP.Core.Controller;
 using FruitHAP.Core.Sensor.PacketData.ImageCapture;
 using Microsoft.Practices.Prism.PubSubEvents;
 using System;
+using FruitHAP.Common.EventBus;
 
 namespace FruitHAP.Controllers.ImageCaptureController
 {
-    public class ImageCaptureController : BaseController
+	public class ImageCaptureController : BaseController
     {
-        private SubscriptionToken subscriptionToken;
 
-        public ImageCaptureController(ILogger logger, IEventAggregator aggregator) : base(logger, aggregator)
+		public ImageCaptureController(ILogger logger, IEventBus eventBus) : base(logger, eventBus)
         {
         }
         public override string Name
@@ -21,7 +21,7 @@ namespace FruitHAP.Controllers.ImageCaptureController
             }
         }
 
-        protected override void DisposeController()
+        protected override void StopController()
         {
             UnSubscribe();
         }
@@ -31,21 +31,24 @@ namespace FruitHAP.Controllers.ImageCaptureController
             Subscribe();
         }
 
+		#region implemented abstract members of BaseController
+
+		protected override void DisposeController ()
+		{
+			//UnSubscribe();
+		}
+
+		#endregion
+
         private void Subscribe()
         {            
-            logger.Debug("Subscribing to sensor request");
-            subscriptionToken = aggregator.GetEvent<ImageRequestPacketEvent>().Subscribe(HandleImageRequestPacket, ThreadOption.PublisherThread, true, f => f.Direction == Direction.ToController);            
+			eventBus.Subscribe<ControllerEventData<ImageRequestPacket>>(HandleImageRequestPacket, f => f.Direction == Direction.ToController);            
         }
 
         private void UnSubscribe()
         {
-            if (subscriptionToken != null)
-            {
-                logger.Debug("Unsubscribing from sensor request");
-                aggregator.GetEvent<ImageRequestPacketEvent>().Unsubscribe(subscriptionToken);
-            }
-
-        }
+			eventBus.Unsubscribe<ControllerEventData<ImageRequestPacket>> (HandleImageRequestPacket);
+		}
 
 		
 
@@ -69,7 +72,7 @@ namespace FruitHAP.Controllers.ImageCaptureController
 
                 var image = imageCapturer.Capture(request.Payload);
 
-                aggregator.GetEvent<ImageResponsePacketEvent>().Publish(new ControllerEventData<ImageResponsePacket>()
+                eventBus.Publish(new ControllerEventData<ImageResponsePacket>()
                 {
                     Direction = Direction.FromController,
                     Payload = new ImageResponsePacket() { DestinationSensor = request.Payload.Sender, ImageData = image }
@@ -97,12 +100,5 @@ namespace FruitHAP.Controllers.ImageCaptureController
             return null;
         }
 
-       
-
-
-        protected override void StopController()
-        {
-			UnSubscribe ();
-        }
     }
 }

@@ -8,9 +8,9 @@ using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Sensor.KaKu.Common;
 using FruitHAP.Core.Sensor.SensorTypes;
 using FruitHAP.Sensor.PacketData.AC;
-using FruitHAP.Core.SensorEventPublisher;
 using FruitHAP.Core.Controller;
 using FruitHAP.Sensor.PacketData.General;
+using FruitHAP.Common.EventBus;
 
 namespace FruitHAP.Sensor.KaKu
 {
@@ -20,14 +20,10 @@ namespace FruitHAP.Sensor.KaKu
 		private Command offCommand;
 		private SwitchState state;
 		private Trigger trigger;
-		private ISensorEventPublisher sensorEventPublisher;
 		private bool isReadOnly;
 
-		public KakuSwitch(IEventAggregator aggregator, ILogger logger, ISensorEventPublisher sensorEventPublisher) : base(aggregator,logger)
+		public KakuSwitch(IEventBus eventBus, ILogger logger) : base(eventBus,logger)
 		{
-			this.sensorEventPublisher = sensorEventPublisher;
-
-
 		}
 
 		public Command OnCommand {
@@ -123,7 +119,7 @@ namespace FruitHAP.Sensor.KaKu
 
 		public override object Clone ()
 		{
-			return new KakuSwitch(this.aggregator, this.logger, this.sensorEventPublisher);
+			return new KakuSwitch(this.eventBus, this.logger);
 		}
 
 		#endregion
@@ -154,7 +150,14 @@ namespace FruitHAP.Sensor.KaKu
 
 			if (fireEvent) 
 			{
-				sensorEventPublisher.Publish<SensorEvent> (this, state);
+				SensorEventData sensorEvent = new SensorEventData () {
+					TimeStamp = DateTime.Now,
+					Sender = this,
+					EventName = "SensorEvent",
+					OptionalData = state
+				};
+
+				eventBus.Publish(sensorEvent);
 			}
 		}
 
@@ -174,7 +177,7 @@ namespace FruitHAP.Sensor.KaKu
 				Level = 0
 			};
 
-			aggregator.GetEvent<ACPacketEvent> ().Publish (new ControllerEventData<ACPacket> () { Direction = Direction.ToController, Payload = data });
+			eventBus.Publish(new ControllerEventData<ACPacket> () { Direction = Direction.ToController, Payload = data });
 
 		}
 			

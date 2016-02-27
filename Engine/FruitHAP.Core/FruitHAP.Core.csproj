@@ -51,8 +51,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sensor\ISensor.cs" />
     <Compile Include="Sensor\PacketData\ImageCapture\ImageRequestPacket.cs" />
-    <Compile Include="Sensor\PacketData\ImageCapture\ImageRequestPacketEvent.cs" />
-    <Compile Include="Sensor\PacketData\ImageCapture\ImageResponsePacketEvent.cs" />
     <Compile Include="Sensor\PacketData\ImageCapture\ImageResponsePacket.cs" />
     <Compile Include="Sensor\SensorTypes\IButton.cs" />
     <Compile Include="Sensor\SensorTypes\ICamera.cs" />
@@ -63,7 +61,6 @@
     <Compile Include="MQ\RabbitMqProvider.cs" />
     <Compile Include="MQ\IMessageQueueProvider.cs" />
     <Compile Include="MQ\Helpers\TypeNameSerializer.cs" />
-    <Compile Include="Sensor\PacketData\AC\ACPacketEvent.cs" />
     <Compile Include="Controller\ControllerEventData.cs" />
     <Compile Include="Controller\IController.cs" />
     <Compile Include="Controller\IControllerPacketHandler.cs" />
@@ -75,13 +72,11 @@
     <Compile Include="SensorPersister\SensorConfigurationEntry.cs" />
     <Compile Include="SensorPersister\SensorConfigurationProvider.cs" />
     <Compile Include="SensorPersister\SensorPersister.cs" />
-    <Compile Include="SensorEventPublisher\ISensorEventPublisher.cs" />
-    <Compile Include="SensorEventPublisher\SensorEventPublisher.cs" />
     <Compile Include="Action\SensorMessage.cs" />
     <Compile Include="Action\ConfigurationMessage.cs" />
     <Compile Include="Action\RpcAction.cs" />
     <Compile Include="Sensor\PacketData\General\AckPacket.cs" />
-    <Compile Include="Sensor\PacketData\General\AckPacketEvent.cs" />
+    <Compile Include="Sensor\EventData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

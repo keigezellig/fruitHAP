@@ -7,20 +7,21 @@ using FruitHAP.Controller.Rfx.Configuration;
 using FruitHAP.Common.Configuration;
 using FruitHAP.Core.Controller;
 using FruitHAP.Controller.Rfx.PacketHandlers;
+using FruitHAP.Common.EventBus;
 
 namespace FruitHAP.Controller.Rfx
 {
 	public class RfxControllerPacketHandlerFactory
 	{
 		private ILogger logger;
-		private IEventAggregator aggregator;
+		private IEventBus eventBus;
 		private List<RfxPacketInfo> enabledPacketTypes;
 
 
 
-		public RfxControllerPacketHandlerFactory (ILogger logger, IEventAggregator aggregator)
+		public RfxControllerPacketHandlerFactory (ILogger logger, IEventBus eventBus)
 		{
-			this.aggregator = aggregator;
+			this.eventBus = eventBus;
 			this.logger = logger;
 		}
 		
@@ -32,13 +33,13 @@ namespace FruitHAP.Controller.Rfx
 			{
 			case RfxPacketType.AC:
 				logger.Debug ("AC packet received");
-				return new RfxACPacketHandler (logger, aggregator);
+				return new RfxACPacketHandler (logger, eventBus);
 			case RfxPacketType.Interface:
 				logger.Debug ("Interface packet received");
-				return new RfxInterfacePacketHandler (logger, aggregator);
+				return new RfxInterfacePacketHandler (logger, eventBus);
 			case RfxPacketType.Ack:
 				logger.Debug ("Ack packet received");
-				return new RfxAckPacketHandler (logger, aggregator);
+				return new RfxAckPacketHandler (logger, eventBus);
 			default:
 				return null;
 			}

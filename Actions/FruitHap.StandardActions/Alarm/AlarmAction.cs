@@ -11,16 +11,13 @@ using FruitHap.StandardActions.EventTrigger.Configuration;
 using System.Linq;
 using System.IO;
 using System.Reflection;
-using Microsoft.Practices.Prism.PubSubEvents;
 using System.Collections.Generic;
-using FruitHAP.Core.SensorEventPublisher;
-using FruitHAP.Common.Helpers;
-using Newtonsoft.Json;
+using FruitHAP.Common.EventBus;
 
 
-namespace FruitHap.StandardActions.EventTrigger
+namespace FruitHap.StandardActions.Alarm
 {
-	public class EventTriggerAction : IAction
+	public class AlarmAction : IAction
 	{
 		private readonly ISensorRepository sensorRepository;
 		private readonly ILogger logger;
@@ -28,18 +25,14 @@ namespace FruitHap.StandardActions.EventTrigger
 		private IConfigProvider<EventTriggerActionConfiguration> configurationProvider;
 		private const string CONFIG_FILENAME = "event_trigger_action.json";
 		private EventTriggerActionConfiguration configuration;
+		private IEventBus eventBus;
 
-		private List<SubscriptionToken> tokens;
-
-
-		private ISensorEventPublisher eventPublisher;
-
-		public EventTriggerAction(ISensorRepository sensorRepository, 
+		public AlarmAction(ISensorRepository sensorRepository, 
 								  ILogger logger, IConfigProvider<EventTriggerActionConfiguration> configurationProvider, 
 								  IMessageQueueProvider publisher,
-			ISensorEventPublisher eventPublisher)
+								 IEventBus eventBus)
 		{
-			this.eventPublisher = eventPublisher;
+			this.eventBus = eventBus;
 			this.sensorRepository = sensorRepository;
 			this.logger = logger;
 			this.mqProvider = publisher;
@@ -63,26 +56,20 @@ namespace FruitHap.StandardActions.EventTrigger
 
 		void Subscribe (List<EventNotificationConfiguration> sensors)
 		{
-			tokens = new List<SubscriptionToken> ();
 			logger.Debug ("Subscribing to sensor events");
 			foreach (var sensor in sensors) 
 			{
-				tokens.Add (eventPublisher.SubscribeWithToken<SensorEvent> (HandleSensorMessage, f => f.Sender.Name == sensor.SensorName));
+				eventBus.Subscribe<SensorEventData> (HandleSensorEvent, f => f.Sender.Name.Contains (sensor.SensorName));
 			}
 
 		} 
 
 		void UnSubscribe ()
-		{
-			logger.Debug ("Unsubscribing from sensor events");
-			foreach (var token in tokens) 
-			{
-				eventPublisher.Unsubscribe<SensorEvent> (token);
-			}
-
+		{			
+			eventBus.Unsubscribe<SensorEventData> (HandleSensorEvent);
 		}
 
-		void HandleSensorMessage (EventData data)
+		void HandleSensorEvent (SensorEventData data)
 		{			
 			var sensorMessage = new SensorMessage () 
 			{
@@ -97,7 +84,7 @@ namespace FruitHap.StandardActions.EventTrigger
 		}
 
 
-		private EventTriggerResponse CreateResponse (EventData data)
+		private EventTriggerResponse CreateResponse (SensorEventData data)
 		{
 			var responseConfig = configuration.Sensors.Single (f => f.SensorName == data.Sender.Name);
 			return new EventTriggerResponse () {
@@ -112,11 +99,7 @@ namespace FruitHap.StandardActions.EventTrigger
         public void Dispose()
         {
             logger.DebugFormat("Dispose action {0}", this);
-            if (tokens != null)
-            {
-                UnSubscribe();
-            }
-
+            UnSubscribe();
 		}
 	}
 

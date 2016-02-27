@@ -47,7 +47,6 @@
     <Compile Include="Helpers.cs" />
     <Compile Include="IncomingRequest\IRequestHandler.cs" />
     <Compile Include="IncomingRequest\IncomingRequestAction.cs" />
-    <Compile Include="EventTrigger\EventTriggerAction.cs" />
     <Compile Include="IncomingRequest\RequestHandlers\EmptyRequestHandler.cs" />
     <Compile Include="IncomingRequest\RequestHandlers\UnknownRequestTypeHandler.cs" />
     <Compile Include="IncomingRequest\RequestHandlers\GetValueHandler.cs" />
@@ -55,20 +54,21 @@
     <Compile Include="IncomingRequest\RequestHandlers\CommandObject.cs" />
     <Compile Include="IncomingRequest\RequestHandlerFactory.cs" />
     <Compile Include="IncomingRequest\IRequestHandlerFactory.cs" />
-    <Compile Include="EventTrigger\Configuration\EventTriggerActionConfiguration.cs" />
-    <Compile Include="EventTrigger\Configuration\EventTriggerActionConfigurationProvider.cs" />
     <Compile Include="IncomingRequest\RequestDataType.cs" />
     <Compile Include="IncomingRequest\RequestHandlers\CommandResult.cs" />
     <Compile Include="ConfigurationRequest\ConfigurationRequestAction.cs" />
-    <Compile Include="EventTrigger\DataContents.cs" />
+    <Compile Include="Alarm\DataContents.cs" />
+    <Compile Include="Alarm\AlarmAction.cs" />
+    <Compile Include="Alarm\Configuration\EventTriggerActionConfiguration.cs" />
+    <Compile Include="Alarm\Configuration\EventTriggerActionConfigurationProvider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="IncomingRequest\" />
-    <Folder Include="EventTrigger\" />
     <Folder Include="IncomingRequest\RequestHandlers\" />
-    <Folder Include="EventTrigger\Configuration\" />
     <Folder Include="ConfigurationRequest\" />
+    <Folder Include="Alarm\" />
+    <Folder Include="Alarm\Configuration\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
