@@ -43,7 +43,8 @@ namespace FruitHAP.Core.MQ
         {
 			var mqMessage = new Message<T> (message);
 			messageBus.Advanced.Publish (exchange, routingKey, false, false, mqMessage);
-
+			logger.InfoFormat ("Message published to MQ. Routing key: {0}",routingKey);
+			logger.DebugFormat ("Message published to MQ. Routing key: {0}. Message {1}",routingKey,message);
         }
 
 		public void SubscribeToRequest<TRequest, TResponse>(Func<TRequest, Task<TResponse>> handler) 

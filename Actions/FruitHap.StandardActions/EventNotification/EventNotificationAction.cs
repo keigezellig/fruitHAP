@@ -10,25 +10,25 @@ using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
 using FruitHAP.Common.EventBus;
-using FruitHap.StandardActions.Alarm.Configuration;
+using FruitHap.StandardActions.EventNotification.Configuration;
 using FruitHap.Core.Action;
 
 
-namespace FruitHap.StandardActions.Alarm
+namespace FruitHap.StandardActions.EventNotification
 {
-	public class AlarmAction : IAction
+	public class EventNotificationAction : IAction
 	{
 		private readonly ISensorRepository sensorRepository;
 		private readonly ILogger logger;
 		private readonly IMessageQueueProvider mqProvider;
-		private IConfigProvider<AlarmActionConfiguration> configurationProvider;
-		private const string CONFIG_FILENAME = "alarm_action.json";
-		private AlarmActionConfiguration configuration;
+		private IConfigProvider<EventNotificationActionConfiguration> configurationProvider;
+		private const string CONFIG_FILENAME = "eventnotification_action.json";
+		private EventNotificationActionConfiguration configuration;
 		private IEventBus eventBus;
 
-		public AlarmAction(ISensorRepository sensorRepository, 
+		public EventNotificationAction(ISensorRepository sensorRepository, 
 								  ILogger logger, 
-								  IConfigProvider<AlarmActionConfiguration> configurationProvider, 
+			IConfigProvider<EventNotificationActionConfiguration> configurationProvider, 
 								  IMessageQueueProvider mqProvider,
 								  IEventBus eventBus)
 		{
@@ -46,7 +46,7 @@ namespace FruitHap.StandardActions.Alarm
 			logger.InfoFormat ("Loading configuration");
 			configuration = configurationProvider.LoadConfigFromFile (Path.Combine (Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location), CONFIG_FILENAME));
 
-			bool isAnyActionTriggered = sensorRepository.GetSensors ().Any (sns => this.configuration.Sensors.Select(g => g.SensorName).Contains (sns.Name));
+			bool isAnyActionTriggered = sensorRepository.GetSensors ().Any (sns => this.configuration.Sensors.Contains (sns.Name));
 			if (!isAnyActionTriggered) 
 			{
 				logger.Warn ("This action will never be triggered. If this isn't correct, please check your configuration");
@@ -55,12 +55,12 @@ namespace FruitHap.StandardActions.Alarm
 			Subscribe (this.configuration.Sensors);
 		}
 
-		void Subscribe (List<NotificationConfiguration> sensors)
+		void Subscribe (List<string> sensors)
 		{
 			logger.Debug ("Subscribing to sensor events");
 			foreach (var sensor in sensors) 
 			{
-				eventBus.Subscribe<SensorEventData> (HandleSensorEvent, f => f.Sender.Name.Contains (sensor.SensorName));
+				eventBus.Subscribe<SensorEventData> (HandleSensorEvent, f => f.Sender.Name.Contains (sensor));
 			}
 
 		} 
@@ -76,25 +76,13 @@ namespace FruitHap.StandardActions.Alarm
 			{
 				TimeStamp = DateTime.Now,
 				SensorName = data.Sender.Name,
-				Data = CreateResponse(data),
+				Data = new OptionalDataContainer(data.OptionalData),
 				EventType = data.EventName
 			};
 
+
 			mqProvider.Publish (sensorMessage, configuration.RoutingKey);
 		}
-
-
-		private AlarmResponse CreateResponse (SensorEventData data)
-		{
-			var responseConfig = configuration.Sensors.Single (f => f.SensorName == data.Sender.Name);
-			return new AlarmResponse () {
-				NotificationText = responseConfig.NotificationText,
-				Priority = (NotificationPriority)((int)responseConfig.Priority),
-				OptionalData = new OptionalDataContainer(data.OptionalData)
-			};
-		}
-
-
 
         public void Dispose()
         {

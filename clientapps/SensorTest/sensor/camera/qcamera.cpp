@@ -21,7 +21,8 @@ bool QCamera::isFaceDetectionEnabled() const
 
 void QCamera::sendImage(const QJsonObject responseObject)
 {
-    QByteArray base64Data = responseObject["Data"].toObject()["$value"].toString().toLatin1();
+    QJsonObject dataObject = responseObject["Data"].toObject();
+    QByteArray base64Data = dataObject["Content"].toObject()["$value"].toString().toLatin1();
     QDateTime timestamp = QDateTime::fromString(responseObject["TimeStamp"].toString(),Qt::ISODate);
     QByteArray data = QByteArray::fromBase64(base64Data);
     QByteArray imageWithFace;

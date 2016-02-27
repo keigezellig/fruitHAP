@@ -57,10 +57,15 @@
     <Compile Include="IncomingRequest\RequestDataType.cs" />
     <Compile Include="IncomingRequest\RequestHandlers\CommandResult.cs" />
     <Compile Include="ConfigurationRequest\ConfigurationRequestAction.cs" />
-    <Compile Include="Alarm\DataContents.cs" />
     <Compile Include="Alarm\AlarmAction.cs" />
-    <Compile Include="Alarm\Configuration\EventTriggerActionConfiguration.cs" />
-    <Compile Include="Alarm\Configuration\EventTriggerActionConfigurationProvider.cs" />
+    <Compile Include="Alarm\Configuration\AlarmActionConfiguration.cs" />
+    <Compile Include="Alarm\Configuration\AlarmActionConfigurationProvider.cs" />
+    <Compile Include="Alarm\AlarmResponse.cs" />
+    <Compile Include="Alarm\NotificationPriority.cs" />
+    <Compile Include="Alarm\Configuration\NotificationConfiguration.cs" />
+    <Compile Include="EventNotification\EventNotificationAction.cs" />
+    <Compile Include="EventNotification\Configuration\EventNotificationActionConfiguration.cs" />
+    <Compile Include="EventNotification\Configuration\EventNotificationActionConfigurationProvider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -69,6 +74,8 @@
     <Folder Include="ConfigurationRequest\" />
     <Folder Include="Alarm\" />
     <Folder Include="Alarm\Configuration\" />
+    <Folder Include="EventNotification\" />
+    <Folder Include="EventNotification\Configuration\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -84,7 +91,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="event_trigger_action.json">
+    <Content Include="alarm_action.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="eventnotification_action.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

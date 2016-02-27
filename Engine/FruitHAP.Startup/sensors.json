@@ -1,6 +1,6 @@
 [{"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"BlueLight","Category":"Switch","Description":"Blue light","DeviceId":0x010101,"UnitCode":1}},
  {"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"RedLight","Category":"Switch","Description":"Red light","DeviceId":0x010101,"UnitCode":2}},
- {"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"PIR","Category":"Switch","Description":"Motion detector","DeviceId":0xD9D6DA,"UnitCode":10,"IsReadOnly":true,"Trigger":"On"}},
+ {"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"PIR","Category":"Switch","Description":"Motion detector","DeviceId":0xD9D6DA,"UnitCode":10,"IsReadOnly":true}},
  {"Type":"Camera","IsAggegrate":false,"Parameters":{"Name":"DoorCamera","Description":"My doorcam","Url":"http://192.168.1.229/snapshot.cgi","Username":"visitor","Password":"visitor"}},
  {"Type":"SwitchWithCameraSensor","IsAggegrate":true,"Parameters":{"Name":"Deurbel","Description":"My doorbell monitor","Inputs":["PIR","DoorCamera"]}}
 ]

@@ -82,7 +82,7 @@ namespace FruitHAP.Sensor.Aggregated
 
 		public override string ToString ()
 		{
-			return string.Format ("[ButtonWithCameraSensor: Name={0}, Description={1}, Inputs={2}]", Name, Description, string.Join(",",Inputs.Select(i => i.Name)));
+			return string.Format ("[SwitchWithCameraSensor: Name={0}, Description={1}, Inputs={2}]", Name, Description, string.Join(",",Inputs.Select(i => i.Name)));
 		}
 
 		#region IDisposable implementation

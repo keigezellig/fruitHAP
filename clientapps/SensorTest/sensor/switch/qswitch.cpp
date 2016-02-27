@@ -57,7 +57,8 @@ void QSwitch::turnOff()
 
 void QSwitch::sendSignal(const QJsonObject &responseObject)
 {
-     int state = responseObject["Data"].toInt();
+    QJsonObject dataObject = responseObject["Data"].toObject();
+    int state = dataObject["Content"].toInt();
     QDateTime timestamp = QDateTime::fromString(responseObject["TimeStamp"].toString(),Qt::ISODate);
     SwitchState theState = static_cast<SwitchState>(state);
     qDebug() << "State for " << m_name << " is " << (int)theState;
