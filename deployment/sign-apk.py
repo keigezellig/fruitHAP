@@ -2,6 +2,7 @@
 import argparse
 import subprocess
 import sys
+import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument("input", help="Full path to apk file")
@@ -18,6 +19,10 @@ exitcode = 0;
 print args
 
 try:
+    if os.path.isfile(args.output):
+        print "Removing existing output file.."
+        os.remove(args.output)
+
     print "**** Sign apk *****"
     subprocess.check_call(
         [args.pathtojarsigner, '-verbose', '-sigalg', 'SHA1withRSA', '-digestalg', 'SHA1', '-storepass', args.storepass, '-keystore',
