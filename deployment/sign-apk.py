@@ -16,7 +16,6 @@ parser.add_argument("pathtozipalign")
 
 args = parser.parse_args()
 exitcode = 0;
-print args
 
 try:
     if os.path.isfile(args.output):
