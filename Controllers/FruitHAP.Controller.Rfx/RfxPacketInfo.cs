@@ -16,7 +16,10 @@ namespace FruitHAP.Controller.Rfx
 		Unknown,
 		Interface,
 		Ack,
-		AC
+		AC,
+		RfxSensorTemperature,
+		RfxSensorMessage,
+		RfxSensorVoltage
 	}
 
 

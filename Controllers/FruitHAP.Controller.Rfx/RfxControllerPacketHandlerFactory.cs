@@ -34,12 +34,22 @@ namespace FruitHAP.Controller.Rfx
 			case RfxPacketType.AC:
 				logger.Debug ("AC packet received");
 				return new RfxACPacketHandler (logger, eventBus);
+			case RfxPacketType.RfxSensorTemperature:
+				logger.Debug ("RfxSensorTemperature packet received");
+				return new RfxRfxSensorTemperaturePacketHandler (logger, eventBus);
+			case RfxPacketType.RfxSensorMessage:
+				logger.Debug ("RfxSensorMessagePacket received");
+				return new RfxRfxSensorMessagePacketHandler (logger, eventBus);
+			case RfxPacketType.RfxSensorVoltage:
+				logger.Debug ("RfxSensorVoltage packet received");
+				return new RfxRfxSensorVoltagePacketHandler (logger, eventBus);
 			case RfxPacketType.Interface:
 				logger.Debug ("Interface packet received");
 				return new RfxInterfacePacketHandler (logger, eventBus);
 			case RfxPacketType.Ack:
 				logger.Debug ("Ack packet received");
 				return new RfxAckPacketHandler (logger, eventBus);
+
 			default:
 				return null;
 			}

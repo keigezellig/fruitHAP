@@ -78,6 +78,9 @@
     <Compile Include="Sensor\PacketData\General\AckPacket.cs" />
     <Compile Include="Sensor\SensorEventData.cs" />
     <Compile Include="Action\OptionalDataContainer.cs" />
+    <Compile Include="Sensor\PacketData\RFXSensor\RFXSensorTemperaturePacket.cs" />
+    <Compile Include="Sensor\PacketData\RFXSensor\RFXSensorMessagePacket.cs" />
+    <Compile Include="Sensor\PacketData\RFXSensor\RFXSensorVoltagePacket.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

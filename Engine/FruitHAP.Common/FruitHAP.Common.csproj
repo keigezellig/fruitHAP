@@ -68,6 +68,7 @@
     <Compile Include="Helpers\TaskExtension.cs" />
     <Compile Include="EventBus\IEventBus.cs" />
     <Compile Include="EventBus\EventBus.cs" />
+    <Compile Include="Helpers\BitBangExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
