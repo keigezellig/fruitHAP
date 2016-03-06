@@ -211,7 +211,7 @@ namespace FruitHAP.Controller.Rfx
 		private void SubscribeToEvents ()
 		{
 			eventBus.Subscribe<ControllerEventData<ACPacket>>(HandleIncomingACMessage, f => f.Direction == Direction.ToController);
-			eventBus.Subscribe<ControllerEventData<StatusPacket>>(HandleIncomingSetModeResponse, f => f.Direction == Direction.ToController && f.Payload.CommandType == CommandType.SetMode);
+			eventBus.Subscribe<ControllerEventData<StatusPacket>>(HandleIncomingSetModeResponse, f => f.Direction == Direction.FromController && f.Payload.CommandType == CommandType.SetMode);
 			eventBus.Subscribe<ControllerEventData<RfxAckPacket>>(HandleIncomingAckMessage, f => f.Direction == Direction.FromController);
 		} 
 
