@@ -81,6 +81,8 @@
     <Compile Include="Sensor\PacketData\RFXSensor\RFXSensorTemperaturePacket.cs" />
     <Compile Include="Sensor\PacketData\RFXSensor\RFXSensorMessagePacket.cs" />
     <Compile Include="Sensor\PacketData\RFXSensor\RFXSensorVoltagePacket.cs" />
+    <Compile Include="Sensor\SensorTypes\IBatteryPowered.cs" />
+    <Compile Include="Sensor\SensorTypes\ITemperatureSensor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

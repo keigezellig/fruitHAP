@@ -12,7 +12,7 @@ using FruitHAP.Common.EventBus;
 
 namespace FruitHAP.Sensor.KaKu.Common
 {
-	public abstract class KakuDevice : ISensor
+	public abstract class KakuDevice: ISensor
 	{
 		private string name;
 		private string description;	

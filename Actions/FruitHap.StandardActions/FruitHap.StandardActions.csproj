@@ -66,6 +66,11 @@
     <Compile Include="EventNotification\EventNotificationAction.cs" />
     <Compile Include="EventNotification\Configuration\EventNotificationActionConfiguration.cs" />
     <Compile Include="EventNotification\Configuration\EventNotificationActionConfigurationProvider.cs" />
+    <Compile Include="TemperatureAlarm\NotificationPriority.cs" />
+    <Compile Include="TemperatureAlarm\TemperatureAlarmAction.cs" />
+    <Compile Include="TemperatureAlarm\Configuration\TemperatureAlarmActionConfiguration.cs" />
+    <Compile Include="TemperatureAlarm\Configuration\TemperatureAlarmActionConfigurationProvider.cs" />
+    <Compile Include="TemperatureAlarm\TemperatureAlarmResponse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -76,6 +81,8 @@
     <Folder Include="Alarm\Configuration\" />
     <Folder Include="EventNotification\" />
     <Folder Include="EventNotification\Configuration\" />
+    <Folder Include="TemperatureAlarm\" />
+    <Folder Include="TemperatureAlarm\Configuration\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

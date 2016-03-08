@@ -93,6 +93,7 @@ namespace FruitHAP.Sensor.KaKu
 			}
 
 			TriggerControllerEvent(newState);
+			logger.Debug ("Waiting for ack...");
 			var ack = GetAck ().Result;
 			if (ack) {
 				state = newState;

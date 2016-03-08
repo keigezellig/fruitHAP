@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using FruitHAP.Common.EventBus;
 using FruitHap.StandardActions.Alarm.Configuration;
 using FruitHap.Core.Action;
+using FruitHAP.Core.Sensor.SensorTypes;
 
 
 namespace FruitHap.StandardActions.Alarm
@@ -87,8 +88,14 @@ namespace FruitHap.StandardActions.Alarm
 		private AlarmResponse CreateResponse (SensorEventData data)
 		{
 			var responseConfig = configuration.Sensors.Single (f => f.SensorName == data.Sender.Name);
+			string notificationText = responseConfig.NotificationText;
+			if (data.Sender is ITemperatureSensor) 
+			{
+				notificationText = String.Format (notificationText, (data.Sender as ITemperatureSensor).GetTemperature(), (data.Sender as ITemperatureSensor).GetUnit()); 
+			}
+
 			return new AlarmResponse () {
-				NotificationText = responseConfig.NotificationText,
+				NotificationText = notificationText,
 				Priority = (NotificationPriority)((int)responseConfig.Priority),
 				OptionalData = new OptionalDataContainer(data.OptionalData)
 			};
