@@ -74,6 +74,12 @@ namespace FruitHap.StandardActions.TemperatureAlarm
 			tempSenor = data.Sender as ITemperatureSensor;
 			if (tempSenor != null) 
 			{
+				/*if (switchy.GetState () != SwitchState.On) {
+					switchy.TurnOn ();
+				} else {
+					switchy.TurnOff ();
+				}*/
+					
 				if (tempSenor.GetTemperature () > configuration.Threshold) {
 					if (switchy.GetState() != SwitchState.On) {
 						switchy.TurnOn ();

@@ -89,11 +89,6 @@ namespace FruitHap.StandardActions.Alarm
 		{
 			var responseConfig = configuration.Sensors.Single (f => f.SensorName == data.Sender.Name);
 			string notificationText = responseConfig.NotificationText;
-			if (data.Sender is ITemperatureSensor) 
-			{
-				notificationText = String.Format (notificationText, (data.Sender as ITemperatureSensor).GetTemperature(), (data.Sender as ITemperatureSensor).GetUnit()); 
-			}
-
 			return new AlarmResponse () {
 				NotificationText = notificationText,
 				Priority = (NotificationPriority)((int)responseConfig.Priority),

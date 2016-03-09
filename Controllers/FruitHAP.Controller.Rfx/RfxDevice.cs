@@ -37,15 +37,19 @@ namespace FruitHAP.Controller.Rfx
 
 
 
-		public void SendData (byte[] data)
+		public int SendData (byte[] data)
 		{			
 			List<byte> bytesToBeSend = new List<byte> (data);
 			bytesToBeSend.Insert (0, (byte)data.Count ());
 			bytesToBeSend[3] = sequenceNumber;
 			logger.DebugFormat ("Sending bytes {0} to controller", data.BytesAsString ());
 			physicalInterface.Write(bytesToBeSend.ToArray());
+			int currentSequenceNumber = sequenceNumber;
 			previousSequenceNumber = sequenceNumber;
 			sequenceNumber++;
+
+			return currentSequenceNumber;
+	
 		}
 
 		//0D 00 00 00 00 00 00 00 00 00 00 00 00 00 
@@ -57,7 +61,7 @@ namespace FruitHAP.Controller.Rfx
 		}
 
 		//0D 00 00 SEQ 03 53 00 SB1 SB2 SB3 00 00 00 00
-		public void SendModeCommand(ProtocolReceiverSensitivityFlags protocolReceiverSensitivity)
+		public int SendModeCommand(ProtocolReceiverSensitivityFlags protocolReceiverSensitivity)
 		{
 			logger.Debug ("Sending mode command to device");
 			byte[] sensitivityBytes = GetSensitivityBytes (protocolReceiverSensitivity);
@@ -65,7 +69,7 @@ namespace FruitHAP.Controller.Rfx
 			dataToBeSend.AddRange(new byte[] {0x00,0x00,0xFF,0x03,0x53,0x00});
 			dataToBeSend.AddRange (sensitivityBytes);
 			dataToBeSend.AddRange (new byte[] { 0x00, 0x00, 0x00, 0x00 });
-			SendData (dataToBeSend.ToArray());
+			return SendData (dataToBeSend.ToArray());
 		}
 
 		public byte  PreviousSequenceNumber 

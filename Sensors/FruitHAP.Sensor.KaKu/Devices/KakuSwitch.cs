@@ -94,16 +94,16 @@ namespace FruitHAP.Sensor.KaKu
 
 			TriggerControllerEvent(newState);
 			logger.Debug ("Waiting for ack...");
-			var ack = GetAck ().Result;
-			if (ack) {
-				state = newState;
-				TriggerSensorEvent ();
-				logger.InfoFormat ("State changed to {0}", state);				
-			} 
-			else 
-			{
-				logger.Warn ("Negative or no acknowledgement from controller received, state will not be changed");
-			}
+			var ack = GetAck ();
+			ack.ContinueWith ( (t) => {
+				if (t.Result) {
+					state = newState;
+					TriggerSensorEvent ();
+					logger.InfoFormat ("State changed to {0}", state);				
+				} else {
+					logger.Warn ("Negative or no acknowledgement from controller received, state will not be changed");
+				}
+			});
 		}
 
 		public SwitchState GetState ()

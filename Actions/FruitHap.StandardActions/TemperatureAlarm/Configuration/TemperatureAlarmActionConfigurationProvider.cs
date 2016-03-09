@@ -25,7 +25,7 @@ namespace FruitHap.StandardActions.TemperatureAlarm.Configuration
 		{
 			return new TemperatureAlarmActionConfiguration () {
 				RoutingKey = "alerts",
-				Switch = "RedLight",
+				Switch = "BlueLight",
 				NotificationText = "Too hot in here!",
 				TemperatureSensor = "MyTempSensor",
 				Threshold = 25
