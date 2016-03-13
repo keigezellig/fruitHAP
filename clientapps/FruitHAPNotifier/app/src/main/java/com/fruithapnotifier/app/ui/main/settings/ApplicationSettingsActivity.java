@@ -1,3 +1,18 @@
+/*
+ *  -----------------------------------------------------------------------------------------------
+ *  "THE APPRECIATION LICENSE" (Revision 0x100):
+ *  Copyright (c) 2016. M. Joosten
+ *  You can do anything with this program and its code, even use it to run a nuclear reactor (why should you)
+ *  But I won't be responsible for possible damage and mishap, because i never tested it on a nuclear reactor (why should I..)
+ *  If you think this program/code is absolutely great and supercalifragilisticexpialidocious (or just plain useful), just
+ *  let me know by sending me a nice email or postcard from your country of origin and leave this header in the code.
+ *  Or better join my efforts to make this program even better :-)
+ *  See my blog (http://joosten-industries/blog), for contact info
+ *  ---------------------------------------------------------------------------------------------------
+ *
+ *
+ */
+
 package com.fruithapnotifier.app.ui.main.settings;
 
 import android.annotation.TargetApi;
@@ -17,22 +32,12 @@ import com.fruithapnotifier.app.R;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * A {@link PreferenceActivity} that presents a set of application settings. On
- * handset devices, settings are presented as a single list. On tablets,
- * settings are split by category, with category headers shown to the left of
- * the list of settings.
- * <p/>
- * See <a href="http://developer.android.com/design/patterns/settings.html">
- * Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
- * API Guide</a> for more information on developing a Settings UI.
- */
-public class ApplicationSettingsActivity extends PreferenceActivity {
+public class ApplicationSettingsActivity extends PreferenceActivity
+{
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 //        setupActionBar();
     }
@@ -42,35 +47,22 @@ public class ApplicationSettingsActivity extends PreferenceActivity {
     {
         ArrayList<Header> target = new ArrayList<>();
         loadHeadersFromResource(R.xml.pref_headers, target);
-        for (Header h : target) {
-            if (fragmentName.equals(h.fragment)) return true;
+        for (Header h : target)
+        {
+            if (fragmentName.equals(h.fragment))
+            {
+                return true;
+            }
         }
         return false;
     }
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
-//    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-//    private void setupActionBar() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-//            // Show the Up button in the action bar.
-//            getActionBar().setDisplayHomeAsUpEnabled(true);
-//        }
-//    }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         int id = item.getItemId();
-        if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. Use NavUtils to allow users
-            // to navigate up one level in the application structure. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
-            // TODO: If Settings has multiple levels, Up should navigate up
-            // that hierarchy.
+        if (id == android.R.id.home)
+        {
             NavUtils.navigateUpFromSameTask(this);
             return true;
         }
@@ -82,7 +74,8 @@ public class ApplicationSettingsActivity extends PreferenceActivity {
      * {@inheritDoc}
      */
     @Override
-    public boolean onIsMultiPane() {
+    public boolean onIsMultiPane()
+    {
         return isXLargeTablet(this);
     }
 
@@ -90,7 +83,8 @@ public class ApplicationSettingsActivity extends PreferenceActivity {
      * Helper method to determine if the device has an extra-large screen. For
      * example, 10" tablets are extra-large.
      */
-    private static boolean isXLargeTablet(Context context) {
+    private static boolean isXLargeTablet(Context context)
+    {
         return (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
     }
@@ -101,7 +95,8 @@ public class ApplicationSettingsActivity extends PreferenceActivity {
      */
     @Override
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public void onBuildHeaders(List<Header> target) {
+    public void onBuildHeaders(List<Header> target)
+    {
         loadHeadersFromResource(R.xml.pref_headers, target);
     }
 
@@ -109,9 +104,11 @@ public class ApplicationSettingsActivity extends PreferenceActivity {
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
      */
-    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
+    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener()
+    {
         @Override
-        public boolean onPreferenceChange(Preference preference, Object value) {
+        public boolean onPreferenceChange(Preference preference, Object value)
+        {
             String stringValue = value.toString();
 
             if (preference instanceof ListPreference)
@@ -126,7 +123,7 @@ public class ApplicationSettingsActivity extends PreferenceActivity {
                         index >= 0
                                 ? listPreference.getEntries()[index]
                                 : null);
-              }
+            }
             else
 
             {
@@ -147,7 +144,8 @@ public class ApplicationSettingsActivity extends PreferenceActivity {
      *
      * @see #sBindPreferenceSummaryToValueListener
      */
-    private static void bindPreferenceSummaryToValue(Preference preference) {
+    private static void bindPreferenceSummaryToValue(Preference preference)
+    {
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
@@ -164,9 +162,11 @@ public class ApplicationSettingsActivity extends PreferenceActivity {
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class ServerPreferenceFragment extends PreferenceFragment {
+    public static class ServerPreferenceFragment extends PreferenceFragment
+    {
         @Override
-        public void onCreate(Bundle savedInstanceState) {
+        public void onCreate(Bundle savedInstanceState)
+        {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_server);
 

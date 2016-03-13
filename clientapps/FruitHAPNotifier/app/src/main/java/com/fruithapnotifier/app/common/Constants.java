@@ -1,11 +1,24 @@
+
+/*
+ *  -----------------------------------------------------------------------------------------------
+ *  "THE APPRECIATION LICENSE" (Revision 0x100):
+ *  Copyright (c) 2016. M. Joosten
+ *  You can do anything with this program and its code, even use it to run a nuclear reactor (why should you)
+ *  But I won't be responsible for possible damage and mishap, because i never tested it on a nuclear reactor (why should I..)
+ *  If you think this program/code is absolutely great and supercalifragilisticexpialidocious (or just plain useful), just
+ *  let me know by sending me a nice email or postcard from your country of origin and leave this header in the code.
+ *  Or better join my efforts to make this program even better :-)
+ *  See my blog (http://joosten-industries/blog), for contact info
+ *  ---------------------------------------------------------------------------------------------------
+ *
+ *
+ */
+
 package com.fruithapnotifier.app.common;
 
 import android.content.Context;
 import android.content.Intent;
 
-/**
- * Created by developer on 12/5/15.
- */
 public class Constants
 {
     public static final String MQ_CONNECTION_PARAMETERS = "com.fruithapnotifier.app.service.messaging.parameter.MQ_CONNECTION_PARAMETERS";
@@ -15,8 +28,6 @@ public class Constants
     public static final java.lang.String MQ_PASSWORD = "com.fruithapnotifier.app.service.messaging.connection.MQ_PASSWORD";
     public static final java.lang.String MQ_VHOST = "com.fruithapnotifier.app.service.messaging.connection.MQ_VHOST";
     public static final java.lang.String MQ_RPCEXCHANGE = "com.fruithapnotifier.app.service.messaging.connection.MQ_RPC_EXCHANGE" ;
-    public static final java.lang.String MQ_PUBSUBEXCHANGE = "com.fruithapnotifier.app.service.messaging.connection.MQ_PUBSUB_EXCHANGE" ;
-    public static final String MQ_PUBSUB_TOPICS_TO_SUBCRIBE = "com.fruithapnotifier.app.service.messaging.connection.MQ_PUBSUB_TOPICS_TO_SUBCRIBE";
 
     public static final String MQ_PUBSUB_TOPIC = "com.fruithapnotifier.app.service.messaging.MQ_PUBSUB_TOPIC";
     public static final String MQ_PUBSUB_MESSAGE = "com.fruithapnotifier.app.service.messaging.MQ_PUBSUB_MESSAGE";
@@ -28,7 +39,6 @@ public class Constants
     public static final String ALERT_INSERTED = "com.fruithapnotifier.app.action.ALERT_INSERTED";
     public static final String ALERT_DELETED = "com.fruithapnotifier.app.action.ALERT_DELETED";
     public static final String ALERTS_CLEARED = "com.fruithapnotifier.app.action.ALERTS_CLEARED";
-    public static final String SERVICE_STOPPED_ACTION = "com.fruithapnotifier.app.action.SERVICE_STOPPED_ACTION";
     public static final String EXPANDED_ALERTID = "com.fruithapnotifier.app.gui.EXPANDED_ALERTID" ;
     public static final String ALERT_UPDATED = "com.fruithapnotifier.app.action.ALERT_UPDATED";
     public static final String ALERTS_RANGEUPDATED = "com.fruithapnotifier.app.action.ALERTS_RANGEUPDATED";
@@ -46,7 +56,5 @@ public class Constants
         DASHBOARD
     }
 
-    public class ALERTRANGE
-    {
-    }
+
 }

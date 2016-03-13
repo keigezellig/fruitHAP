@@ -1,4 +1,3 @@
-
 /*
  *  -----------------------------------------------------------------------------------------------
  *  "THE APPRECIATION LICENSE" (Revision 0x100):
@@ -14,15 +13,12 @@
  *
  */
 
-package com.fruithapnotifier.app.ui.main;
+package com.fruithapnotifier.app.models.alert;
 
-/**
- * Callbacks interface that all activities using this fragment must implement.
- */
-public interface NavigationDrawerCallbacks
+
+public enum AlertPriority
 {
-    /**
-     * Called when an item in the navigation drawer is selected.
-     */
-    void onNavigationDrawerItemSelected(int position);
+    Low,
+    Medium,
+    High
 }

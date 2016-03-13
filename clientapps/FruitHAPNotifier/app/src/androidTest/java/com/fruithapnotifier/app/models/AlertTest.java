@@ -1,4 +1,4 @@
-package com.fruithapnotifier.app.domain;
+package com.fruithapnotifier.app.models;
 
 import junit.framework.TestCase;
 
