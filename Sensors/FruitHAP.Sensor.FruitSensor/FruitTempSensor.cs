@@ -16,15 +16,16 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 
 		#region ITemperatureSensor implementation
 
-		public double GetTemperature ()
+		public TemperatureValue GetTemperature ()
 		{
-			return temperature;
+			return new TemperatureValue () 
+			{				
+				Temperature = temperature, 
+				Unit = unit
+			};
+				
 		}
-
-		public TemperatureUnit GetUnit ()
-		{
-			return unit;
-		}
+			
 
 		#endregion
 
@@ -32,7 +33,7 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 
 		public object GetValue ()
 		{
-			return new {Temperature = temperature, Unit = unit};
+			return GetTemperature ();
 		}
 
 		#endregion

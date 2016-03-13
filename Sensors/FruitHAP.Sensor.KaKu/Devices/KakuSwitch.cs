@@ -94,8 +94,32 @@ namespace FruitHAP.Sensor.KaKu
 
 			TriggerControllerEvent(newState);
 			logger.Debug ("Waiting for ack...");
-			var ack = GetAck ();
-			ack.ContinueWith ( (t) => {
+			try
+			{
+			var ack = GetAck ().Result;
+			if (ack) {
+				state = newState;
+				TriggerSensorEvent ();
+				logger.InfoFormat ("State changed to {0}", state);				
+			} else {
+				logger.Warn ("Negative or no acknowledgement from controller received, state will not be changed");
+			}
+			}
+			catch (AggregateException aex) 
+			{
+				aex.Handle (ex => 
+					{
+						if (ex is TimeoutException)
+						{
+							logger.Warn ("Time out occured while waiting on ack, state will be set to undefined");
+							state = SwitchState.Undefined;
+						}
+						return ex is TimeoutException;
+					});
+				
+			}
+
+			/*ack.ContinueWith ( (t) => {
 				if (t.Result) {
 					state = newState;
 					TriggerSensorEvent ();
@@ -103,7 +127,7 @@ namespace FruitHAP.Sensor.KaKu
 				} else {
 					logger.Warn ("Negative or no acknowledgement from controller received, state will not be changed");
 				}
-			});
+			});*/
 		}
 
 		public SwitchState GetState ()

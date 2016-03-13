@@ -29,8 +29,8 @@ namespace FruitHap.StandardActions.TemperatureAlarm
 		private TemperatureAlarmActionConfiguration configuration;
 		private IEventBus eventBus;
 
-		ITemperatureSensor tempSenor;
-		ISwitch switchy;
+		ISwitch switchAbove;
+		ISwitch switchBelow;
 
 		public TemperatureAlarmAction(ISensorRepository sensorRepository, 
 								  ILogger logger, 
@@ -53,14 +53,16 @@ namespace FruitHap.StandardActions.TemperatureAlarm
 			logger.InfoFormat ("Loading configuration");
 			configuration = configurationProvider.LoadConfigFromFile (Path.Combine (Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location), CONFIG_FILENAME));
 
-			switchy = sensorRepository.FindSensorOfTypeByName<ISwitch> (configuration.Switch);
-			if (tempSenor == null && switchy == null) 
+			switchAbove = sensorRepository.FindSensorOfTypeByName<ISwitch> (configuration.SwitchAbove);
+			switchBelow = sensorRepository.FindSensorOfTypeByName<ISwitch> (configuration.SwitchBelow);
+			if (switchAbove == null && switchBelow == null) 
 			{
-				logger.Error ("Cannot find sensors");
+				logger.Error ("Cannot find switches");
 			}
 
-			switchy.TurnOff ();
-			eventBus.Subscribe<SensorEventData> (HandleSensorEvent, f => f.Sender.Name.Contains (configuration.TemperatureSensor));
+			switchAbove.TurnOff ();
+			switchBelow.TurnOff ();
+			eventBus.Subscribe<SensorEventData> (HandleSensorEvent, f => f.Sender.Name.Contains (configuration.TemperatureSensor) && f.Sender is ITemperatureSensor);
 		}
 
 
@@ -70,49 +72,77 @@ namespace FruitHap.StandardActions.TemperatureAlarm
 		}
 
 		void HandleSensorEvent (SensorEventData data)
-		{			
-			tempSenor = data.Sender as ITemperatureSensor;
-			if (tempSenor != null) 
+		{						
+			SensorMessage sensorMessage = new SensorMessage ();
+			var tempValue = data.OptionalData as TemperatureValue;
+			if (tempValue.Temperature > configuration.ThresholdHot) 
 			{
-				/*if (switchy.GetState () != SwitchState.On) {
-					switchy.TurnOn ();
-				} else {
-					switchy.TurnOff ();
-				}*/
-					
-				if (tempSenor.GetTemperature () > configuration.Threshold) {
-					if (switchy.GetState() != SwitchState.On) {
-						switchy.TurnOn ();
-					}
-					var sensorMessage = new SensorMessage () 
-					{
-						TimeStamp = DateTime.Now,
-						SensorName = data.Sender.Name,
-						Data = CreateResponse(data),
-						EventType = data.EventName
-					};
-
-					mqProvider.Publish (sensorMessage, configuration.RoutingKey);
-
-				} else 
+				logger.Info ("Temperature above upper limit");
+				if (switchBelow.GetState () != SwitchState.Off) 
 				{
-					if (switchy.GetState() == SwitchState.On) 
-					{
-						switchy.TurnOff ();
-					}
+					switchBelow.TurnOff ();
 				}
+				if (switchAbove.GetState () != SwitchState.On) {
+					switchAbove.TurnOn ();
+				}
+
+				sensorMessage = new SensorMessage () 
+				{
+					TimeStamp = DateTime.Now,
+					SensorName = data.Sender.Name,
+					Data = CreateResponse(data,true),
+					EventType = data.EventName
+				};
+			} 
+			else if (tempValue.Temperature < configuration.ThresholdCold) 
+			{
+				logger.Info ("Temperature below lower limit");
+				if (switchAbove.GetState () != SwitchState.Off) 
+				{
+					switchAbove.TurnOff ();
+				}
+
+				if (switchBelow.GetState () != SwitchState.On) {
+					switchBelow.TurnOn ();
+				}
+
+				sensorMessage = new SensorMessage () 
+				{
+					TimeStamp = DateTime.Now,
+					SensorName = data.Sender.Name,
+					Data = CreateResponse(data,false),
+					EventType = data.EventName
+				};
+
+			} 
+			else 
+			{
+				switchAbove.TurnOff ();
+				switchBelow.TurnOff ();
 			}
+
+		
+			mqProvider.Publish (sensorMessage, configuration.RoutingKey);
 
 		}
 
 
-		private TemperatureAlarmResponse CreateResponse (SensorEventData data)
+
+
+		private TemperatureAlarmResponse CreateResponse (SensorEventData data, bool isAbove)
 		{
-			return new TemperatureAlarmResponse () {
-				NotificationText = configuration.NotificationText,
-				Priority = NotificationPriority.High,
-				OptionalData = new OptionalDataContainer(data.OptionalData)
-			};
+			if (isAbove) {
+				return new TemperatureAlarmResponse () {
+					NotificationText = configuration.NotificationTextAbove,
+					Priority = NotificationPriority.High,
+					OptionalData = new OptionalDataContainer (data.OptionalData)
+				};
+			} else
+				return new TemperatureAlarmResponse () {
+					NotificationText = configuration.NotificationTextBelow,
+					Priority = NotificationPriority.High,
+					OptionalData = new OptionalDataContainer (data.OptionalData)
+				};
 		}
 
 
