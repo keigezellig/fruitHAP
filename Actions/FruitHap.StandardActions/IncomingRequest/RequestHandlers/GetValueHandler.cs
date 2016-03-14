@@ -4,6 +4,7 @@ using FruitHAP.Core.Sensor;
 using FruitHAP.Core.SensorRepository;
 using FruitHap.StandardActions.IncomingRequest;
 using FruitHAP.Core.Action;
+using FruitHap.Core.Action;
 
 namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 {
@@ -32,7 +33,7 @@ namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 				TimeStamp = DateTime.Now,
 				SensorName = sensor.Name,
 				EventType = RequestDataType.GetValue.ToString(),
-				Data = sensor.GetValue()
+				Data = new OptionalDataContainer(sensor.GetValue())
 			};
 		}
 

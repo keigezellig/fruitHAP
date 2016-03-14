@@ -1,1 +1,50 @@
-{"ConnectionString":"serial:/dev/ttyUSB0,38400,8,N,1","PacketTypes":[{"Name":"LIGHTING2","Id":17,"Length":11,"SubTypes":[{"Name":"AC","Id":0,"IsEnabled":true, "SensitivityFlag":"AC"},{"Name":"HE","Id":1,"IsEnabled":false,"SensitivityFlag":"AC"}]},{"Name":"LIGHTING1","Id":17,"Length":11,"SubTypes":[{"Name":"X10","Id":0,"IsEnabled":false,"SensitivityFlag":"X10"},{"Name":"ARC","Id":1,"IsEnabled":false, "SensitivityFlag":"ARC"}]}]}
+{
+  "ConnectionString": "serial:/dev/ttyUSB0,38400,8,N,1",
+  "PacketTypes": [
+    {
+      "Name": "LIGHTING2",
+      "Id": 17,
+      "Length": 11,
+      "SubTypes": [
+        {
+          "Name": "AC",
+          "Id": 0,
+          "IsEnabled": true,
+          "SensitivityFlag": "AC"
+        },
+        {
+          "Name": "HE",
+          "Id": 1,
+          "IsEnabled": false,
+          "SensitivityFlag": "AC"
+        }
+      ]
+    },  
+	{
+      "Name": "RFXSensor",
+      "Id": 112,
+      "Length": 7,
+      "SubTypes": [
+        {
+          "Name": "RfxSensorTemperature",
+          "Id": 0,
+          "IsEnabled": true,
+          "SensitivityFlag": "X10"
+        },
+        {
+          "Name": "RfxSensorMessage",
+          "Id": 3,
+          "IsEnabled": true,
+          "SensitivityFlag": "X10"
+        },
+		{
+          "Name": "RfxSensorVoltage",
+          "Id": 2,
+          "IsEnabled": true,
+          "SensitivityFlag": "X10"
+        }
+
+      ]
+    }
+  ]
+}

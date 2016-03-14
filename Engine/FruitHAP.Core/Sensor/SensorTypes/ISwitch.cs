@@ -1,7 +1,5 @@
-﻿using System;
-using FruitHAP.Core.Sensor;
-using Microsoft.Practices.Prism.PubSubEvents;
-using FruitHAP.Core.SensorEventPublisher;
+﻿using FruitHAP.Core.Sensor;
+
 
 namespace FruitHAP.Core.Sensor.SensorTypes
 {

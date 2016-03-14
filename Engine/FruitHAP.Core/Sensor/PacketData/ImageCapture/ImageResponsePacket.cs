@@ -10,5 +10,10 @@ namespace FruitHAP.Core.Sensor.PacketData.ImageCapture
     {
         public string DestinationSensor { get; set; }
         public byte[] ImageData { get; set; }
+
+		public override string ToString ()
+		{
+			return string.Format ("[ImageResponsePacket: DestinationSensor={0}, ImageData={1}]", DestinationSensor, ImageData);
+		}
     }
 }

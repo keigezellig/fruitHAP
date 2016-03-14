@@ -8,21 +8,22 @@ using FruitHAP.Common.Configuration;
 using FruitHAP.Core.Controller;
 using FruitHAP.Controller.Rfx.PacketHandlers;
 using FruitHAP.Controller.Rfx.InternalPacketData;
+using FruitHAP.Common.EventBus;
 
 namespace FruitHAP.Controller.Rfx.PacketHandlers
 {
 	public class RfxInterfacePacketHandler : IControllerPacketHandler
 	{
 		private readonly ILogger logger;
-		private IEventAggregator aggregator;
+		private IEventBus eventBus;
 		private const byte STATUSCOMMAND = 0x02;
 		private const byte SETMODECOMMAND = 0x03;
 		private const byte COMMANDBYTE = 4;
 
-		public RfxInterfacePacketHandler (ILogger logger, IEventAggregator aggregator)
+		public RfxInterfacePacketHandler (ILogger logger, IEventBus eventBus)
 		{
 			this.logger = logger;
-			this.aggregator = aggregator;
+			this.eventBus = eventBus;
 		}
 
 		//SetMode response:
@@ -40,24 +41,19 @@ namespace FruitHAP.Controller.Rfx.PacketHandlers
 			decodedPacket.HardwareVersion = string.Format ("{0}.{1}", data [10], data [11]);
 			decodedPacket.ReceiverSensitivity = DecodeReceiverSensitivity (data);
 
-			if (data [COMMANDBYTE] == STATUSCOMMAND) 
-			{
-				aggregator.GetEvent<StatusResponsePacketEvent> ().Publish (new ControllerEventData<StatusPacket> () {
-					Direction = Direction.FromController,
-					Payload = decodedPacket
-				});
+			if (data [COMMANDBYTE] == STATUSCOMMAND) {
+				decodedPacket.CommandType = CommandType.Status;
+			} else if (data [COMMANDBYTE] == SETMODECOMMAND) {				
+				decodedPacket.CommandType = CommandType.SetMode;
 			}
-
-			if (data [COMMANDBYTE] == SETMODECOMMAND) 
-			{
-				aggregator.GetEvent<SetModeResponsePacketEvent> ().Publish (new ControllerEventData<StatusPacket> () {
-					Direction = Direction.FromController,
-					Payload = decodedPacket
-				});
-
-			}
-				
+		
+			eventBus.Publish (new ControllerEventData<StatusPacket> () {
+				Direction = Direction.FromController,
+				Payload = decodedPacket
+			});
+		
 		}
+			
 		#endregion
 
 		private ProtocolReceiverSensitivityFlags DecodeReceiverSensitivity (byte[] data)

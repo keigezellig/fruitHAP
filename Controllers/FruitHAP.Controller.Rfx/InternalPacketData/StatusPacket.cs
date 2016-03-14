@@ -9,11 +9,16 @@ namespace FruitHAP.Controller.Rfx.InternalPacketData
 		public ProtocolReceiverSensitivityFlags ReceiverSensitivity { get; set; }
 		public string HardwareVersion { get; set; }
 		public byte FirmwareVersion { get; set; }
-
+		public CommandType CommandType { get; set; } 
 		//SetMode response:
 		//0D 01 00 04 03  53 E7 00 00 04 01 02 00 00
 		//L  PT ST SQ CMD TT FV DV DV DV HW HW ? ?
 		//(Same as GetStatus response, only CMD is different)
+
+		public override string ToString ()
+		{
+			return string.Format ("[StatusPacket: SequenceNumber={0}, DeviceType={1}, ReceiverSensitivity={2}, HardwareVersion={3}, FirmwareVersion={4}, CommandType={5}]", SequenceNumber, DeviceType, ReceiverSensitivity, HardwareVersion, FirmwareVersion, CommandType);
+		}
 	
 
 	}
@@ -31,6 +36,11 @@ namespace FruitHAP.Controller.Rfx.InternalPacketData
 		Dt86835 = 0x59,
 		Dt86835FSK = 0x5A,
 		Dt86895 = 0x5B,
+	}
+
+	public enum CommandType
+	{
+		Unknown, Status, SetMode
 	}
 
 

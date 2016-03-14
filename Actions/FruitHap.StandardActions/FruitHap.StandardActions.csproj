@@ -47,7 +47,6 @@
     <Compile Include="Helpers.cs" />
     <Compile Include="IncomingRequest\IRequestHandler.cs" />
     <Compile Include="IncomingRequest\IncomingRequestAction.cs" />
-    <Compile Include="EventTrigger\EventTriggerAction.cs" />
     <Compile Include="IncomingRequest\RequestHandlers\EmptyRequestHandler.cs" />
     <Compile Include="IncomingRequest\RequestHandlers\UnknownRequestTypeHandler.cs" />
     <Compile Include="IncomingRequest\RequestHandlers\GetValueHandler.cs" />
@@ -55,20 +54,35 @@
     <Compile Include="IncomingRequest\RequestHandlers\CommandObject.cs" />
     <Compile Include="IncomingRequest\RequestHandlerFactory.cs" />
     <Compile Include="IncomingRequest\IRequestHandlerFactory.cs" />
-    <Compile Include="EventTrigger\Configuration\EventTriggerActionConfiguration.cs" />
-    <Compile Include="EventTrigger\Configuration\EventTriggerActionConfigurationProvider.cs" />
     <Compile Include="IncomingRequest\RequestDataType.cs" />
     <Compile Include="IncomingRequest\RequestHandlers\CommandResult.cs" />
     <Compile Include="ConfigurationRequest\ConfigurationRequestAction.cs" />
-    <Compile Include="EventTrigger\DataContents.cs" />
+    <Compile Include="Alarm\AlarmAction.cs" />
+    <Compile Include="Alarm\Configuration\AlarmActionConfiguration.cs" />
+    <Compile Include="Alarm\Configuration\AlarmActionConfigurationProvider.cs" />
+    <Compile Include="Alarm\AlarmResponse.cs" />
+    <Compile Include="Alarm\NotificationPriority.cs" />
+    <Compile Include="Alarm\Configuration\NotificationConfiguration.cs" />
+    <Compile Include="EventNotification\EventNotificationAction.cs" />
+    <Compile Include="EventNotification\Configuration\EventNotificationActionConfiguration.cs" />
+    <Compile Include="EventNotification\Configuration\EventNotificationActionConfigurationProvider.cs" />
+    <Compile Include="TemperatureAlarm\NotificationPriority.cs" />
+    <Compile Include="TemperatureAlarm\TemperatureAlarmAction.cs" />
+    <Compile Include="TemperatureAlarm\Configuration\TemperatureAlarmActionConfiguration.cs" />
+    <Compile Include="TemperatureAlarm\Configuration\TemperatureAlarmActionConfigurationProvider.cs" />
+    <Compile Include="TemperatureAlarm\TemperatureAlarmResponse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="IncomingRequest\" />
-    <Folder Include="EventTrigger\" />
     <Folder Include="IncomingRequest\RequestHandlers\" />
-    <Folder Include="EventTrigger\Configuration\" />
     <Folder Include="ConfigurationRequest\" />
+    <Folder Include="Alarm\" />
+    <Folder Include="Alarm\Configuration\" />
+    <Folder Include="EventNotification\" />
+    <Folder Include="EventNotification\Configuration\" />
+    <Folder Include="TemperatureAlarm\" />
+    <Folder Include="TemperatureAlarm\Configuration\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -84,8 +98,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="event_trigger_action.json">
+    <Content Include="alarm_action.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="eventnotification_action.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="temperature_alarm_action.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 </Project>

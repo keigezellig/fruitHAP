@@ -5,13 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FruitHAP.Common.EventBus;
 
 namespace FruitHAP.Core.Controller
 {
     public abstract class BaseController : IController
     {
         protected readonly ILogger logger;
-        protected readonly IEventAggregator aggregator;
+        protected readonly IEventBus eventBus;
 
         protected abstract void StartController();
         protected abstract void StopController();
@@ -22,10 +23,10 @@ namespace FruitHAP.Core.Controller
 
         private bool disposedValue = false; // To detect redundant calls
 
-        protected BaseController(ILogger logger, IEventAggregator aggregator)
+		protected BaseController(ILogger logger, IEventBus eventBus)
         {
             this.logger = logger;
-            this.aggregator = aggregator;
+			this.eventBus = eventBus;
         }
 
         public void Start()

@@ -36,6 +36,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.Prism.PubSubEvents">
+      <HintPath>..\packages\Prism.PubSubEvents.1.1.2\lib\portable-sl5+windowsphone8+windows8+net40+wpa81\Microsoft.Practices.Prism.PubSubEvents.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -44,6 +47,7 @@
     <Folder Include="PhysicalInterfaces\" />
     <Folder Include="Properties\" />
     <Folder Include="Exceptions\" />
+    <Folder Include="EventBus\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\ConfigProviderBase.cs" />
@@ -62,6 +66,9 @@
     <Compile Include="Helpers\ReflectionHelper.cs" />
     <Compile Include="Exceptions\ValidationException.cs" />
     <Compile Include="Helpers\TaskExtension.cs" />
+    <Compile Include="EventBus\IEventBus.cs" />
+    <Compile Include="EventBus\EventBus.cs" />
+    <Compile Include="Helpers\BitBangExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

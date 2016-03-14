@@ -1,0 +1,1 @@
+{"RoutingKey":"alerts","NotificationTextAbove":"Too hot in here!","NotificationTextBelow":"It's fffreeezing","TemperatureSensor":"MyTempSensor","SwitchAbove":"RedLight","SwitchBelow":"BlueLight","ThresholdHot":27,"ThresholdCold":23}

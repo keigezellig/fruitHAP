@@ -8,30 +8,30 @@ using FruitHAP.Sensor.PacketData.AC;
 using FruitHAP.Core.Controller;
 using FruitHAP.Sensor.PacketData.General;
 using System.Threading.Tasks;
+using FruitHAP.Common.EventBus;
 
 namespace FruitHAP.Sensor.KaKu.Common
 {
-	public abstract class KakuDevice : ISensor, ICloneable
+	public abstract class KakuDevice: ISensor
 	{
 		private string name;
 		private string description;	
 		protected uint deviceId;
 		protected byte unitCode;
 		protected readonly ILogger logger;
-		protected IEventAggregator aggregator;
+		protected IEventBus eventBus;
 
 		private bool isAckReceived;
 		private bool ackValue;
 
 		protected abstract void ProcessReceivedACDataForThisDevice (ACPacket data);
 
-		protected KakuDevice (IEventAggregator aggregator, ILogger logger)
+		protected KakuDevice (IEventBus eventBus, ILogger logger)
 		{
-			this.aggregator = aggregator;
+			this.eventBus = eventBus;
 			this.logger = logger;
-			aggregator.GetEvent<ACPacketEvent> ().Subscribe (HandleIncomingACMessage, ThreadOption.PublisherThread, false, f => f.Direction == Direction.FromController && DataReceivedCorrespondsToThisDevice(f.Payload));
-			aggregator.GetEvent<AckPacketEvent>().Subscribe(HandleIncomingAckMessage, ThreadOption.PublisherThread, false, f => f.Direction == Direction.FromController);
-
+			eventBus.Subscribe<ControllerEventData<ACPacket>>(HandleIncomingACMessage,f => f.Direction == Direction.FromController && DataReceivedCorrespondsToThisDevice(f.Payload));
+			eventBus.Subscribe<ControllerEventData<AckPacket>>(HandleIncomingAckMessage, f => f.Direction == Direction.FromController);
 		}
 			
 		public string Name
@@ -110,9 +110,12 @@ namespace FruitHAP.Sensor.KaKu.Common
 		{
 			return string.Format ("Name={0}, Description={1}, DeviceId={2}, UnitCode={3}", Name, Description, DeviceId, UnitCode);
 		}
-		
 
-
+		public void Dispose ()
+		{
+			eventBus.Unsubscribe<ControllerEventData<ACPacket>> (HandleIncomingACMessage);
+			eventBus.Unsubscribe<ControllerEventData<AckPacket>> (HandleIncomingAckMessage);
+		}
 	}
 }
 

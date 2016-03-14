@@ -21,7 +21,8 @@ using FruitHAP.Core;
 using FruitHAP.Core.MQ;
 using FruitHAP.Core.Controller;
 using FruitHAP.Core.SensorPersister;
-using FruitHAP.Core.SensorEventPublisher;
+
+using FruitHAP.Common.EventBus;
 
 namespace FruitHAP.Startup
 {
@@ -118,9 +119,10 @@ namespace FruitHAP.Startup
                    .LifestyleSingleton());
 
 			container.Register(
-				Component.For<ISensorEventPublisher>()
-				.ImplementedBy<SensorEventPublisher>()
+				Component.For<IEventBus>()
+				.ImplementedBy<PrismEventBus>()
 				.LifestyleSingleton());
+
         }
 
         private void RegisterService(IWindsorContainer container)
@@ -196,16 +198,23 @@ namespace FruitHAP.Startup
 
         private void RegisterLogging(IWindsorContainer container)
         {
-            container.AddFacility<LoggingFacility>(
-                f => f.LogUsing(new NLogFactory(NLogConfigurationFactory.CreateNLogConfiguration())));
-            container.Register(
-                Component.For<LogFactory>()
-                    .UsingFactoryMethod<LogFactory>(ServiceHostConfigurator.CreateLogFactoryForServiceHost));
+			RegisterApplicationLogging (container);
+			RegisterServiceHostLogging (container);
         }
 
+		private void RegisterApplicationLogging (IWindsorContainer container)
+		{
+			container.AddFacility<LoggingFacility> (f => f.LogUsing (new NLogFactory (NLogConfigurationFactory.CreateNLogConfiguration ())));
+		}
+
+		private void RegisterServiceHostLogging (IWindsorContainer container)
+		{
+			container.Register (Component.For<LogFactory> ().UsingFactoryMethod<LogFactory> (ServiceHostConfigurator.CreateLogFactoryForServiceHost));
+		}
+
         private void Kernel_ComponentRegistered(string key, IHandler handler)
-        {            
-            Console.WriteLine("Loading component: {0}", key);
+        {            			
+			Console.WriteLine("Loading component: {0}", key);
         }
     }
 }

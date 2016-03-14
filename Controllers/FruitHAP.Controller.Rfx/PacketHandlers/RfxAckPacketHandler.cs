@@ -5,6 +5,7 @@ using FruitHAP.Common.Helpers;
 using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Core.Controller;
 using FruitHAP.Controller.Rfx.InternalPacketData;
+using FruitHAP.Common.EventBus;
 
 namespace FruitHAP.Controller.Rfx.PacketHandlers
 {
@@ -12,13 +13,13 @@ namespace FruitHAP.Controller.Rfx.PacketHandlers
 	{
 
 		private readonly ILogger logger;
-		private IEventAggregator aggregator;
+		private IEventBus eventBus;
 
 
-		public RfxAckPacketHandler (ILogger logger, IEventAggregator aggregator)
+		public RfxAckPacketHandler (ILogger logger, IEventBus eventBus)
 		{
 			this.logger = logger;
-			this.aggregator = aggregator;
+			this.eventBus = eventBus;
 		}
 
 		#region IControllerPacketHandler implementation
@@ -27,7 +28,7 @@ namespace FruitHAP.Controller.Rfx.PacketHandlers
 		{
 			var sequenceNumber = data [3];
 			logger.DebugFormat ("ACK received. Sequenceno = {0}",sequenceNumber);
-			aggregator.GetEvent<RfxAckPacketEvent> ().Publish (new ControllerEventData<RfxAckPacket> () {
+			eventBus.Publish (new ControllerEventData<RfxAckPacket> () {
 				Direction = Direction.FromController,
 				Payload = new RfxAckPacket () { SequenceNumber = sequenceNumber }
 			});

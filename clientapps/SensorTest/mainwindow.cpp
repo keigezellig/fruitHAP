@@ -317,7 +317,7 @@ void MainWindow::on_actionConnect_triggered()
     if (ok)
     {
             QStringList bindingKeys;
-            bindingKeys.push_back("alerts");
+            bindingKeys.push_back("events");
 
             connectToMQ(bindingKeys, m_uri);
 

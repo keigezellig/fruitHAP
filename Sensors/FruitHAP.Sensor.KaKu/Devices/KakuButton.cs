@@ -1,25 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using Castle.Core.Logging;
-using FruitHAP.Core.Sensor;
 using FruitHAP.Core.Sensor.SensorTypes;
-using FruitHAP.Common.Helpers;
-using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Sensor.KaKu.Common;
 using FruitHAP.Sensor.PacketData.AC;
 using FruitHAP.Core.Controller;
-using FruitHAP.Core.SensorEventPublisher;
+using FruitHAP.Common.EventBus;
+using FruitHAP.Core;
+using FruitHAP.Core.Sensor;
 
 namespace FruitHAP.Sensor.KaKu.Devices
 {
 	public class KakuButton : KakuDevice, IButton
     {       
 		private Command command;
-		private ISensorEventPublisher sensorEventPublisher;
 	
-		public KakuButton(IEventAggregator aggregator, ILogger logger, ISensorEventPublisher sensorEventPublisher) : base(aggregator,logger)
+		public KakuButton(IEventBus eventBus, ILogger logger) : base(eventBus,logger)
         {
-			this.sensorEventPublisher = sensorEventPublisher;            
         }
 
 		public Command Command {
@@ -37,7 +33,14 @@ namespace FruitHAP.Sensor.KaKu.Devices
 		{
 			if (data.Command == command) 
 			{				
-				sensorEventPublisher.Publish<SensorEvent> (this, null);
+				SensorEventData sensorEvent = new SensorEventData () {
+					TimeStamp = DateTime.Now,
+					Sender = this,
+					EventName = "SensorEvent",
+					OptionalData = null
+				};
+
+				eventBus.Publish(sensorEvent);
 			}
 		}
 
@@ -51,16 +54,13 @@ namespace FruitHAP.Sensor.KaKu.Devices
 				Level = 0
 			};
 
-			aggregator.GetEvent<ACPacketEvent> ().Publish (new ControllerEventData<ACPacket> () { Direction = Direction.ToController, Payload = data });
+			eventBus.Publish(new ControllerEventData<ACPacket> () { Direction = Direction.ToController, Payload = data });
 
 		}
 
-       
-			       
-
 		public override object Clone ()
         {
-			return new KakuButton(this.aggregator, this.logger, this.sensorEventPublisher);
+			return new KakuButton(this.eventBus, this.logger);
         }
 
 		public override string ToString ()
