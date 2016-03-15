@@ -37,6 +37,7 @@ import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.persistence.AlertRepository;
 import com.fruithapnotifier.app.service.FruithapPubSubService;
 import com.fruithapnotifier.app.ui.alerts.AlertListFragment;
+import com.fruithapnotifier.app.ui.dashboard.DashboardFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerCallbacks, FragmentCallbacks
@@ -80,14 +81,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onNavigationDrawerItemSelected(int position)
     {
-
-
         switch (position)
         {
             case 0:
                 //Alert list
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, AlertListFragment.newInstance(-1))
+                        .commit();
+                break;
+            case 1:
+                //Dashboard
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, DashboardFragment.newInstance())
                         .commit();
                 break;
         }

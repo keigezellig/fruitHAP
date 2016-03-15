@@ -62,7 +62,7 @@ namespace FruitHap.StandardActions.TemperatureAlarm
 
 			switchAbove.TurnOff ();
 			switchBelow.TurnOff ();
-			eventBus.Subscribe<SensorEventData> (HandleSensorEvent, f => f.Sender.Name.Contains (configuration.TemperatureSensor) && f.Sender is ITemperatureSensor);
+			//eventBus.Subscribe<SensorEventData> (HandleSensorEvent, f => f.Sender.Name.Contains (configuration.TemperatureSensor) && f.Sender is ITemperatureSensor);
 		}
 
 

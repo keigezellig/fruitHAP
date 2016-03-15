@@ -46,7 +46,7 @@ public class Constants
     public static final String ALERT_DATA = "com.fruithapnotifier.app.data.ALERT_DATA";
 
     public static String STOP_ACTION = "com.fruithapnotifier.app.action.STOP_SERVICE";
-    public static String INCOMING_ALERT = "com.fruithapnotifier.app.action.INCOMING_ALERT";
+    public static String INCOMING_MESSAGE = "com.fruithapnotifier.app.action.INCOMING_MESSAGE";
     public static int SERVICE_STATE_NOTIFICATIONID = 1;
     public static int INCOMING_ALERT_NOTIFICATION = 2;
 

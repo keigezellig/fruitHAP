@@ -82,6 +82,64 @@ public class AlertListFragment extends Fragment
         super.onCreate(savedInstanceState);
     }
 
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState)
+    {
+
+        View view = inflater.inflate(R.layout.alert_fragment_list, container, false);
+        alertListView = (RecyclerView) view.findViewById(R.id.alertList);
+        alertListView.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        alertListView.setLayoutManager(llm);
+
+        updateAdapter();
+
+
+        return view;
+    }
+
+
+    @Override
+    public void onAttach(Context context)
+    {
+        super.onAttach(context);
+
+        Activity activity;
+
+        if (context instanceof Activity)
+        {
+            activity = (Activity) context;
+            try
+            {
+                title = getString(R.string.title_alertlist);
+                mCallbacks = (FragmentCallbacks) activity;
+                mCallbacks.onSectionAttached(Constants.Section.ALERT_LIST,title);
+            }
+            catch (ClassCastException e)
+            {
+                throw new ClassCastException("Activity must implement FragmentCallbacks.");
+            }
+        }
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+        unregisterBroadcastReceiver();
+
+    }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        updateAdapter();
+    }
+
     private AlertListItemViewModel convertToViewModel(Alert alert)
     {
         try
@@ -119,7 +177,6 @@ public class AlertListFragment extends Fragment
             Log.e(getClass().getName(),"Invalid format in record");
             return null;
         }
-
     }
 
     private void registerBroadcastReceiver()
@@ -337,12 +394,7 @@ public class AlertListFragment extends Fragment
     }
 
 
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-        updateAdapter();
-    }
+
 
     private List<Alert> getAlertsFromDatasource()
     {
@@ -351,57 +403,6 @@ public class AlertListFragment extends Fragment
         return alerts;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
-
-        View view = inflater.inflate(R.layout.alert_fragment_list, container, false);
-        alertListView = (RecyclerView) view.findViewById(R.id.alertList);
-        alertListView.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-        alertListView.setLayoutManager(llm);
-
-        updateAdapter();
-
-
-        return view;
-    }
-
-
-    @Override
-    public void onAttach(Context context)
-    {
-        super.onAttach(context);
-
-        Activity activity;
-
-        if (context instanceof Activity)
-        {
-            activity = (Activity) context;
-            try
-            {
-                title = getString(R.string.title_alertlist);
-                mCallbacks = (FragmentCallbacks) activity;
-                mCallbacks.onSectionAttached(Constants.Section.ALERT_LIST,title);
-            }
-            catch (ClassCastException e)
-            {
-                throw new ClassCastException("Activity must implement FragmentCallbacks.");
-            }
-
-
-
-        }
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        unregisterBroadcastReceiver();
-
-    }
 
 
 

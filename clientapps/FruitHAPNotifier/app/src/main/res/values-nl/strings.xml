@@ -24,4 +24,5 @@
     <string name="notification_service_stopwarning">Weet u het zeker dat u de notificatie service wilt stoppen? Er zullen geen alarmen worden ontvangen en het dashboard zal niet juist worden bijgewerkt</string>
     <string name="action_mark_as_read">Markeer alle alarmen als gelezen</string>
     <string name="alert_image">Optional image going with the alert</string>
+    <string name="title_dashboard">Dashboard</string>
 </resources>

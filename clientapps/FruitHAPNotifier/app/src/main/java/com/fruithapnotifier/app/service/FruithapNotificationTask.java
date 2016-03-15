@@ -40,7 +40,7 @@ public class FruithapNotificationTask extends AsyncTask<ConnectionParameters, Vo
     public FruithapNotificationTask(Context ctx)
     {
         this.broadcastManager = LocalBroadcastManager.getInstance(ctx);
-        this.intent = new Intent(Constants.INCOMING_ALERT);
+        this.intent = new Intent(Constants.INCOMING_MESSAGE);
         this.context = ctx;
         mqProvider = MqProviderFactory.getMqProviderInstance();
         LOGTAG = "FruithapNotificationTask";

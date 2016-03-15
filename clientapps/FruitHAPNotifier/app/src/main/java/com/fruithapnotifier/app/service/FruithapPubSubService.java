@@ -25,16 +25,20 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.fruithapnotifier.app.R;
+import com.fruithapnotifier.app.common.SensorUpdateEvent;
 import com.fruithapnotifier.app.models.alert.AlertPriority;
 import com.fruithapnotifier.app.models.alert.Alert;
+import com.fruithapnotifier.app.models.sensor.Switch;
 import com.fruithapnotifier.app.persistence.AlertRepository;
 import com.fruithapnotifier.app.ui.main.MainActivity;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class FruithapPubSubService extends Service
 {
@@ -49,6 +53,7 @@ public class FruithapPubSubService extends Service
     private AlertRepository datasource;
     private LocalBroadcastManager broadcastManager;
     private SharedPreferences preferences;
+    private List<Switch> switches;
 
 
     public FruithapPubSubService()
@@ -69,6 +74,8 @@ public class FruithapPubSubService extends Service
         broadcastManager = LocalBroadcastManager.getInstance(this);
         datasource = new AlertRepository(this);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        switches = loadSwitches();
 
         fruithapNotificationTask = new FruithapNotificationTask(this);
 
@@ -107,11 +114,13 @@ public class FruithapPubSubService extends Service
 
                 }
 
-                if (intent.getAction().equals(Constants.INCOMING_ALERT))
+                if (intent.getAction().equals(Constants.INCOMING_MESSAGE))
                 {
                     String topic = intent.getStringExtra(Constants.MQ_PUBSUB_TOPIC);
                     String message = intent.getStringExtra(Constants.MQ_PUBSUB_MESSAGE);
                     String alertTopic = preferences.getString("pref_server_alert_topic","alerts");
+                    String eventTopic = preferences.getString("pref_server_event_topic", "events");
+
                     if (topic.equals(alertTopic) && !message.isEmpty())
                     {
                         try
@@ -128,6 +137,21 @@ public class FruithapPubSubService extends Service
                             Log.e(LOGTAG, "Message error", e);
                         }
                     }
+
+                    if (topic.equals(eventTopic) && !message.isEmpty())
+                    {
+                        try
+                        {
+                            JSONObject eventData = new JSONObject(message);
+                            SensorUpdateEvent updateEvent = new SensorUpdateEvent(eventData);
+                            EventBus.getDefault().post(updateEvent);
+
+                        }
+                        catch (JSONException e)
+                        {
+                            Log.e(LOGTAG, "Message error", e);
+                        }
+                    }
                 }
             }
         };
@@ -136,6 +160,16 @@ public class FruithapPubSubService extends Service
 
         Log.d(LOGTAG, "Service created");
 
+    }
+
+    private List<Switch> loadSwitches()
+    {
+        ArrayList<Switch> result = new ArrayList<>();
+        Switch pir = new Switch("PIR","aa","bb");
+        pir.subscribeToUpdates();
+        result.add(pir);
+
+        return result;
     }
 
 
@@ -243,7 +277,7 @@ public class FruithapPubSubService extends Service
 
     private void registerBroadcastListener()
     {
-        broadcastManager.registerReceiver(eventNotificationReceiver, new IntentFilter(Constants.INCOMING_ALERT));
+        broadcastManager.registerReceiver(eventNotificationReceiver, new IntentFilter(Constants.INCOMING_MESSAGE));
         broadcastManager.registerReceiver(eventNotificationReceiver, new IntentFilter(Constants.ALERT_INSERTED));
     }
 
