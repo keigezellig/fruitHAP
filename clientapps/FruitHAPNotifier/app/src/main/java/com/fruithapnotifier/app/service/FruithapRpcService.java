@@ -67,12 +67,13 @@ public class FruithapRpcService extends IntentService
      *
      * @see IntentService
      */
-    public static void executeSensorRequest(Context context, Bundle connectionParams, String request)
+    public static void executeSensorRequest(Context context, Bundle connectionParams, String request, ResultReceiver resultReceiver)
     {
         Intent intent = new Intent(context, FruithapRpcService.class);
         intent.setAction(ACTION_SENSOR);
         intent.putExtra(REQUEST, request);
         intent.putExtra(Constants.MQ_CONNECTION_PARAMETERS, connectionParams);
+        intent.putExtra(RESULT_RECEIVER,resultReceiver);
         context.startService(intent);
     }
 

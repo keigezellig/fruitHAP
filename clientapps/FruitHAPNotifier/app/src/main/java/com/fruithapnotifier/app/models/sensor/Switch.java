@@ -1,7 +1,10 @@
 package com.fruithapnotifier.app.models.sensor;
 
+import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 import com.fruithapnotifier.app.common.SensorUpdateEvent;
+import com.fruithapnotifier.app.service.FruithapRpcService;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
@@ -15,6 +18,7 @@ import java.util.Date;
 public class Switch
 {
     private static final String TAG = "Switch" ;
+    private final Context context;
     private String name;
     private String description;
     private String category;
@@ -59,14 +63,21 @@ public class Switch
         this.category = category;
     }
 
-    @Subscribe
+    public void requestUpdate()
+    {
+        EventBus.getDefault().post(switchChangedEvent);
+    }
+
+
+
     public void onUpdateReceived(SensorUpdateEvent updateEvent)
     {
         DateTime timestamp = new DateTime();
         SwitchState value = SwitchState.UNDEFINED;
 
+        String eventType =  updateEvent.getEventData().optString("EventType", "");
         String sensorName = updateEvent.getEventData().optString("SensorName", "");
-        if (sensorName.equals(this.name))
+        if (sensorName.equals(this.name) && ( eventType.equals("SensorEvent") || eventType.equals("GetValue") ))
         {
             try
             {
@@ -84,8 +95,6 @@ public class Switch
             updateValue(value,timestamp);
             EventBus.getDefault().cancelEventDelivery(updateEvent);
         }
-
-
     }
 
     public void subscribeToUpdates()

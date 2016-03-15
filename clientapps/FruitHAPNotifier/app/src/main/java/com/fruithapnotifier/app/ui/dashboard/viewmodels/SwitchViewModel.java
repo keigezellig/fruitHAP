@@ -22,12 +22,10 @@ public class SwitchViewModel
     private boolean isOn;
     private String lastUpdated;
 
-    public SwitchViewModel(String name, String description, boolean value, String lastUpdated)
+    public SwitchViewModel(String name, String description)
     {
         this.name = name;
         this.description = description;
-        this.isOn = value;
-        this.lastUpdated = lastUpdated;
     }
 
     public String getName()
@@ -48,5 +46,13 @@ public class SwitchViewModel
     public String getLastUpdated()
     {
         return lastUpdated;
+    }
+
+    public void setOn(boolean on) {
+        isOn = on;
+    }
+
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 }

@@ -27,9 +27,13 @@ import android.view.ViewGroup;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.models.sensor.Switch;
+import com.fruithapnotifier.app.models.sensor.SwitchChangeEvent;
+import com.fruithapnotifier.app.models.sensor.SwitchState;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchViewModel;
 import com.fruithapnotifier.app.ui.main.FragmentCallbacks;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +81,14 @@ public class DashboardFragment extends Fragment
     }
 
     @Override
+    public void onDetach()
+    {
+        super.onDetach();
+        EventBus.getDefault().unregister(this);
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
@@ -93,6 +105,21 @@ public class DashboardFragment extends Fragment
         return view;
     }
 
+
+    @Subscribe
+    public void onStateChanged(SwitchChangeEvent event )
+    {
+        for (int i = 0; i < adapter.getItemCount(); i++)
+        {
+            SwitchViewModel item = adapter.getItems().get(i);
+            if (item.getName().equals(event.getSender().getName()))
+            {
+                item.setOn(event.getSwitchState() == SwitchState.ON);
+                adapter.notifyItemChanged(i);
+                EventBus.getDefault().cancelEventDelivery(event);
+            }
+        }
+    }
 
 
     private void updateAdapter()
@@ -112,6 +139,7 @@ public class DashboardFragment extends Fragment
             }
             adapter = new DashboardAdapter(viewItems);
 
+
             dashboardView.setAdapter(adapter);
             EventBus.getDefault().register(this);
         }
@@ -124,9 +152,10 @@ public class DashboardFragment extends Fragment
         }
     }
 
+
     private SwitchViewModel convertToViewModel(Switch switchy)
     {
-        return null;
+        return new SwitchViewModel(switchy.getName(),switchy.getDescription());
     }
 
     private List<Switch> getSwitchesFromDatasource()

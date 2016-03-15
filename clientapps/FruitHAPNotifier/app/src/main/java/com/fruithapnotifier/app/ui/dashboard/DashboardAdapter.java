@@ -36,6 +36,10 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.items = items;
     }
 
+    public List<SwitchViewModel> getItems() {
+        return items;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
