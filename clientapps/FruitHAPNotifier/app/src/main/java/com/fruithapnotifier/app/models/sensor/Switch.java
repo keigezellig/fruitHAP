@@ -63,9 +63,9 @@ public class Switch
         this.category = category;
     }
 
-    public void requestUpdate()
+    public void requestUpdate(Context context)
     {
-        EventBus.getDefault().post(switchChangedEvent);
+
     }
 
 

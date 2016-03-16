@@ -18,8 +18,10 @@ package com.fruithapnotifier.app.service;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.common.MqProvider;
@@ -44,6 +46,7 @@ public class FruithapRpcService extends IntentService
     private static final String SENSOR_ROUTINGKEY = "FruitHAP_RpcQueue.FruitHAP.Core.Action.SensorMessage" ;
     private static final String SENSOR_MESSAGETYPE = "FruitHAP.Core.Action.SensorMessage:FruitHAP.Core";
     private static final String LOGTAG = "FruithapRpcService";
+    private SharedPreferences preferences;
 
     /**
      * Starts this service to perform a configuration request with the given parameters. If
@@ -67,14 +70,28 @@ public class FruithapRpcService extends IntentService
      *
      * @see IntentService
      */
-    public static void executeSensorRequest(Context context, Bundle connectionParams, String request, ResultReceiver resultReceiver)
+    public static void executeSensorRequest(Context context, String request, ResultReceiver resultReceiver)
     {
         Intent intent = new Intent(context, FruithapRpcService.class);
         intent.setAction(ACTION_SENSOR);
         intent.putExtra(REQUEST, request);
-        intent.putExtra(Constants.MQ_CONNECTION_PARAMETERS, connectionParams);
         intent.putExtra(RESULT_RECEIVER,resultReceiver);
         context.startService(intent);
+    }
+
+    public static void executeSensorRequest(Context context, String sensorName, String operation)
+    {
+        //ResultReceiver resultReceiver = new ResultReceiver(handler)
+    }
+
+    private ConnectionParameters getConnectionParameters()
+    {
+        return new ConnectionParameters(preferences.getString("pref_server_hostname","192.168.1.81"),
+                Integer.valueOf(preferences.getString("pref_server_port","5672")),
+                preferences.getString("pref_server_username","admin"),
+                preferences.getString("pref_server_password","admin"),
+                preferences.getString("pref_server_vhost","/"),
+                preferences.getString("pref_server_rpc_exchange","FruitHAP_RpcExchange"));
     }
 
     public FruithapRpcService()
@@ -83,12 +100,19 @@ public class FruithapRpcService extends IntentService
     }
 
     @Override
+    public void onCreate()
+    {
+        super.onCreate();
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+    }
+
+    @Override
     protected void onHandleIntent(Intent intent)
     {
         if (intent != null)
         {
             final String request = intent.getStringExtra(REQUEST);
-            final Bundle connectionParameters = intent.getBundleExtra(Constants.MQ_CONNECTION_PARAMETERS);
+            final ConnectionParameters connectionParameters = getConnectionParameters();
             final ResultReceiver resultReceiver = intent.getParcelableExtra(RESULT_RECEIVER);
             String result = null;
 
@@ -118,19 +142,18 @@ public class FruithapRpcService extends IntentService
     }
 
 
-    private String sendRequest(String request, Bundle connectParameters, String routingKey, String messageType)
+    private String sendRequest(String request, ConnectionParameters connectParameters, String routingKey, String messageType)
     {
         String result = null;
         final MqProvider mqProvider = MqProviderFactory.getMqProviderInstance();
-        String host = connectParameters.getString(Constants.MQ_HOST, "");
-        int port = connectParameters.getInt(Constants.MQ_PORT, 0);
-        String username = connectParameters.getString(Constants.MQ_USERNAME, "");
-        String password = connectParameters.getString(Constants.MQ_PASSWORD, "");
-        String vhost = connectParameters.getString(Constants.MQ_VHOST, "");
-        String rpcExchange = connectParameters.getString(Constants.MQ_RPCEXCHANGE, "");
+        String host = connectParameters.getHost();
+        int port = connectParameters.getPort();
+        String username = connectParameters.getUserName();
+        String password = connectParameters.getPassword();
+        String vhost = connectParameters.getvHost();
+        String rpcExchange = connectParameters.getRpcExchange();
         try
         {
-
             mqProvider.initialize(host, port, username, password, vhost);
             mqProvider.setRpcExchange(rpcExchange);
             result = mqProvider.sendRequest(request, routingKey, messageType);
