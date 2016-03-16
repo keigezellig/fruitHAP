@@ -13,11 +13,14 @@
  *
  */
 
-package com.fruithapnotifier.app.service.requesttypes;
+package com.fruithapnotifier.app.service.requestadapter.requests;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.json.JSONObject;
 
 import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SensorRequest
 {
@@ -45,11 +48,14 @@ public class SensorRequest
 
     private JSONObject createCommandRequest()
     {
-        return null;
+        throw new NotImplementedException("Functionality not implemented yet");
     }
 
     private JSONObject createGetValueRequest()
     {
-        return null;
+        Map<String, String> requestObject = new HashMap<>();
+        requestObject.put("SensorName",sensorName);
+        requestObject.put("EventType",operationName);
+        return new JSONObject(requestObject);
     }
 }

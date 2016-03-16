@@ -75,7 +75,7 @@ public class FruithapPubSubService extends Service
         datasource = new AlertRepository(this);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        switches = loadSwitches();
+        //switches = loadSwitches();
 
         fruithapNotificationTask = new FruithapNotificationTask(this);
 
@@ -160,16 +160,6 @@ public class FruithapPubSubService extends Service
 
         Log.d(LOGTAG, "Service created");
 
-    }
-
-    private List<Switch> loadSwitches()
-    {
-        ArrayList<Switch> result = new ArrayList<>();
-        Switch pir = new Switch("PIR","aa","bb");
-        pir.subscribeToUpdates();
-        result.add(pir);
-
-        return result;
     }
 
 

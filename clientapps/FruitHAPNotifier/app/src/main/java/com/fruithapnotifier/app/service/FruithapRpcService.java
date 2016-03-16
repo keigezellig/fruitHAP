@@ -79,11 +79,6 @@ public class FruithapRpcService extends IntentService
         context.startService(intent);
     }
 
-    public static void executeSensorRequest(Context context, String sensorName, String operation)
-    {
-        //ResultReceiver resultReceiver = new ResultReceiver(handler)
-    }
-
     private ConnectionParameters getConnectionParameters()
     {
         return new ConnectionParameters(preferences.getString("pref_server_hostname","192.168.1.81"),
