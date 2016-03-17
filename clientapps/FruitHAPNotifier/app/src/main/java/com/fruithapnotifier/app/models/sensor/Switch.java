@@ -1,21 +1,16 @@
 package com.fruithapnotifier.app.models.sensor;
 
-import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 import com.fruithapnotifier.app.common.RequestAdapter;
-import com.fruithapnotifier.app.common.SensorUpdateEvent;
-import com.fruithapnotifier.app.service.FruithapRpcService;
-import com.fruithapnotifier.app.service.requestadapter.FruithapRpcServiceRequestAdapter;
+import com.fruithapnotifier.app.common.SensorEvent;
+import com.fruithapnotifier.app.service.requestadapter.MessageQueueRequestAdapter;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
-
-import java.util.Date;
-import java.util.Dictionary;
 
 
 public class Switch
@@ -64,7 +59,8 @@ public class Switch
         this.name = name;
         this.description = description;
         this.category = category;
-        requestAdapter = new FruithapRpcServiceRequestAdapter(ctx);
+        requestAdapter = new MessageQueueRequestAdapter(ctx);
+        EventBus.getDefault().register(this);
     }
 
     public void requestUpdate()
@@ -73,7 +69,7 @@ public class Switch
     }
 
     @Subscribe
-    public void onUpdateReceived(SensorUpdateEvent updateEvent)
+    public void onUpdateReceived(SensorEvent updateEvent)
     {
         DateTime timestamp = new DateTime();
         SwitchState value = SwitchState.UNDEFINED;

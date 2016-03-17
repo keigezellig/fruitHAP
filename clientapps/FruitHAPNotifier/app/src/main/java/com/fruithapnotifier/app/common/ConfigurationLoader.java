@@ -15,10 +15,7 @@
 
 package com.fruithapnotifier.app.common;
 
-import java.util.Map;
-
-public interface RequestAdapter
+public interface ConfigurationLoader
 {
-    void sendSensorRequest(String sensorName, String operationName, Map<String,String> parameters);
-    void sendConfigurationRequest(String operationName, Map<String,String> parameters);
+    void loadConfiguration();
 }

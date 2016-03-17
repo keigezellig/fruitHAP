@@ -15,10 +15,19 @@
 
 package com.fruithapnotifier.app.common;
 
-import java.util.Map;
+import org.json.JSONObject;
 
-public interface RequestAdapter
+public class ConfigurationEvent
 {
-    void sendSensorRequest(String sensorName, String operationName, Map<String,String> parameters);
-    void sendConfigurationRequest(String operationName, Map<String,String> parameters);
+    private JSONObject eventData;
+
+    public ConfigurationEvent(JSONObject eventData)
+    {
+        this.eventData = eventData;
+    }
+
+    public JSONObject getEventData()
+    {
+        return eventData;
+    }
 }

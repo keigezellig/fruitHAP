@@ -33,9 +33,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.fruithapnotifier.app.R;
+import com.fruithapnotifier.app.common.ConfigurationLoader;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.persistence.AlertRepository;
+import com.fruithapnotifier.app.persistence.ConfigurationRepository;
 import com.fruithapnotifier.app.service.FruithapPubSubService;
+import com.fruithapnotifier.app.service.configuration.MessageQueueConfigurationLoader;
+import com.fruithapnotifier.app.service.requestadapter.MessageQueueRequestAdapter;
 import com.fruithapnotifier.app.ui.alerts.AlertListFragment;
 import com.fruithapnotifier.app.ui.dashboard.DashboardFragment;
 
@@ -65,6 +69,10 @@ public class MainActivity extends AppCompatActivity
         fragmentManager = getSupportFragmentManager();
         serviceIntent = new Intent(MainActivity.this, FruithapPubSubService.class);
         startService(serviceIntent);
+
+        ConfigurationLoader configurationLoader = new MessageQueueConfigurationLoader(new ConfigurationRepository(this), new MessageQueueRequestAdapter(this));
+        configurationLoader.loadConfiguration();
+
         setContentView(R.layout.main_activity_main);
         mNavigationDrawerFragment = (NavigationDrawerFragment) fragmentManager.findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();

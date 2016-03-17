@@ -16,6 +16,7 @@
 package com.fruithapnotifier.app.service.requestadapter.requests;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Dictionary;
@@ -26,16 +27,16 @@ public class SensorRequest
 {
     private String sensorName;
     private String operationName;
-    private Dictionary<String, String> parameters;
+    private Map<String, String> parameters;
 
-    public SensorRequest(String sensorName, String operationName, Dictionary<String, String> parameters)
+    public SensorRequest(String sensorName, String operationName, Map<String, String> parameters)
     {
         this.sensorName = sensorName;
         this.operationName = operationName;
         this.parameters = parameters;
     }
 
-    public JSONObject toJson()
+    public JSONObject toJson() throws JSONException
     {
         if (this.operationName.equals("GetValue"))
         {
@@ -46,9 +47,18 @@ public class SensorRequest
 
     }
 
-    private JSONObject createCommandRequest()
+    private JSONObject createCommandRequest() throws JSONException
     {
-        throw new NotImplementedException("Functionality not implemented yet");
+        Map<String, String> requestObject = new HashMap<>();
+        requestObject.put("SensorName",sensorName);
+        requestObject.put("OperationName",operationName);
+        JSONObject result = new JSONObject(requestObject);
+        if (parameters != null)
+        {
+            JSONObject params = new JSONObject(this.parameters);
+            result.put("Parameters",params);
+        }
+        return result;
     }
 
     private JSONObject createGetValueRequest()

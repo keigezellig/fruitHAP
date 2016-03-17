@@ -63,8 +63,6 @@ public class SqlHelper extends SQLiteOpenHelper {
     private static final String CONFIG_TABLE = "create table "
             + TABLE_CONFIG + "(" + COLUMN_CONFIG_ID
             + " integer primary key autoincrement, "
-            + COLUMN_ALERT_SENSORNAME
-            + " text not null, "
             + COLUMN_CONFIG_SENSORNAME
             + " text not null, "
             + COLUMN_CONFIG_DESCRIPTION
@@ -94,7 +92,7 @@ public class SqlHelper extends SQLiteOpenHelper {
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALERTS);
-        db.execSQL("DROP TABLE IF EXISTS " + CONFIG_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONFIG);
         onCreate(db);
     }
 

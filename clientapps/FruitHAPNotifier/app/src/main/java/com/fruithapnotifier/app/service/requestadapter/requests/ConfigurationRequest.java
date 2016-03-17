@@ -13,21 +13,38 @@
  *
  */
 
-package com.fruithapnotifier.app.common;
+package com.fruithapnotifier.app.service.requestadapter.requests;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SensorUpdateEvent
+import java.util.HashMap;
+import java.util.Map;
+
+public class ConfigurationRequest
 {
-    private JSONObject eventData;
+    private static final int MESSAGETYPE_REQUEST = 0;
+    private String operationName;
+    private Map<String, String> parameters;
 
-    public SensorUpdateEvent(JSONObject eventData)
+    public ConfigurationRequest(String operationName, Map<String, String> parameters)
     {
-        this.eventData = eventData;
+        this.operationName = operationName;
+        this.parameters = parameters;
     }
 
-    public JSONObject getEventData()
+    public JSONObject toJson() throws JSONException
     {
-        return eventData;
+        JSONObject requestObject = new JSONObject();
+        requestObject.put("OperationName",operationName);
+        requestObject.put("MessageType",MESSAGETYPE_REQUEST);
+        JSONObject params = new JSONObject();
+        if (parameters != null)
+        {
+            params = new JSONObject(this.parameters);
+        }
+        requestObject.put("Parameters",params);
+        return requestObject;
     }
+
 }

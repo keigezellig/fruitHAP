@@ -29,6 +29,7 @@ import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.models.sensor.Switch;
 import com.fruithapnotifier.app.models.sensor.SwitchChangeEvent;
 import com.fruithapnotifier.app.models.sensor.SwitchState;
+import com.fruithapnotifier.app.persistence.ConfigurationRepository;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchViewModel;
 import com.fruithapnotifier.app.ui.main.FragmentCallbacks;
 import org.greenrobot.eventbus.EventBus;
@@ -160,7 +161,9 @@ public class DashboardFragment extends Fragment
 
     private List<Switch> getSwitchesFromDatasource()
     {
-        return null;
+        ConfigurationRepository datasource = new ConfigurationRepository(getActivity());
+        List<Switch> switches = datasource.getSwitches();
+        return switches;
     }
 
 }

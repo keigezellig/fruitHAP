@@ -25,7 +25,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.fruithapnotifier.app.R;
-import com.fruithapnotifier.app.common.SensorUpdateEvent;
+import com.fruithapnotifier.app.common.SensorEvent;
 import com.fruithapnotifier.app.models.alert.AlertPriority;
 import com.fruithapnotifier.app.models.alert.Alert;
 import com.fruithapnotifier.app.models.sensor.Switch;
@@ -143,7 +143,7 @@ public class FruithapPubSubService extends Service
                         try
                         {
                             JSONObject eventData = new JSONObject(message);
-                            SensorUpdateEvent updateEvent = new SensorUpdateEvent(eventData);
+                            SensorEvent updateEvent = new SensorEvent(eventData);
                             EventBus.getDefault().post(updateEvent);
 
                         }
