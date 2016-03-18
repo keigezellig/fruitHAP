@@ -15,6 +15,8 @@
 
 package com.fruithapnotifier.app.ui.dashboard.viewmodels;
 
+import org.greenrobot.eventbus.EventBus;
+
 public class SwitchViewModel
 {
     private String name;
@@ -48,11 +50,13 @@ public class SwitchViewModel
         return lastUpdated;
     }
 
-    public void setOn(boolean on) {
+    public void setOn(boolean on)
+    {
         isOn = on;
     }
 
-    public void setLastUpdated(String lastUpdated) {
+    public void setLastUpdated(String lastUpdated)
+    {
         this.lastUpdated = lastUpdated;
     }
 }

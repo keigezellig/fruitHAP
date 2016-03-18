@@ -70,9 +70,6 @@ public class MainActivity extends AppCompatActivity
         serviceIntent = new Intent(MainActivity.this, FruithapPubSubService.class);
         startService(serviceIntent);
 
-        ConfigurationLoader configurationLoader = new MessageQueueConfigurationLoader(new ConfigurationRepository(this), new MessageQueueRequestAdapter(this));
-        configurationLoader.loadConfiguration();
-
         setContentView(R.layout.main_activity_main);
         mNavigationDrawerFragment = (NavigationDrawerFragment) fragmentManager.findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();

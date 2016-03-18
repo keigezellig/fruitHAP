@@ -47,6 +47,8 @@ public class MessageQueueConfigurationLoader implements ConfigurationLoader
     @Override
     public void loadConfiguration()
     {
+        //TODO: For now clear database, in future more 'intelligent' way of loading config (e.g. with deltas)
+        repository.deleteConfigurationItems();
         requestAdapter.sendConfigurationRequest("GetAllSensors",null);
     }
 

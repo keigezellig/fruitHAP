@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,13 +35,13 @@ import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchViewModel;
 import com.fruithapnotifier.app.ui.main.FragmentCallbacks;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DashboardFragment extends Fragment
 {
+    private static final String TAG = DashboardFragment.class.getName();
     private String title;
     private FragmentCallbacks fragmentCallbacks;
     private DashboardAdapter adapter;
@@ -115,9 +116,10 @@ public class DashboardFragment extends Fragment
             SwitchViewModel item = adapter.getItems().get(i);
             if (item.getName().equals(event.getSender().getName()))
             {
+                Log.d(TAG,"Updating UI for switch: "+item.getName());
                 item.setOn(event.getSwitchState() == SwitchState.ON);
+                item.setLastUpdated(event.getDate());
                 adapter.notifyItemChanged(i);
-                EventBus.getDefault().cancelEventDelivery(event);
             }
         }
     }
@@ -139,10 +141,9 @@ public class DashboardFragment extends Fragment
                 }
             }
             adapter = new DashboardAdapter(viewItems);
-
-
             dashboardView.setAdapter(adapter);
             EventBus.getDefault().register(this);
+            updateSwitches(switches);
         }
         else
         {
@@ -157,6 +158,14 @@ public class DashboardFragment extends Fragment
     private SwitchViewModel convertToViewModel(Switch switchy)
     {
         return new SwitchViewModel(switchy.getName(),switchy.getDescription());
+    }
+
+    private void updateSwitches(List<Switch> switches)
+    {
+        for (Switch switchy: switches)
+        {
+            switchy.requestUpdate();
+        }
     }
 
     private List<Switch> getSwitchesFromDatasource()

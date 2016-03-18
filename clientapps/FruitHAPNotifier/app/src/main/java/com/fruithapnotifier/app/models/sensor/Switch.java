@@ -68,31 +68,43 @@ public class Switch
         requestAdapter.sendSensorRequest(this.name, "GetValue", null);
     }
 
-    @Subscribe
-    public void onUpdateReceived(SensorEvent updateEvent)
+    public void turnOn()
     {
+        requestAdapter.sendSensorRequest(this.name, "TurnOn", null);
+    }
+
+    public void turnOff()
+    {
+        requestAdapter.sendSensorRequest(this.name, "TurnOff", null);
+    }
+
+    @Subscribe
+    public void onSensorResponseReceived(SensorEvent sensorEvent)
+    {
+
         DateTime timestamp = new DateTime();
         SwitchState value = SwitchState.UNDEFINED;
+        String eventType =  sensorEvent.getEventData().optString("EventType", "");
+        String sensorName = sensorEvent.getEventData().optString("SensorName", "");
 
-        String eventType =  updateEvent.getEventData().optString("EventType", "");
-        String sensorName = updateEvent.getEventData().optString("SensorName", "");
+        Log.d(TAG, "onSensorResponseReceived: Received response:"+sensorEvent.getEventData());
+
         if (sensorName.equals(this.name) && ( eventType.equals("SensorEvent") || eventType.equals("GetValue") ))
         {
             try
             {
-                Log.d(TAG, "onUpdateReceived: This one is for " + this.name);
+                Log.d(TAG, "onSensorResponseReceived: This one is for " + this.name);
                 DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
-                timestamp = new DateTime(fmt.parseDateTime(updateEvent.getEventData().getString("TimeStamp")));
-                int state = updateEvent.getEventData().getJSONObject("Data").getInt("Content");
+                timestamp = new DateTime(fmt.parseDateTime(sensorEvent.getEventData().getString("TimeStamp")));
+                int state = sensorEvent.getEventData().getJSONObject("Data").getInt("Content");
                 value = SwitchState.values()[state];
             }
             catch (JSONException jex)
             {
-                Log.e(TAG, "onUpdateReceived: Error while receiving update", jex);
+                Log.e(TAG, "onSensorResponseReceived: Error while receiving update", jex);
             }
 
             updateValue(value,timestamp);
-            EventBus.getDefault().cancelEventDelivery(updateEvent);
         }
     }
 
