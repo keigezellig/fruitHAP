@@ -28,7 +28,6 @@ public class SwitchViewHolder extends RecyclerView.ViewHolder
     private final TextView txtName;
     private final TextView txtDesc;
     private final Switch swState;
-    private final ToggleButton swState2;
 
     public SwitchViewHolder(View itemView)
     {
@@ -37,7 +36,6 @@ public class SwitchViewHolder extends RecyclerView.ViewHolder
         txtDesc = (TextView) itemView.findViewById(R.id.dashboard_switch_txtDescription);
         txtLastupdated = (TextView) itemView.findViewById(R.id.dashboard_switch_txtLastUpdated);
         swState = (Switch)itemView.findViewById(R.id.dashboard_switch_swState);
-        swState2 = (ToggleButton)itemView.findViewById(R.id.dashboard_switch_swState2);
     }
 
     public TextView getTxtLastupdated()
@@ -60,8 +58,4 @@ public class SwitchViewHolder extends RecyclerView.ViewHolder
         return swState;
     }
 
-    public ToggleButton getSwState2()
-    {
-        return swState2;
-    }
 }

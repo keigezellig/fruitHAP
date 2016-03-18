@@ -15,19 +15,21 @@
 
 package com.fruithapnotifier.app.ui.dashboard.viewmodels;
 
-import org.greenrobot.eventbus.EventBus;
+import com.fruithapnotifier.app.models.sensor.Switch;
 
 public class SwitchViewModel
 {
     private String name;
     private String description;
-    private boolean isOn;
+    private Switch model;
+    private SwitchState state;
     private String lastUpdated;
 
-    public SwitchViewModel(String name, String description)
+    public SwitchViewModel(String name, String description, Switch model)
     {
         this.name = name;
         this.description = description;
+        this.model = model;
     }
 
     public String getName()
@@ -40,9 +42,9 @@ public class SwitchViewModel
         return description;
     }
 
-    public boolean isOn()
+    public SwitchState getState()
     {
-        return isOn;
+        return state;
     }
 
     public String getLastUpdated()
@@ -50,9 +52,21 @@ public class SwitchViewModel
         return lastUpdated;
     }
 
-    public void setOn(boolean on)
+    public void setState(SwitchState newState, boolean shouldUpdateModel)
     {
-        isOn = on;
+        state = newState;
+        if (shouldUpdateModel)
+        {
+            switch (newState)
+            {
+                case ON:
+                    model.turnOn();
+                    break;
+                case OFF:
+                    model.turnOff();
+                    break;
+            }
+        }
     }
 
     public void setLastUpdated(String lastUpdated)

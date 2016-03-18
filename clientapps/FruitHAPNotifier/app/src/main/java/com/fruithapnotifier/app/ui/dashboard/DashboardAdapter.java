@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.ui.dashboard.viewholders.SwitchViewHolder;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchState;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchViewModel;
 
 import java.util.List;
@@ -78,13 +79,21 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             switchViewHolder.getTxtName().setText(item.getName());
             switchViewHolder.getTxtDesc().setText(item.getDescription());
             switchViewHolder.getTxtLastupdated().setText(item.getLastUpdated());
-            switchViewHolder.getSwState().setChecked(item.isOn());
-            switchViewHolder.getSwState2().setChecked(item.isOn());
-            switchViewHolder.getSwState().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            switchViewHolder.getSwState().setChecked(item.getState() == SwitchState.ON);
+            switchViewHolder.getSwState().setOnCheckedChangeListener(
+                     new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b)
                 {
-                    item.setOn(b);
+                    SwitchState state = SwitchState.OFF;
+                    if (b)
+                    {
+                        state = SwitchState.ON;
+                    }
+
+                    item.setState(state,true);
+
                 }
             });
         }

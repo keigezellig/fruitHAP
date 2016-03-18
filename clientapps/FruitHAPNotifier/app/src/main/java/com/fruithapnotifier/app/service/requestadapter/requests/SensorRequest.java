@@ -16,6 +16,9 @@
 package com.fruithapnotifier.app.service.requestadapter.requests;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,15 +28,19 @@ import java.util.Map;
 
 public class SensorRequest
 {
+    private final DateTime timeStamp;
+    private final DateTimeFormatter fmt;
     private String sensorName;
     private String operationName;
     private Map<String, String> parameters;
 
     public SensorRequest(String sensorName, String operationName, Map<String, String> parameters)
     {
+        this.timeStamp = new DateTime();
         this.sensorName = sensorName;
         this.operationName = operationName;
         this.parameters = parameters;
+        fmt = ISODateTimeFormat.dateTime();
     }
 
     public JSONObject toJson() throws JSONException
@@ -49,21 +56,28 @@ public class SensorRequest
 
     private JSONObject createCommandRequest() throws JSONException
     {
-        Map<String, String> requestObject = new HashMap<>();
-        requestObject.put("SensorName",sensorName);
-        requestObject.put("OperationName",operationName);
-        JSONObject result = new JSONObject(requestObject);
+
+        JSONObject requestObject = new JSONObject();
+        JSONObject commandObject = new JSONObject();
+        requestObject.put("TimeStamp",timeStamp.toString(fmt));
+        commandObject.put("OperationName", operationName);
         if (parameters != null)
         {
             JSONObject params = new JSONObject(this.parameters);
-            result.put("Parameters",params);
+            commandObject.put("Parameters", params);
         }
-        return result;
+
+        requestObject.put("SensorName", sensorName);
+        requestObject.put("EventType", "Command");
+        requestObject.put("Data", commandObject);
+
+        return requestObject;
     }
 
     private JSONObject createGetValueRequest()
     {
         Map<String, String> requestObject = new HashMap<>();
+        requestObject.put("TimeStamp",timeStamp.toString(fmt));
         requestObject.put("SensorName",sensorName);
         requestObject.put("EventType",operationName);
         return new JSONObject(requestObject);

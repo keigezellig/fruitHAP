@@ -29,6 +29,7 @@ import java.util.concurrent.TimeoutException;
 public class RabbitMqProvider implements MqProvider
 {
     private static final String LOGTAG = "RabbitMqProvider";
+
     private ConnectionFactory factory;
     private String rpcExchange;
     private String pubSubExchange;
@@ -179,13 +180,16 @@ public class RabbitMqProvider implements MqProvider
                 .type(messageType)
                 .build();
 
+        Log.d(LOGTAG, "sendRequest : Sending request to Q: "+request);
         channel.basicPublish(rpcExchange, routingKey, props, request.getBytes());
 
         while (true)
         {
             QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-            if (delivery.getProperties().getCorrelationId().equals(corrId)) {
+            if (delivery.getProperties().getCorrelationId().equals(corrId))
+            {
                 response = new String(delivery.getBody());
+                Log.d(LOGTAG, "sendRequest : Response: "+response);
                 break;
             }
         }

@@ -35,6 +35,9 @@ import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchViewModel;
 import com.fruithapnotifier.app.ui.main.FragmentCallbacks;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +102,8 @@ public class DashboardFragment extends Fragment
         dashboardView = (RecyclerView) view.findViewById(R.id.dashboard);
         dashboardView.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+
         dashboardView.setLayoutManager(llm);
 
         updateAdapter();
@@ -117,8 +122,9 @@ public class DashboardFragment extends Fragment
             if (item.getName().equals(event.getSender().getName()))
             {
                 Log.d(TAG,"Updating UI for switch: "+item.getName());
-                item.setOn(event.getSwitchState() == SwitchState.ON);
-                item.setLastUpdated(event.getDate());
+                item.setState(com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchState.values()[event.getSwitchState().ordinal()], false);
+                DateTimeFormatter fmt = DateTimeFormat.forStyle("SM").withLocale(null);
+                item.setLastUpdated(event.getDate().toString(fmt));
                 adapter.notifyItemChanged(i);
             }
         }
@@ -157,7 +163,7 @@ public class DashboardFragment extends Fragment
 
     private SwitchViewModel convertToViewModel(Switch switchy)
     {
-        return new SwitchViewModel(switchy.getName(),switchy.getDescription());
+        return new SwitchViewModel(switchy.getName(),switchy.getDescription(),switchy);
     }
 
     private void updateSwitches(List<Switch> switches)

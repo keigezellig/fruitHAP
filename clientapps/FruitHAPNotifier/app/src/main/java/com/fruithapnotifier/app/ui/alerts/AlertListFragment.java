@@ -145,7 +145,7 @@ public class AlertListFragment extends Fragment
         try
         {
             int id = alert.getId();
-            String timestamp = DateTimeFormat.forStyle("SL").print(alert.getTimestamp());
+            String timestamp = DateTimeFormat.forStyle("SM").withLocale(null).print(alert.getTimestamp());
             String sensorName = alert.getSensorName();
             String notificationText = alert.getNotificationText();
             String priorityText = getString(PriorityHelpers.getTextResource(alert.getNotificationPriority()));
