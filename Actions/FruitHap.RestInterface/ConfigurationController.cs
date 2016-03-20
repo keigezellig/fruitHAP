@@ -7,13 +7,21 @@ using FruitHAP.Core.Sensor;
 using FruitHAP.Core.Sensor.SensorTypes;
 using FruitHAP.Core.Action;
 using FruitHap.Core.Action;
+using FruitHAP.Core.SensorRepository;
 
 namespace FruitHap.RestInterface
 {
 	public class ConfigurationController : ApiController
 	{
-		public ConfigurationController ()
+		ISensorPersister persister;
+
+		ISensorRepository repos;
+
+		public ConfigurationController (ISensorPersister persister, ISensorRepository repos)
 		{
+			this.repos = repos;
+			this.persister = persister;
+			
 		}
 
 		[Route("api/configuration/sensors")]
@@ -26,7 +34,7 @@ namespace FruitHap.RestInterface
 		[Route("api/configuration/sensors/{name}")]
 		public IHttpActionResult Get(string name)
 		{
-			var sensor = RestInterfaceAction.sensorRepository.GetSensors ().SingleOrDefault (f => f.Name == name);
+			var sensor = repos.GetSensors ().SingleOrDefault (f => f.Name == name);
 			if (sensor != null) {
 				return Ok<object> (sensor);
 			} else 
@@ -38,7 +46,7 @@ namespace FruitHap.RestInterface
 		[Route("api/configuration/sensors/{name}/{operation}")]
 		public IHttpActionResult Get(string name, string operation)
 		{
-			var sensor = RestInterfaceAction.sensorRepository.GetSensors ().SingleOrDefault (f => f.Name == name);
+			var sensor = repos.GetSensors ().SingleOrDefault (f => f.Name == name);
 			if (sensor != null) 
 			{
 				if (operation == "TurnOn") 
@@ -95,8 +103,8 @@ namespace FruitHap.RestInterface
 
 		private IEnumerable<SensorConfigurationEntry> GetAllSensors()
 		{
-			var sensorList = RestInterfaceAction.sensorRepository.GetSensors();
-			var sensorData = RestInterfaceAction.sensorPersister.GetSensorConfiguration(sensorList);
+			var sensorList = repos.GetSensors();
+			var sensorData = persister.GetSensorConfiguration(sensorList);
 			return sensorData;
 		}
 	}

@@ -2,6 +2,8 @@
 using Owin;
 using System.Collections.Generic;
 using System.Web.Http;
+using FruitHAP.Core;
+using OWIN.Windsor.DependencyResolverScopeMiddleware;
 
 namespace FruitHap.RestInterface
 {
@@ -9,11 +11,13 @@ namespace FruitHap.RestInterface
 	{
 		public void Configuration(IAppBuilder a)
 		{
-			var addresses = a.Properties["host.Addresses"] as List<IDictionary<String, Object>>;
 			a.UseWelcomePage(new Microsoft.Owin.Diagnostics.WelcomePageOptions() { Path = new Microsoft.Owin.PathString("/welcome")});
+			ContainerAccessor.Container.Install (new ControllerInstaller ());
 			HttpConfiguration httpConfiguration = new HttpConfiguration();
 			Register(httpConfiguration);
-			a.UseWebApi(httpConfiguration);
+			a.UseWindsorDependencyResolverScope (httpConfiguration, ContainerAccessor.Container).UseWebApi(httpConfiguration); //eUseWebApi(httpConfiguration);
+
+			//a.UseNancy();
 			a.Run(context =>
 				{
 					context.Response.ContentType = "text/plain";

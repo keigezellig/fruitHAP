@@ -7,6 +7,8 @@ using Owin;
 using System.Web.Http;
 using FruitHAP.Core.SensorPersister;
 using FruitHAP.Core.SensorRepository;
+using Castle.Windsor;
+using FruitHAP.Core;
 
 namespace FruitHap.RestInterface
 {
@@ -18,18 +20,22 @@ namespace FruitHap.RestInterface
 		private IDisposable owinHost;
 		private ILogger logger;
 
+		IWindsorContainer container;
 
-		public RestInterfaceAction (ILogger logger, ISensorPersister persister, ISensorRepository repository  )
+		public RestInterfaceAction (ILogger logger, ISensorPersister persister, ISensorRepository repository)
 		{
+			this.container = ContainerAccessor.Container;
 			this.logger = logger;
 			sensorPersister = persister;
 			sensorRepository = repository;
+
 		}
 		
 		#region IAction implementation
 
 		public void Initialize ()
 		{
+			
 			string baseUrl = "http://localhost:8083";
 			owinHost = WebApp.Start<Startup> (baseUrl);
 				
