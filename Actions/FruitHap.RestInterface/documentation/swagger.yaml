@@ -1,0 +1,259 @@
+# Example YAML to get you started quickly.
+# Be aware that YAML has indentation based scoping.
+# Code completion support is available so start typing for available options.
+swagger: '2.0'
+
+# This is your document metadata
+info:
+  version: "1.0.0"
+  title: FruitHAP REST API
+  description: An API to control FruitHAP
+  license:
+    name: MIT
+    url: http://opensource.org/licenses/MIT
+
+# Describe your paths here
+paths:
+  /configuration/sensors:
+    get:
+      description: Returns all sensors defined in the system
+      operationId: getAllSensors
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: A response containing all the sensors defined in the system
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/sensordefinition'
+  
+  /configuration/sensor/{sensorname}:
+    get:
+      description: Returns defintion of a single sensor
+      operationId: getSensor
+      parameters:
+        - name: sensorname
+          in: path
+          description: Name of sensor
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: A response containing the sensor definition with name {sensorname}
+          schema:
+              $ref: '#/definitions/sensordefinition'
+        '404':
+          description: If sensor is not present in the system
+
+  /sensor/{name}:
+    get:
+      description: Returns the current value of the sensor
+      operationId: getValueFromSensor
+      parameters:
+        - name: name
+          in: path
+          description: Name of sensor
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Response containing the current value of {sensorname}
+          schema:
+            $ref: '#/definitions/getValueResponse'
+        '404':
+          description: If sensor is not present in the systtem
+
+  /sensor/{name}/{operation}:
+    get:
+      description: Calls a function `operation` on a sensor
+      operationId: executeFunction
+      parameters:
+        - name: name
+          in: path
+          description: Name of sensor
+          required: true
+          type: string
+        - name: operation
+          in: path
+          description: Function to be called
+          required: true
+          type: string        
+        - name: parameters
+          in: query
+          description: Parameters needed for this function
+          required: false
+          type: array
+          items: 
+            title: parameter
+            type: object
+            properties:
+              name:
+                type: string
+              value:
+                type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Result of function call
+          schema:
+            $ref: '#/definitions/commandResponseDataType'
+        '404':
+          description: If sensor is not present in the systtem
+        '400':
+          description: If function is not present on the sensor
+        '400':
+          description: If something is wrong with the parameters
+  
+definitions:
+  sensordefinition:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name of the sensor
+      description:
+        type: string
+        description: Description of the sensor
+      category:
+        type: string
+        description: Category of the sensor
+      type:
+        type: string
+        description: Type of the sensor
+      isAggregate:
+        type: boolean
+        description: Indicates if this is an aggregate sensor, e.g. a sensor which has multple inputs
+      parameters:
+        type: object
+        description: Other sensor specific parameters
+  onoffDataType:
+    type: object
+    description: Represents a On/Off value (for e.g. switches)
+    properties:
+      dataType:
+        type: string
+        description: DataType is always OnOff
+        enum:
+          - OnOff
+      value:
+        type: number
+        description: Can be one of the following values 
+        format: int64
+        enum:
+          - Undefined
+          - Off
+          - On
+  quantityDataType:
+    type: object
+    description: Represents a quantity with a unit
+    properties:
+      dataType:
+        type: string
+        description: DataType is always QuantityValue
+        enum:
+         - QuantityValue
+      value:
+        type: object
+        properties:
+          quantity:
+            type: string
+            description: The quantity that this value represents (e.g. temperature, pressure)
+          value:
+            type: number
+            description: The actual value
+            format: double
+          unit:
+            type: string
+            description: Unit of measurement (e.g. degrees celsius, hPa)
+  imageDataType:
+    type: object
+    description: Represents an image BLOB
+    properties:
+      dataType:
+        type: string
+        description: DataType is always Image
+        enum:
+         - Image
+      value:
+        type: string
+        description: Base64 encoded string of the image
+  textDataType:
+    type: object
+    description: Represents simple text value
+    properties:
+      dataType:
+        type: string
+        description: DataType is always Text
+        enum:
+         - Text
+      value:
+        type: string
+  numberDataType:
+    type: object
+    description: Represents simple number value
+    properties:
+      dataType:
+        type: string
+        description: DataType is always Number
+        enum:
+         - Number
+      value:
+        type: number
+        description: The actual value
+        format: double
+  
+  commandResponseDataType:
+    type: object
+    properties:
+      timeStamp:
+        type: string
+      sensorName:
+        type: string
+      operationName:
+        type: string
+        description: Name of the function to be called on the sensor
+      result: 
+        type: object
+        description: An object which represents the result of the function
+      eventtype:
+        type: string
+        description: eventtype is always Command
+        enum:
+         - Command
+      
+  getValueResponse:
+    type: object
+    description: Represents a value response
+    properties:
+    type: object
+    properties:
+      timeStamp:
+        type: string
+      sensorName:
+        type: string
+      operationName:
+        type: string
+        description: Name of the function to be called on the sensor
+      result: 
+        type: object
+        description: An object which represents the result of the function
+      eventtype:
+        type: string
+        description: eventtype is always Command
+        enum:
+         - Command    
+      
+        
+  
+        
+        
+      
+      
+       
+      
