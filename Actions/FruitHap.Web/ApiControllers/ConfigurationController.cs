@@ -9,12 +9,11 @@ using FruitHAP.Core.Action;
 using FruitHap.Core.Action;
 using FruitHAP.Core.SensorRepository;
 
-namespace FruitHap.RestInterface
+namespace FruitHap.Web.ApiControllers
 {
 	public class ConfigurationController : ApiController
 	{
 		ISensorPersister persister;
-
 		ISensorRepository repos;
 
 		public ConfigurationController (ISensorPersister persister, ISensorRepository repos)
@@ -89,17 +88,6 @@ namespace FruitHap.RestInterface
 				EventType = "Command"
 			};
 		}
-
-
-	
-
-		/*if (request.OperationName == "GetAllSensors")
-            {
-                IEnumerable<SensorConfigurationEntry> sensorData = GetAllSensors();
-                responseMessage.Data = sensorData;
-                responseMessage.MessageType = ConfigurationMessageType.Response;
-                return responseMessage;
-            }*/
 
 		private IEnumerable<SensorConfigurationEntry> GetAllSensors()
 		{

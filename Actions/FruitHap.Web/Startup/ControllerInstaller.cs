@@ -1,9 +1,9 @@
 ﻿using System;
-using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Castle.MicroKernel.SubSystems.Configuration;
+using Castle.MicroKernel.Registration;
 
-namespace FruitHap.RestInterface
+namespace FruitHap.Web.Startup
 {
 	public class ControllerInstaller : IWindsorInstaller
 	{
