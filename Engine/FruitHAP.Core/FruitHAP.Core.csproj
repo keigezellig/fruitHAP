@@ -42,6 +42,11 @@
     <Reference Include="EasyNetQ">
       <HintPath>..\packages\EasyNetQ.0.50.1.392\lib\net40\EasyNetQ.dll</HintPath>
     </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -83,6 +88,7 @@
     <Compile Include="Sensor\PacketData\RFXSensor\RFXSensorVoltagePacket.cs" />
     <Compile Include="Sensor\SensorTypes\IBatteryPowered.cs" />
     <Compile Include="Sensor\SensorTypes\ITemperatureSensor.cs" />
+    <Compile Include="Service\ContainerAccessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

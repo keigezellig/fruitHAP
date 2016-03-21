@@ -15,9 +15,9 @@ namespace FruitHap.RestInterface
 			ContainerAccessor.Container.Install (new ControllerInstaller ());
 			HttpConfiguration httpConfiguration = new HttpConfiguration();
 			Register(httpConfiguration);
-			a.UseWindsorDependencyResolverScope (httpConfiguration, ContainerAccessor.Container).UseWebApi(httpConfiguration); //eUseWebApi(httpConfiguration);
+			a.UseWindsorDependencyResolverScope (httpConfiguration, ContainerAccessor.Container);
+			a.UseWebApi(httpConfiguration); 
 
-			//a.UseNancy();
 			a.Run(context =>
 				{
 					context.Response.ContentType = "text/plain";

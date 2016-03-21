@@ -42,6 +42,9 @@ namespace FruitHAP.Startup
 
             container.Kernel.ComponentRegistered += Kernel_ComponentRegistered;
             container.Kernel.Resolver.AddSubResolver(new CollectionResolver(container.Kernel, true));
+
+
+
             RegisterLogging(container);            
 			RegisterMQPublisher(container);
 			RegisterEventAggregator(container);            
@@ -52,7 +55,7 @@ namespace FruitHAP.Startup
 			RegisterDeviceRepository(container);
             RegisterActions(container,actionDirectory);
             RegisterService(container);
-            
+			ContainerAccessor.Container = container;
         }
 
 		void RegisterMQPublisher (IWindsorContainer container)

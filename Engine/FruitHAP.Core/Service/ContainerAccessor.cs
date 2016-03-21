@@ -1,12 +1,12 @@
 ﻿using System;
+using Castle.Windsor;
 
 namespace FruitHAP.Core
 {
-	public class ContainerAccessor
+	public static class ContainerAccessor
 	{
-		public ContainerAccessor ()
-		{
-		}
+		public static IWindsorContainer Container = null;
+
 	}
 }
 
