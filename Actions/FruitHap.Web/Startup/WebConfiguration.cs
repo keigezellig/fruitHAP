@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FruitHap.Web.Configuration
+namespace FruitHap.Web.Startup
 {
 	public class WebConfiguration
 	{

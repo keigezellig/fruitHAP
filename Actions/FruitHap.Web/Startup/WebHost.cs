@@ -2,7 +2,6 @@
 using FruitHAP.Core.Action;
 using FruitHAP.Common.Configuration;
 using Castle.Core.Logging;
-using FruitHap.Web.Configuration;
 using System.IO;
 using System.Reflection;
 using Microsoft.Owin.Hosting;

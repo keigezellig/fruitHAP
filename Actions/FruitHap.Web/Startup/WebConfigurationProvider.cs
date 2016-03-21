@@ -3,7 +3,7 @@ using FruitHAP.Common.Configuration;
 using Castle.Core.Logging;
 using FruitHAP.Common.Helpers;
 
-namespace FruitHap.Web.Configuration
+namespace FruitHap.Web.Startup
 {
 	public class WebConfigurationProvider : ConfigProviderBase<WebConfiguration>
 	{

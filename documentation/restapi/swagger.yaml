@@ -1,6 +1,3 @@
-# Example YAML to get you started quickly.
-# Be aware that YAML has indentation based scoping.
-# Code completion support is available so start typing for available options.
 swagger: '2.0'
 
 # This is your document metadata
@@ -14,7 +11,7 @@ info:
 
 # Describe your paths here
 paths:
-  /configuration/sensors:
+  /api/configuration/sensors:
     get:
       description: Returns all sensors defined in the system
       operationId: getAllSensors
@@ -26,9 +23,9 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/sensordefinition'
+              $ref: '#/definitions/sensorDefinition'
   
-  /configuration/sensor/{sensorname}:
+  /api/configuration/sensor/{sensorname}:
     get:
       description: Returns defintion of a single sensor
       operationId: getSensor
@@ -44,11 +41,11 @@ paths:
         '200':
           description: A response containing the sensor definition with name {sensorname}
           schema:
-              $ref: '#/definitions/sensordefinition'
+              $ref: '#/definitions/sensorDefinition'
         '404':
           description: If sensor is not present in the system
 
-  /sensor/{name}:
+  /api/sensor/{name}:
     get:
       description: Returns the current value of the sensor
       operationId: getValueFromSensor
@@ -68,7 +65,7 @@ paths:
         '404':
           description: If sensor is not present in the systtem
 
-  /sensor/{name}/{operation}:
+  /api/sensor/{name}/{operation}:
     get:
       description: Calls a function `operation` on a sensor
       operationId: executeFunction
@@ -83,19 +80,7 @@ paths:
           description: Function to be called
           required: true
           type: string        
-        - name: parameters
-          in: query
-          description: Parameters needed for this function
-          required: false
-          type: array
-          items: 
-            title: parameter
-            type: object
-            properties:
-              name:
-                type: string
-              value:
-                type: string
+
       produces:
         - application/json
       responses:
@@ -111,7 +96,7 @@ paths:
           description: If something is wrong with the parameters
   
 definitions:
-  sensordefinition:
+  sensorDefinition:
     type: object
     properties:
       name:
