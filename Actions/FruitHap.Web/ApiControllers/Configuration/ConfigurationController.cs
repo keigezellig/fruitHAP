@@ -10,23 +10,13 @@ namespace FruitHap.Web.ApiControllers.Configuration
 {
 	public class ConfigurationController : ApiController
 	{
-<<<<<<< HEAD
-		readonly ISensorPersister persister;
-		readonly ISensorRepository repos;
-=======
-		ISensorPersister persister;
-		ISensorRepository repos;
->>>>>>> 0ef9b68a5f5393f15f2bca5873393aae3580def3
+		private readonly ISensorPersister persister;
+		private readonly ISensorRepository repos;
 
 		public ConfigurationController (ISensorPersister persister, ISensorRepository repos)
 		{
 			this.repos = repos;
-<<<<<<< HEAD
-			this.persister = persister;			
-=======
-			this.persister = persister;
-			
->>>>>>> 0ef9b68a5f5393f15f2bca5873393aae3580def3
+			this.persister = persister;		
 		}
 
 		/// <summary>
