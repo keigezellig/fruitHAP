@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using FruitHAP.Common.EventBus;
 using FruitHap.StandardActions.EventNotification.Configuration;
-using FruitHap.Core.Action;
+
 
 
 namespace FruitHap.StandardActions.EventNotification
@@ -76,7 +76,7 @@ namespace FruitHap.StandardActions.EventNotification
 			{
 				TimeStamp = DateTime.Now,
 				SensorName = data.Sender.Name,
-				Data = new OptionalDataContainer(data.OptionalData),
+				Data = data.OptionalData,
 				EventType = data.EventName
 			};
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using FruitHAP.Core.Action;
+using FruitHAP.Core.Sensor.SensorValueTypes;
 
 namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 {
@@ -9,9 +10,10 @@ namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 
 		public SensorMessage HandleRequest (SensorMessage request)
 		{
+			TextValue data = new TextValue () { Text = "Unknown data type in request" };
 			return new SensorMessage () {
 				TimeStamp = DateTime.Now,
-				Data = "Unknown data type in request",
+				Data = new FruitHAP.Core.Sensor.OptionalDataContainer(data),
 				SensorName = request.SensorName,
 				EventType = RequestDataType.ErrorMessage.ToString ()
 			};

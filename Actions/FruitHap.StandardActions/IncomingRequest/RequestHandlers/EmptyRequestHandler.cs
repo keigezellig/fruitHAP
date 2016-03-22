@@ -1,5 +1,7 @@
 ﻿using System;
 using FruitHAP.Core.Action;
+using FruitHAP.Core.Sensor.SensorValueTypes;
+using FruitHAP.Core.Sensor;
 
 namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 {
@@ -9,7 +11,8 @@ namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 
 		public SensorMessage HandleRequest (SensorMessage request)
 		{
-			return new SensorMessage() {TimeStamp = DateTime.Now, Data = "Invalid request", EventType = RequestDataType.ErrorMessage.ToString()};
+			TextValue data = new TextValue () { Text = "Invalid request" };
+			return new SensorMessage() {TimeStamp = DateTime.Now, Data = new OptionalDataContainer(data), EventType = RequestDataType.ErrorMessage.ToString()};
 		}
 
 		#endregion

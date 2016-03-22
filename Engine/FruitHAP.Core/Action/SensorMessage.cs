@@ -1,5 +1,6 @@
 ﻿using System;
 using EasyNetQ;
+using FruitHAP.Core.Sensor;
 
 namespace FruitHAP.Core.Action
 {	

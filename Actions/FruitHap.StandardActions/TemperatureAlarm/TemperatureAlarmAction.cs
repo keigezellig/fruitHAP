@@ -5,16 +5,12 @@ using FruitHAP.Core.Action;
 using FruitHAP.Core.SensorRepository;
 using FruitHAP.Core.MQ;
 using FruitHAP.Common.Configuration;
-using System.Linq;
 using System.IO;
 using System.Reflection;
-using System.Collections.Generic;
 using FruitHAP.Common.EventBus;
-using FruitHap.StandardActions.Alarm.Configuration;
-using FruitHap.Core.Action;
 using FruitHAP.Core.Sensor.SensorTypes;
 using FruitHap.StandardActions.TemperatureAlarm.Configuration;
-using FruitHap.StandardActions.Alarm;
+using FruitHAP.Core.Sensor.SensorValueTypes;
 
 
 namespace FruitHap.StandardActions.TemperatureAlarm
@@ -74,15 +70,15 @@ namespace FruitHap.StandardActions.TemperatureAlarm
 		void HandleSensorEvent (SensorEventData data)
 		{						
 			SensorMessage sensorMessage = new SensorMessage ();
-			var tempValue = data.OptionalData as TemperatureValue;
-			if (tempValue.Temperature > configuration.ThresholdHot) 
+			var tempValue = data.OptionalData.Content as TemperatureValue;
+			if (tempValue.Value > configuration.ThresholdHot) 
 			{
 				logger.Info ("Temperature above upper limit");
-				if (switchBelow.GetState () != SwitchState.Off) 
+				if (switchBelow.State.Value  != StateValue.Off ) 
 				{
 					switchBelow.TurnOff ();
 				}
-				if (switchAbove.GetState () != SwitchState.On) {
+				if (switchAbove.State.Value != StateValue.Off) {
 					switchAbove.TurnOn ();
 				}
 
@@ -94,15 +90,15 @@ namespace FruitHap.StandardActions.TemperatureAlarm
 					EventType = data.EventName
 				};
 			} 
-			else if (tempValue.Temperature < configuration.ThresholdCold) 
+			else if (tempValue.Value < configuration.ThresholdCold) 
 			{
 				logger.Info ("Temperature below lower limit");
-				if (switchAbove.GetState () != SwitchState.Off) 
+				if (switchAbove.State.Value != StateValue.Off) 
 				{
 					switchAbove.TurnOff ();
 				}
 
-				if (switchBelow.GetState () != SwitchState.On) {
+				if (switchBelow.State.Value != StateValue.On) {
 					switchBelow.TurnOn ();
 				}
 
@@ -135,13 +131,13 @@ namespace FruitHap.StandardActions.TemperatureAlarm
 				return new TemperatureAlarmResponse () {
 					NotificationText = configuration.NotificationTextAbove,
 					Priority = NotificationPriority.High,
-					OptionalData = new OptionalDataContainer (data.OptionalData)
+					OptionalData = data.OptionalData
 				};
 			} else
 				return new TemperatureAlarmResponse () {
 					NotificationText = configuration.NotificationTextBelow,
 					Priority = NotificationPriority.High,
-					OptionalData = new OptionalDataContainer (data.OptionalData)
+					OptionalData = data.OptionalData
 				};
 		}
 

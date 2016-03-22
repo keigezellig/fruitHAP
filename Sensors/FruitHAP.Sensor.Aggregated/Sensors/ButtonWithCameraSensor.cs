@@ -67,7 +67,7 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 				TimeStamp = data.TimeStamp,
 				Sender = data.Sender,
 				EventName = data.EventName,
-				OptionalData = image
+				OptionalData = new OptionalDataContainer(image)
 			};
 					
 			eventBus.Publish(sensorEvent);

@@ -5,38 +5,26 @@ using FruitHAP.Core.Controller;
 using FruitHAP.Core.Sensor.PacketData.RFXSensor;
 using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
+using FruitHAP.Core.Sensor.SensorValueTypes;
 
 namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 {
 	public class FruitTempSensor : ITemperatureSensor
 	{
+		private TemperatureValue temperature;
 
-		private double temperature;
-		private TemperatureUnit unit;
-
-		#region ITemperatureSensor implementation
-
-		public TemperatureValue GetTemperature ()
+		public ISensorValueType GetValue ()
 		{
-			return new TemperatureValue () 
-			{				
-				Temperature = temperature, 
-				Unit = unit
-			};
-				
-		}
-			
-
-		#endregion
-
-		#region IValueSensor implementation
-
-		public object GetValue ()
-		{
-			return GetTemperature ();
+			return temperature;
 		}
 
-		#endregion
+		public TemperatureValue Temperature 
+		{
+			get 
+			{
+				return temperature;
+			}
+		}
 
 		#region ICloneable implementation
 
@@ -74,6 +62,7 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 		{
 			this.eventBus = eventBus;
 			this.logger = logger;
+			temperature = new TemperatureValue ();
 
 			eventBus.Subscribe<ControllerEventData<RFXSensorTemperaturePacket>>(HandleIncomingTempMessage,f => f.Direction == Direction.FromController && f.Payload.SensorId == SensorId);
 
@@ -81,20 +70,23 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 
 		public override string ToString ()
 		{
-			return string.Format ("[FruitTempSensor: temperature={0}, unit={1}, Name={2}, Description={3}, Category={4}, SensorId={5}]", temperature, unit, Name, Description, Category, SensorId);
+			return string.Format ("[FruitTempSensor: Name={1}, Description={2}, Category={3}, SensorId={4}, temperature={0}]", temperature, Name, Description, Category, SensorId);
 		}
 		
 
 		void HandleIncomingTempMessage (ControllerEventData<RFXSensorTemperaturePacket> obj)
 		{
-			this.temperature = obj.Payload.TemperatureInCentiCelsius / 100;
-			this.unit = TemperatureUnit.Celsius;
+			this.temperature = new TemperatureValue () {
+				Value = obj.Payload.TemperatureInCentiCelsius / 100,
+				Unit = TemperatureUnit.Celsius
+			};
+
 
 			SensorEventData sensorEvent = new SensorEventData () {
 				TimeStamp = DateTime.Now,
 				Sender = this,
 				EventName = "SensorEvent",
-				OptionalData = GetValue()
+				OptionalData = new OptionalDataContainer(temperature)
 			};
 
 			eventBus.Publish(sensorEvent);

@@ -1,4 +1,5 @@
 using FruitHap.StandardActions.Alarm;
+using FruitHAP.Core.Sensor;
 
 namespace FruitHap.StandardActions.TemperatureAlarm
 {
@@ -7,7 +8,7 @@ namespace FruitHap.StandardActions.TemperatureAlarm
 	{		
 		public string NotificationText { get; set;}
 		public NotificationPriority Priority {get; set;}
-		public object OptionalData {get; set;}
+		public OptionalDataContainer OptionalData {get; set;}
 	}
 
 }

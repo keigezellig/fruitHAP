@@ -10,6 +10,7 @@ using FruitHAP.Core.Sensor.PacketData.ImageCapture;
 using FruitHAP.Core.Controller;
 using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Common.EventBus;
+using FruitHAP.Core.Sensor.SensorValueTypes;
 
 namespace FruitHAP.Sensor.Camera.Devices
 {
@@ -17,7 +18,7 @@ namespace FruitHAP.Sensor.Camera.Devices
     {
         private readonly ILogger logger;
 		private readonly IEventBus eventBus;
-        private byte[] receivedImageData;
+        private ImageValue receivedImageData;
         private bool isReceived;
 
         private Uri uri;
@@ -53,12 +54,12 @@ namespace FruitHAP.Sensor.Camera.Devices
         void HandleIncomingResponse(ControllerEventData<ImageResponsePacket> response)
         {
             this.isReceived = true;
-            this.receivedImageData = response.Payload.ImageData;
+			this.receivedImageData = new ImageValue () { ImageData = response.Payload.ImageData };
         }
 
 
 
-        public async Task<byte[]> GetImageAsync()
+        public async Task<ImageValue> GetImageAsync()
         {
 			eventBus.Publish(new ControllerEventData<ImageRequestPacket> ()
             {
@@ -73,7 +74,7 @@ namespace FruitHAP.Sensor.Camera.Devices
                 }
             });
 
-            Task<byte[]> workerTask = new Task<byte[]>(() => {
+			Task<ImageValue> workerTask = new Task<ImageValue>(() => {
                 while (!isReceived)
                 {
                 }
@@ -93,7 +94,7 @@ namespace FruitHAP.Sensor.Camera.Devices
             return new Camera(this.logger, this.eventBus);
         }
 
-        public object GetValue()
+		public ISensorValueType GetValue()
         {
             return GetImageAsync().Result;
         }

@@ -4,7 +4,7 @@ using FruitHAP.Core.Sensor;
 using FruitHAP.Core.SensorRepository;
 using FruitHap.StandardActions.IncomingRequest;
 using FruitHAP.Core.Action;
-using FruitHap.Core.Action;
+using FruitHAP.Core.Sensor.SensorValueTypes;
 
 namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 {
@@ -24,7 +24,8 @@ namespace FruitHap.StandardActions.IncomingRequest.RequestHandlers
 			if (sensor == null)
 			{
 				logger.ErrorFormat("Sensor {0} not found in repository or no support for polling", request.SensorName);
-				return new SensorMessage() {TimeStamp = DateTime.Now, SensorName = request.SensorName, Data = "Sensor is not defined or has no support for polling", EventType = RequestDataType.ErrorMessage.ToString()};
+				TextValue data = new TextValue () { Text = "Sensor is not defined or has no support for polling"};
+				return new SensorMessage() {TimeStamp = DateTime.Now, SensorName = request.SensorName, Data = new OptionalDataContainer(data), EventType = RequestDataType.ErrorMessage.ToString()};
 			}
 
 			logger.InfoFormat("Found sensor: {0}",sensor.Name);

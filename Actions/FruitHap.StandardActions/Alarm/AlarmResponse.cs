@@ -1,3 +1,5 @@
+using FruitHAP.Core.Sensor;
+
 namespace FruitHap.StandardActions.Alarm
 {
 
@@ -5,7 +7,7 @@ namespace FruitHap.StandardActions.Alarm
 	{		
 		public string NotificationText { get; set;}
 		public NotificationPriority Priority {get; set;}
-		public object OptionalData {get; set;}
+		public OptionalDataContainer OptionalData {get; set;}
 	}
 
 }
