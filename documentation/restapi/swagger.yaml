@@ -230,9 +230,9 @@ definitions:
         description: An object which represents the result of the function
       eventtype:
         type: string
-        description: eventtype is always Command
+        description: eventtype is always GetValue
         enum:
-         - Command    
+         - GetValue    
       
         
   

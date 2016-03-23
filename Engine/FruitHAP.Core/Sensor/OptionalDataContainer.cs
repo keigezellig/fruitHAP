@@ -5,13 +5,18 @@ namespace FruitHAP.Core.Sensor
 {
 	public class OptionalDataContainer
 	{
-		//public string Type { get;}
-		public ISensorValueType Content { get; }
-
+        private ISensorValueType content;
+		
+		public ISensorValueType Content 
+        { 
+            get
+            {
+                return content;
+            }
+        }
 		public OptionalDataContainer (ISensorValueType content)
-		{			
-			//Type = content.GetType ().Name;
-			Content = content;
+		{						
+			this.content = content;
 		}
 
 		public override string ToString ()
