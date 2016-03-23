@@ -22,13 +22,16 @@ namespace FruitHAP.Sensor.Camera.Devices
         private bool isReceived;
 
         private Uri uri;
-
+		private DateTime lastUpdateTime;
 
         public string Name { get; set; }
         public string Description { get; set; }
         public string Category { get; set; }
         public string Resolution { get; set; }
         public string Username { get; set; }
+
+
+
         public string Password { get; set; }
         public string Url
         {
@@ -47,6 +50,7 @@ namespace FruitHAP.Sensor.Camera.Devices
         {
             this.logger = logger;
 			this.eventBus = eventBus;
+			this.lastUpdateTime = DateTime.Now;
 			eventBus.Subscribe<ControllerEventData<ImageResponsePacket>>(HandleIncomingResponse, f => f.Direction == Direction.FromController && f.Payload.DestinationSensor == Name);
         }
 
@@ -55,6 +59,7 @@ namespace FruitHAP.Sensor.Camera.Devices
         {
             this.isReceived = true;
 			this.receivedImageData = new ImageValue () { ImageData = response.Payload.ImageData };
+			this.lastUpdateTime = DateTime.Now;
         }
 
 
@@ -98,6 +103,11 @@ namespace FruitHAP.Sensor.Camera.Devices
         {
             return GetImageAsync().Result;
         }
+
+		public DateTime GetLastUpdateTime ()
+		{
+			return lastUpdateTime;
+		}
 
 
         public override string ToString()

@@ -21,6 +21,7 @@ namespace FruitHap.Web.ApiControllers.Sensor
 		{
 			this.sensorRepository = repos;
             this.logger = logger;
+
 		}
 
 		/// <summary>
@@ -102,7 +103,7 @@ namespace FruitHap.Web.ApiControllers.Sensor
         {
 			return new SensorMessage()
             {
-                TimeStamp = DateTime.Now,
+				TimeStamp = sensor.GetLastUpdateTime(),
                 SensorName = sensor.Name,
                 EventType = "GetValue",
                 Data = new OptionalDataContainer(sensor.GetValue())

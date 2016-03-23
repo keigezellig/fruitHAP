@@ -22,11 +22,15 @@ namespace FruitHAP.Sensor.KaKu
 		private OnOffValue state;
 		private Trigger trigger;
 		private bool isReadOnly;
+		private DateTime lastUpdateTime;
 
 		public KakuSwitch(IEventBus eventBus, ILogger logger) : base(eventBus,logger)
 		{
 			state = new OnOffValue () { Value = StateValue.Undefined };
+			this.lastUpdateTime = DateTime.Now;
 		}
+
+
 
 		public Command OnCommand {
 			get {
@@ -101,6 +105,7 @@ namespace FruitHAP.Sensor.KaKu
 			var ack = GetAck ().Result;
 			if (ack) {
 					state.Value = newState;
+					lastUpdateTime = DateTime.Now;
 				TriggerSensorEvent ();
 				logger.InfoFormat ("State changed to {0}", state);				
 			} else {
@@ -115,6 +120,7 @@ namespace FruitHAP.Sensor.KaKu
 						{
 							logger.Warn ("Time out occured while waiting on ack, state will be set to undefined");
 							state.Value = StateValue.Undefined;
+							lastUpdateTime = DateTime.Now;
 						}
 						return ex is TimeoutException;
 					});
@@ -143,6 +149,11 @@ namespace FruitHAP.Sensor.KaKu
 		public ISensorValueType GetValue ()
 		{
 			return state;
+		}
+
+		public DateTime GetLastUpdateTime ()
+		{
+			return lastUpdateTime;
 		}
 
 		#region ICloneable implementation
@@ -181,7 +192,7 @@ namespace FruitHAP.Sensor.KaKu
 			if (fireEvent) 
 			{
 				SensorEventData sensorEvent = new SensorEventData () {
-					TimeStamp = DateTime.Now,
+					TimeStamp = lastUpdateTime,
 					Sender = this,
 					EventName = "SensorEvent",
 					OptionalData = new OptionalDataContainer(state)

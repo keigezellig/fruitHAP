@@ -6,6 +6,7 @@ namespace FruitHAP.Core.Sensor
 	public interface IValueSensor : ISensor
 	{
 		ISensorValueType GetValue ();
+		DateTime GetLastUpdateTime();
 	}
 }
 

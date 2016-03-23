@@ -12,6 +12,7 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 	public class FruitTempSensor : ITemperatureSensor
 	{
 		private QuantityValue<TemperatureUnit> temperature;
+		private DateTime lastUpdated;
 
 		public ISensorValueType GetValue ()
 		{
@@ -62,7 +63,8 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 		{
 			this.eventBus = eventBus;
 			this.logger = logger;
-			temperature = new QuantityValue<TemperatureUnit> ();
+			this.temperature = new QuantityValue<TemperatureUnit> ();
+			this.lastUpdated = DateTime.Now;
 
 			eventBus.Subscribe<ControllerEventData<RFXSensorTemperaturePacket>>(HandleIncomingTempMessage,f => f.Direction == Direction.FromController && f.Payload.SensorId == SensorId);
 
@@ -72,10 +74,16 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 		{
 			return string.Format ("[FruitTempSensor: Name={1}, Description={2}, Category={3}, SensorId={4}, temperature={0}]", temperature, Name, Description, Category, SensorId);
 		}
+
+		public DateTime GetLastUpdateTime ()
+		{
+			return this.lastUpdated;
+		}
 		
 
 		void HandleIncomingTempMessage (ControllerEventData<RFXSensorTemperaturePacket> obj)
 		{
+			lastUpdated = DateTime.Now;
 			var temperatureValue = new TemperatureQuantity () {
 				Value = obj.Payload.TemperatureInCentiCelsius / 100,
 				Unit = TemperatureUnit.Celsius
@@ -85,7 +93,7 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 
 
 			SensorEventData sensorEvent = new SensorEventData () {
-				TimeStamp = DateTime.Now,
+				TimeStamp = lastUpdated,
 				Sender = this,
 				EventName = "SensorEvent",
 				OptionalData = new OptionalDataContainer(temperature)
