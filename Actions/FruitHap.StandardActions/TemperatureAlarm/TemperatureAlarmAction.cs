@@ -70,7 +70,7 @@ namespace FruitHap.StandardActions.TemperatureAlarm
 		void HandleSensorEvent (SensorEventData data)
 		{						
 			SensorMessage sensorMessage = new SensorMessage ();
-			var tempValue = data.OptionalData.Content as TemperatureValue;
+			var tempValue = data.OptionalData.Content as TemperatureQuantity;
 			if (tempValue.Value > configuration.ThresholdHot) 
 			{
 				logger.Info ("Temperature above upper limit");

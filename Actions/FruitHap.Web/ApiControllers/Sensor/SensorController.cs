@@ -7,6 +7,7 @@ using FruitHAP.Core.SensorRepository;
 using FruitHAP.Core.Action;
 using Castle.Core.Logging;
 using System;
+using System.Reflection;
 
 
 namespace FruitHap.Web.ApiControllers.Sensor
@@ -69,7 +70,11 @@ namespace FruitHap.Web.ApiControllers.Sensor
         [HttpGet]
         public IHttpActionResult ExecuteOperation(string name, string operation)
         {
-            logger.DebugFormat("ExecuteOperation: Sensor = {0}, Operation = {1}", name, operation);
+			if (operation == "GetValue") 
+			{
+				return GetValue (name);
+			}
+			logger.DebugFormat("ExecuteOperation: Sensor = {0}, Operation = {1}", name, operation);
             logger.InfoFormat("Looking for sensor {0}", name);
             ISensor sensor = sensorRepository.FindSensorOfTypeByName<ISensor>(name);
 
@@ -81,14 +86,11 @@ namespace FruitHap.Web.ApiControllers.Sensor
 
             logger.InfoFormat("Found sensor: {0}", sensor.Name);
 
-            var type = sensor.GetType();
+			var method = FindMethod (operation, sensor);
 
-            var method = type.GetMethod(operation);
-            ExposedAttribute exposedAttribute = (ExposedAttribute)Attribute.GetCustomAttribute(method, typeof(ExposedAttribute));
-
-            if (method == null || exposedAttribute == null || !exposedAttribute.IsExposed)
+			if (method == null)
             {
-                return BadRequest(string.Format("Operation {0} is not available on sensor {1}", name, operation));                
+                return BadRequest(string.Format("Operation {0} is not available on sensor {1}", operation, name));                
             }
 
             var callResult = method.Invoke(sensor, null);
@@ -98,7 +100,7 @@ namespace FruitHap.Web.ApiControllers.Sensor
 
         private SensorMessage GetValueOfSensor(IValueSensor sensor)
         {
-            return new SensorMessage()
+			return new SensorMessage()
             {
                 TimeStamp = DateTime.Now,
                 SensorName = sensor.Name,
@@ -119,6 +121,20 @@ namespace FruitHap.Web.ApiControllers.Sensor
         }
 
 
+		private MethodInfo FindMethod (string operation, ISensor sensor)
+		{			
+			foreach (var intf in sensor.GetType ().GetInterfaces ()) 
+			{
+				foreach (var method in intf.GetMethods ()) 
+				{
+					if (method.Name == operation) 
+					{
+						return method;
+					}
+				}
+			}
+			return null;
+		}
 	}
 }
 

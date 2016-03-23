@@ -93,9 +93,10 @@
     <Compile Include="Sensor\SensorValueTypes\OnOffValue.cs" />
     <Compile Include="Sensor\SensorValueTypes\TextValue.cs" />
     <Compile Include="Sensor\SensorValueTypes\NumberValue.cs" />
-    <Compile Include="Sensor\SensorValueTypes\TemperatureValue.cs" />
     <Compile Include="Sensor\OptionalDataContainer.cs" />
     <Compile Include="Sensor\SensorValueTypes\ISensorValueType.cs" />
+    <Compile Include="Sensor\SensorValueTypes\TemperatureQuantityValue.cs" />
+    <Compile Include="Sensor\SensorValueTypes\Quantity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -11,14 +11,14 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 {
 	public class FruitTempSensor : ITemperatureSensor
 	{
-		private TemperatureValue temperature;
+		private QuantityValue<TemperatureUnit> temperature;
 
 		public ISensorValueType GetValue ()
 		{
 			return temperature;
 		}
 
-		public TemperatureValue Temperature 
+		public QuantityValue<TemperatureUnit>  Temperature 
 		{
 			get 
 			{
@@ -62,7 +62,7 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 		{
 			this.eventBus = eventBus;
 			this.logger = logger;
-			temperature = new TemperatureValue ();
+			temperature = new QuantityValue<TemperatureUnit> ();
 
 			eventBus.Subscribe<ControllerEventData<RFXSensorTemperaturePacket>>(HandleIncomingTempMessage,f => f.Direction == Direction.FromController && f.Payload.SensorId == SensorId);
 
@@ -76,10 +76,12 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 
 		void HandleIncomingTempMessage (ControllerEventData<RFXSensorTemperaturePacket> obj)
 		{
-			this.temperature = new TemperatureValue () {
+			var temperatureValue = new TemperatureQuantity () {
 				Value = obj.Payload.TemperatureInCentiCelsius / 100,
 				Unit = TemperatureUnit.Celsius
 			};
+			temperature = new QuantityValue<TemperatureUnit> ();
+			temperature.Value = temperatureValue;
 
 
 			SensorEventData sensorEvent = new SensorEventData () {

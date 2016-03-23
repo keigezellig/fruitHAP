@@ -2,7 +2,7 @@
 
 namespace FruitHAP.Core.Sensor.SensorValueTypes
 {
-	public class TemperatureValue : QuantityValue<TemperatureUnit>
+	public class TemperatureQuantity : Quantity<TemperatureUnit>
 	{		
 	}
 

@@ -14,6 +14,14 @@ namespace FruitHAP.Core.Sensor
                 return content;
             }
         }
+
+		public String TypeName 
+		{ 
+			get
+			{
+				return content.GetType().Name;
+			}
+		}
 		public OptionalDataContainer (ISensorValueType content)
 		{						
 			this.content = content;

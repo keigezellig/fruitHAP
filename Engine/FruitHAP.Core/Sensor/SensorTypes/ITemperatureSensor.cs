@@ -5,7 +5,7 @@ namespace FruitHAP.Core.Sensor.SensorTypes
 {
 	public interface ITemperatureSensor : IValueSensor
 	{
-		TemperatureValue Temperature { get; }
+		QuantityValue<TemperatureUnit>  Temperature { get; }
 	}
 }
 
