@@ -8,6 +8,7 @@ using FruitHAP.Core.Action;
 using Castle.Core.Logging;
 using System;
 using System.Reflection;
+using FruitHAP.Core.Sensor.SensorValueTypes;
 
 
 namespace FruitHap.Web.ApiControllers.Sensor
@@ -24,7 +25,17 @@ namespace FruitHap.Web.ApiControllers.Sensor
 
 		}
 
-		/// <summary>
+	    [Route("api/sensor/getallvalues")]
+	    [HttpGet]
+	    public IHttpActionResult GetAllValues()
+	    {
+	        var sensors = sensorRepository.FindAllSensorsOfType<IValueSensor>();
+	        var values = sensors.Select(GetValueOfSensor);
+
+	        return Ok<IEnumerable<SensorMessage>>(values);
+	    }
+
+	    /// <summary>
 		/// 
 		/// </summary>
 		/// <remarks>Returns the current value of the sensor</remarks>
@@ -91,7 +102,7 @@ namespace FruitHap.Web.ApiControllers.Sensor
 
 			if (method == null)
             {
-                return BadRequest(string.Format("Operation {0} is not available on sensor {1}", operation, name));                
+                return BadRequest(string.Format("Operation {0} is not available on sensor {1}", operation, name));
             }
 
             var callResult = method.Invoke(sensor, null);
