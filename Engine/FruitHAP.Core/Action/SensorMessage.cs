@@ -1,10 +1,7 @@
 ﻿using System;
-using EasyNetQ;
-using FruitHAP.Core.Sensor;
 
 namespace FruitHAP.Core.Action
 {	
-	[Queue("FruitHAPQueue", ExchangeName = "FruitHAPExchange")]
 	public class SensorMessage
 	{
 		public DateTime TimeStamp {get; set;}

@@ -79,8 +79,6 @@
     <Compile Include="SensorPersister\SensorConfigurationProvider.cs" />
     <Compile Include="SensorPersister\SensorPersister.cs" />
     <Compile Include="Action\SensorMessage.cs" />
-    <Compile Include="Action\ConfigurationMessage.cs" />
-    <Compile Include="Action\RpcAction.cs" />
     <Compile Include="Sensor\PacketData\General\AckPacket.cs" />
     <Compile Include="Sensor\SensorEventData.cs" />
     <Compile Include="Sensor\PacketData\RFXSensor\RFXSensorTemperaturePacket.cs" />

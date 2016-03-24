@@ -34,8 +34,6 @@ namespace FruitHAP.Core.Service
         {
 			string mqConnectionString = ConfigurationManager.AppSettings ["mqConnectionString"] ?? "";
 			string mqPubSubExchangeName = ConfigurationManager.AppSettings ["mqPubSubExchangeName"] ?? "FruitHAP_PubSubExchange";
-			string mqRpcExchangeName = ConfigurationManager.AppSettings ["mqRpcExchangeName"] ?? "FruitHAP_RpcExchange";
-			string mqRpcQueueName = ConfigurationManager.AppSettings ["mqRpcQueueName"] ?? "FruitHAP_RpcQueue";
 				            
 			try
 			{
@@ -58,7 +56,7 @@ namespace FruitHAP.Core.Service
 			try
 			{
 				log.Info("Connecting to message queue");
-				mqPublisher.Initialize (mqConnectionString,mqPubSubExchangeName,mqRpcExchangeName, mqRpcQueueName);
+				mqPublisher.Initialize (mqConnectionString,mqPubSubExchangeName);
 				log.Info("Connected to message queue");	
 			}
 			catch (Exception ex) 
