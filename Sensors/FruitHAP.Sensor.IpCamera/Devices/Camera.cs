@@ -79,12 +79,16 @@ namespace FruitHAP.Sensor.Camera.Devices
                 }
             });
 
-			Task<ImageValue> workerTask = new Task<ImageValue>(() => {
-                while (!isReceived)
-                {
-                }
-                this.isReceived = false;
-                return this.receivedImageData;
+			Task<ImageValue> workerTask = new Task<ImageValue>(() => 
+			{
+
+					while (!isReceived)
+                	{
+                	}
+                	this.isReceived = false;
+                	
+				
+					return this.receivedImageData;
             });
 
             workerTask.Start();
@@ -101,7 +105,16 @@ namespace FruitHAP.Sensor.Camera.Devices
 
 		public ISensorValueType GetValue()
         {
-            return GetImageAsync().Result;
+			try
+			{
+				return GetImageAsync ().Result;
+			}
+			catch (Exception)
+			{
+				this.receivedImageData = new ImageValue () { ImageData = null };
+				this.lastUpdateTime = DateTime.Now;
+				return this.receivedImageData;
+			}
         }
 
 		public DateTime GetLastUpdateTime ()
