@@ -45,18 +45,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers.cs" />
-    <Compile Include="IncomingRequest\IRequestHandler.cs" />
-    <Compile Include="IncomingRequest\IncomingRequestAction.cs" />
-    <Compile Include="IncomingRequest\RequestHandlers\EmptyRequestHandler.cs" />
-    <Compile Include="IncomingRequest\RequestHandlers\UnknownRequestTypeHandler.cs" />
-    <Compile Include="IncomingRequest\RequestHandlers\GetValueHandler.cs" />
-    <Compile Include="IncomingRequest\RequestHandlers\CommandHandler.cs" />
-    <Compile Include="IncomingRequest\RequestHandlers\CommandObject.cs" />
-    <Compile Include="IncomingRequest\RequestHandlerFactory.cs" />
-    <Compile Include="IncomingRequest\IRequestHandlerFactory.cs" />
-    <Compile Include="IncomingRequest\RequestDataType.cs" />
-    <Compile Include="IncomingRequest\RequestHandlers\CommandResult.cs" />
-    <Compile Include="ConfigurationRequest\ConfigurationRequestAction.cs" />
     <Compile Include="Alarm\AlarmAction.cs" />
     <Compile Include="Alarm\Configuration\AlarmActionConfiguration.cs" />
     <Compile Include="Alarm\Configuration\AlarmActionConfigurationProvider.cs" />
@@ -74,9 +62,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="IncomingRequest\" />
-    <Folder Include="IncomingRequest\RequestHandlers\" />
-    <Folder Include="ConfigurationRequest\" />
     <Folder Include="Alarm\" />
     <Folder Include="Alarm\Configuration\" />
     <Folder Include="EventNotification\" />
