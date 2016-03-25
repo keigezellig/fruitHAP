@@ -65,7 +65,7 @@ namespace FruitHAP.Controller.Rfx
         protected override void DisposeController()
         {
 			eventBus.Unsubscribe<ControllerEventData<ACPacket>>(HandleIncomingACMessage);
-			eventBus.Unsubscribe<ControllerEventData<StatusPacket>>(HandleIncomingSetModeResponse);
+			eventBus.Unsubscribe<ControllerEventData<RfxStatusPacket>>(HandleIncomingSetModeResponse);
 			eventBus.Unsubscribe<ControllerEventData<RfxAckPacket>>(HandleIncomingAckMessage);
             rfxDevice.Dispose();
         }
@@ -177,7 +177,7 @@ namespace FruitHAP.Controller.Rfx
 			rfxDevice.SendData(data);
 		}
 
-		private void HandleIncomingSetModeResponse (ControllerEventData<StatusPacket> obj)
+		private void HandleIncomingSetModeResponse (ControllerEventData<RfxStatusPacket> obj)
 		{
 			var responsePacket = obj.Payload;
 			if (responsePacket.SequenceNumber == rfxDevice.PreviousSequenceNumber) 
@@ -211,7 +211,7 @@ namespace FruitHAP.Controller.Rfx
 		private void SubscribeToEvents ()
 		{
 			eventBus.Subscribe<ControllerEventData<ACPacket>>(HandleIncomingACMessage, f => f.Direction == Direction.ToController);
-			eventBus.Subscribe<ControllerEventData<StatusPacket>>(HandleIncomingSetModeResponse, f => f.Direction == Direction.FromController && f.Payload.CommandType == CommandType.SetMode);
+			eventBus.Subscribe<ControllerEventData<RfxStatusPacket>>(HandleIncomingSetModeResponse, f => f.Direction == Direction.FromController && f.Payload.CommandType == CommandType.SetMode);
 			eventBus.Subscribe<ControllerEventData<RfxAckPacket>>(HandleIncomingAckMessage, f => f.Direction == Direction.FromController);
 		} 
 
