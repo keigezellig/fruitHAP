@@ -11,7 +11,7 @@ using System.Reflection;
 using FruitHAP.Core.Sensor.SensorValueTypes;
 
 
-namespace FruitHap.Web.ApiControllers.Sensor
+namespace FruitHAP.Plugins.Web.ApiControllers.Sensor
 {
 	public class SensorController : ApiController
 	{

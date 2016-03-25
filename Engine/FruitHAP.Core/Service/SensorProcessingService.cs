@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Castle.Core.Logging;
-using FruitHAP.Core.Action;
+using FruitHAP.Core.Plugin;
 using FruitHAP.Core.Sensor;
 using System.Configuration;
 using System;
@@ -15,11 +15,11 @@ namespace FruitHAP.Core.Service
     {
         private readonly ISensorRepository sensorRepository;
         private readonly IEnumerable<IController> controllers;
-        private readonly IEnumerable<IAction> actions;
+        private readonly IEnumerable<IPlugin> actions;
         private readonly ILogger log;
 		private readonly IMessageQueueProvider mqPublisher;
 
-		public SensorProcessingService(ISensorRepository sensorRepository, IEnumerable<IController> controllers, IEnumerable<IAction> actions, IMessageQueueProvider mqPublisher, ILogger log)
+		public SensorProcessingService(ISensorRepository sensorRepository, IEnumerable<IController> controllers, IEnumerable<IPlugin> actions, IMessageQueueProvider mqPublisher, ILogger log)
         {
 			this.mqPublisher = mqPublisher;
             this.sensorRepository = sensorRepository;

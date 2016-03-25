@@ -6,7 +6,7 @@ using System.IO;
 using System.Reflection;
 using Microsoft.Owin.Hosting;
 
-namespace FruitHap.Web.Startup
+namespace FruitHAP.Plugins.Web.Startup
 {
 	public class WebHost : IPlugin
 	{
