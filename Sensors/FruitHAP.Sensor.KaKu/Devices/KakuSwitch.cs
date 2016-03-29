@@ -12,6 +12,7 @@ using FruitHAP.Core.Controller;
 using FruitHAP.Sensor.PacketData.General;
 using FruitHAP.Common.EventBus;
 using FruitHAP.Core.Sensor.SensorValueTypes;
+using FruitHAP.Core.Sensor.PacketData.General;
 
 namespace FruitHAP.Sensor.KaKu
 {
@@ -218,9 +219,23 @@ namespace FruitHAP.Sensor.KaKu
 				Level = 0
 			};
 
+            Guid messageId = Guid.NewGuid();
+            eventBus.Subscribe<ControllerEventData<AckPacket>>(HandleAckPacket, filter => filter.Direction == Direction.FromController && filter.Payload.MessageId == messageId);
+            eventBus.Subscribe<ControllerEventData<NakPacket>>(HandleNakPacket, filter => filter.Direction == Direction.FromController && filter.Payload.MessageId == messageId);
 			eventBus.Publish(new ControllerEventData<ACPacket> () { Direction = Direction.ToController, Payload = data });
 
 		}
+
+        private void HandleNakPacket(ControllerEventData<NakPacket> obj)
+        {
+            logger.DebugFormat("NAK received for message {0}",obj.Payload.MessageId);
+            eventBus.Unsubscribe<ControllerEventData<NakPacket>>(HandleNakPacket);
+        }
+
+        private void HandleAckPacket(ControllerEventData<AckPacket> obj)
+        {
+            eventBus.Unsubscribe<ControllerEventData<AckPacket>>(HandleAckPacket);
+        }
 			
 		private StateValue DetermineNewState (ACPacket decodedData)
 		{

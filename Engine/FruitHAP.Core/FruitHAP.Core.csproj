@@ -57,6 +57,7 @@
     <Compile Include="Sensor\ISensor.cs" />
     <Compile Include="Sensor\PacketData\ImageCapture\ImageRequestPacket.cs" />
     <Compile Include="Sensor\PacketData\ImageCapture\ImageResponsePacket.cs" />
+    <Compile Include="Sensor\PacketData\NakPacket.cs" />
     <Compile Include="Sensor\SensorTypes\IButton.cs" />
     <Compile Include="Sensor\SensorTypes\ICamera.cs" />
     <Compile Include="SensorRepository\ISensorRepository.cs" />

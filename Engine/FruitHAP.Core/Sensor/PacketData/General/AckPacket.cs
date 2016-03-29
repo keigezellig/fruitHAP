@@ -5,6 +5,7 @@ namespace FruitHAP.Sensor.PacketData.General
 	public class AckPacket
 	{
 		public bool IsAcknowledged { get; set; }
+        public Guid MessageId { get; set; }
 
 		public override string ToString ()
 		{
