@@ -57,7 +57,6 @@
     <Compile Include="Sensor\ISensor.cs" />
     <Compile Include="Sensor\PacketData\ImageCapture\ImageRequestPacket.cs" />
     <Compile Include="Sensor\PacketData\ImageCapture\ImageResponsePacket.cs" />
-    <Compile Include="Sensor\PacketData\NakPacket.cs" />
     <Compile Include="Sensor\SensorTypes\IButton.cs" />
     <Compile Include="Sensor\SensorTypes\ICamera.cs" />
     <Compile Include="SensorRepository\ISensorRepository.cs" />
@@ -78,7 +77,6 @@
     <Compile Include="SensorPersister\SensorConfigurationEntry.cs" />
     <Compile Include="SensorPersister\SensorConfigurationProvider.cs" />
     <Compile Include="SensorPersister\SensorPersister.cs" />
-    <Compile Include="Sensor\PacketData\General\AckPacket.cs" />
     <Compile Include="Sensor\SensorEventData.cs" />
     <Compile Include="Sensor\PacketData\RFXSensor\RFXSensorTemperaturePacket.cs" />
     <Compile Include="Sensor\PacketData\RFXSensor\RFXSensorMessagePacket.cs" />
@@ -96,6 +94,7 @@
     <Compile Include="Sensor\SensorValueTypes\Quantity.cs" />
     <Compile Include="Plugin\SensorMessage.cs" />
     <Compile Include="Plugin\IPlugin.cs" />
+    <Compile Include="Sensor\PacketData\General\NakPacket.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

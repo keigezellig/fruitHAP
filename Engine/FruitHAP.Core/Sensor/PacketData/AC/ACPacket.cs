@@ -4,7 +4,8 @@ namespace FruitHAP.Sensor.PacketData.AC
 {
 	public class ACPacket
 	{
-		public uint DeviceId { get; set; }
+        //public DateTime Timestamp {get;set;}
+        public uint DeviceId { get; set; }
 		public byte UnitCode { get; set; }
 		public Command Command { get; set; }
 		public byte Level { get; set; }

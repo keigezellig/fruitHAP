@@ -11,6 +11,7 @@ using FruitHAP.Common.EventBus;
 using FruitHAP.Core.Sensor.SensorTypes;
 using FruitHAP.Core.Sensor.SensorValueTypes;
 using FruitHAP.Plugins.Thermostat.Configuration;
+using System.Threading;
 
 
 namespace FruitHAP.Plugins.Thermostat
@@ -79,7 +80,8 @@ namespace FruitHAP.Plugins.Thermostat
 				{
 					switchBelow.TurnOff ();
 				}
-				if (switchAbove.State.Value != StateValue.Off) {
+                Thread.Sleep(500);
+				if (switchAbove.State.Value != StateValue.On) {
 					switchAbove.TurnOn ();
 				}
 
@@ -98,6 +100,7 @@ namespace FruitHAP.Plugins.Thermostat
 				{
 					switchAbove.TurnOff ();
 				}
+                Thread.Sleep(500);
 
 				if (switchBelow.State.Value != StateValue.On) {
 					switchBelow.TurnOn ();
@@ -115,6 +118,7 @@ namespace FruitHAP.Plugins.Thermostat
 			else 
 			{
 				switchAbove.TurnOff ();
+                Thread.Sleep(500);
 				switchBelow.TurnOff ();
 			}
 

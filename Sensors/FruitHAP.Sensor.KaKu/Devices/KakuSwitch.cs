@@ -1,18 +1,12 @@
 ﻿using System;
-using FruitHAP.Core;
-using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
-using System.Collections.Generic;
-using FruitHAP.Common.Helpers;
-using Microsoft.Practices.Prism.PubSubEvents;
-using FruitHAP.Sensor.KaKu.Common;
-using FruitHAP.Core.Sensor.SensorTypes;
-using FruitHAP.Sensor.PacketData.AC;
-using FruitHAP.Core.Controller;
-using FruitHAP.Sensor.PacketData.General;
 using FruitHAP.Common.EventBus;
+using FruitHAP.Core.Controller;
+using FruitHAP.Core.Sensor;
+using FruitHAP.Core.Sensor.SensorTypes;
 using FruitHAP.Core.Sensor.SensorValueTypes;
-using FruitHAP.Core.Sensor.PacketData.General;
+using FruitHAP.Sensor.KaKu.Common;
+using FruitHAP.Sensor.PacketData.AC;
 
 namespace FruitHAP.Sensor.KaKu
 {
@@ -100,43 +94,6 @@ namespace FruitHAP.Sensor.KaKu
 			}
 
 			TriggerControllerEvent(newState);
-			logger.Debug ("Waiting for ack...");
-			try
-			{
-			var ack = GetAck ().Result;
-			if (ack) {
-					state.Value = newState;
-					lastUpdateTime = DateTime.Now;
-				TriggerSensorEvent ();
-				logger.InfoFormat ("State changed to {0}", state);				
-			} else {
-				logger.Warn ("Negative or no acknowledgement from controller received, state will not be changed");
-			}
-			}
-			catch (AggregateException aex) 
-			{
-				aex.Handle (ex => 
-					{
-						if (ex is TimeoutException)
-						{
-							logger.Warn ("Time out occured while waiting on ack, state will be set to undefined");
-							state.Value = StateValue.Undefined;
-							lastUpdateTime = DateTime.Now;
-						}
-						return ex is TimeoutException;
-					});
-				
-			}
-
-			/*ack.ContinueWith ( (t) => {
-				if (t.Result) {
-					state = newState;
-					TriggerSensorEvent ();
-					logger.InfoFormat ("State changed to {0}", state);				
-				} else {
-					logger.Warn ("Negative or no acknowledgement from controller received, state will not be changed");
-				}
-			});*/
 		}
 
 		public OnOffValue State 
@@ -167,8 +124,8 @@ namespace FruitHAP.Sensor.KaKu
 		#endregion
 
 		protected override void ProcessReceivedACDataForThisDevice (ACPacket data)
-		{
-			StateValue newState = DetermineNewState(data);
+		{            
+            StateValue newState = DetermineNewState(data);
 			state.Value = newState;
             TriggerSensorEvent();
             logger.InfoFormat("State changed to {0}", state);
@@ -218,24 +175,10 @@ namespace FruitHAP.Sensor.KaKu
 				Command = state == StateValue.On ? OnCommand : OffCommand,
 				Level = 0
 			};
-
-            Guid messageId = Guid.NewGuid();
-            eventBus.Subscribe<ControllerEventData<AckPacket>>(HandleAckPacket, filter => filter.Direction == Direction.FromController && filter.Payload.MessageId == messageId);
-            eventBus.Subscribe<ControllerEventData<NakPacket>>(HandleNakPacket, filter => filter.Direction == Direction.FromController && filter.Payload.MessageId == messageId);
-			eventBus.Publish(new ControllerEventData<ACPacket> () { Direction = Direction.ToController, Payload = data });
-
+                    
+         
+            eventBus.Publish(new ControllerEventData<ACPacket>() { Direction = Direction.ToController, Payload = data});    
 		}
-
-        private void HandleNakPacket(ControllerEventData<NakPacket> obj)
-        {
-            logger.DebugFormat("NAK received for message {0}",obj.Payload.MessageId);
-            eventBus.Unsubscribe<ControllerEventData<NakPacket>>(HandleNakPacket);
-        }
-
-        private void HandleAckPacket(ControllerEventData<AckPacket> obj)
-        {
-            eventBus.Unsubscribe<ControllerEventData<AckPacket>>(HandleAckPacket);
-        }
 			
 		private StateValue DetermineNewState (ACPacket decodedData)
 		{

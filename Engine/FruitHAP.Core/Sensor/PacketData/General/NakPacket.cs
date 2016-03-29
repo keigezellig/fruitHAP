@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace FruitHAP.Core.Sensor.PacketData.General
 {
-    public class NakPacket
+    public class NakPacket<T>
     {
-        public Guid MessageId { get; set; }
+        public T Data { get; set; }
         public NakReason Reason { get; set; }
+    }
+
+    public enum NakReason
+    {
+        Timeout, Failure
     }
 }
