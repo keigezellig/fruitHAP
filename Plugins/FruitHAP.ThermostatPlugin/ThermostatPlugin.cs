@@ -46,7 +46,7 @@ namespace FruitHAP.Plugins.Thermostat
 		public void Initialize()
 		{
 			
-			logger.InfoFormat ("Initializing action {0}", this);
+			logger.InfoFormat ("Initializing plugin {0}", this);
 			logger.InfoFormat ("Loading configuration");
 			configuration = configurationProvider.LoadConfigFromFile (Path.Combine (Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location), CONFIG_FILENAME));
 
@@ -54,7 +54,8 @@ namespace FruitHAP.Plugins.Thermostat
 			switchBelow = sensorRepository.FindSensorOfTypeByName<ISwitch> (configuration.SwitchBelow);
 			if (switchAbove == null && switchBelow == null) 
 			{
-				logger.Error ("Cannot find switches");
+                logger.ErrorFormat ("Cannot find switches {0} and {1}, so plugin will not be started ",configuration.SwitchAbove, configuration.SwitchBelow);
+                return;
 			}
 
 			switchAbove.TurnOff ();
@@ -71,7 +72,6 @@ namespace FruitHAP.Plugins.Thermostat
 		void HandleSensorEvent (SensorEventData data)
 		{						
 			SensorMessage sensorMessage = new SensorMessage ();
-            var bla = data.OptionalData.Content.GetType();
             var tempValue = data.OptionalData.Content as QuantityValue<TemperatureUnit>;
             if (tempValue.Value.Value > configuration.ThresholdHot) 
 			{

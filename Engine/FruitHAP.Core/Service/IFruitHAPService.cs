@@ -1,6 +1,6 @@
 ﻿namespace FruitHAP.Core.Service
 {
-    public interface ISensorProcessingService
+    public interface IFruitHAPService
     {
         void Start();
         void Stop();

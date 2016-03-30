@@ -61,8 +61,6 @@
     <Compile Include="Sensor\SensorTypes\ICamera.cs" />
     <Compile Include="SensorRepository\ISensorRepository.cs" />
     <Compile Include="SensorRepository\SensorRepository.cs" />
-    <Compile Include="Service\ISensorProcessingService.cs" />
-    <Compile Include="Service\SensorProcessingService.cs" />
     <Compile Include="MQ\RabbitMqProvider.cs" />
     <Compile Include="MQ\IMessageQueueProvider.cs" />
     <Compile Include="MQ\Helpers\TypeNameSerializer.cs" />
@@ -95,6 +93,8 @@
     <Compile Include="Plugin\SensorMessage.cs" />
     <Compile Include="Plugin\IPlugin.cs" />
     <Compile Include="Sensor\PacketData\General\NakPacket.cs" />
+    <Compile Include="Service\IFruitHAPService.cs" />
+    <Compile Include="Service\FruitHAPService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

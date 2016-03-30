@@ -131,8 +131,8 @@ namespace FruitHAP.Startup
         private void RegisterService(IWindsorContainer container)
         {
             container.Register(
-                Component.For<ISensorProcessingService>()
-                    .ImplementedBy<SensorProcessingService>()
+                Component.For<IFruitHAPService>()
+                    .ImplementedBy<FruitHAPService>()
                     .LifestyleTransient());
 
         }
