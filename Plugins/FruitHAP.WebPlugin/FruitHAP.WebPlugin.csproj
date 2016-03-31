@@ -79,6 +79,9 @@
     <Compile Include="Startup\WebConfiguration.cs" />
     <Compile Include="Startup\WebConfigurationProvider.cs" />
     <Compile Include="Startup\WebHost.cs" />
+    <Compile Include="ApiControllers\Configuration\SensorConfigurationItem.cs" />
+    <Compile Include="ApiControllers\Configuration\NonAggregatedSensor.cs" />
+    <Compile Include="ApiControllers\Configuration\AggregatedSensor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

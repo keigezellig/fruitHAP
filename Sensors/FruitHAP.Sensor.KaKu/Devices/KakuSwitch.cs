@@ -12,8 +12,8 @@ namespace FruitHAP.Sensor.KaKu
 {
 	public class KakuSwitch : KakuDevice, ISwitch
 	{
-		private Command onCommand;
-		private Command offCommand;
+		private ACCommand onCommand;
+		private ACCommand offCommand;
 		private OnOffValue state;
 		private Trigger trigger;
 		private bool isReadOnly;
@@ -27,7 +27,7 @@ namespace FruitHAP.Sensor.KaKu
 
 
 
-		public Command OnCommand {
+		public ACCommand OnCommand {
 			get {
 				return this.onCommand;
 			}
@@ -36,7 +36,7 @@ namespace FruitHAP.Sensor.KaKu
 			}
 		}
 
-		public Command OffCommand {
+		public ACCommand OffCommand {
 			get {
 				return this.offCommand;
 			}

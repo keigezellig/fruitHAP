@@ -7,7 +7,7 @@ namespace FruitHAP.Sensor.PacketData.AC
         //public DateTime Timestamp {get;set;}
         public uint DeviceId { get; set; }
 		public byte UnitCode { get; set; }
-		public Command Command { get; set; }
+		public ACCommand Command { get; set; }
 		public byte Level { get; set; }
 
 		public override string ToString()
@@ -17,7 +17,7 @@ namespace FruitHAP.Sensor.PacketData.AC
 		}
 	}
 
-	public enum Command
+	public enum ACCommand
 	{
 		Off = 0,
 		On = 1,

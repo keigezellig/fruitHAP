@@ -12,13 +12,13 @@ namespace FruitHAP.Sensor.KaKu.Devices
 {
 	public class KakuButton : KakuDevice, IButton
     {       
-		private Command command;
+		private ACCommand command;
 	
 		public KakuButton(IEventBus eventBus, ILogger logger) : base(eventBus,logger)
         {
         }
 
-		public Command Command {
+		public ACCommand Command {
 			get {
 				return this.command;
 			}

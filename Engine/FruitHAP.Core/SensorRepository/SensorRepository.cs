@@ -66,7 +66,7 @@ namespace FruitHAP.Core.SensorRepository
 
 		public void SaveSensors (IEnumerable<ISensor> sensors)
     	{
-			persister.SaveSensors (sensors);			
+            throw new NotImplementedException();
     	}
 
         public IEnumerable<ISensor> GetSensorsByCategoryName(string category)

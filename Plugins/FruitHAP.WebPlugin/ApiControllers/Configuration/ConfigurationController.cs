@@ -4,11 +4,13 @@ using FruitHAP.Core.SensorPersister;
 using System.Linq;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Core.SensorRepository;
+using FruitHAP.Common.Helpers;
 
 
 namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 {
-	public class ConfigurationController : ApiController
+    [RoutePrefix("api/configuration")]
+    public class ConfigurationController : ApiController
 	{
 		private readonly ISensorPersister persister;
 		private readonly ISensorRepository repos;
@@ -24,11 +26,12 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 		/// </summary>
 		/// <remarks>Returns all sensors defined in the system</remarks>
 		/// <response code="200">A response containing all the sensors defined in the system</response>
-		[Route("api/configuration/sensors")]
-		public IHttpActionResult Get()
+		[Route("sensors")]
+        [HttpGet]
+		public IHttpActionResult GetAllSensors()
 		{
-			var sensors = GetAllSensors ();
-			return Ok<IEnumerable<SensorConfigurationEntry>> (sensors);
+			var sensors = GetAllSensorsFromConfiguration ();
+            return Ok<IEnumerable<SensorConfigurationItem>> (sensors);
 		}
 
 		/// <summary>
@@ -38,26 +41,74 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 		/// <param name="name">Name of sensor</param>
 		/// <response code="200">A response containing the sensor definition with name {sensorname}</response>
 		/// <response code="404">If sensor is not present in the system</response>
-		[Route("api/configuration/sensors/{name}")]
-		public IHttpActionResult Get(string name)
+        [Route("sensors/{name}", Name = "GetSensorByName")]
+        [HttpGet]
+		public IHttpActionResult GetSensorByName(string name)
 		{
-			ISensor sensor = repos.GetSensors ().SingleOrDefault (f => f.Name == name);
-			if (sensor != null) {
-				var sensorData = persister.GetSensorConfiguration(new List<ISensor>() {sensor});
-				return Ok<object> (sensorData.ElementAt(0));
-			} else 
-			{
-				return NotFound ();
-			}
+            var sensorConfigItem = GetAllSensorsFromConfiguration().SingleOrDefault(f => f.Name == name);
+            if (sensorConfigItem != null)
+            {
+                return Ok<SensorConfigurationItem>(sensorConfigItem);
+            }
+            else
+            {
+                return NotFound ();
+            }
+
+
+  
 		}
 
-		private IEnumerable<SensorConfigurationEntry> GetAllSensors()
+		private IEnumerable<SensorConfigurationItem> GetAllSensorsFromConfiguration()
 		{
-			var sensorList = repos.GetSensors();
-			var sensorData = persister.GetSensorConfiguration(sensorList);
-			return sensorData;
+            List<SensorConfigurationItem> result = new List<SensorConfigurationItem>();
+            var sensorConfig = persister.GetSensorConfiguration();
+            foreach (var configItem in sensorConfig)
+            {
+                string parametersInJson = configItem.Parameters.ToJsonString();
+                Dictionary<string, object> parameters = parametersInJson.ParseJsonString<Dictionary<string, object>>();
+
+                SensorConfigurationItem returnItem;
+                if (configItem.IsAggegrate)
+                {
+                    returnItem = CreateAggregateItem(configItem.Type,parameters);
+                }
+                else
+                {
+                    returnItem = CreateNonAggregateItem(configItem.Type,parameters);
+                }
+
+                result.Add(returnItem);
+            }
+
+            return result;
 		}
 
+        private SensorConfigurationItem CreateAggregateItem(string type, Dictionary<string, object> parameters)
+        {
+         
+            string name = parameters["Name"].ToString();
+            string description = parameters["Description"].ToString();
+            string category = parameters["Category"].ToString();
+            List<string> inputs = parameters["Inputs"].ToString().ParseJsonString<List<string>>();
+            List<string> inputLinks = new List<string>();
+
+            foreach (var input in inputs)
+            {
+                inputLinks.Add(Url.Link("GetSensorByName", new { name = input}));
+            }
+
+            return new AggregatedSensor(name, description, category, type, inputLinks);
+        }
+
+        private SensorConfigurationItem CreateNonAggregateItem(string type, Dictionary<string, object> parameters)
+        {
+            string name = parameters["Name"].ToString();
+            string description = parameters["Description"].ToString();
+            string category = parameters["Category"].ToString();
+            Dictionary<string,object> otherParameters = parameters.Where(f => f.Key != "Name" && f.Key != "Description" && f.Key != "Category").ToDictionary(f => f.Key, f => f.Value);
+            return new NonAggregatedSensor(name, description, category, type, otherParameters);
+        }
 	}
 }
 
