@@ -78,7 +78,7 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Sensor
         /// <response code="200">Response containing the current value of {sensorname}</response>
         /// <response code="404">If sensor is not present in the system</response>
         /// <response code="400">If function is not present on the sensor</response>
-        [Route("api/sensor/{name}/{operation}")]
+        [Route("api/sensor/{name}/{operation}", Name = "ExecuteOperation")]
         [HttpGet]
         public IHttpActionResult ExecuteOperation(string name, string operation)
         {
@@ -98,7 +98,7 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Sensor
 
             logger.InfoFormat("Found sensor: {0}", sensor.Name);
 
-			var method = FindMethod (operation, sensor);
+            var method = sensorRepository.GetOperationForSensor (sensor.Name, operation);
 
 			if (method == null)
             {
@@ -133,20 +133,7 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Sensor
         }
 
 
-		private MethodInfo FindMethod (string operation, ISensor sensor)
-		{			
-			foreach (var intf in sensor.GetType ().GetInterfaces ()) 
-			{
-				foreach (var method in intf.GetMethods ()) 
-				{
-					if (method.Name == operation) 
-					{
-						return method;
-					}
-				}
-			}
-			return null;
-		}
+		
 	}
 }
 

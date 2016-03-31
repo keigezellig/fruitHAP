@@ -98,7 +98,8 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
                 inputLinks.Add(Url.Link("GetSensorByName", new { name = input}));
             }
 
-            return new AggregatedSensor(name, description, category, type, inputLinks);
+            Dictionary<string,string> operations = GetOperations(name);
+            return new AggregatedSensor(name, description, category, type, operations, inputLinks);
         }
 
         private SensorConfigurationItem CreateNonAggregateItem(string type, Dictionary<string, object> parameters)
@@ -107,7 +108,14 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
             string description = parameters["Description"].ToString();
             string category = parameters["Category"].ToString();
             Dictionary<string,object> otherParameters = parameters.Where(f => f.Key != "Name" && f.Key != "Description" && f.Key != "Category").ToDictionary(f => f.Key, f => f.Value);
-            return new NonAggregatedSensor(name, description, category, type, otherParameters);
+            Dictionary<string,string> operations = GetOperations(name);
+            return new NonAggregatedSensor(name, description, category, type, operations, otherParameters);
+        }
+
+        Dictionary<string, string> GetOperations(string sensorName)
+        {
+            var operations = repos.GetOperationsForSensor(sensorName);
+            return operations.ToDictionary(f => f.Name, g => Url.Link("ExecuteOperation", new { name = sensorName, operation = g.Name}));
         }
 	}
 }

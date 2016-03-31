@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 {
@@ -7,14 +8,18 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
         protected string name;
         protected string description;
         protected string category;
-        protected string type; 
+        protected string type;
+        protected Dictionary<string,string> operations;
 
-        protected SensorConfigurationItem(string name, string description, string category, string type)
+ 
+
+        protected SensorConfigurationItem(string name, string description, string category, string type, Dictionary<string,string> operations)
         {
             this.name = name;
             this.description = description;
             this.category = category;
             this.type = type;
+            this.operations = operations;
         }
 
 
@@ -47,6 +52,14 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
             get
             {
                 return this.type;
+            }
+        }
+
+        public Dictionary<string,string> SupportedOperations
+        {
+            get
+            {
+                return this.operations;
             }
         }
 
