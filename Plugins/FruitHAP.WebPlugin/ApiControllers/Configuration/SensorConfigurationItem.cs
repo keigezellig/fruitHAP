@@ -9,17 +9,19 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
         protected string description;
         protected string category;
         protected string type;
+        protected string valueType;
         protected Dictionary<string,string> operations;
 
  
 
-        protected SensorConfigurationItem(string name, string description, string category, string type, Dictionary<string,string> operations)
+        protected SensorConfigurationItem(string name, string description, string category, string type, string valueType, Dictionary<string,string> operations)
         {
             this.name = name;
             this.description = description;
             this.category = category;
             this.type = type;
             this.operations = operations;
+            this.valueType = valueType;
         }
 
 

@@ -7,7 +7,7 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
     {
         private List<string> inputs;
 
-        public AggregatedSensor(string name, string description, string category, string type, Dictionary<string,string> operations, List<string> inputs) : base(name, description, category, type, operations)
+        public AggregatedSensor(string name, string description, string category, string type, string valueType, Dictionary<string,string> operations, List<string> inputs) : base(name, description, category, type, valueType, operations)
         {
             this.inputs = inputs;
         }

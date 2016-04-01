@@ -19,5 +19,6 @@ namespace FruitHAP.Core.SensorRepository
         IEnumerable<string> GetSensorCategories();
         IEnumerable<MethodInfo> GetOperationsForSensor(string sensorName);
         MethodInfo GetOperationForSensor(string sensorName, string operationName);
+        Type GetSensorValueType(string sensorName);
     }
 }

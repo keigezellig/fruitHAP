@@ -113,5 +113,12 @@ namespace FruitHAP.Core.SensorRepository
             }
             return operations;
         }
+
+
+        public Type GetSensorValueType(string sensorName)
+        {
+            var getValueMethod = GetOperationForSensor(sensorName, "GetValue");
+            return getValueMethod.ReturnType;
+        }
     }
 }

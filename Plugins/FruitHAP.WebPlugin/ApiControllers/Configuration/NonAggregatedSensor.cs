@@ -7,7 +7,7 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
     {
         private Dictionary<string,object> parameters;
 
-        public NonAggregatedSensor(string name, string description, string category, string type, Dictionary<string,string> operations, Dictionary<string,object> parameters) : base(name, description, category, type, operations)
+        public NonAggregatedSensor(string name, string description, string category, string type, string valueType, Dictionary<string,string> operations, Dictionary<string,object> parameters) : base(name, description, category, type, valueType, operations)
         {
             this.parameters = parameters;
         }

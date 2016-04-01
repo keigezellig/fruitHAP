@@ -5,6 +5,7 @@ using System.Linq;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Core.SensorRepository;
 using FruitHAP.Common.Helpers;
+using System;
 
 
 namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
@@ -98,8 +99,9 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
                 inputLinks.Add(Url.Link("GetSensorByName", new { name = input}));
             }
 
+            string valueType = repos.GetSensorValueType(name).Name;
             Dictionary<string,string> operations = GetOperations(name);
-            return new AggregatedSensor(name, description, category, type, operations, inputLinks);
+            return new AggregatedSensor(name, description, category, type, valueType, operations, inputLinks);
         }
 
         private SensorConfigurationItem CreateNonAggregateItem(string type, Dictionary<string, object> parameters)
@@ -108,8 +110,9 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
             string description = parameters["Description"].ToString();
             string category = parameters["Category"].ToString();
             Dictionary<string,object> otherParameters = parameters.Where(f => f.Key != "Name" && f.Key != "Description" && f.Key != "Category").ToDictionary(f => f.Key, f => f.Value);
+            string valueType = repos.GetSensorValueType(name).Name;
             Dictionary<string,string> operations = GetOperations(name);
-            return new NonAggregatedSensor(name, description, category, type, operations, otherParameters);
+            return new NonAggregatedSensor(name, description, category, type, valueType, operations, otherParameters);
         }
 
         Dictionary<string, string> GetOperations(string sensorName)
@@ -117,6 +120,10 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
             var operations = repos.GetOperationsForSensor(sensorName);
             return operations.ToDictionary(f => f.Name, g => Url.Link("ExecuteOperation", new { name = sensorName, operation = g.Name}));
         }
+
+        
+        
+
 	}
 }
 
