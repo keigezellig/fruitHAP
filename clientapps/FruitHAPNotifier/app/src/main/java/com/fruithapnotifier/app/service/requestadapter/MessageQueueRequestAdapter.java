@@ -25,6 +25,7 @@ import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.common.RequestAdapter;
 import com.fruithapnotifier.app.common.SensorEvent;
 import com.fruithapnotifier.app.service.FruithapRpcService;
+import com.fruithapnotifier.app.service.RestConsumer;
 import com.fruithapnotifier.app.service.requestadapter.requests.ConfigurationRequest;
 import com.fruithapnotifier.app.service.requestadapter.requests.SensorRequest;
 import org.greenrobot.eventbus.EventBus;
@@ -97,7 +98,7 @@ public class MessageQueueRequestAdapter implements RequestAdapter
         try
         {
             SensorRequest request = new SensorRequest(sensorName, operationName, parameters);
-            FruithapRpcService.executeSensorRequest(context, request.toJson().toString(), sensorRequestReceiver);
+            RestConsumer.executeRequest(context,RestConsumer.GET,request.getUri(),null,sensorRequestReceiver);
         }
         catch (JSONException jex)
         {
@@ -112,7 +113,7 @@ public class MessageQueueRequestAdapter implements RequestAdapter
         try
         {
             ConfigurationRequest request = new ConfigurationRequest(operationName, parameters);
-            FruithapRpcService.executeConfigurationRequest(context, request.toJson().toString(), configurationRequestReceiver);
+            RestConsumer.executeRequest(context,RestConsumer.GET,request.getUri(),null, configurationRequestReceiver);
         }
         catch (JSONException jex)
         {

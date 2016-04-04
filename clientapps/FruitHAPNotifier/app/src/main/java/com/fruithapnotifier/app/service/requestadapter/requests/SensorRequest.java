@@ -15,6 +15,7 @@
 
 package com.fruithapnotifier.app.service.requestadapter.requests;
 
+import android.net.Uri;
 import org.apache.commons.lang3.NotImplementedException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
@@ -81,5 +82,11 @@ public class SensorRequest
         requestObject.put("SensorName",sensorName);
         requestObject.put("EventType",operationName);
         return new JSONObject(requestObject);
+    }
+
+    public Uri getUri()
+    {
+        //GET /api/configuration/sensor/{name}/{operation}
+        //Uri uri = Uri.Builder
     }
 }
