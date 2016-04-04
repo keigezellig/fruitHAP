@@ -57,6 +57,13 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
             }
         }
 
+        public string ValueType
+        {
+            get
+            {
+                return this.valueType;
+            }
+        }
         public Dictionary<string,string> SupportedOperations
         {
             get
