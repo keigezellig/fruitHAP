@@ -76,7 +76,6 @@ namespace FruitHAP.Plugins.AlertNotification
 				TimeStamp = DateTime.Now,
 				SensorName = data.Sender.Name,
 				Data = CreateResponse(data),
-				EventType = data.EventName
 			};
 
 			mqProvider.Publish (sensorMessage, configuration.RoutingKey);

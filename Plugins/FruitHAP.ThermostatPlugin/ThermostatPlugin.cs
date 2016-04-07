@@ -89,8 +89,7 @@ namespace FruitHAP.Plugins.Thermostat
 				{
 					TimeStamp = DateTime.Now,
 					SensorName = data.Sender.Name,
-					Data = CreateResponse(data,true),
-					EventType = data.EventName
+					Data = CreateResponse(data,true)
 				};
 			} 
             else if (tempValue.Value.Value < configuration.ThresholdCold) 
@@ -110,8 +109,7 @@ namespace FruitHAP.Plugins.Thermostat
 				{
 					TimeStamp = DateTime.Now,
 					SensorName = data.Sender.Name,
-					Data = CreateResponse(data,false),
-					EventType = data.EventName
+					Data = CreateResponse(data,false)
 				};
 
 			} 

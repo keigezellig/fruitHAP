@@ -36,7 +36,6 @@ namespace FruitHAP.Sensor.KaKu.Devices
 				SensorEventData sensorEvent = new SensorEventData () {
 					TimeStamp = DateTime.Now,
 					Sender = this,
-					EventName = "SensorEvent",
 					OptionalData = null
 				};
 

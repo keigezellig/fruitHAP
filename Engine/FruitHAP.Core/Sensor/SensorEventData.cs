@@ -7,12 +7,11 @@ namespace FruitHAP.Core.Sensor
 	{
 		public DateTime TimeStamp {get; set;}
 		public ISensor Sender { get; set; }
-		public string EventName { get; set; }
-		public OptionalDataContainer OptionalData { get; set; }
+	    public OptionalDataContainer OptionalData { get; set; }
 
 		public override string ToString ()
 		{
-			return string.Format ("[SensorEventData: TimeStamp={0}, Sender={1}, EventName={2}, OptionalData={3}]", TimeStamp, Sender, EventName, OptionalData);
+			return string.Format ("[SensorEventData: TimeStamp={0}, Sender={1}, OptionalData={2}]", TimeStamp, Sender, OptionalData);
 		}
 	}
 }

@@ -77,7 +77,6 @@ namespace FruitHAP.Plugins.EventNotification
 				TimeStamp = DateTime.Now,
 				SensorName = data.Sender.Name,
 				Data = data.OptionalData,
-				EventType = data.EventName
 			};
 
 

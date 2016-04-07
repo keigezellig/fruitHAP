@@ -152,7 +152,6 @@ namespace FruitHAP.Sensor.KaKu
 				SensorEventData sensorEvent = new SensorEventData () {
 					TimeStamp = lastUpdateTime,
 					Sender = this,
-					EventName = "SensorEvent",
 					OptionalData = new OptionalDataContainer(state)
 				};
 

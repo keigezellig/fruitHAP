@@ -116,7 +116,6 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Sensor
             {
 				TimeStamp = sensor.GetLastUpdateTime(),
                 SensorName = sensor.Name,
-                EventType = "GetValue",
                 Data = new OptionalDataContainer(sensor.GetValue())
             };
         }
@@ -128,7 +127,6 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Sensor
                 TimeStamp = DateTime.Now,
                 Data = new CommandResult() {OperationName = operationName, Result = callResult},
                 SensorName = sensor.Name,
-                EventType = "CommandResponse"
             };
         }
 

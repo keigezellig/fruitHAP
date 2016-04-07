@@ -95,7 +95,6 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 			SensorEventData sensorEvent = new SensorEventData () {
 				TimeStamp = lastUpdated,
 				Sender = this,
-				EventName = "SensorEvent",
 				OptionalData = new OptionalDataContainer(temperature)
 			};
 
