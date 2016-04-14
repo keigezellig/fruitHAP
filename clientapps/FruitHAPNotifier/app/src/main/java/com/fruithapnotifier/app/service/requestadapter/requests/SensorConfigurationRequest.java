@@ -15,36 +15,33 @@
 
 package com.fruithapnotifier.app.service.requestadapter.requests;
 
+import android.net.Uri;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class ConfigurationRequest
+public class SensorConfigurationRequest
 {
-    private static final int MESSAGETYPE_REQUEST = 0;
-    private String operationName;
-    private Map<String, String> parameters;
+    private static final String BASEPATH = "/api/configuration/sensors/";
+    private String sensorName;
 
-    public ConfigurationRequest(String operationName, Map<String, String> parameters)
+    public SensorConfigurationRequest(String sensorName)
     {
-        this.operationName = operationName;
-        this.parameters = parameters;
+        this.sensorName = sensorName;
     }
 
-    public JSONObject toJson() throws JSONException
+    public Uri getUri(Uri baseUri)
     {
-        JSONObject requestObject = new JSONObject();
-        requestObject.put("OperationName",operationName);
-        requestObject.put("MessageType",MESSAGETYPE_REQUEST);
-        JSONObject params = new JSONObject();
-        if (parameters != null)
+        //GET /api/configuration/sensors/{sensorName}
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+        uriBuilder.appendPath(BASEPATH);
+        if (sensorName != null || !sensorName.isEmpty())
         {
-            params = new JSONObject(this.parameters);
+            uriBuilder.appendPath(sensorName);
         }
-        requestObject.put("Parameters",params);
-        return requestObject;
+        return uriBuilder.build();
+
     }
 
 }

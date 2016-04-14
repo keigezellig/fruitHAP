@@ -15,8 +15,6 @@
 
 package com.fruithapnotifier.app.service.configuration;
 
-import android.content.res.Configuration;
-import android.util.EventLog;
 import android.util.Log;
 import com.fruithapnotifier.app.common.ConfigurationEvent;
 import com.fruithapnotifier.app.common.ConfigurationLoader;
@@ -31,13 +29,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MessageQueueConfigurationLoader implements ConfigurationLoader
+public class DatabaseConfigurationLoader implements ConfigurationLoader
 {
-    private static final String TAG = MessageQueueConfigurationLoader.class.getName();
+    private static final String TAG = DatabaseConfigurationLoader.class.getName();
     private ConfigurationRepository repository;
     private RequestAdapter requestAdapter;
 
-    public MessageQueueConfigurationLoader(ConfigurationRepository repository, RequestAdapter requestAdapter)
+    public DatabaseConfigurationLoader(ConfigurationRepository repository, RequestAdapter requestAdapter)
     {
         this.repository = repository;
         this.requestAdapter = requestAdapter;

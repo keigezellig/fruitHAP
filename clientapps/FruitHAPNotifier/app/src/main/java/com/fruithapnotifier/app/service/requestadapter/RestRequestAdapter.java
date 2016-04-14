@@ -24,7 +24,6 @@ import com.fruithapnotifier.app.common.ConfigurationEvent;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.common.RequestAdapter;
 import com.fruithapnotifier.app.common.SensorEvent;
-import com.fruithapnotifier.app.service.FruithapRpcService;
 import com.fruithapnotifier.app.service.RestConsumer;
 import com.fruithapnotifier.app.service.requestadapter.requests.ConfigurationRequest;
 import com.fruithapnotifier.app.service.requestadapter.requests.SensorRequest;
@@ -34,14 +33,14 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-public class MessageQueueRequestAdapter implements RequestAdapter
+public class RestRequestAdapter implements RequestAdapter
 {
-    private static final String LOGTAG = MessageQueueRequestAdapter.class.getName() ;
+    private static final String LOGTAG = RestRequestAdapter.class.getName() ;
     private final ResultReceiver sensorRequestReceiver;
     private final ResultReceiver configurationRequestReceiver;
     private Context context;
 
-    public MessageQueueRequestAdapter(Context context)
+    public RestRequestAdapter(Context context)
     {
         this.context = context;
         sensorRequestReceiver = new ResultReceiver(new Handler()) {
