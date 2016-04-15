@@ -7,7 +7,7 @@
     <string name="pref_header_serversettings">Server instellingen</string>
     <string name="pref_server_title_hostname">Servernaam/ip</string>
     <string name="pref_general_default_hostname">localhost</string>
-    <string name="pref_server_title_port">Serverpoort</string>
+    <string name="pref_server_title_pubsub_port">Serverpoort</string>
     <string name="pref_general_default_port">5672</string>
     <string name="pref_server_title_username">Gebruikersnaam</string>
     <string name="pref_server_default_username">admin</string>
@@ -21,6 +21,6 @@
     <string name="pref_server_default_alert_topic">alerts</string>
     <string name="pref_server_title_event_topic">Topicnaam voor dashboard updates</string>
     <string name="pref_server_default_event_topic">events</string>
-    <string name="pref_server_title_rpc_exchange">Besturings exchange</string>
-    <string name="pref_server_default_rpc_exchange">FruitHAP_Rpc_Exchange</string>
+    <string name="pref_server_title_control_port" >Besturingspoort</string>
+    <string name="pref_general_default_control_port">8888</string>
 </resources>

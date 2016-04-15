@@ -15,31 +15,21 @@
 
 package com.fruithapnotifier.app.ui.main;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.fruithapnotifier.app.R;
-import com.fruithapnotifier.app.common.ConfigurationLoader;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.persistence.AlertRepository;
-import com.fruithapnotifier.app.persistence.ConfigurationRepository;
 import com.fruithapnotifier.app.service.FruithapPubSubService;
-import com.fruithapnotifier.app.service.configuration.MessageQueueConfigurationLoader;
-import com.fruithapnotifier.app.service.requestadapter.MessageQueueRequestAdapter;
 import com.fruithapnotifier.app.ui.alerts.AlertListFragment;
 import com.fruithapnotifier.app.ui.dashboard.DashboardFragment;
 

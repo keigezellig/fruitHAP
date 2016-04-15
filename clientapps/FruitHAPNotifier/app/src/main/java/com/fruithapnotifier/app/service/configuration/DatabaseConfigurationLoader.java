@@ -47,7 +47,7 @@ public class DatabaseConfigurationLoader implements ConfigurationLoader
     {
         //TODO: For now clear database, in future more 'intelligent' way of loading config (e.g. with deltas)
         repository.deleteConfigurationItems();
-        requestAdapter.sendConfigurationRequest("GetAllSensors",null);
+        requestAdapter.sendSensorConfigurationRequest("");
     }
 
     @Subscribe

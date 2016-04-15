@@ -19,6 +19,6 @@ import java.util.Map;
 
 public interface RequestAdapter
 {
-    void sendSensorRequest(String sensorName, String operationName, Map<String,String> parameters);
-    void sendConfigurationRequest(String operationName, Map<String,String> parameters);
+    void sendSensorRequest(String sensorName, String operationName);
+    void sendSensorConfigurationRequest(String sensorName);
 }

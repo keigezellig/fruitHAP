@@ -32,8 +32,8 @@ import com.fruithapnotifier.app.models.alert.Alert;
 import com.fruithapnotifier.app.models.sensor.Switch;
 import com.fruithapnotifier.app.persistence.AlertRepository;
 import com.fruithapnotifier.app.persistence.ConfigurationRepository;
-import com.fruithapnotifier.app.service.configuration.MessageQueueConfigurationLoader;
-import com.fruithapnotifier.app.service.requestadapter.MessageQueueRequestAdapter;
+import com.fruithapnotifier.app.service.configuration.DatabaseConfigurationLoader;
+import com.fruithapnotifier.app.service.requestadapter.RestRequestAdapter;
 import com.fruithapnotifier.app.ui.main.MainActivity;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
@@ -220,7 +220,7 @@ public class FruithapPubSubService extends Service
             Log.d(getClass().getName(), "Task already running");
         }
 
-        ConfigurationLoader configurationLoader = new MessageQueueConfigurationLoader(new ConfigurationRepository(this), new MessageQueueRequestAdapter(this));
+        ConfigurationLoader configurationLoader = new DatabaseConfigurationLoader(new ConfigurationRepository(this), new RestRequestAdapter(this));
         configurationLoader.loadConfiguration();
 
         return START_STICKY;

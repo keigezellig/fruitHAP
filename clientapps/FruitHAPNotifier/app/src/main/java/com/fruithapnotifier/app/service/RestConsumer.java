@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
+import com.fruithapnotifier.app.common.Constants;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -26,8 +27,6 @@ public class RestConsumer extends IntentService
     public static final String HTTP_VERB = "com.fruithapnotifier.app.service.restclient.HTTP_VERB";
     public static final String PARAMS = "com.fruithapnotifier.app.service.restclient.PARAMS";
     public static final String RESULT_RECEIVER = "com.fruithapnotifier.app.service.restclient.RESULT_RECEIVER";
-
-    public static final String REST_RESULT = "com.fruithapnotifier.app.service.restclient.REST_RESULT";
 
     public RestConsumer()
     {
@@ -118,7 +117,7 @@ public class RestConsumer extends IntentService
                 if (response.body() != null)
                 {
                     Bundle resultData = new Bundle();
-                    resultData.putString(REST_RESULT, response.body().string());
+                    resultData.putString(Constants.REST_RESULT, response.body().string());
                     receiver.send(statusCode, resultData);
                 }
                 else

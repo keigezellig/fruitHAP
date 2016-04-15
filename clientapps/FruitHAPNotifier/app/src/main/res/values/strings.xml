@@ -25,4 +25,5 @@
     <string name="action_mark_as_read">Mark all alerts as read</string>
     <string name="alert_image">Optional image going with the alert</string>
     <string name="title_dashboard">Dashboard</string>
+
 </resources>

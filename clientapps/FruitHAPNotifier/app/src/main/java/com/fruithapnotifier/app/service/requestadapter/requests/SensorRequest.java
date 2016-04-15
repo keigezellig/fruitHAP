@@ -16,77 +16,32 @@
 package com.fruithapnotifier.app.service.requestadapter.requests;
 
 import android.net.Uri;
-import org.apache.commons.lang3.NotImplementedException;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SensorRequest
 {
-    private final DateTime timeStamp;
-    private final DateTimeFormatter fmt;
+    private static final String BASEPATH = "/api/sensor/";
     private String sensorName;
     private String operationName;
-    private Map<String, String> parameters;
 
-    public SensorRequest(String sensorName, String operationName, Map<String, String> parameters)
+    public SensorRequest(String sensorName, String operationName)
     {
-        this.timeStamp = new DateTime();
         this.sensorName = sensorName;
         this.operationName = operationName;
-        this.parameters = parameters;
-        fmt = ISODateTimeFormat.dateTime();
+
     }
 
-    public JSONObject toJson() throws JSONException
+    public Uri getUri(Uri baseUri)
     {
-        if (this.operationName.equals("GetValue"))
+        //GET /api/sensor/{name}/{operation}
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+        uriBuilder.appendPath(BASEPATH).appendPath(sensorName);
+        if (operationName != null || !operationName.isEmpty())
         {
-            return createGetValueRequest();
+            uriBuilder.appendPath(operationName);
         }
 
-        return createCommandRequest();
 
-    }
+        return uriBuilder.build();
 
-    private JSONObject createCommandRequest() throws JSONException
-    {
-
-        JSONObject requestObject = new JSONObject();
-        JSONObject commandObject = new JSONObject();
-        requestObject.put("TimeStamp",timeStamp.toString(fmt));
-        commandObject.put("OperationName", operationName);
-        if (parameters != null)
-        {
-            JSONObject params = new JSONObject(this.parameters);
-            commandObject.put("Parameters", params);
-        }
-
-        requestObject.put("SensorName", sensorName);
-        requestObject.put("EventType", "Command");
-        requestObject.put("Data", commandObject);
-
-        return requestObject;
-    }
-
-    private JSONObject createGetValueRequest()
-    {
-        Map<String, String> requestObject = new HashMap<>();
-        requestObject.put("TimeStamp",timeStamp.toString(fmt));
-        requestObject.put("SensorName",sensorName);
-        requestObject.put("EventType",operationName);
-        return new JSONObject(requestObject);
-    }
-
-    public Uri getUri()
-    {
-        //GET /api/configuration/sensor/{name}/{operation}
-        //Uri uri = Uri.Builder
     }
 }

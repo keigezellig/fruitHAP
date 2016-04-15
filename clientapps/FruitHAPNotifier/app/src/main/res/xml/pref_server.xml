@@ -10,12 +10,22 @@
         android:maxLines="1" />
 
     <EditTextPreference
-        android:key="pref_server_port"
-        android:title="@string/pref_server_title_port"
+        android:key="pref_server_pubsub_port"
+        android:title="@string/pref_server_title_pubsub_port"
         android:defaultValue="@string/pref_general_default_port"
         android:singleLine="true"
         android:numeric="integer"
         android:maxLines="1" />
+
+    <EditTextPreference
+        android:key="pref_server_control_port"
+        android:title="@string/pref_server_title_control_port"
+        android:defaultValue="@string/pref_general_default_control_port"
+        android:singleLine="true"
+        android:numeric="integer"
+        android:maxLines="1" />
+
+
 
     <EditTextPreference
         android:key="pref_server_username"
@@ -47,12 +57,6 @@
         android:singleLine="true"
         android:maxLines="1" />
 
-    <EditTextPreference
-        android:key="pref_server_rpc_exchange"
-        android:title="@string/pref_server_title_rpc_exchange"
-        android:defaultValue="@string/pref_server_default_rpc_exchange"
-        android:singleLine="true"
-        android:maxLines="1" />
 
     <EditTextPreference
         android:key="pref_server_alert_topic"

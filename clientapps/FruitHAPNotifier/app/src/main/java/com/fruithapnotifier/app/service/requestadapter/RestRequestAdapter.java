@@ -16,33 +16,43 @@
 package com.fruithapnotifier.app.service.requestadapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import com.fruithapnotifier.app.common.ConfigurationEvent;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.common.RequestAdapter;
 import com.fruithapnotifier.app.common.SensorEvent;
 import com.fruithapnotifier.app.service.RestConsumer;
-import com.fruithapnotifier.app.service.requestadapter.requests.ConfigurationRequest;
+import com.fruithapnotifier.app.service.requestadapter.requests.SensorConfigurationRequest;
 import com.fruithapnotifier.app.service.requestadapter.requests.SensorRequest;
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Map;
 
 public class RestRequestAdapter implements RequestAdapter
 {
     private static final String LOGTAG = RestRequestAdapter.class.getName() ;
     private final ResultReceiver sensorRequestReceiver;
     private final ResultReceiver configurationRequestReceiver;
+    private final Uri baseUri;
     private Context context;
+
 
     public RestRequestAdapter(Context context)
     {
         this.context = context;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.context);
+        String controlHost = preferences.getString("pref_server_hostname","localhost");
+        int controlPort = preferences.getInt("pref_server_control_port",8888);
+        Uri.Builder uriBuilder = new Uri.Builder();
+        uriBuilder.scheme("http").authority(controlHost+":"+controlPort);
+        baseUri = uriBuilder.build();
+
         sensorRequestReceiver = new ResultReceiver(new Handler()) {
             @Override
             protected void onReceiveResult(int resultCode, Bundle resultData)
@@ -69,9 +79,10 @@ public class RestRequestAdapter implements RequestAdapter
             @Override
             protected void onReceiveResult(int resultCode, Bundle resultData)
             {
-                if (resultCode == Constants.RPC_REQUEST_OK)
+                String response = resultData.getString(Constants.REST_RESULT);
+
+                if (resultCode == 200)
                 {
-                    String response = resultData.getString(Constants.RPC_RESULTDATA);
                     try
                     {
                         JSONObject configurationData = new JSONObject(response);
@@ -84,6 +95,11 @@ public class RestRequestAdapter implements RequestAdapter
                         Log.e(LOGTAG, "Message error", e);
                     }
                 }
+                else
+                {
+                    Log.e(LOGTAG,"Configuration request failed with code: "+resultCode);
+                    Log.e(LOGTAG,"Response=: "+response);
+                }
             }
         };
 
@@ -92,31 +108,17 @@ public class RestRequestAdapter implements RequestAdapter
     }
 
     @Override
-    public void sendSensorRequest(String sensorName, String operationName, Map<String, String> parameters)
+    public void sendSensorRequest(String sensorName, String operationName)
     {
-        try
-        {
-            SensorRequest request = new SensorRequest(sensorName, operationName, parameters);
-            RestConsumer.executeRequest(context,RestConsumer.GET,request.getUri(),null,sensorRequestReceiver);
-        }
-        catch (JSONException jex)
-        {
-            Log.e(LOGTAG, "Error in request", jex);
-        }
+        SensorRequest request = new SensorRequest(sensorName, operationName);
+        RestConsumer.executeRequest(context,RestConsumer.GET,request.getUri(baseUri),null,sensorRequestReceiver);
 
     }
 
     @Override
-    public void sendConfigurationRequest(String operationName, Map<String, String> parameters)
+    public void sendSensorConfigurationRequest(String sensorName)
     {
-        try
-        {
-            ConfigurationRequest request = new ConfigurationRequest(operationName, parameters);
-            RestConsumer.executeRequest(context,RestConsumer.GET,request.getUri(),null, configurationRequestReceiver);
-        }
-        catch (JSONException jex)
-        {
-            Log.e(LOGTAG, "Error in request", jex);
-        }
+        SensorConfigurationRequest request = new SensorConfigurationRequest(sensorName);
+        RestConsumer.executeRequest(context,RestConsumer.GET,request.getUri(baseUri),null, configurationRequestReceiver);
     }
 }

@@ -175,12 +175,12 @@ public class ApplicationSettingsActivity extends PreferenceActivity
             // updated to reflect the new value, per the Android Design
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("pref_server_hostname"));
-            bindPreferenceSummaryToValue(findPreference("pref_server_port"));
+            bindPreferenceSummaryToValue(findPreference("pref_server_pubsub_port"));
+            bindPreferenceSummaryToValue(findPreference("pref_server_control_port"));
             bindPreferenceSummaryToValue(findPreference("pref_server_username"));
             bindPreferenceSummaryToValue(findPreference("pref_server_password"));
             bindPreferenceSummaryToValue(findPreference("pref_server_vhost"));
             bindPreferenceSummaryToValue(findPreference("pref_server_event_exchange"));
-            bindPreferenceSummaryToValue(findPreference("pref_server_rpc_exchange"));
             bindPreferenceSummaryToValue(findPreference("pref_server_alert_topic"));
             bindPreferenceSummaryToValue(findPreference("pref_server_event_topic"));
         }

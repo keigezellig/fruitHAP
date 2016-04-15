@@ -44,6 +44,7 @@ public class Constants
     public static final String ALERTS_RANGEUPDATED = "com.fruithapnotifier.app.action.ALERTS_RANGEUPDATED";
     public static final String ALERT_RANGEDATA = "com.fruithapnotifier.app.data.ALERT_RANGEDATA";
     public static final String ALERT_DATA = "com.fruithapnotifier.app.data.ALERT_DATA";
+    public static final String REST_RESULT = "com.fruithapnotifier.app.service.restclient.REST_RESULT";
 
     public static String STOP_ACTION = "com.fruithapnotifier.app.action.STOP_SERVICE";
     public static String INCOMING_MESSAGE = "com.fruithapnotifier.app.action.INCOMING_MESSAGE";

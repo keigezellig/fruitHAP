@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import com.fruithapnotifier.app.common.RequestAdapter;
 import com.fruithapnotifier.app.common.SensorEvent;
-import com.fruithapnotifier.app.service.requestadapter.MessageQueueRequestAdapter;
+import com.fruithapnotifier.app.service.requestadapter.RestRequestAdapter;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
@@ -59,23 +59,23 @@ public class Switch
         this.name = name;
         this.description = description;
         this.category = category;
-        requestAdapter = new MessageQueueRequestAdapter(ctx);
+        requestAdapter = new RestRequestAdapter(ctx);
         EventBus.getDefault().register(this);
     }
 
     public void requestUpdate()
     {
-        requestAdapter.sendSensorRequest(this.name, "GetValue", null);
+        requestAdapter.sendSensorRequest(this.name, "GetValue");
     }
 
     public void turnOn()
     {
-        requestAdapter.sendSensorRequest(this.name, "TurnOn", null);
+        requestAdapter.sendSensorRequest(this.name, "TurnOn");
     }
 
     public void turnOff()
     {
-        requestAdapter.sendSensorRequest(this.name, "TurnOff", null);
+        requestAdapter.sendSensorRequest(this.name, "TurnOff");
     }
 
     @Subscribe
