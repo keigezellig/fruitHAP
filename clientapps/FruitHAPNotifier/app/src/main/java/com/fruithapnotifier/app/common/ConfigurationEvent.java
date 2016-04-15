@@ -15,18 +15,18 @@
 
 package com.fruithapnotifier.app.common;
 
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class ConfigurationEvent
 {
-    private JSONObject eventData;
+    private JSONArray eventData;
 
-    public ConfigurationEvent(JSONObject eventData)
+    public ConfigurationEvent(JSONArray eventData)
     {
         this.eventData = eventData;
     }
 
-    public JSONObject getEventData()
+    public JSONArray getEventData()
     {
         return eventData;
     }

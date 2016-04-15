@@ -53,23 +53,23 @@ public class DatabaseConfigurationLoader implements ConfigurationLoader
     @Subscribe
     public void onConfigurationReceived(ConfigurationEvent configurationEvent)
     {
-        JSONObject eventData = configurationEvent.getEventData();
+        JSONArray sensorConfiguration = configurationEvent.getEventData();
         try
         {
-            if (eventData.getString("OperationName").equals("GetAllSensors"))
-            {
-                JSONObject dataObject = eventData.getJSONObject("Data");
-                JSONArray sensorList = dataObject.getJSONArray("$values");
-
-                for (int i = 0; i < sensorList.length(); i++)
+                for (int i = 0; i < sensorConfiguration.length(); i++)
                 {
-                    JSONObject sensorObject = sensorList.getJSONObject(i);
-                    JSONObject parameters = sensorObject.getJSONObject("Parameters");
-                    SensorType sensorType = determineSensorType(sensorObject.getString("Type"));
-                    ConfigurationItem configItem = new ConfigurationItem(parameters.getString("Name"), parameters.getString("Description"), parameters.getString("Category"), sensorType);
-                    repository.insertConfigurationItem(configItem);
+                    JSONObject sensorObject = sensorConfiguration.getJSONObject(i);
+                    String name = sensorObject.getString("Name");
+                    String description = sensorObject.getString("Description");
+                    String category = sensorObject.getString("Category");
+                    SensorType sensorType = determineSensorType(sensorObject);
+                    if (sensorType != SensorType.NotSupported)
+                    {
+                        ConfigurationItem configItem = new ConfigurationItem(name, description,category, sensorType);
+                        repository.insertConfigurationItem(configItem);
+                    }
                 }
-            }
+
             EventBus.getDefault().cancelEventDelivery(configurationEvent);
         }
         catch (JSONException jex)
@@ -79,25 +79,73 @@ public class DatabaseConfigurationLoader implements ConfigurationLoader
      
     }
 
-    private SensorType determineSensorType(String type)
+    private SensorType determineSensorType(JSONObject sensorObject) throws JSONException
     {
-        //NB: This determine sensor type by convention, e.g. when 'Switch' is in the typename then type is Switch
+        JSONObject supportedOperations = sensorObject.getJSONObject("SupportedOperations");
+        String valueType = sensorObject.getString("ValueType");
 
-        if (StringUtils.containsIgnoreCase(type,"Switch"))
-        {
-            return SensorType.Switch;
-        }
-
-        if (StringUtils.containsIgnoreCase(type,"Button"))
+        if (isButton(supportedOperations, valueType))
         {
             return SensorType.Button;
         }
 
-        if (StringUtils.containsIgnoreCase(type,"Camera"))
+
+        if (isReadOnlySwitch(supportedOperations,valueType))
+        {
+            return SensorType.ReadOnlySwitch;
+        }
+
+        if (isSwitch(supportedOperations,valueType))
+        {
+            return SensorType.ReadOnlySwitch;
+        }
+
+        if (isImageValue(supportedOperations,valueType))
         {
             return SensorType.ImageValue;
         }
 
-        return SensorType.UnitValue;
+        if (isTextValue(supportedOperations,valueType))
+        {
+            return SensorType.TextValue;
+        }
+
+        if (isUnitValue(supportedOperations,valueType))
+        {
+            return SensorType.UnitValue;
+        }
+
+        return SensorType.NotSupported;
+    }
+
+    private boolean isUnitValue(JSONObject supportedOperations, String valueType)
+    {
+        return supportedOperations.has("GetValue") && supportedOperations.has("GetLastUpdateTime") && valueType.contains("QuantityValue");
+    }
+
+    private boolean isTextValue(JSONObject supportedOperations, String valueType)
+    {
+        return supportedOperations.has("GetValue") && supportedOperations.has("GetLastUpdateTime") && valueType.equals("TextValue");
+    }
+
+    private boolean isImageValue(JSONObject supportedOperations, String valueType)
+    {
+        return supportedOperations.has("GetValue") && supportedOperations.has("GetLastUpdateTime") && valueType.equals("ImageValue");
+    }
+
+    private boolean isSwitch(JSONObject supportedOperations, String valueType)
+    {
+        return supportedOperations.has("GetValue") && supportedOperations.has("GetLastUpdateTime") && valueType.equals("OnOffValue")
+                && supportedOperations.has("TurnOn") && supportedOperations.has("TurnOff");
+    }
+
+    private boolean isReadOnlySwitch(JSONObject supportedOperations, String valueType)
+    {
+        return supportedOperations.has("GetValue") && supportedOperations.has("GetLastUpdateTime") && valueType.equals("OnOffValue");
+    }
+
+    private boolean isButton(JSONObject supportedOperations, String valueType)
+    {
+        return (supportedOperations.has("PressButton")) && (valueType == null);
     }
 }

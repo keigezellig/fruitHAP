@@ -17,5 +17,5 @@ package com.fruithapnotifier.app.models.configuration;
 
 public enum SensorType
 {
-    Switch, Button, UnitValue, ImageValue
+    NotSupported, Switch, ReadOnlySwitch, Button, UnitValue, ImageValue, TextValue
 }
