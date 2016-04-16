@@ -33,6 +33,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 {
     private List<SwitchViewModel> items;
     private final int SWITCHITEM = 0;
+    private final int READONLY_SWITCHITEM = 1;
 
     public DashboardAdapter(List<SwitchViewModel> items)
     {
@@ -82,6 +83,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             switchViewHolder.getTxtLastupdated().setText(item.getLastUpdated());
 
             switchViewHolder.getSwState().setChecked(item.getState() == SwitchState.ON);
+
             switchViewHolder.getSwState().setOnClickListener(new View.OnClickListener()
             {
                 @Override
@@ -99,21 +101,6 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                 }
             });
-//            switchViewHolder.getSwState().setOnClickListener(
-//                     new CompoundButton.OnCheckedChangeListener() {
-//                @Override
-//                public void onCheckedChanged(CompoundButton compoundButton, boolean b)
-//                {
-//                    SwitchState state = SwitchState.OFF;
-//                    if (b)
-//                    {
-//                        state = SwitchState.ON;
-//                    }
-//
-//                    item.setState(state,true);
-//
-//                }
-//            });
         }
     }
 
@@ -121,7 +108,8 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public int getItemViewType(int position) {
         if (items.get(position) instanceof SwitchViewModel)
         {
-            return SWITCHITEM;
+            SwitchViewModel item = items.get(position);
+            return item.isReadOnly() ? READONLY_SWITCHITEM : SWITCHITEM;
         }
 
         return -1;

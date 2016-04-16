@@ -52,6 +52,11 @@ public class SwitchViewModel
         return lastUpdated;
     }
 
+    public boolean isReadOnly()
+    {
+        return model.isReadÓnly();
+    }
+
     public void setState(SwitchState newState, boolean shouldUpdateModel)
     {
         state = newState;

@@ -71,7 +71,7 @@ public class ConfigurationRepository
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        Cursor cursor = database.query(SqlHelper.TABLE_CONFIG, allColumns, SqlHelper.COLUMN_CONFIG_TYPE + "=?",new String[] {SensorType.Switch.ordinal() + ""}, null, null, null);
+        Cursor cursor = database.query(SqlHelper.TABLE_CONFIG, allColumns, SqlHelper.COLUMN_CONFIG_TYPE + "=? OR "+SqlHelper.COLUMN_CONFIG_TYPE + "=?",new String[] {SensorType.Switch.ordinal() + "", SensorType.ReadOnlySwitch.ordinal() + "" }, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast())
@@ -92,8 +92,8 @@ public class ConfigurationRepository
         String sensorName = cursor.getString(cursor.getColumnIndex(SqlHelper.COLUMN_CONFIG_SENSORNAME));
         String description = cursor.getString(cursor.getColumnIndex(SqlHelper.COLUMN_CONFIG_DESCRIPTION));
         String category = cursor.getString(cursor.getColumnIndex(SqlHelper.COLUMN_CONFIG_CATEGORY));
-
-        return new Switch(sensorName,description,category,context);
+        boolean isReadOnly = (cursor.getInt(cursor.getColumnIndex(SqlHelper.COLUMN_CONFIG_TYPE)) == SensorType.ReadOnlySwitch.ordinal());
+        return new Switch(sensorName,description,category,isReadOnly,context);
 
     }
 }

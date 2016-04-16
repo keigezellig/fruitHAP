@@ -17,6 +17,7 @@ public class Switch
 {
     private static final String TAG = "Switch" ;
     private final RequestAdapter requestAdapter;
+    private final boolean isReadÓnly;
     private String name;
     private String description;
     private String category;
@@ -38,6 +39,11 @@ public class Switch
         return category;
     }
 
+    public boolean isReadÓnly()
+    {
+        return isReadÓnly;
+    }
+
     public void updateValue(SwitchState newValue, DateTime timestamp)
     {
         if (newValue != value)
@@ -54,11 +60,12 @@ public class Switch
         EventBus.getDefault().post(switchChangedEvent);
     }
 
-    public Switch(String name, String description, String category, Context ctx )
+    public Switch(String name, String description, String category, boolean isReadOnly, Context ctx)
     {
         this.name = name;
         this.description = description;
         this.category = category;
+        this.isReadÓnly = isReadOnly;
         requestAdapter = new RestRequestAdapter(ctx);
         EventBus.getDefault().register(this);
     }
@@ -70,12 +77,26 @@ public class Switch
 
     public void turnOn()
     {
-        requestAdapter.sendSensorRequest(this.name, "TurnOn");
+        if (!isReadÓnly)
+        {
+            requestAdapter.sendSensorRequest(this.name, "TurnOn");
+        }
+        else
+        {
+            Log.w(TAG, "turnOn: Cannot change state of a read only switch");
+        }
     }
 
     public void turnOff()
     {
-        requestAdapter.sendSensorRequest(this.name, "TurnOff");
+        if (!isReadÓnly)
+        {
+            requestAdapter.sendSensorRequest(this.name, "TurnOff");
+        }
+        else
+        {
+            Log.w(TAG, "turnOff: Cannot change state of a read only switch");
+        }
     }
 
     @Subscribe
