@@ -95,6 +95,7 @@
     <Compile Include="Sensor\PacketData\General\NakPacket.cs" />
     <Compile Include="Service\IFruitHAPService.cs" />
     <Compile Include="Service\FruitHAPService.cs" />
+    <Compile Include="Sensor\SensorTypes\IControllableSwitch.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -10,19 +10,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2de12e7b-7318-456f-a51b-4655796727ae" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../Engine/FruitHAP.Core/Sensor/OptionalDataContainer.cs" afterPath="$PROJECT_DIR$/../../Engine/FruitHAP.Core/Sensor/OptionalDataContainer.cs" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../Plugins/FruitHAP.AlertNotificationPlugin/alert_notification.json" afterPath="$PROJECT_DIR$/../../Plugins/FruitHAP.AlertNotificationPlugin/alert_notification.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../Plugins/FruitHAP.WebPlugin/ApiControllers/Sensor/SensorController.cs" afterPath="$PROJECT_DIR$/../../Plugins/FruitHAP.WebPlugin/ApiControllers/Sensor/SensorController.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../Engine/FruitHAP.Core/Sensor/SensorTypes/IUpdatableSwitch.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../Sensors/FruitHAP.Sensor.KaKu/Devices/KakuReadOnlySwitch.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../Engine/FruitHAP.Core/FruitHAP.Core.csproj" afterPath="$PROJECT_DIR$/../../Engine/FruitHAP.Core/FruitHAP.Core.csproj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../Engine/FruitHAP.Core/Sensor/SensorTypes/ISwitch.cs" afterPath="$PROJECT_DIR$/../../Engine/FruitHAP.Core/Sensor/SensorTypes/ISwitch.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../Engine/FruitHAP.Startup/sensors.json" afterPath="$PROJECT_DIR$/../../Engine/FruitHAP.Startup/sensors.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../Plugins/FruitHAP.ThermostatPlugin/ThermostatPlugin.cs" afterPath="$PROJECT_DIR$/../../Plugins/FruitHAP.ThermostatPlugin/ThermostatPlugin.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../Sensors/FruitHAP.Sensor.KaKu/Devices/KakuSwitch.cs" afterPath="$PROJECT_DIR$/../../Sensors/FruitHAP.Sensor.KaKu/Devices/KakuSwitch.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../Sensors/FruitHAP.Sensor.KaKu/FruitHAP.Sensor.KaKu.csproj" afterPath="$PROJECT_DIR$/../../Sensors/FruitHAP.Sensor.KaKu/FruitHAP.Sensor.KaKu.csproj" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FruitHAPNotifier.iws" afterPath="$PROJECT_DIR$/FruitHAPNotifier.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/models/sensor/Switch.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/models/sensor/Switch.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/service/RestConsumer.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/service/RestConsumer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/service/configuration/DatabaseConfigurationLoader.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/service/configuration/DatabaseConfigurationLoader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/service/requestadapter/RestRequestAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/service/requestadapter/RestRequestAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/service/requestadapter/requests/SensorRequest.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/service/requestadapter/requests/SensorRequest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/DashboardAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/DashboardAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/DashboardFragment.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/DashboardFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/viewmodels/SwitchState.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/viewmodels/SwitchState.java" />
     </list>
     <ignored path="FruitHAPNotifier.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -2782,12 +2778,12 @@
       <workItem from="1460479916783" duration="19000" />
       <workItem from="1460568336707" duration="7084000" />
       <workItem from="1460662440218" duration="3372000" />
-      <workItem from="1460732982465" duration="9260000" />
+      <workItem from="1460732982465" duration="9808000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="30432000" />
+    <option name="totallyTimeSpent" value="30980000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="25" width="1922" height="1055" extended-state="6" />
@@ -2797,7 +2793,7 @@
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Monitor" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32976446" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32976446" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />

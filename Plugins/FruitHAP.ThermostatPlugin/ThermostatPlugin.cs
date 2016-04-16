@@ -26,8 +26,8 @@ namespace FruitHAP.Plugins.Thermostat
         private ThermostatConfiguration configuration;
 		private IEventBus eventBus;
 
-		ISwitch switchAbove;
-		ISwitch switchBelow;
+        IControllableSwitch switchAbove;
+        IControllableSwitch switchBelow;
 
 		public ThermostatPlugin(ISensorRepository sensorRepository, 
 								  ILogger logger, 
@@ -50,8 +50,8 @@ namespace FruitHAP.Plugins.Thermostat
 			logger.InfoFormat ("Loading configuration");
 			configuration = configurationProvider.LoadConfigFromFile (Path.Combine (Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location), CONFIG_FILENAME));
 
-			switchAbove = sensorRepository.FindSensorOfTypeByName<ISwitch> (configuration.SwitchAbove);
-			switchBelow = sensorRepository.FindSensorOfTypeByName<ISwitch> (configuration.SwitchBelow);
+			switchAbove = sensorRepository.FindSensorOfTypeByName<IControllableSwitch> (configuration.SwitchAbove);
+            switchBelow = sensorRepository.FindSensorOfTypeByName<IControllableSwitch> (configuration.SwitchBelow);
 			if (switchAbove == null && switchBelow == null) 
 			{
                 logger.ErrorFormat ("Cannot find switches {0} and {1}, so plugin will not be started ",configuration.SwitchAbove, configuration.SwitchBelow);

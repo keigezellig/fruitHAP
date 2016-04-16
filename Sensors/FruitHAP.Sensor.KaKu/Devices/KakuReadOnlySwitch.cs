@@ -1,7 +1,6 @@
 ﻿using System;
 using Castle.Core.Logging;
 using FruitHAP.Common.EventBus;
-using FruitHAP.Core.Controller;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Core.Sensor.SensorTypes;
 using FruitHAP.Core.Sensor.SensorValueTypes;
@@ -10,7 +9,7 @@ using FruitHAP.Sensor.PacketData.AC;
 
 namespace FruitHAP.Sensor.KaKu
 {
-	public class KakuSwitch : KakuDevice, IControllableSwitch
+	public class KakuReadOnlySwitch : KakuDevice, ISwitch
 	{
 		private ACCommand onCommand;
 		private ACCommand offCommand;
@@ -18,7 +17,7 @@ namespace FruitHAP.Sensor.KaKu
 		private Trigger trigger;		
 		private DateTime lastUpdateTime;
 
-		public KakuSwitch(IEventBus eventBus, ILogger logger) : base(eventBus,logger)
+        public KakuReadOnlySwitch(IEventBus eventBus, ILogger logger) : base(eventBus,logger)
 		{
 			state = new OnOffValue () { Value = StateValue.Undefined };
 			this.lastUpdateTime = DateTime.Now;
@@ -50,25 +49,6 @@ namespace FruitHAP.Sensor.KaKu
 			}
 		}
             
-		public void TurnOn ()
-		{
-		    UpdateState (StateValue.On);
-		}
-
-		public void TurnOff ()
-		{
-            UpdateState (StateValue.Off);            
-        }
-
-		private void UpdateState (StateValue newState)
-		{
-			if (state.Value == newState) 
-			{
-				return;
-			}
-
-			TriggerControllerEvent(newState);
-		}
 
 		public OnOffValue State 
 		{
@@ -92,7 +72,7 @@ namespace FruitHAP.Sensor.KaKu
 
 		public override object Clone ()
 		{
-			return new KakuSwitch(this.eventBus, this.logger);
+			return new KakuReadOnlySwitch(this.eventBus, this.logger);
 		}
 
 		#endregion
@@ -131,27 +111,7 @@ namespace FruitHAP.Sensor.KaKu
 
 				eventBus.Publish(sensorEvent);
 			}
-		}
-
-		private void TriggerControllerEvent (StateValue state)
-		{
-			logger.Debug ("Firing controller event");
-			if (state == StateValue.Undefined) 
-			{
-				logger.Error ("Cannot send UNDEFINED switch state to controller");
-				return;
-			}
-
-			var data = new ACPacket () {
-				DeviceId = deviceId,
-				UnitCode = unitCode,
-				Command = state == StateValue.On ? OnCommand : OffCommand,
-				Level = 0
-			};
-                    
-         
-            eventBus.Publish(new ControllerEventData<ACPacket>() { Direction = Direction.ToController, Payload = data});    
-		}
+		}            		
 			
 		private StateValue DetermineNewState (ACPacket decodedData)
 		{
