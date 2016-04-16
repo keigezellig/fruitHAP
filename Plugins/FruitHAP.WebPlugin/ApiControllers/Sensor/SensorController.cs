@@ -125,7 +125,7 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Sensor
             return new SensorMessage()
             {
                 TimeStamp = DateTime.Now,
-                Data = new CommandResult() {OperationName = operationName, Result = callResult},
+                Data = new OptionalDataContainer(new CommandResult() {OperationName = operationName, Result = callResult}),
                 SensorName = sensor.Name,
             };
         }

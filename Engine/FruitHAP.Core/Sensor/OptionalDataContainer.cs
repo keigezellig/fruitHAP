@@ -5,9 +5,9 @@ namespace FruitHAP.Core.Sensor
 {
 	public class OptionalDataContainer
 	{
-        private ISensorValueType content;
+        private object content;
 		
-		public ISensorValueType Content 
+        public object Content 
         { 
             get
             {
@@ -22,7 +22,7 @@ namespace FruitHAP.Core.Sensor
 				return content.GetType().Name;
 			}
 		}
-		public OptionalDataContainer (ISensorValueType content)
+		public OptionalDataContainer (object content)
 		{						
 			this.content = content;
 		}

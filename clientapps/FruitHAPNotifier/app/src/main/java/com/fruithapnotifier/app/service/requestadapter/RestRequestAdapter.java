@@ -31,6 +31,7 @@ import com.fruithapnotifier.app.service.RestConsumer;
 import com.fruithapnotifier.app.service.requestadapter.requests.SensorConfigurationRequest;
 import com.fruithapnotifier.app.service.requestadapter.requests.SensorRequest;
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,18 +49,20 @@ public class RestRequestAdapter implements RequestAdapter
         this.context = context;
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.context);
         String controlHost = preferences.getString("pref_server_hostname","localhost");
-        int controlPort = preferences.getInt("pref_server_control_port",8888);
+        int controlPort = Integer.valueOf(preferences.getString("pref_server_control_port","8888"));
         Uri.Builder uriBuilder = new Uri.Builder();
-        uriBuilder.scheme("http").authority(controlHost+":"+controlPort);
+        uriBuilder.scheme("http").encodedAuthority(controlHost+":"+controlPort);
         baseUri = uriBuilder.build();
 
         sensorRequestReceiver = new ResultReceiver(new Handler()) {
             @Override
             protected void onReceiveResult(int resultCode, Bundle resultData)
             {
-                if (resultCode == Constants.RPC_REQUEST_OK)
+
+                String response = resultData.getString(Constants.REST_RESULT);
+
+                if (resultCode == 200)
                 {
-                    String response = resultData.getString(Constants.RPC_RESULTDATA);
                     try
                     {
                         JSONObject eventData = new JSONObject(response);
@@ -72,6 +75,12 @@ public class RestRequestAdapter implements RequestAdapter
                         Log.e(LOGTAG, "Message error", e);
                     }
                 }
+                else
+                {
+                    Log.e(LOGTAG,"Sensor request failed with code: "+resultCode);
+                    Log.e(LOGTAG,"Response=: "+response);
+                }
+
             }
         };
 
@@ -85,7 +94,7 @@ public class RestRequestAdapter implements RequestAdapter
                 {
                     try
                     {
-                        JSONObject configurationData = new JSONObject(response);
+                        JSONArray configurationData = new JSONArray(response);
                         ConfigurationEvent configurationEvent = new ConfigurationEvent(configurationData);
                         EventBus.getDefault().post(configurationEvent);
 

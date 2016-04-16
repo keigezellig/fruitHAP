@@ -81,31 +81,39 @@ public class Switch
     @Subscribe
     public void onSensorResponseReceived(SensorEvent sensorEvent)
     {
-
-        DateTime timestamp = new DateTime();
-        SwitchState value = SwitchState.UNDEFINED;
-        String eventType =  sensorEvent.getEventData().optString("EventType", "");
-        String sensorName = sensorEvent.getEventData().optString("SensorName", "");
-
-        Log.d(TAG, "onSensorResponseReceived: Received response:"+sensorEvent.getEventData());
-
-        if (sensorName.equals(this.name) && ( eventType.equals("SensorEvent") || eventType.equals("GetValue") ))
+        try
         {
-            try
-            {
-                Log.d(TAG, "onSensorResponseReceived: This one is for " + this.name);
-                DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
-                timestamp = new DateTime(fmt.parseDateTime(sensorEvent.getEventData().getString("TimeStamp")));
-                int state = sensorEvent.getEventData().getJSONObject("Data").getInt("Content");
-                value = SwitchState.values()[state];
-            }
-            catch (JSONException jex)
-            {
-                Log.e(TAG, "onSensorResponseReceived: Error while receiving update", jex);
-            }
+            String sensorName = sensorEvent.getEventData().getString("SensorName");
+            String typeName = sensorEvent.getEventData().getJSONObject("Data").getString("TypeName");
 
-            updateValue(value,timestamp);
+            Log.d(TAG, "onSensorResponseReceived: Received response:" + sensorEvent.getEventData());
+
+            if (sensorName.equals(this.name) && typeName.equals("OnOffValue"))
+            {
+                try
+                {
+                    Log.d(TAG, "onSensorResponseReceived: This one is for switch " + this.name);
+                    DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+                    DateTime timestamp = new DateTime(fmt.parseDateTime(sensorEvent.getEventData().getString("TimeStamp")));
+                    int state = sensorEvent.getEventData().getJSONObject("Data").getJSONObject("Content").getInt("Value");
+                    SwitchState value = SwitchState.values()[state];
+                    updateValue(value, timestamp);
+                }
+                catch (JSONException jex)
+                {
+                    Log.e(TAG, "onSensorResponseReceived: Error while receiving update for sensor "+this.name, jex);
+                    updateValue(SwitchState.UNDEFINED, DateTime.now());
+                }
+
+            }
         }
+        catch (JSONException jex)
+        {
+            Log.e(TAG, "onSensorResponseReceived: Invalid data received", jex);
+        }
+
+
+
     }
 
     public void subscribeToUpdates()

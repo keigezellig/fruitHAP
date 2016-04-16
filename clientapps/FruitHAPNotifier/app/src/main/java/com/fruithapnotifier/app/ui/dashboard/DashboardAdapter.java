@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.Switch;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.ui.dashboard.viewholders.SwitchViewHolder;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchState;
@@ -73,7 +74,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private void configureSwitchViewHolder(SwitchViewHolder switchViewHolder, final int position)
     {
-        final SwitchViewModel item = (SwitchViewModel) items.get(position);
+        final SwitchViewModel item = items.get(position);
         if (item != null)
         {
             switchViewHolder.getTxtName().setText(item.getName());
@@ -81,21 +82,38 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             switchViewHolder.getTxtLastupdated().setText(item.getLastUpdated());
 
             switchViewHolder.getSwState().setChecked(item.getState() == SwitchState.ON);
-            switchViewHolder.getSwState().setOnCheckedChangeListener(
-                     new CompoundButton.OnCheckedChangeListener() {
+            switchViewHolder.getSwState().setOnClickListener(new View.OnClickListener()
+            {
                 @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+                public void onClick(View view)
                 {
-                    SwitchState state = SwitchState.OFF;
-                    if (b)
+                    Switch theSwitch = (Switch)view;
+                    if (theSwitch.isChecked())
                     {
-                        state = SwitchState.ON;
+                        item.setState(SwitchState.ON,true);
                     }
-
-                    item.setState(state,true);
+                    else
+                    {
+                        item.setState(SwitchState.OFF,true);
+                    }
 
                 }
             });
+//            switchViewHolder.getSwState().setOnClickListener(
+//                     new CompoundButton.OnCheckedChangeListener() {
+//                @Override
+//                public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+//                {
+//                    SwitchState state = SwitchState.OFF;
+//                    if (b)
+//                    {
+//                        state = SwitchState.ON;
+//                    }
+//
+//                    item.setState(state,true);
+//
+//                }
+//            });
         }
     }
 

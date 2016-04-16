@@ -114,28 +114,35 @@ public class RestConsumer extends IntentService
                 // class has a method named send() that can send back a code and a Bundle
                 // of data. ResultReceiver and IntentService abstract away all the IPC code
                 // we would need to write to normally make this work.
+
+                Bundle resultData = new Bundle();
+
                 if (response.body() != null)
                 {
-                    Bundle resultData = new Bundle();
                     resultData.putString(Constants.REST_RESULT, response.body().string());
-                    receiver.send(statusCode, resultData);
                 }
                 else
                 {
-                    receiver.send(statusCode, null);
+                    resultData.putString(Constants.REST_RESULT, null);
                 }
+
+                receiver.send(statusCode, resultData);
             }
         }
         catch (UnsupportedEncodingException e)
         {
             Log.e(TAG, "A UrlEncodedFormEntity was created with an unsupported encoding.", e);
-            receiver.send(0, null);
+            Bundle resultData = new Bundle();
+            resultData.putString(Constants.REST_RESULT,null);
+            receiver.send(0, resultData);
         }
 
         catch (IOException e)
         {
             Log.e(TAG, "There was a problem when sending the request.", e);
-            receiver.send(0, null);
+            Bundle resultData = new Bundle();
+            resultData.putString(Constants.REST_RESULT,null);
+            receiver.send(0, resultData);
         }
     }
 

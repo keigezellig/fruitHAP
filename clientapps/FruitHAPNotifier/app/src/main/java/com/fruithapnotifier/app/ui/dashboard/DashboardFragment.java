@@ -72,6 +72,7 @@ public class DashboardFragment extends Fragment
         if (context instanceof Activity)
         {
             activity = (Activity) context;
+
             try
             {
                 title = getString(R.string.title_dashboard);

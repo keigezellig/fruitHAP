@@ -89,13 +89,12 @@ public class DatabaseConfigurationLoader implements ConfigurationLoader
             return SensorType.Button;
         }
 
-
-        if (isReadOnlySwitch(supportedOperations,valueType))
+        if (isSwitch(supportedOperations,valueType))
         {
-            return SensorType.ReadOnlySwitch;
+            return SensorType.Switch;
         }
 
-        if (isSwitch(supportedOperations,valueType))
+        if (isReadOnlySwitch(supportedOperations,valueType))
         {
             return SensorType.ReadOnlySwitch;
         }

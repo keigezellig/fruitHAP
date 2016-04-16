@@ -34,7 +34,7 @@ public class SensorRequest
     {
         //GET /api/sensor/{name}/{operation}
         Uri.Builder uriBuilder = baseUri.buildUpon();
-        uriBuilder.appendPath(BASEPATH).appendPath(sensorName);
+        uriBuilder.appendEncodedPath(BASEPATH).appendPath(sensorName);
         if (operationName != null || !operationName.isEmpty())
         {
             uriBuilder.appendPath(operationName);
