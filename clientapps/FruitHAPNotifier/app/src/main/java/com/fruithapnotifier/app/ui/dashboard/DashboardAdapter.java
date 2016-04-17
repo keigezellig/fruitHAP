@@ -16,20 +16,12 @@
 package com.fruithapnotifier.app.ui.dashboard;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.Switch;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.ui.dashboard.viewholders.ReadOnlySwitchViewHolder;
