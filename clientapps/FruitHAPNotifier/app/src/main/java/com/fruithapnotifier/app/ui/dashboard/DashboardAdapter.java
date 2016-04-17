@@ -15,13 +15,24 @@
 
 package com.fruithapnotifier.app.ui.dashboard;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 import com.fruithapnotifier.app.R;
+import com.fruithapnotifier.app.ui.dashboard.viewholders.ReadOnlySwitchViewHolder;
 import com.fruithapnotifier.app.ui.dashboard.viewholders.SwitchViewHolder;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchState;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchViewModel;
@@ -34,6 +45,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private List<SwitchViewModel> items;
     private final int SWITCHITEM = 0;
     private final int READONLY_SWITCHITEM = 1;
+    private Context context;
 
     public DashboardAdapter(List<SwitchViewModel> items)
     {
@@ -49,6 +61,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     {
         RecyclerView.ViewHolder viewHolder = null;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        context = parent.getContext();
 
         switch (viewType)
         {
@@ -56,6 +69,13 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             {
                 View switchView = inflater.inflate(R.layout.dashboard_switchitem, parent, false);
                 viewHolder = new SwitchViewHolder(switchView);
+                break;
+            }
+            case READONLY_SWITCHITEM:
+            {
+                View switchView = inflater.inflate(R.layout.dashboard_readonlyswitchitem, parent, false);
+                viewHolder = new ReadOnlySwitchViewHolder(switchView);
+                break;
             }
         }
 
@@ -65,11 +85,33 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position)
     {
-        switch (holder.getItemViewType()) {
+        switch (holder.getItemViewType())
+        {
             case SWITCHITEM:
+            {
                 SwitchViewHolder switchViewHolder = (SwitchViewHolder) holder;
                 configureSwitchViewHolder(switchViewHolder, position);
                 break;
+            }
+            case READONLY_SWITCHITEM:
+            {
+                ReadOnlySwitchViewHolder switchViewHolder = (ReadOnlySwitchViewHolder) holder;
+                configureReadOnlySwitchViewHolder(switchViewHolder, position);
+            }
+        }
+    }
+
+    private void configureReadOnlySwitchViewHolder(ReadOnlySwitchViewHolder switchViewHolder, int position)
+    {
+        final SwitchViewModel item = items.get(position);
+        if (item != null)
+        {
+            switchViewHolder.getTxtName().setText(item.getName());
+            switchViewHolder.getTxtDesc().setText(item.getDescription());
+            switchViewHolder.getTxtLastupdated().setText(item.getLastUpdated());
+            GradientDrawable circle = (GradientDrawable) switchViewHolder.getSwState().getDrawable();
+            int color = item.getState() == SwitchState.ON ? Color.rgb(0xAA,0,0) : Color.TRANSPARENT;
+            circle.setColor(color);
         }
     }
 
