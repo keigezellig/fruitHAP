@@ -29,15 +29,15 @@ import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.models.sensor.Switch;
 import com.fruithapnotifier.app.models.sensor.SwitchChangeEvent;
-import com.fruithapnotifier.app.models.sensor.SwitchState;
 import com.fruithapnotifier.app.persistence.ConfigurationRepository;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.SensorViewModel;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchViewModel;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchViewState;
 import com.fruithapnotifier.app.ui.main.FragmentCallbacks;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,18 +115,20 @@ public class DashboardFragment extends Fragment
 
 
     @Subscribe
-    public void onStateChanged(SwitchChangeEvent event )
+    public void onSwitchStateChanged(SwitchChangeEvent event )
     {
         for (int i = 0; i < adapter.getItemCount(); i++)
         {
-            SwitchViewModel item = adapter.getItems().get(i);
-            if (item.getName().equals(event.getSender().getName()))
+            SensorViewModel item = adapter.getItems().get(i);
+            if (item.getName().equals(event.getSender().getName()) && item instanceof SwitchViewModel)
             {
+                SwitchViewModel switchViewModel = (SwitchViewModel)item;
                 Log.d(TAG,"Updating UI for switch: "+item.getName());
-                item.setState(com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchState.values()[event.getSwitchState().ordinal()], false);
+                switchViewModel.setState(SwitchViewState.values()[event.getSwitchState().ordinal()], false);
                 DateTimeFormatter fmt = DateTimeFormat.forStyle("SM").withLocale(null);
-                item.setLastUpdated(event.getDate().toString(fmt));
+                switchViewModel.setLastUpdated(event.getDate().toString(fmt));
                 adapter.notifyItemChanged(i);
+                break;
             }
         }
     }
@@ -138,9 +140,10 @@ public class DashboardFragment extends Fragment
         if (adapter == null)
         {
             final List<Switch> switches = getSwitchesFromDatasource();
-            final List<SwitchViewModel> viewItems = new ArrayList<>();
+            final List<SensorViewModel> viewItems = new ArrayList<>();
             for (Switch switchy : switches)
             {
+                switchy.registerForEvents();
                 SwitchViewModel viewItem = convertToViewModel(switchy);
                 if (viewItem != null)
                 {
@@ -164,7 +167,7 @@ public class DashboardFragment extends Fragment
 
     private SwitchViewModel convertToViewModel(Switch switchy)
     {
-        return new SwitchViewModel(switchy.getName(),switchy.getDescription(),switchy);
+        return new SwitchViewModel(switchy.getName(),switchy.getDescription(), switchy.getCategory(),switchy);
     }
 
     private void updateSwitches(List<Switch> switches)

@@ -26,25 +26,26 @@ import android.widget.Switch;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.ui.dashboard.viewholders.ReadOnlySwitchViewHolder;
 import com.fruithapnotifier.app.ui.dashboard.viewholders.SwitchViewHolder;
-import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchState;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.SensorViewModel;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchViewState;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchViewModel;
 
 import java.util.List;
 
+import static com.fruithapnotifier.app.ui.dashboard.viewmodels.SensorViewModel.*;
+
 
 public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
-    private List<SwitchViewModel> items;
-    private final int SWITCHITEM = 0;
-    private final int READONLY_SWITCHITEM = 1;
+    private List<SensorViewModel> items;
     private Context context;
 
-    public DashboardAdapter(List<SwitchViewModel> items)
+    public DashboardAdapter(List<SensorViewModel> items)
     {
         this.items = items;
     }
 
-    public List<SwitchViewModel> getItems() {
+    public List<SensorViewModel> getItems() {
         return items;
     }
 
@@ -57,13 +58,13 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         switch (viewType)
         {
-            case SWITCHITEM:
+            case VIEWTYPE_SWITCH:
             {
                 View switchView = inflater.inflate(R.layout.dashboard_switchitem, parent, false);
                 viewHolder = new SwitchViewHolder(switchView);
                 break;
             }
-            case READONLY_SWITCHITEM:
+            case VIEWTYPE_READONLYSWITCH:
             {
                 View switchView = inflater.inflate(R.layout.dashboard_readonlyswitchitem, parent, false);
                 viewHolder = new ReadOnlySwitchViewHolder(switchView);
@@ -77,15 +78,16 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position)
     {
+
         switch (holder.getItemViewType())
         {
-            case SWITCHITEM:
+            case VIEWTYPE_SWITCH:
             {
                 SwitchViewHolder switchViewHolder = (SwitchViewHolder) holder;
                 configureSwitchViewHolder(switchViewHolder, position);
                 break;
             }
-            case READONLY_SWITCHITEM:
+            case VIEWTYPE_READONLYSWITCH:
             {
                 ReadOnlySwitchViewHolder switchViewHolder = (ReadOnlySwitchViewHolder) holder;
                 configureReadOnlySwitchViewHolder(switchViewHolder, position);
@@ -95,28 +97,28 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private void configureReadOnlySwitchViewHolder(ReadOnlySwitchViewHolder switchViewHolder, int position)
     {
-        final SwitchViewModel item = items.get(position);
+        final SwitchViewModel item = (SwitchViewModel)items.get(position);
         if (item != null)
         {
             switchViewHolder.getTxtName().setText(item.getName());
             switchViewHolder.getTxtDesc().setText(item.getDescription());
             switchViewHolder.getTxtLastupdated().setText(item.getLastUpdated());
             GradientDrawable circle = (GradientDrawable) switchViewHolder.getSwState().getDrawable();
-            int color = item.getState() == SwitchState.ON ? Color.rgb(0xAA,0,0) : Color.TRANSPARENT;
+            int color = item.getState() == SwitchViewState.ON ? Color.rgb(0xAA,0,0) : Color.TRANSPARENT;
             circle.setColor(color);
         }
     }
 
     private void configureSwitchViewHolder(SwitchViewHolder switchViewHolder, final int position)
     {
-        final SwitchViewModel item = items.get(position);
+        final SwitchViewModel item = (SwitchViewModel)items.get(position);
         if (item != null)
         {
             switchViewHolder.getTxtName().setText(item.getName());
             switchViewHolder.getTxtDesc().setText(item.getDescription());
             switchViewHolder.getTxtLastupdated().setText(item.getLastUpdated());
 
-            switchViewHolder.getSwState().setChecked(item.getState() == SwitchState.ON);
+            switchViewHolder.getSwState().setChecked(item.getState() == SwitchViewState.ON);
 
             switchViewHolder.getSwState().setOnClickListener(new View.OnClickListener()
             {
@@ -126,11 +128,11 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     Switch theSwitch = (Switch)view;
                     if (theSwitch.isChecked())
                     {
-                        item.setState(SwitchState.ON,true);
+                        item.setState(SwitchViewState.ON,true);
                     }
                     else
                     {
-                        item.setState(SwitchState.OFF,true);
+                        item.setState(SwitchViewState.OFF,true);
                     }
 
                 }
@@ -139,14 +141,9 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
-    public int getItemViewType(int position) {
-        if (items.get(position) instanceof SwitchViewModel)
-        {
-            SwitchViewModel item = items.get(position);
-            return item.isReadOnly() ? READONLY_SWITCHITEM : SWITCHITEM;
-        }
-
-        return -1;
+    public int getItemViewType(int position)
+    {
+        return items.get(position).getViewType();
     }
 
     @Override

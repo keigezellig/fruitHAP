@@ -77,7 +77,7 @@ public class RestRequestAdapter implements RequestAdapter
                 }
                 else
                 {
-                    Log.e(LOGTAG,"Sensor request failed with code: "+resultCode);
+                    Log.e(LOGTAG,"StatefulSensor request failed with code: "+resultCode);
                     Log.e(LOGTAG,"Response=: "+response);
                 }
 

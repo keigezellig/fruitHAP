@@ -15,12 +15,15 @@
 
 package com.fruithapnotifier.app.persistence;
 
+import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.fruithapnotifier.app.models.configuration.ConfigurationItem;
 import com.fruithapnotifier.app.models.configuration.SensorType;
+import com.fruithapnotifier.app.models.sensor.Button;
+import com.fruithapnotifier.app.models.sensor.Sensor;
 import com.fruithapnotifier.app.models.sensor.Switch;
 
 import java.util.ArrayList;
@@ -63,6 +66,51 @@ public class ConfigurationRepository
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         database.delete(SqlHelper.TABLE_CONFIG,null, null);
         dbHelper.close();
+    }
+
+    public List<Sensor> getSensors()
+    {
+        List<Sensor> sensors = new ArrayList<>();
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        Cursor cursor = database.query(SqlHelper.TABLE_CONFIG, allColumns, null, null, null, null,null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast())
+        {
+            Sensor sensor = cursorToSensor(cursor);
+            if (sensor != null)
+            {
+                sensors.add(sensor);
+            }
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        dbHelper.close();
+        return sensors;
+
+    }
+
+    private Sensor cursorToSensor(Cursor cursor)
+    {
+        String sensorName = cursor.getString(cursor.getColumnIndex(SqlHelper.COLUMN_CONFIG_SENSORNAME));
+        String description = cursor.getString(cursor.getColumnIndex(SqlHelper.COLUMN_CONFIG_DESCRIPTION));
+        String category = cursor.getString(cursor.getColumnIndex(SqlHelper.COLUMN_CONFIG_CATEGORY));
+        SensorType sensorType = SensorType.values()[cursor.getInt(cursor.getColumnIndex(SqlHelper.COLUMN_CONFIG_TYPE))];
+        switch (sensorType)
+        {
+            case Switch:
+                return new Switch(sensorName,description,category,false, context);
+            case ReadOnlySwitch:
+                return new Switch(sensorName,description,category,true, context);
+            case Button:
+                return new Button(sensorName,description,category, context);
+            default:
+                return null;
+
+        }
+
     }
 
     public List<Switch> getSwitches()

@@ -15,7 +15,7 @@
 
 package com.fruithapnotifier.app.ui.dashboard.viewmodels;
 
-public enum SwitchState
+public enum SwitchViewState
 {
     UNDEFINED, OFF, ON
 }

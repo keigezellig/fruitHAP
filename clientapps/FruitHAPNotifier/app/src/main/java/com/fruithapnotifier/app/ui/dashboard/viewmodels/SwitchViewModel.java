@@ -16,20 +16,32 @@
 package com.fruithapnotifier.app.ui.dashboard.viewmodels;
 
 import com.fruithapnotifier.app.models.sensor.Switch;
+import org.greenrobot.eventbus.EventBus;
 
-public class SwitchViewModel
+public class SwitchViewModel extends SensorViewModel
 {
-    private String name;
-    private String description;
     private Switch model;
-    private SwitchState state;
+    private SwitchViewState state;
     private String lastUpdated;
 
-    public SwitchViewModel(String name, String description, Switch model)
+
+    public SwitchViewModel(String name, String description, String category, Switch model)
     {
-        this.name = name;
-        this.description = description;
+        super(name, description, category);
         this.model = model;
+    }
+
+    @Override
+    public int getViewType()
+    {
+        if (model.isReadOnly())
+        {
+            return VIEWTYPE_READONLYSWITCH;
+        }
+        else
+        {
+            return VIEWTYPE_SWITCH;
+        }
     }
 
     public String getName()
@@ -42,7 +54,7 @@ public class SwitchViewModel
         return description;
     }
 
-    public SwitchState getState()
+    public SwitchViewState getState()
     {
         return state;
     }
@@ -52,30 +64,19 @@ public class SwitchViewModel
         return lastUpdated;
     }
 
-    public boolean isReadOnly()
-    {
-        return model.isReadÓnly();
-    }
-
-    public void setState(SwitchState newState, boolean shouldUpdateModel)
-    {
-        state = newState;
-        if (shouldUpdateModel)
-        {
-            switch (newState)
-            {
-                case ON:
-                    model.turnOn();
-                    break;
-                case OFF:
-                    model.turnOff();
-                    break;
-            }
-        }
-    }
-
     public void setLastUpdated(String lastUpdated)
     {
         this.lastUpdated = lastUpdated;
     }
+
+    public void setState(SwitchViewState newState, boolean shouldUpdateModel)
+    {
+        state = newState;
+        if (shouldUpdateModel)
+        {
+            EventBus.getDefault().post(new SwitchViewStateChangeEvent(name, newState == SwitchViewState.ON));
+        }
+    }
+
+
 }

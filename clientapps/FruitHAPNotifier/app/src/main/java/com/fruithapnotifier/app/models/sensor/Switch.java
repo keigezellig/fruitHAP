@@ -2,9 +2,8 @@ package com.fruithapnotifier.app.models.sensor;
 
 import android.content.Context;
 import android.util.Log;
-import com.fruithapnotifier.app.common.RequestAdapter;
 import com.fruithapnotifier.app.common.SensorEvent;
-import com.fruithapnotifier.app.service.requestadapter.RestRequestAdapter;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchViewStateChangeEvent;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
@@ -13,38 +12,12 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
 
 
-public class Switch
+public class Switch extends StatefulSensor
 {
     private static final String TAG = "Switch" ;
-    private final RequestAdapter requestAdapter;
-    private final boolean isReadÓnly;
-    private String name;
-    private String description;
-    private String category;
     private SwitchState value;
-    private DateTime lastUpdated;
 
-    public String getName()
-    {
-        return name;
-    }
-
-    public String getDescription()
-    {
-        return description;
-    }
-
-    public String getCategory()
-    {
-        return category;
-    }
-
-    public boolean isReadÓnly()
-    {
-        return isReadÓnly;
-    }
-
-    public void updateValue(SwitchState newValue, DateTime timestamp)
+    private void updateValue(SwitchState newValue, DateTime timestamp)
     {
         if (newValue != value)
         {
@@ -62,22 +35,13 @@ public class Switch
 
     public Switch(String name, String description, String category, boolean isReadOnly, Context ctx)
     {
-        this.name = name;
-        this.description = description;
-        this.category = category;
-        this.isReadÓnly = isReadOnly;
-        requestAdapter = new RestRequestAdapter(ctx);
-        EventBus.getDefault().register(this);
+        super(name, description, category, isReadOnly, ctx);
+
     }
 
-    public void requestUpdate()
+    private void turnOn()
     {
-        requestAdapter.sendSensorRequest(this.name, "GetValue");
-    }
-
-    public void turnOn()
-    {
-        if (!isReadÓnly)
+        if (!isReadOnly)
         {
             requestAdapter.sendSensorRequest(this.name, "TurnOn");
         }
@@ -87,9 +51,9 @@ public class Switch
         }
     }
 
-    public void turnOff()
+    private void turnOff()
     {
-        if (!isReadÓnly)
+        if (!isReadOnly)
         {
             requestAdapter.sendSensorRequest(this.name, "TurnOff");
         }
@@ -100,51 +64,39 @@ public class Switch
     }
 
     @Subscribe
-    public void onSensorResponseReceived(SensorEvent sensorEvent)
+    public void onSwitchViewStateChangeReceived(SwitchViewStateChangeEvent viewStateChangeEvent)
+    {
+        if (viewStateChangeEvent.getName().equals(this.name))
+        {
+            if (viewStateChangeEvent.isOn())
+            {
+                turnOn();
+            }
+            else
+            {
+                turnOff();
+            }
+        }
+    }
+
+    @Override
+    protected void handleSensorUpdateResponse(SensorEvent sensorEvent) throws JSONException
     {
         try
         {
-            String sensorName = sensorEvent.getEventData().getString("SensorName");
-            String typeName = sensorEvent.getEventData().getJSONObject("Data").getString("TypeName");
-
-            Log.d(TAG, "onSensorResponseReceived: Received response:" + sensorEvent.getEventData());
-
-            if (sensorName.equals(this.name) && typeName.equals("OnOffValue"))
-            {
-                try
-                {
-                    Log.d(TAG, "onSensorResponseReceived: This one is for switch " + this.name);
-                    DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
-                    DateTime timestamp = new DateTime(fmt.parseDateTime(sensorEvent.getEventData().getString("TimeStamp")));
-                    int state = sensorEvent.getEventData().getJSONObject("Data").getJSONObject("Content").getInt("Value");
-                    SwitchState value = SwitchState.values()[state];
-                    updateValue(value, timestamp);
-                }
-                catch (JSONException jex)
-                {
-                    Log.e(TAG, "onSensorResponseReceived: Error while receiving update for sensor "+this.name, jex);
-                    updateValue(SwitchState.UNDEFINED, DateTime.now());
-                }
-
-            }
+            Log.d(TAG, "onSensorResponseReceived: This one is for switch " + this.name);
+            DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+            DateTime timestamp = new DateTime(fmt.parseDateTime(sensorEvent.getEventData().getString("TimeStamp")));
+            int state = sensorEvent.getEventData().getJSONObject("Data").getJSONObject("Content").getInt("Value");
+            SwitchState value = SwitchState.values()[state];
+            updateValue(value, timestamp);
         }
         catch (JSONException jex)
         {
-            Log.e(TAG, "onSensorResponseReceived: Invalid data received", jex);
+            Log.e(TAG, "onSensorResponseReceived: Error while receiving update for sensor "+this.name, jex);
+            updateValue(SwitchState.UNDEFINED, DateTime.now());
         }
 
-
-
-    }
-
-    public void subscribeToUpdates()
-    {
-        EventBus.getDefault().register(this);
-    }
-
-    public void unsubscribeToUpdates()
-    {
-        EventBus.getDefault().unregister(this);
     }
 
     @Override
