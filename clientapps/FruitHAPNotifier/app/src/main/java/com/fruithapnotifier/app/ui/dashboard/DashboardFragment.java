@@ -27,12 +27,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.Constants;
-import com.fruithapnotifier.app.models.sensor.Switch;
-import com.fruithapnotifier.app.models.sensor.SwitchChangeEvent;
+import com.fruithapnotifier.app.models.sensor.Sensor;
+import com.fruithapnotifier.app.models.sensor.StatefulSensor;
+import com.fruithapnotifier.app.models.sensor.button.Button;
+import com.fruithapnotifier.app.models.sensor.switchy.Switch;
+import com.fruithapnotifier.app.models.sensor.switchy.SwitchChangeEvent;
 import com.fruithapnotifier.app.persistence.ConfigurationRepository;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.SensorViewModel;
-import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchViewModel;
-import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchViewState;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.button.ButtonViewModel;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.switchy.SwitchViewModel;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.switchy.SwitchViewState;
 import com.fruithapnotifier.app.ui.main.FragmentCallbacks;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -139,12 +143,12 @@ public class DashboardFragment extends Fragment
 
         if (adapter == null)
         {
-            final List<Switch> switches = getSwitchesFromDatasource();
+            final List<Sensor> sensors = getSensorsFromDatasource();
             final List<SensorViewModel> viewItems = new ArrayList<>();
-            for (Switch switchy : switches)
+            for (Sensor sensor : sensors)
             {
-                switchy.registerForEvents();
-                SwitchViewModel viewItem = convertToViewModel(switchy);
+                sensor.registerForEvents();
+                SensorViewModel viewItem = convertToViewModel(sensor);
                 if (viewItem != null)
                 {
                     viewItems.add(viewItem);
@@ -153,7 +157,7 @@ public class DashboardFragment extends Fragment
             adapter = new DashboardAdapter(viewItems);
             dashboardView.setAdapter(adapter);
             EventBus.getDefault().register(this);
-            updateSwitches(switches);
+            getLatestValues(sensors);
         }
         else
         {
@@ -165,24 +169,42 @@ public class DashboardFragment extends Fragment
     }
 
 
-    private SwitchViewModel convertToViewModel(Switch switchy)
+    private SensorViewModel convertToViewModel(Sensor sensor)
     {
-        return new SwitchViewModel(switchy.getName(),switchy.getDescription(), switchy.getCategory(),switchy);
+        if (sensor instanceof Switch)
+        {
+            Switch switchy = (Switch)sensor;
+            return new SwitchViewModel(switchy.getName(),switchy.getDescription(), switchy.getCategory(),switchy.isReadOnly());
+        };
+
+        if (sensor instanceof Button)
+        {
+            Button button = (Button) sensor;
+            return new ButtonViewModel(button.getName(),button.getDescription(),button.getCategory());
+        };
+
+
+
+        return null;
+
     }
 
-    private void updateSwitches(List<Switch> switches)
+    private void getLatestValues(List<Sensor> sensors)
     {
-        for (Switch switchy: switches)
+        for (Sensor sensor: sensors)
         {
-            switchy.requestUpdate();
+            if (sensor instanceof StatefulSensor)
+            {
+                ((StatefulSensor) sensor).requestUpdate();
+            }
         }
     }
 
-    private List<Switch> getSwitchesFromDatasource()
+    private List<Sensor> getSensorsFromDatasource()
     {
         ConfigurationRepository datasource = new ConfigurationRepository(getActivity());
-        List<Switch> switches = datasource.getSwitches();
-        return switches;
+        List<Sensor> sensors = datasource.getSensors();
+        return sensors;
     }
 
 }

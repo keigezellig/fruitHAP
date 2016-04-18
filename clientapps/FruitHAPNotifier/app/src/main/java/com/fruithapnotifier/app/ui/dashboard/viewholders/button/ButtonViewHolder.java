@@ -13,34 +13,27 @@
  *
  */
 
-package com.fruithapnotifier.app.ui.dashboard.viewholders;
+package com.fruithapnotifier.app.ui.dashboard.viewholders.button;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.fruithapnotifier.app.R;
 
-public class ReadOnlySwitchViewHolder extends RecyclerView.ViewHolder
+public class ButtonViewHolder extends RecyclerView.ViewHolder
 {
-
-    private final TextView txtLastupdated;
     private final TextView txtName;
     private final TextView txtDesc;
-    private final ImageView swState;
+    private final Button btnExecute;
 
-    public ReadOnlySwitchViewHolder(View itemView)
+    public ButtonViewHolder(View itemView)
     {
         super(itemView);
-        txtName = (TextView) itemView.findViewById(R.id.dashboard_roswitch_txtName);
-        txtDesc = (TextView) itemView.findViewById(R.id.dashboard_roswitch_txtDescription);
-        txtLastupdated = (TextView) itemView.findViewById(R.id.dashboard_roswitch_txtLastUpdated);
-        swState = (ImageView)itemView.findViewById(R.id.dashboard_roswitch_swState);
-    }
-
-    public TextView getTxtLastupdated()
-    {
-        return txtLastupdated;
+        txtName = (TextView) itemView.findViewById(R.id.dashboard_button_txtName);
+        txtDesc = (TextView) itemView.findViewById(R.id.dashboard_button_txtDescription);
+        btnExecute = (Button)itemView.findViewById(R.id.dashboard_button_btnExecute);
     }
 
     public TextView getTxtName()
@@ -53,9 +46,9 @@ public class ReadOnlySwitchViewHolder extends RecyclerView.ViewHolder
         return txtDesc;
     }
 
-    public ImageView getSwState()
+    public Button getBtnExecute()
     {
-        return swState;
+        return btnExecute;
     }
 
 }

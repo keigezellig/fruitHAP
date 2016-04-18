@@ -13,16 +13,16 @@
  *
  */
 
-package com.fruithapnotifier.app.ui.dashboard.viewmodels;
+package com.fruithapnotifier.app.ui.dashboard.viewmodels.switchy;
 
 public class SwitchViewStateChangeEvent
 {
     private boolean isOn;
-    private String name;
+    private String sender;
 
     public SwitchViewStateChangeEvent(String name, boolean isOn)
     {
-        this.name = name;
+        this.sender = name;
         this.isOn = isOn;
     }
 
@@ -31,8 +31,8 @@ public class SwitchViewStateChangeEvent
         return isOn;
     }
 
-    public String getName()
+    public String getSender()
     {
-        return name;
+        return sender;
     }
 }

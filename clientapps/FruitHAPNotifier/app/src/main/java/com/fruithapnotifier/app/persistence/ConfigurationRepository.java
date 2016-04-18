@@ -15,16 +15,18 @@
 
 package com.fruithapnotifier.app.persistence;
 
-import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.fruithapnotifier.app.models.configuration.ConfigurationItem;
 import com.fruithapnotifier.app.models.configuration.SensorType;
-import com.fruithapnotifier.app.models.sensor.Button;
-import com.fruithapnotifier.app.models.sensor.Sensor;
-import com.fruithapnotifier.app.models.sensor.Switch;
+import com.fruithapnotifier.app.models.sensor.*;
+import com.fruithapnotifier.app.models.sensor.button.Button;
+import com.fruithapnotifier.app.models.sensor.image.ImageSensor;
+import com.fruithapnotifier.app.models.sensor.quantity.QuantitySensor;
+import com.fruithapnotifier.app.models.sensor.switchy.Switch;
+import com.fruithapnotifier.app.models.sensor.text.TextSensor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +108,12 @@ public class ConfigurationRepository
                 return new Switch(sensorName,description,category,true, context);
             case Button:
                 return new Button(sensorName,description,category, context);
+            case UnitValue:
+                return new QuantitySensor(sensorName,description,category,true,context);
+            case ImageValue:
+                return new ImageSensor(sensorName,description,category,true,context);
+            case TextValue:
+                return new TextSensor(sensorName,description,category,true,context);
             default:
                 return null;
 
@@ -113,35 +121,5 @@ public class ConfigurationRepository
 
     }
 
-    public List<Switch> getSwitches()
-    {
-        List<Switch> switches = new ArrayList<>();
 
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        Cursor cursor = database.query(SqlHelper.TABLE_CONFIG, allColumns, SqlHelper.COLUMN_CONFIG_TYPE + "=? OR "+SqlHelper.COLUMN_CONFIG_TYPE + "=?",new String[] {SensorType.Switch.ordinal() + "", SensorType.ReadOnlySwitch.ordinal() + "" }, null, null, null);
-
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast())
-        {
-            Switch alert = cursorToSwitch(cursor);
-            switches.add(alert);
-            cursor.moveToNext();
-        }
-        // make sure to close the cursor
-        cursor.close();
-        dbHelper.close();
-
-        return switches;
-    }
-
-    private Switch cursorToSwitch(Cursor cursor)
-    {
-        String sensorName = cursor.getString(cursor.getColumnIndex(SqlHelper.COLUMN_CONFIG_SENSORNAME));
-        String description = cursor.getString(cursor.getColumnIndex(SqlHelper.COLUMN_CONFIG_DESCRIPTION));
-        String category = cursor.getString(cursor.getColumnIndex(SqlHelper.COLUMN_CONFIG_CATEGORY));
-        boolean isReadOnly = (cursor.getInt(cursor.getColumnIndex(SqlHelper.COLUMN_CONFIG_TYPE)) == SensorType.ReadOnlySwitch.ordinal());
-        return new Switch(sensorName,description,category,isReadOnly,context);
-
-    }
 }

@@ -13,29 +13,29 @@
  *
  */
 
-package com.fruithapnotifier.app.ui.dashboard.viewholders;
+package com.fruithapnotifier.app.ui.dashboard.viewholders.switchy;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Switch;
-import android.widget.ToggleButton;
 import com.fruithapnotifier.app.R;
 
-public class SwitchViewHolder extends RecyclerView.ViewHolder
+public class ReadOnlySwitchViewHolder extends RecyclerView.ViewHolder
 {
+
     private final TextView txtLastupdated;
     private final TextView txtName;
     private final TextView txtDesc;
-    private final Switch swState;
+    private final ImageView swState;
 
-    public SwitchViewHolder(View itemView)
+    public ReadOnlySwitchViewHolder(View itemView)
     {
         super(itemView);
-        txtName = (TextView) itemView.findViewById(R.id.dashboard_switch_txtName);
-        txtDesc = (TextView) itemView.findViewById(R.id.dashboard_switch_txtDescription);
-        txtLastupdated = (TextView) itemView.findViewById(R.id.dashboard_switch_txtLastUpdated);
-        swState = (Switch)itemView.findViewById(R.id.dashboard_switch_swState);
+        txtName = (TextView) itemView.findViewById(R.id.dashboard_roswitch_txtName);
+        txtDesc = (TextView) itemView.findViewById(R.id.dashboard_roswitch_txtDescription);
+        txtLastupdated = (TextView) itemView.findViewById(R.id.dashboard_roswitch_txtLastUpdated);
+        swState = (ImageView)itemView.findViewById(R.id.dashboard_roswitch_swState);
     }
 
     public TextView getTxtLastupdated()
@@ -53,7 +53,7 @@ public class SwitchViewHolder extends RecyclerView.ViewHolder
         return txtDesc;
     }
 
-    public Switch getSwState()
+    public ImageView getSwState()
     {
         return swState;
     }

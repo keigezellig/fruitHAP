@@ -13,28 +13,29 @@
  *
  */
 
-package com.fruithapnotifier.app.ui.dashboard.viewmodels;
+package com.fruithapnotifier.app.ui.dashboard.viewmodels.switchy;
 
-import com.fruithapnotifier.app.models.sensor.Switch;
+import com.fruithapnotifier.app.models.sensor.switchy.Switch;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.SensorViewModel;
 import org.greenrobot.eventbus.EventBus;
 
 public class SwitchViewModel extends SensorViewModel
 {
-    private Switch model;
     private SwitchViewState state;
     private String lastUpdated;
+    private boolean isReadOnly;
 
 
-    public SwitchViewModel(String name, String description, String category, Switch model)
+    public SwitchViewModel(String name, String description, String category, boolean isReadOnly)
     {
         super(name, description, category);
-        this.model = model;
+        this.isReadOnly = isReadOnly;
     }
 
     @Override
     public int getViewType()
     {
-        if (model.isReadOnly())
+        if (isReadOnly)
         {
             return VIEWTYPE_READONLYSWITCH;
         }
@@ -42,16 +43,6 @@ public class SwitchViewModel extends SensorViewModel
         {
             return VIEWTYPE_SWITCH;
         }
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public String getDescription()
-    {
-        return description;
     }
 
     public SwitchViewState getState()

@@ -13,8 +13,39 @@
  *
  */
 
-package com.fruithapnotifier.app.ui.dashboard.viewmodels;
+package com.fruithapnotifier.app.models.sensor.quantity;
 
-public class ButtonPressFromViewEvent
+import com.fruithapnotifier.app.models.sensor.Sensor;
+import org.joda.time.DateTime;
+
+/**
+ * Created by MJOX03 on 18.4.2016.
+ */
+public class QuantityValueChangeEvent
 {
+    private final Sensor sender;
+    private final QuantityValue value;
+    private final DateTime date;
+
+    public QuantityValueChangeEvent(Sensor sender, QuantityValue value, DateTime date)
+    {
+        this.sender = sender;
+        this.value = value;
+        this.date = date;
+    }
+
+    public Sensor getSender()
+    {
+        return sender;
+    }
+
+    public QuantityValue getValue()
+    {
+        return value;
+    }
+
+    public DateTime getDate()
+    {
+        return date;
+    }
 }

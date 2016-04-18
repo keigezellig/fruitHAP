@@ -29,7 +29,7 @@ import com.fruithapnotifier.app.common.ConfigurationLoader;
 import com.fruithapnotifier.app.common.SensorEvent;
 import com.fruithapnotifier.app.models.alert.AlertPriority;
 import com.fruithapnotifier.app.models.alert.Alert;
-import com.fruithapnotifier.app.models.sensor.Switch;
+import com.fruithapnotifier.app.models.sensor.switchy.Switch;
 import com.fruithapnotifier.app.persistence.AlertRepository;
 import com.fruithapnotifier.app.persistence.ConfigurationRepository;
 import com.fruithapnotifier.app.service.configuration.DatabaseConfigurationLoader;

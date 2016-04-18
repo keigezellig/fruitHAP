@@ -24,11 +24,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 import com.fruithapnotifier.app.R;
-import com.fruithapnotifier.app.ui.dashboard.viewholders.ReadOnlySwitchViewHolder;
-import com.fruithapnotifier.app.ui.dashboard.viewholders.SwitchViewHolder;
+import com.fruithapnotifier.app.ui.dashboard.viewholders.button.ButtonViewHolder;
+import com.fruithapnotifier.app.ui.dashboard.viewholders.switchy.ReadOnlySwitchViewHolder;
+import com.fruithapnotifier.app.ui.dashboard.viewholders.switchy.SwitchViewHolder;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.SensorViewModel;
-import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchViewState;
-import com.fruithapnotifier.app.ui.dashboard.viewmodels.SwitchViewModel;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.button.ButtonViewModel;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.switchy.SwitchViewState;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.switchy.SwitchViewModel;
 
 import java.util.List;
 
@@ -70,6 +72,12 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 viewHolder = new ReadOnlySwitchViewHolder(switchView);
                 break;
             }
+            case VIEWTYPE_BUTTON:
+            {
+                View buttonView = inflater.inflate(R.layout.dashboard_buttonitem, parent, false);
+                viewHolder = new ButtonViewHolder(buttonView);
+                break;
+            }
         }
 
         return viewHolder;
@@ -91,8 +99,35 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             {
                 ReadOnlySwitchViewHolder switchViewHolder = (ReadOnlySwitchViewHolder) holder;
                 configureReadOnlySwitchViewHolder(switchViewHolder, position);
+                break;
+            }
+            case VIEWTYPE_BUTTON:
+            {
+                ButtonViewHolder buttonViewHolder = (ButtonViewHolder) holder;
+                configureButtonViewHolder(buttonViewHolder, position);
+                break;
             }
         }
+    }
+
+    private void configureButtonViewHolder(ButtonViewHolder buttonViewHolder, int position)
+    {
+        final ButtonViewModel item = (ButtonViewModel)items.get(position);
+        if (item != null)
+        {
+            buttonViewHolder.getTxtName().setText(item.getName());
+            buttonViewHolder.getTxtDesc().setText(item.getDescription());
+        }
+
+        buttonViewHolder.getBtnExecute().setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                item.press();
+
+            }
+        });
     }
 
     private void configureReadOnlySwitchViewHolder(ReadOnlySwitchViewHolder switchViewHolder, int position)

@@ -13,11 +13,12 @@
  *
  */
 
-package com.fruithapnotifier.app.models.sensor;
+package com.fruithapnotifier.app.models.sensor.button;
 
 import android.content.Context;
+import com.fruithapnotifier.app.models.sensor.Sensor;
 import com.fruithapnotifier.app.service.requestadapter.RestRequestAdapter;
-import com.fruithapnotifier.app.ui.dashboard.viewmodels.ButtonPressFromViewEvent;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.button.ButtonPressFromViewEvent;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 

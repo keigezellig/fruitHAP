@@ -64,7 +64,6 @@ public abstract class StatefulSensor implements Sensor
         return category;
     }
 
-    @Override
     public boolean isReadOnly()
     {
         return isReadOnly;
