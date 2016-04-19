@@ -15,27 +15,16 @@
 
 package com.fruithapnotifier.app.ui.helpers;
 
-/**
- * Created by MJOX03 on 19.4.2016.
- */
-public class TemperatureUnitTextConverter implements UnitTextConverter
+public class UnitTextConverterFactory
 {
-    @Override
-    public String getUnitText(String unitDefinition)
+    public static UnitTextConverter getUnitTextConverter(String quantity)
     {
-        int unitCode = Integer.parseInt(unitDefinition);
-        TemperatureUnit unit = TemperatureUnit.values()[unitCode];
-        switch (unit)
+        if (quantity.equals("TemperatureQuantity"))
         {
-            case Celsius:
-                return "°C";
-            case Fahrenheit:
-                return "°F";
-            case Kelvin:
-                return "K";
-            default:
-                return "";
+            return new TemperatureUnitTextConverter();
         }
-    }
-}
 
+        return null;
+    }
+
+}

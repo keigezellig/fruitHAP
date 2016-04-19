@@ -30,13 +30,17 @@ import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.models.sensor.Sensor;
 import com.fruithapnotifier.app.models.sensor.StatefulSensor;
 import com.fruithapnotifier.app.models.sensor.button.Button;
+import com.fruithapnotifier.app.models.sensor.quantity.QuantitySensor;
+import com.fruithapnotifier.app.models.sensor.quantity.QuantityValueChangeEvent;
 import com.fruithapnotifier.app.models.sensor.switchy.Switch;
 import com.fruithapnotifier.app.models.sensor.switchy.SwitchChangeEvent;
 import com.fruithapnotifier.app.persistence.ConfigurationRepository;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.SensorViewModel;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.button.ButtonViewModel;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.quantity.QuantityViewModel;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.switchy.SwitchViewModel;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.switchy.SwitchViewState;
+import com.fruithapnotifier.app.ui.helpers.UnitTextConverterFactory;
 import com.fruithapnotifier.app.ui.main.FragmentCallbacks;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -137,6 +141,27 @@ public class DashboardFragment extends Fragment
         }
     }
 
+    @Subscribe
+    public void onQuantityValueChanged(QuantityValueChangeEvent event)
+    {
+        for (int i = 0; i < adapter.getItemCount(); i++)
+        {
+            SensorViewModel item = adapter.getItems().get(i);
+            if (item.getName().equals(event.getSender().getName()) && item instanceof QuantityViewModel)
+            {
+                QuantityViewModel quantityViewModel = (QuantityViewModel)item;
+                Log.d(TAG,"Updating UI for quanity value: "+item.getName());
+                quantityViewModel.setValue(event.getValue().getValue());
+                String unitText = UnitTextConverterFactory.getUnitTextConverter(event.getValue().getType()).getUnitText(event.getValue().getUnit());
+                quantityViewModel.setUnitText(unitText);
+                DateTimeFormatter fmt = DateTimeFormat.forStyle("SM").withLocale(null);
+                quantityViewModel.setLastUpdated(event.getDate().toString(fmt));
+                adapter.notifyItemChanged(i);
+                break;
+            }
+        }
+    }
+
 
     private void updateAdapter()
     {
@@ -181,6 +206,12 @@ public class DashboardFragment extends Fragment
         {
             Button button = (Button) sensor;
             return new ButtonViewModel(button.getName(),button.getDescription(),button.getCategory());
+        }
+
+        if (sensor instanceof QuantitySensor)
+        {
+            QuantitySensor quantitySensor = (QuantitySensor) sensor;
+            return new QuantityViewModel(quantitySensor.getName(),quantitySensor.getDescription(),quantitySensor.getCategory());
         }
 
 

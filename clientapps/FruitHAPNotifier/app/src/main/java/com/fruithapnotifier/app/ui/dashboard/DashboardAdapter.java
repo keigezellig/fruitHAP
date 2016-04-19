@@ -25,10 +25,12 @@ import android.view.ViewGroup;
 import android.widget.Switch;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.ui.dashboard.viewholders.button.ButtonViewHolder;
+import com.fruithapnotifier.app.ui.dashboard.viewholders.quantity.QuantityViewHolder;
 import com.fruithapnotifier.app.ui.dashboard.viewholders.switchy.ReadOnlySwitchViewHolder;
 import com.fruithapnotifier.app.ui.dashboard.viewholders.switchy.SwitchViewHolder;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.SensorViewModel;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.button.ButtonViewModel;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.quantity.QuantityViewModel;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.switchy.SwitchViewState;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.switchy.SwitchViewModel;
 
@@ -78,6 +80,12 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 viewHolder = new ButtonViewHolder(buttonView);
                 break;
             }
+            case VIEWTYPE_UNITVALUE:
+            {
+                View quantityView = inflater.inflate(R.layout.dashboard_quantityitem, parent, false);
+                viewHolder = new QuantityViewHolder(quantityView);
+                break;
+            }
         }
 
         return viewHolder;
@@ -107,6 +115,25 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 configureButtonViewHolder(buttonViewHolder, position);
                 break;
             }
+            case VIEWTYPE_UNITVALUE:
+            {
+                QuantityViewHolder quantityViewHolder = (QuantityViewHolder) holder;
+                configureQuantityViewHolder(quantityViewHolder, position);
+                break;
+            }
+        }
+    }
+
+    private void configureQuantityViewHolder(QuantityViewHolder quantityViewHolder, int position)
+    {
+        final QuantityViewModel item = (QuantityViewModel)items.get(position);
+        if (item != null)
+        {
+            quantityViewHolder.getTxtName().setText(item.getName());
+            quantityViewHolder.getTxtDesc().setText(item.getDescription());
+            quantityViewHolder.getTxtLastupdated().setText(item.getLastUpdated());
+            quantityViewHolder.getTxtUnit().setText(item.getUnitText());
+            quantityViewHolder.getTxtValue().setText(Double.toString(item.getValue()));
         }
     }
 

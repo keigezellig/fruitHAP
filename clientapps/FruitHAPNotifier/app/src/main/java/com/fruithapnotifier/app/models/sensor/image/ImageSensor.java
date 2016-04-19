@@ -25,6 +25,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by MJOX03 on 18.4.2016.
@@ -39,16 +40,22 @@ public class ImageSensor extends StatefulSensor
     }
 
     @Override
-    protected void handleSensorUpdateResponse(SensorEvent sensorEvent) throws JSONException
+    protected void handleSensorUpdateResponse(JSONObject eventData) throws JSONException
     {
         try
         {
-            Log.d(TAG, "onSensorResponseReceived: This one is for image Sensor " + this.name);
-            DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
-            DateTime timestamp = new DateTime(fmt.parseDateTime(sensorEvent.getEventData().getString("TimeStamp")));
-            String imageString = sensorEvent.getEventData().getJSONObject("Data").getJSONObject("Content").getString("Value");
-            byte[] imageData = Base64.decode(imageString, Base64.DEFAULT);
-            updateValue(imageData, timestamp);
+            String sensorName = eventData.getString("SensorName");
+            String typeName = eventData.getJSONObject("Data").getString("TypeName");
+
+            if (sensorName.equals(this.name) && typeName.equals("ImageValue"))
+            {
+                Log.d(TAG, "onSensorResponseReceived: This one is for image Sensor " + this.name);
+                DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+                DateTime timestamp = new DateTime(fmt.parseDateTime(eventData.getString("TimeStamp")));
+                String imageString = eventData.getJSONObject("Data").getJSONObject("Content").getString("Value");
+                byte[] imageData = Base64.decode(imageString, Base64.DEFAULT);
+                updateValue(imageData, timestamp);
+            }
         }
         catch (JSONException jex)
         {

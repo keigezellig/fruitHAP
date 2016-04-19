@@ -41,16 +41,22 @@ public class QuantitySensor extends StatefulSensor {
     }
 
     @Override
-    protected void handleSensorUpdateResponse(SensorEvent sensorEvent) throws JSONException
+    protected void handleSensorUpdateResponse(JSONObject eventData) throws JSONException
     {
         try
         {
-            Log.d(TAG, "onSensorResponseReceived: This one is for quantity sensor " + this.name);
-            DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
-            DateTime timestamp = new DateTime(fmt.parseDateTime(sensorEvent.getEventData().getString("TimeStamp")));
-            JSONObject valueObject = sensorEvent.getEventData().getJSONObject("Data").getJSONObject("Content").getJSONObject("Value");
-            QuantityValue value = new QuantityValue(valueObject.getString("QuantityType"),valueObject.getDouble("Value"), valueObject.getString("Unit"));
-            updateValue(value, timestamp);
+            String sensorName = eventData.getString("SensorName");
+            String typeName = eventData.getJSONObject("Data").getString("TypeName");
+
+            if (sensorName.equals(this.name) && typeName.equals("QuantityValue`1"))
+            {
+                Log.d(TAG, "onSensorResponseReceived: This one is for quantity sensor " + this.name);
+                DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+                DateTime timestamp = new DateTime(fmt.parseDateTime(eventData.getString("TimeStamp")));
+                JSONObject valueObject = eventData.getJSONObject("Data").getJSONObject("Content").getJSONObject("Value");
+                QuantityValue value = new QuantityValue(valueObject.getString("QuantityType"), valueObject.getDouble("Value"), valueObject.getString("Unit"));
+                updateValue(value, timestamp);
+            }
         }
         catch (JSONException jex)
         {

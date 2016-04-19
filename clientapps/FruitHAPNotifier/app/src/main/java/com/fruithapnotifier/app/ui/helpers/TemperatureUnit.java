@@ -17,5 +17,5 @@ package com.fruithapnotifier.app.ui.helpers;
 
 public enum TemperatureUnit
 {
-    Celsius, Fahrenheit, Kelvin
+    Undefined, Celsius, Fahrenheit, Kelvin
 }

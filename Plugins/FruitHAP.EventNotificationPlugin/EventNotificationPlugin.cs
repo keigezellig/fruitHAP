@@ -79,8 +79,9 @@ namespace FruitHAP.Plugins.EventNotification
 				Data = data.OptionalData,
 			};
 
-
-			mqProvider.Publish (sensorMessage, configuration.RoutingKey);
+            			
+            mqProvider.Publish (sensorMessage, configuration.RoutingKey);
+            logger.InfoFormat("Event published for {0}",data.Sender.Name);
 		}
 
         public void Dispose()

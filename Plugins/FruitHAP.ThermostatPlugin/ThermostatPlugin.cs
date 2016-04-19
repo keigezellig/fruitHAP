@@ -91,6 +91,8 @@ namespace FruitHAP.Plugins.Thermostat
 					SensorName = data.Sender.Name,
 					Data = CreateResponse(data,true)
 				};
+
+                mqProvider.Publish (sensorMessage, configuration.RoutingKey);
 			} 
             else if (tempValue.Value.Value < configuration.ThresholdCold) 
 			{
@@ -111,6 +113,7 @@ namespace FruitHAP.Plugins.Thermostat
 					SensorName = data.Sender.Name,
 					Data = CreateResponse(data,false)
 				};
+                mqProvider.Publish (sensorMessage, configuration.RoutingKey);
 
 			} 
 			else 
@@ -121,7 +124,7 @@ namespace FruitHAP.Plugins.Thermostat
 			}
 
 		
-			mqProvider.Publish (sensorMessage, configuration.RoutingKey);
+			
 
 		}
 

@@ -24,6 +24,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 public abstract class StatefulSensor implements Sensor
 {
@@ -77,17 +78,12 @@ public abstract class StatefulSensor implements Sensor
     @Subscribe
     public void onSensorResponseReceived(SensorEvent sensorEvent)
     {
+        Log.d(TAG, "onSensorResponseReceived: Received response:" + sensorEvent.getEventData());
+
+
         try
         {
-            String sensorName = sensorEvent.getEventData().getString("SensorName");
-            String typeName = sensorEvent.getEventData().getJSONObject("Data").getString("TypeName");
-
-            Log.d(TAG, "onSensorResponseReceived: Received response:" + sensorEvent.getEventData());
-
-            if (sensorName.equals(this.name) && typeName.equals("OnOffValue"))
-            {
-                handleSensorUpdateResponse(sensorEvent);
-            }
+            handleSensorUpdateResponse(sensorEvent.getEventData());
         }
         catch (JSONException jex)
         {
@@ -95,7 +91,7 @@ public abstract class StatefulSensor implements Sensor
         }
     }
 
-    protected abstract void handleSensorUpdateResponse(SensorEvent sensorEvent) throws JSONException;
+    protected abstract void handleSensorUpdateResponse(JSONObject eventData) throws JSONException;
 
     @Override
     public void registerForEvents()

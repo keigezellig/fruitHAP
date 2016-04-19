@@ -26,6 +26,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class Switch extends StatefulSensor
@@ -96,16 +97,24 @@ public class Switch extends StatefulSensor
     }
 
     @Override
-    protected void handleSensorUpdateResponse(SensorEvent sensorEvent) throws JSONException
+    protected void handleSensorUpdateResponse(JSONObject eventData) throws JSONException
     {
+
         try
         {
-            Log.d(TAG, "onSensorResponseReceived: This one is for switch " + this.name);
-            DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
-            DateTime timestamp = new DateTime(fmt.parseDateTime(sensorEvent.getEventData().getString("TimeStamp")));
-            int state = sensorEvent.getEventData().getJSONObject("Data").getJSONObject("Content").getInt("Value");
-            SwitchState value = SwitchState.values()[state];
-            updateValue(value, timestamp);
+            String sensorName = eventData.getString("SensorName");
+            String typeName = eventData.getJSONObject("Data").getString("TypeName");
+
+            if (sensorName.equals(this.name) && typeName.equals("OnOffValue"))
+            {
+                Log.d(TAG, "onSensorResponseReceived: This one is for switch " + this.name);
+                DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+                DateTime timestamp = new DateTime(fmt.parseDateTime(eventData.getString("TimeStamp")));
+                int state = eventData.getJSONObject("Data").getJSONObject("Content").getInt("Value");
+                SwitchState value = SwitchState.values()[state];
+                updateValue(value, timestamp);
+
+            }
         }
         catch (JSONException jex)
         {

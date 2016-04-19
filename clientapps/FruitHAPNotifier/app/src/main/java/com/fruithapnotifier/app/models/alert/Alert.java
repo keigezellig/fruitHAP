@@ -173,7 +173,7 @@ public class Alert implements Parcelable {
 
            return new Alert(id, timestamp, sensorName, text, prio,optionalData, false);
        }
-       catch (JSONException ex)
+       catch (Exception ex)
        {
            Log.e(TAG,"Cannot parse event data",ex);
        }

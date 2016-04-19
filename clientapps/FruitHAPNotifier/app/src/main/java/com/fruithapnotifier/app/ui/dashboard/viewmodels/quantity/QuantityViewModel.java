@@ -24,10 +24,12 @@ public class QuantityViewModel extends SensorViewModel
 {
    private double value;
     private String unitText;
+    private String lastUpdated;
 
     public QuantityViewModel(String name, String description, String category)
     {
         super(name, description, category);
+
     }
 
     @Override
@@ -50,5 +52,15 @@ public class QuantityViewModel extends SensorViewModel
 
     public void setUnitText(String unitText) {
         this.unitText = unitText;
+    }
+
+    public String getLastUpdated()
+    {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(String lastUpdated)
+    {
+        this.lastUpdated = lastUpdated;
     }
 }

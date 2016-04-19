@@ -45,14 +45,13 @@ public class DatabaseConfigurationLoader implements ConfigurationLoader
     @Override
     public void loadConfiguration()
     {
-        //TODO: For now clear database, in future more 'intelligent' way of loading config (e.g. with deltas)
-        repository.deleteConfigurationItems();
         requestAdapter.sendSensorConfigurationRequest("");
     }
 
     @Subscribe
     public void onConfigurationReceived(ConfigurationEvent configurationEvent)
     {
+        repository.deleteConfigurationItems();
         JSONArray sensorConfiguration = configurationEvent.getEventData();
         try
         {

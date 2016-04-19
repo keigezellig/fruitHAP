@@ -18,7 +18,7 @@ package com.fruithapnotifier.app.ui.helpers;
 /**
  * Created by MJOX03 on 19.4.2016.
  */
-public interface UnitTextConverter<T>
+public interface UnitTextConverter
 {
-    String getUnitText(T unitDefinition);
+    String getUnitText(String unitDefinition);
 }

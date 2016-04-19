@@ -24,6 +24,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by MJOX03 on 18.4.2016.
@@ -39,15 +40,21 @@ public class TextSensor extends StatefulSensor
     }
 
     @Override
-    protected void handleSensorUpdateResponse(SensorEvent sensorEvent) throws JSONException
+    protected void handleSensorUpdateResponse(JSONObject eventData) throws JSONException
     {
         try
         {
-            Log.d(TAG, "onSensorResponseReceived: This one is for text Sensor " + this.name);
-            DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
-            DateTime timestamp = new DateTime(fmt.parseDateTime(sensorEvent.getEventData().getString("TimeStamp")));
-            String value = sensorEvent.getEventData().getJSONObject("Data").getJSONObject("Content").getString("Value");
-            updateValue(value, timestamp);
+            String sensorName = eventData.getString("SensorName");
+            String typeName = eventData.getJSONObject("Data").getString("TypeName");
+
+            if (sensorName.equals(this.name) && typeName.equals("TextValue"))
+            {
+                Log.d(TAG, "onSensorResponseReceived: This one is for text Sensor " + this.name);
+                DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+                DateTime timestamp = new DateTime(fmt.parseDateTime(eventData.getString("TimeStamp")));
+                String value = eventData.getJSONObject("Data").getJSONObject("Content").getString("Value");
+                updateValue(value, timestamp);
+            }
         }
         catch (JSONException jex)
         {
