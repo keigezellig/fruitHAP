@@ -13,22 +13,26 @@
  *
  */
 
-package com.fruithapnotifier.app.models.sensor.quantity;
+package com.fruithapnotifier.app.ui.dashboard.viewmodels.quantity;
+
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.SensorViewModel;
 
 /**
- * Created by MJOX03 on 18.4.2016.
+ * Created by MJOX03 on 19.4.2016.
  */
-public class QuantityValue
+public class QuantityViewModel extends SensorViewModel
 {
-    private String type;
-    private double value;
-    private String unit;
+   private double value;
+    private String unitText;
 
-    public QuantityValue(String type, double value, String unit)
+    public QuantityViewModel(String name, String description, String category)
     {
-        this.type = type;
-        this.value = value;
-        this.unit = unit;
+        super(name, description, category);
+    }
+
+    @Override
+    public int getViewType() {
+        return VIEWTYPE_UNITVALUE;
     }
 
     public double getValue()
@@ -36,12 +40,15 @@ public class QuantityValue
         return value;
     }
 
-    public String getUnit()
-    {
-        return unit;
+    public void setValue(double value) {
+        this.value = value;
     }
 
-    public String getType() {
-        return type;
+    public String getUnitText() {
+        return unitText;
+    }
+
+    public void setUnitText(String unitText) {
+        this.unitText = unitText;
     }
 }

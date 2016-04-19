@@ -13,35 +13,12 @@
  *
  */
 
-package com.fruithapnotifier.app.models.sensor.quantity;
+package com.fruithapnotifier.app.ui.helpers;
 
 /**
- * Created by MJOX03 on 18.4.2016.
+ * Created by MJOX03 on 19.4.2016.
  */
-public class QuantityValue
+public interface UnitTextConverter<T>
 {
-    private String type;
-    private double value;
-    private String unit;
-
-    public QuantityValue(String type, double value, String unit)
-    {
-        this.type = type;
-        this.value = value;
-        this.unit = unit;
-    }
-
-    public double getValue()
-    {
-        return value;
-    }
-
-    public String getUnit()
-    {
-        return unit;
-    }
-
-    public String getType() {
-        return type;
-    }
+    String getUnitText(T unitDefinition);
 }

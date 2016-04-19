@@ -175,13 +175,13 @@ public class DashboardFragment extends Fragment
         {
             Switch switchy = (Switch)sensor;
             return new SwitchViewModel(switchy.getName(),switchy.getDescription(), switchy.getCategory(),switchy.isReadOnly());
-        };
+        }
 
         if (sensor instanceof Button)
         {
             Button button = (Button) sensor;
             return new ButtonViewModel(button.getName(),button.getDescription(),button.getCategory());
-        };
+        }
 
 
 
