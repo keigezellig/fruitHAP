@@ -86,6 +86,12 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 viewHolder = new QuantityViewHolder(quantityView);
                 break;
             }
+            case VIEWTYPE_IMAGEVALUE:
+            {
+                View imageView = inflater.inflate(R.layout.dashboard_imageitem, parent, false);
+                viewHolder = new QuantityViewHolder(imageView);
+                break;
+            }
         }
 
         return viewHolder;
