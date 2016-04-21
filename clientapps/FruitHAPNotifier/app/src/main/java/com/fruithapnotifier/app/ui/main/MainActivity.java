@@ -27,9 +27,15 @@ import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.Toast;
 import com.fruithapnotifier.app.R;
+import com.fruithapnotifier.app.common.ConfigurationLoader;
 import com.fruithapnotifier.app.common.Constants;
+import com.fruithapnotifier.app.models.sensor.Sensor;
+import com.fruithapnotifier.app.models.sensor.StatefulSensor;
 import com.fruithapnotifier.app.persistence.AlertRepository;
+import com.fruithapnotifier.app.persistence.ConfigurationRepository;
 import com.fruithapnotifier.app.service.FruithapPubSubService;
+import com.fruithapnotifier.app.service.configuration.DatabaseConfigurationLoader;
+import com.fruithapnotifier.app.service.requestadapter.RestRequestAdapter;
 import com.fruithapnotifier.app.ui.alerts.AlertListFragment;
 import com.fruithapnotifier.app.ui.dashboard.DashboardFragment;
 
@@ -50,6 +56,8 @@ public class MainActivity extends AppCompatActivity
     private Constants.Section currentSection;
     private Intent serviceIntent;
     private FragmentManager fragmentManager;
+    private AlertRepository alertRepository;
+    private ConfigurationRepository configurationRepository;
 
 
     @Override
@@ -68,6 +76,9 @@ public class MainActivity extends AppCompatActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        alertRepository = new AlertRepository(this);
+        configurationRepository = new ConfigurationRepository(this);
 
 
     }
@@ -128,6 +139,11 @@ public class MainActivity extends AppCompatActivity
                 getMenuInflater().inflate(R.menu.menu_alertlist, menu);
             }
 
+            if (currentSection == Constants.Section.DASHBOARD)
+            {
+                getMenuInflater().inflate(R.menu.menu_dashboard, menu);
+            }
+
             restoreActionBar();
             return true;
         }
@@ -140,25 +156,45 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        AlertRepository repository = new AlertRepository(this);
+
+
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_alert_clear_list)
         {
             Toast.makeText(this, getString(R.string.clearing_list), Toast.LENGTH_SHORT).show();
-            repository.deleteAlerts();
+            alertRepository.deleteAlerts();
 
             return true;
         }
 
         if (id == R.id.action_alert_mark_as_read)
         {
-            repository.markAllAsRead();
+            alertRepository.markAllAsRead();
             return true;
         }
 
+        if (id == R.id.action_dashboard_refresh)
+        {
+            ConfigurationLoader configurationLoader = new DatabaseConfigurationLoader(configurationRepository, new RestRequestAdapter(this));
+            configurationLoader.loadConfiguration();
+            return true;
+        }
 
+        if (id == R.id.action_values_refresh)
+        {
+            for (Sensor sensor: configurationRepository.getSensors())
+            {
+                if (sensor instanceof StatefulSensor)
+                {
+                    ((StatefulSensor) sensor).requestUpdate();
+                }
+            }
+
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
