@@ -154,16 +154,12 @@ public class AlertListFragment extends Fragment
 
             if (alert.getOptionalData() != null)
             {
-                JSONObject content = alert.getOptionalData().optJSONObject("Content");
-                if (content != null)
+                String typeName = alert.getOptionalData().getString("TypeName");
+                if (typeName.equals("ImageValue"))
                 {
-                    if (content.has("$type") && content.getString("$type").contains("Byte"))
-                    {
-                        String imageString = content.getString("$value");
-                        image = Base64.decode(imageString, Base64.DEFAULT);
-                    }
+                    String imageString = alert.getOptionalData().getJSONObject("Content").getString("Value");
+                    image = Base64.decode(imageString, Base64.DEFAULT);
                 }
-
             }
             AlertListItemViewModel result = new AlertListItemViewModel(id, timestamp, notificationText,priorityText,priorityColor,alert.isRead());
             ArrayList<AlertListItemDetailViewModel> childList = new ArrayList<>();
