@@ -16,23 +16,30 @@
 package com.fruithapnotifier.app.ui.dashboard;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Switch;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.ui.dashboard.viewholders.button.ButtonViewHolder;
+import com.fruithapnotifier.app.ui.dashboard.viewholders.image.ImageViewHolder;
 import com.fruithapnotifier.app.ui.dashboard.viewholders.quantity.QuantityViewHolder;
 import com.fruithapnotifier.app.ui.dashboard.viewholders.switchy.ReadOnlySwitchViewHolder;
 import com.fruithapnotifier.app.ui.dashboard.viewholders.switchy.SwitchViewHolder;
+import com.fruithapnotifier.app.ui.dashboard.viewholders.text.TextViewHolder;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.SensorViewModel;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.button.ButtonViewModel;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.image.ImageViewModel;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.quantity.QuantityViewModel;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.switchy.SwitchViewState;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.switchy.SwitchViewModel;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.text.TextViewModel;
 
 import java.util.List;
 
@@ -89,7 +96,14 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             case VIEWTYPE_IMAGEVALUE:
             {
                 View imageView = inflater.inflate(R.layout.dashboard_imageitem, parent, false);
-                viewHolder = new QuantityViewHolder(imageView);
+                viewHolder = new ImageViewHolder(imageView);
+                break;
+            }
+
+            case VIEWTYPE_TEXTVALUE:
+            {
+                View textView = inflater.inflate(R.layout.dashboard_textitem, parent, false);
+                viewHolder = new TextViewHolder(textView);
                 break;
             }
         }
@@ -127,6 +141,52 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 configureQuantityViewHolder(quantityViewHolder, position);
                 break;
             }
+            case VIEWTYPE_IMAGEVALUE:
+            {
+                ImageViewHolder imageViewHolder = (ImageViewHolder)holder;
+                configureImageViewHolder(imageViewHolder, position);
+            }
+            case VIEWTYPE_TEXTVALUE:
+            {
+                TextViewHolder textViewHolder = (TextViewHolder)holder;
+                configureTextViewHolder(textViewHolder, position);
+            }
+        }
+    }
+
+    private void configureTextViewHolder(TextViewHolder textViewHolder, int position)
+    {
+        final TextViewModel item = (TextViewModel)items.get(position);
+        if (item != null) {
+            textViewHolder.getTxtName().setText(item.getName());
+            textViewHolder.getTxtDesc().setText(item.getDescription());
+            textViewHolder.getTxtLastupdated().setText(item.getLastUpdated());
+            textViewHolder.getTxtValue().setText(item.getValue());
+        }
+
+    }
+
+    private void configureImageViewHolder(ImageViewHolder imageViewHolder, int position)
+    {
+        final ImageViewModel item = (ImageViewModel)items.get(position);
+        if (item != null)
+        {
+            imageViewHolder.getTxtName().setText(item.getName());
+            imageViewHolder.getTxtDesc().setText(item.getDescription());
+            imageViewHolder.getTxtLastupdated().setText(item.getLastUpdated());
+
+            byte[] imageBytes = item.getImageData();
+            ImageView imageView = imageViewHolder.getImgImage();
+            if ( imageBytes != null)
+            {
+                Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                imageView.setImageBitmap(decodedImage);
+            }
+            else
+            {
+                imageView.setImageBitmap(null);
+            }
+
         }
     }
 

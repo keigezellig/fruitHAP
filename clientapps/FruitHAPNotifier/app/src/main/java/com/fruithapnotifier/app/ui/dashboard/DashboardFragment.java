@@ -30,16 +30,22 @@ import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.models.sensor.Sensor;
 import com.fruithapnotifier.app.models.sensor.StatefulSensor;
 import com.fruithapnotifier.app.models.sensor.button.Button;
+import com.fruithapnotifier.app.models.sensor.image.ImageSensor;
+import com.fruithapnotifier.app.models.sensor.image.ImageValueChangeEvent;
 import com.fruithapnotifier.app.models.sensor.quantity.QuantitySensor;
 import com.fruithapnotifier.app.models.sensor.quantity.QuantityValueChangeEvent;
 import com.fruithapnotifier.app.models.sensor.switchy.Switch;
 import com.fruithapnotifier.app.models.sensor.switchy.SwitchChangeEvent;
+import com.fruithapnotifier.app.models.sensor.text.TextSensor;
+import com.fruithapnotifier.app.models.sensor.text.TextValueChangeEvent;
 import com.fruithapnotifier.app.persistence.ConfigurationRepository;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.SensorViewModel;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.button.ButtonViewModel;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.image.ImageViewModel;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.quantity.QuantityViewModel;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.switchy.SwitchViewModel;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.switchy.SwitchViewState;
+import com.fruithapnotifier.app.ui.dashboard.viewmodels.text.TextViewModel;
 import com.fruithapnotifier.app.ui.helpers.UnitTextConverterFactory;
 import com.fruithapnotifier.app.ui.main.FragmentCallbacks;
 import org.greenrobot.eventbus.EventBus;
@@ -162,6 +168,45 @@ public class DashboardFragment extends Fragment
         }
     }
 
+    @Subscribe
+    public void onImageValueChanged(ImageValueChangeEvent event)
+    {
+        for (int i = 0; i < adapter.getItemCount(); i++)
+        {
+            SensorViewModel item = adapter.getItems().get(i);
+            if (item.getName().equals(event.getSender().getName()) && item instanceof ImageViewModel)
+            {
+                ImageViewModel imageViewModel = (ImageViewModel)item;
+                Log.d(TAG,"Updating UI for image value: "+item.getName());
+                imageViewModel.setImageData(event.getValue());
+                DateTimeFormatter fmt = DateTimeFormat.forStyle("SM").withLocale(null);
+                imageViewModel.setLastUpdated(event.getDate().toString(fmt));
+                adapter.notifyItemChanged(i);
+                break;
+            }
+        }
+    }
+
+    @Subscribe
+    public void onTextValueChanged(TextValueChangeEvent event)
+    {
+        for (int i = 0; i < adapter.getItemCount(); i++)
+        {
+            SensorViewModel item = adapter.getItems().get(i);
+            if (item.getName().equals(event.getSender().getName()) && item instanceof TextViewModel)
+            {
+                TextViewModel textViewModel = (TextViewModel)item;
+                Log.d(TAG,"Updating UI for text value: "+item.getName());
+                textViewModel.setValue(event.getValue());
+                DateTimeFormatter fmt = DateTimeFormat.forStyle("SM").withLocale(null);
+                textViewModel.setLastUpdated(event.getDate().toString(fmt));
+                adapter.notifyItemChanged(i);
+                break;
+            }
+        }
+    }
+
+
 
     private void updateAdapter()
     {
@@ -212,6 +257,18 @@ public class DashboardFragment extends Fragment
         {
             QuantitySensor quantitySensor = (QuantitySensor) sensor;
             return new QuantityViewModel(quantitySensor.getName(),quantitySensor.getDescription(),quantitySensor.getCategory());
+        }
+
+        if (sensor instanceof TextSensor)
+        {
+            TextSensor textSensor = (TextSensor) sensor;
+            return new TextViewModel(textSensor.getName(),textSensor.getDescription(),textSensor.getCategory());
+        }
+
+        if (sensor instanceof ImageSensor)
+        {
+            ImageSensor imageSensor = (ImageSensor) sensor;
+            return new ImageViewModel(imageSensor.getName(),imageSensor.getDescription(),imageSensor.getCategory());
         }
 
 
