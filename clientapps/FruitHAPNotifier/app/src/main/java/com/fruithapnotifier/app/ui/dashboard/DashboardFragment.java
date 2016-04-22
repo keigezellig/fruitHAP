@@ -112,17 +112,23 @@ public class DashboardFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        View view;
 
-        View view = inflater.inflate(R.layout.dashboard_fragment, container, false);
-        dashboardView = (RecyclerView) view.findViewById(R.id.dashboard);
-        dashboardView.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        if (fragmentCallbacks.isConnectedToServer()) {
+            view = inflater.inflate(R.layout.dashboard_fragment, container, false);
+            dashboardView = (RecyclerView) view.findViewById(R.id.dashboard);
+            dashboardView.setHasFixedSize(true);
+            LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+            llm.setOrientation(LinearLayoutManager.VERTICAL);
 
-        dashboardView.setLayoutManager(llm);
+            dashboardView.setLayoutManager(llm);
 
-        updateAdapter();
-
+            updateAdapter();
+        }
+        else
+        {
+            view = inflater.inflate(R.layout.dashboard_fragment_notconnected, container, false);
+        }
 
         return view;
     }

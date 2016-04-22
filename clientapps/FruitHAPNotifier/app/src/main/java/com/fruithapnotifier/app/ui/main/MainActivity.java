@@ -15,6 +15,7 @@
 
 package com.fruithapnotifier.app.ui.main;
 
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -122,6 +123,12 @@ public class MainActivity extends AppCompatActivity
     {
         mTitle = title;
         restoreActionBar();
+    }
+
+    @Override
+    public boolean isConnectedToServer()
+    {
+        return FruithapPubSubService.isConnected;
     }
 
 

@@ -57,7 +57,8 @@ public class FruithapPubSubService extends Service
     private AlertRepository datasource;
     private LocalBroadcastManager broadcastManager;
     private SharedPreferences preferences;
-    private List<Switch> switches;
+
+    public static boolean isConnected;
 
 
     public FruithapPubSubService()
@@ -78,9 +79,6 @@ public class FruithapPubSubService extends Service
         broadcastManager = LocalBroadcastManager.getInstance(this);
         datasource = new AlertRepository(this);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        //switches = loadSwitches();
-
         fruithapNotificationTask = new FruithapNotificationTask(this);
 
 
@@ -178,6 +176,7 @@ public class FruithapPubSubService extends Service
         }
 
         Log.d(LOGTAG, "Service stopped");
+        isConnected = false;
         super.onDestroy();
 
     }
@@ -222,6 +221,8 @@ public class FruithapPubSubService extends Service
 
         ConfigurationLoader configurationLoader = new DatabaseConfigurationLoader(new ConfigurationRepository(this), new RestRequestAdapter(this));
         configurationLoader.loadConfiguration();
+
+        isConnected = true;
 
         return START_STICKY;
     }
