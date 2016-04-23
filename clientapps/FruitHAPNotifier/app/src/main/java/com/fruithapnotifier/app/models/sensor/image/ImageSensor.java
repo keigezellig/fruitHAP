@@ -52,7 +52,7 @@ public class ImageSensor extends StatefulSensor
                 Log.d(TAG, "onSensorResponseReceived: This one is for image Sensor " + this.name);
                 DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
                 DateTime timestamp = new DateTime(fmt.parseDateTime(eventData.getString("TimeStamp")));
-                String imageString = eventData.getJSONObject("Data").getJSONObject("Content").getString("Value");
+                String imageString = eventData.getJSONObject("Data").getJSONObject("Content").getString("ImageData");
                 byte[] imageData = Base64.decode(imageString, Base64.DEFAULT);
                 updateValue(imageData, timestamp);
             }

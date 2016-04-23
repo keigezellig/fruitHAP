@@ -53,8 +53,13 @@ public class QuantitySensor extends StatefulSensor {
                 Log.d(TAG, "onSensorResponseReceived: This one is for quantity sensor " + this.name);
                 DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
                 DateTime timestamp = new DateTime(fmt.parseDateTime(eventData.getString("TimeStamp")));
-                JSONObject valueObject = eventData.getJSONObject("Data").getJSONObject("Content").getJSONObject("Value");
-                QuantityValue value = new QuantityValue(valueObject.getString("QuantityType"), valueObject.getDouble("Value"), valueObject.getString("Unit"));
+                QuantityValue value = null;
+                if (!(eventData.getJSONObject("Data").getJSONObject("Content").isNull("Value")))
+                {
+                    JSONObject valueObject = eventData.getJSONObject("Data").getJSONObject("Content").getJSONObject("Value");
+                    value = new QuantityValue(valueObject.getString("QuantityType"), valueObject.getDouble("Value"), valueObject.getString("Unit"));
+                }
+
                 updateValue(value, timestamp);
             }
         }

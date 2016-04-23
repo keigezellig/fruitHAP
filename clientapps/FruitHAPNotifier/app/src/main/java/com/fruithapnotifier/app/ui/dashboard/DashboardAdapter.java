@@ -145,11 +145,13 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             {
                 ImageViewHolder imageViewHolder = (ImageViewHolder)holder;
                 configureImageViewHolder(imageViewHolder, position);
+                break;
             }
             case VIEWTYPE_TEXTVALUE:
             {
                 TextViewHolder textViewHolder = (TextViewHolder)holder;
                 configureTextViewHolder(textViewHolder, position);
+                break;
             }
         }
     }
