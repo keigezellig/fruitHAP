@@ -163,9 +163,17 @@ public class DashboardFragment extends Fragment
             {
                 QuantityViewModel quantityViewModel = (QuantityViewModel)item;
                 Log.d(TAG,"Updating UI for quanity value: "+item.getName());
-                quantityViewModel.setValue(event.getValue().getValue());
-                String unitText = UnitTextConverterFactory.getUnitTextConverter(event.getValue().getType()).getUnitText(event.getValue().getUnit());
-                quantityViewModel.setUnitText(unitText);
+                if (event.getValue() == null)
+                {
+                    quantityViewModel.setValue(Double.NaN);
+                    quantityViewModel.setUnitText("");
+                }
+                else
+                {
+                    quantityViewModel.setValue(event.getValue().getValue());
+                    String unitText = UnitTextConverterFactory.getUnitTextConverter(event.getValue().getType()).getUnitText(event.getValue().getUnit());
+                    quantityViewModel.setUnitText(unitText);
+                }
                 DateTimeFormatter fmt = DateTimeFormat.forStyle("SM").withLocale(null);
                 quantityViewModel.setLastUpdated(event.getDate().toString(fmt));
                 adapter.notifyItemChanged(i);

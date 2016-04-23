@@ -54,12 +54,8 @@ public class QuantitySensor extends StatefulSensor {
                 DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
                 DateTime timestamp = new DateTime(fmt.parseDateTime(eventData.getString("TimeStamp")));
                 QuantityValue value = null;
-                if (!(eventData.getJSONObject("Data").getJSONObject("Content").isNull("Value")))
-                {
-                    JSONObject valueObject = eventData.getJSONObject("Data").getJSONObject("Content").getJSONObject("Value");
-                    value = new QuantityValue(valueObject.getString("QuantityType"), valueObject.getDouble("Value"), valueObject.getString("Unit"));
-                }
-
+                JSONObject valueObject = eventData.getJSONObject("Data").getJSONObject("Content").getJSONObject("Value");
+                value = new QuantityValue(valueObject.getString("QuantityType"), valueObject.getDouble("Value"), valueObject.getString("Unit"));
                 updateValue(value, timestamp);
             }
         }
@@ -73,13 +69,12 @@ public class QuantitySensor extends StatefulSensor {
 
     private void updateValue(QuantityValue newValue, DateTime timestamp)
     {
-        if (newValue != value)
-        {
+
             Log.d(TAG,"Value changed: "+this);
             value = newValue;
             lastUpdated = timestamp;
             onValueChanged(new QuantityValueChangeEvent(this,value, lastUpdated));
-        }
+
     }
 
     private void onValueChanged(QuantityValueChangeEvent quantityValueChangeEvent)

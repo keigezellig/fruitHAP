@@ -16,9 +16,7 @@
 package com.fruithapnotifier.app.ui.dashboard;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
+import android.graphics.*;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -182,14 +180,35 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             if ( imageBytes != null)
             {
                 Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-                imageView.setImageBitmap(decodedImage);
+                if (decodedImage == null)
+                {
+                    Bitmap bmp = getNABitmap();
+                    imageView.setImageBitmap(bmp);
+                }
+                else
+                {
+                    imageView.setImageBitmap(decodedImage);
+                }
             }
             else
             {
-                imageView.setImageBitmap(null);
+                Bitmap bmp = getNABitmap();
+                imageView.setImageBitmap(bmp);
             }
 
         }
+    }
+
+    private Bitmap getNABitmap()
+    {
+        Bitmap bmp = Bitmap.createBitmap(150,150, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bmp);
+        Paint p = new Paint();
+        p.setColor(Color.RED);
+        p.setStrokeWidth(5);
+        c.drawLine(0,0,150,150,p);
+        c.drawLine(150,0,0,150,p);
+        return bmp;
     }
 
     private void configureQuantityViewHolder(QuantityViewHolder quantityViewHolder, int position)
@@ -201,7 +220,14 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             quantityViewHolder.getTxtDesc().setText(item.getDescription());
             quantityViewHolder.getTxtLastupdated().setText(item.getLastUpdated());
             quantityViewHolder.getTxtUnit().setText(item.getUnitText());
-            quantityViewHolder.getTxtValue().setText(Double.toString(item.getValue()));
+            if (Double.isNaN(item.getValue()))
+            {
+                quantityViewHolder.getTxtValue().setText("N/A");
+            }
+            else
+            {
+                quantityViewHolder.getTxtValue().setText(Double.toString(item.getValue()));
+            }
         }
     }
 

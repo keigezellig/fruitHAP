@@ -23,10 +23,8 @@ import android.os.Handler;
 import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import com.fruithapnotifier.app.common.ConfigurationEvent;
-import com.fruithapnotifier.app.common.Constants;
-import com.fruithapnotifier.app.common.RequestAdapter;
-import com.fruithapnotifier.app.common.SensorEvent;
+import android.widget.Toast;
+import com.fruithapnotifier.app.common.*;
 import com.fruithapnotifier.app.service.RestConsumer;
 import com.fruithapnotifier.app.service.requestadapter.requests.SensorConfigurationRequest;
 import com.fruithapnotifier.app.service.requestadapter.requests.SensorRequest;
@@ -44,7 +42,7 @@ public class RestRequestAdapter implements RequestAdapter
     private Context context;
 
 
-    public RestRequestAdapter(Context context)
+    public RestRequestAdapter(final Context context)
     {
         this.context = context;
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.context);
@@ -73,12 +71,15 @@ public class RestRequestAdapter implements RequestAdapter
                     catch (JSONException e)
                     {
                         Log.e(LOGTAG, "Message error", e);
+                        EventBus.getDefault().post(new RequestErrorEvent(e.getMessage()));
+
                     }
                 }
                 else
                 {
-                    Log.e(LOGTAG,"StatefulSensor request failed with code: "+resultCode);
-                    Log.e(LOGTAG,"Response=: "+response);
+                    String message = "StatefulSensor request failed with code: "+resultCode + " response= "+response;
+                    Log.e(LOGTAG,message);
+                    EventBus.getDefault().post(new RequestErrorEvent(message));
                 }
 
             }
@@ -102,12 +103,15 @@ public class RestRequestAdapter implements RequestAdapter
                     catch (JSONException e)
                     {
                         Log.e(LOGTAG, "Message error", e);
+                        EventBus.getDefault().post(new RequestErrorEvent(e.getMessage()));
                     }
                 }
                 else
                 {
-                    Log.e(LOGTAG,"Configuration request failed with code: "+resultCode);
-                    Log.e(LOGTAG,"Response=: "+response);
+                    String msg = "Configuration request failed with code: " + resultCode + " Response=: " + response;
+                    Log.e(LOGTAG, msg);
+                    EventBus.getDefault().post(new RequestErrorEvent(msg));
+
                 }
             }
         };

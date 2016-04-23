@@ -23,7 +23,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Large Text"
         android:id="@+id/dashboard_switch_txtName"
-        android:layout_gravity="center_horizontal" />
+         />
 
     <TextView
         android:layout_width="wrap_content"
@@ -31,13 +31,12 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Medium Text"
         android:id="@+id/dashboard_switch_txtDescription"
-        android:layout_gravity="center_horizontal" />
+        />
 
     <Switch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/dashboard_switch_swState"
-        android:layout_gravity="center_horizontal"
         android:checked="false"
         android:textOn="On"
         android:textOff="Off" />
@@ -48,7 +47,6 @@
         android:layout_height="wrap_content"
         android:text="Small Text"
         android:id="@+id/dashboard_switch_txtLastUpdated"
-        android:layout_gravity="center_horizontal"
         android:textSize="8dp" />
 </LinearLayout>
     </android.support.v7.widget.CardView>

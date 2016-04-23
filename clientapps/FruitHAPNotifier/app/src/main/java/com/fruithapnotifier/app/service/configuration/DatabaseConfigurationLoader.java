@@ -15,10 +15,14 @@
 
 package com.fruithapnotifier.app.service.configuration;
 
+import android.app.Application;
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 import com.fruithapnotifier.app.common.ConfigurationEvent;
 import com.fruithapnotifier.app.common.ConfigurationLoader;
 import com.fruithapnotifier.app.common.RequestAdapter;
+import com.fruithapnotifier.app.common.RequestErrorEvent;
 import com.fruithapnotifier.app.models.configuration.ConfigurationItem;
 import com.fruithapnotifier.app.models.configuration.SensorType;
 import com.fruithapnotifier.app.persistence.ConfigurationRepository;
@@ -77,6 +81,15 @@ public class DatabaseConfigurationLoader implements ConfigurationLoader
         }
      
     }
+
+    @Subscribe
+    public void onConfigurationError(RequestErrorEvent configurationErrorEvent)
+    {
+        repository.deleteConfigurationItems();
+        EventBus.getDefault().cancelEventDelivery(configurationErrorEvent);
+
+    }
+
 
     private SensorType determineSensorType(JSONObject sensorObject) throws JSONException
     {
