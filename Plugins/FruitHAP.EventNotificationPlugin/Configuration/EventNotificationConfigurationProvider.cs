@@ -23,7 +23,7 @@ namespace FruitHAP.Plugins.EventNotification.Configuration
 
 		protected override EventNotificationConfiguration LoadDefaultConfig()
 		{
-			return new EventNotificationConfiguration() { RoutingKey = "alerts", Sensors = new System.Collections.Generic.List<string>()};
+			return new EventNotificationConfiguration() { RoutingKey = "events"};
 		}
 		
 	}

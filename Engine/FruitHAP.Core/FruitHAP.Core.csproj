@@ -96,6 +96,8 @@
     <Compile Include="Service\IFruitHAPService.cs" />
     <Compile Include="Service\FruitHAPService.cs" />
     <Compile Include="Sensor\SensorTypes\IControllableSwitch.cs" />
+    <Compile Include="Plugin\BasePluginWithConfiguration.cs" />
+    <Compile Include="Plugin\BasePluginConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

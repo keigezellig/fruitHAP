@@ -23,7 +23,7 @@ namespace FruitHAP.Plugins.Web.Startup
 
 		protected override WebConfiguration LoadDefaultConfig()
 		{
-			return new WebConfiguration() { BaseUrl = "http://localhost:8888"};
+			return new WebConfiguration() { BaseUrl = "http://+:8888"};
 		}
 
 	}

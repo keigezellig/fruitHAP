@@ -15,44 +15,49 @@ using FruitHAP.Plugins.AlertNotification.Configuration;
 
 namespace FruitHAP.Plugins.AlertNotification
 {
-	public class AlertNotificationPlugin : IPlugin
+    public class AlertNotificationPlugin : BasePluginWithConfiguration<AlertNotificationConfiguration>
 	{
 		private readonly ISensorRepository sensorRepository;
-		private readonly ILogger logger;
 		private readonly IMessageQueueProvider mqProvider;
-		private IConfigProvider<AlertNotificationConfiguration> configurationProvider;
-        private const string CONFIG_FILENAME = "alert_notification.json";
-		private AlertNotificationConfiguration configuration;
+		private const string CONFIG_FILENAME = "alert_notification.json";
 		private IEventBus eventBus;
 
 		public AlertNotificationPlugin(ISensorRepository sensorRepository, 
 								  ILogger logger, 
 								  IConfigProvider<AlertNotificationConfiguration> configurationProvider, 
 								  IMessageQueueProvider mqProvider,
-								  IEventBus eventBus)
+            IEventBus eventBus) : base(logger,configurationProvider)
 		{
 			this.eventBus = eventBus;
 			this.sensorRepository = sensorRepository;
-			this.logger = logger;
 			this.mqProvider = mqProvider;
-			this.configurationProvider = configurationProvider;
 		}
 
-		public void Initialize()
-		{
-			
-			logger.InfoFormat ("Initializing action {0}", this);
-			logger.InfoFormat ("Loading configuration");
-			configuration = configurationProvider.LoadConfigFromFile (Path.Combine (Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location), CONFIG_FILENAME));
+        #region implemented abstract members of BasePluginWithConfiguration
 
-			bool isAnyActionTriggered = sensorRepository.GetSensors ().Any (sns => this.configuration.Sensors.Select(g => g.SensorName).Contains (sns.Name));
-			if (!isAnyActionTriggered) 
-			{
-				logger.Warn ("This action will never be triggered. If this isn't correct, please check your configuration");
-			}
+        protected override string GetConfigurationFileName()
+        {
+            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), CONFIG_FILENAME);
+        }
 
-			Subscribe (this.configuration.Sensors);
-		}
+        protected override void InitializePlugin()
+        {
+            bool isAnyActionTriggered = sensorRepository.GetSensors ().Any (sns => this.configuration.Sensors.Select(g => g.SensorName).Contains (sns.Name));
+            if (!isAnyActionTriggered) 
+            {
+                logger.Warn ("This action will never be triggered. If this isn't correct, please check your configuration");
+            }
+
+            Subscribe (this.configuration.Sensors);
+        }
+
+        protected override void CleanUpPlugin()
+        {
+            UnSubscribe();
+        }
+
+        #endregion
+
 
 		void Subscribe (List<NotificationConfiguration> sensors)
 		{
@@ -91,14 +96,6 @@ namespace FruitHAP.Plugins.AlertNotification
 				Priority = (NotificationPriority)((int)responseConfig.Priority),
 				OptionalData = data.OptionalData
 			};
-		}
-
-
-
-        public void Dispose()
-        {
-            logger.DebugFormat("Dispose action {0}", this);
-            UnSubscribe();
 		}
 	}
 
