@@ -10,6 +10,7 @@ using FruitHAP.Core.Sensor.PacketData.ImageCapture;
 using FruitHAP.Core.Controller;
 using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Common.EventBus;
+using FruitHAP.Core.Sensor.SensorValueTypes;
 
 namespace FruitHAP.Sensor.Camera.Devices
 {
@@ -17,17 +18,20 @@ namespace FruitHAP.Sensor.Camera.Devices
     {
         private readonly ILogger logger;
 		private readonly IEventBus eventBus;
-        private byte[] receivedImageData;
+        private ImageValue receivedImageData;
         private bool isReceived;
 
         private Uri uri;
-
+		private DateTime lastUpdateTime;
 
         public string Name { get; set; }
         public string Description { get; set; }
         public string Category { get; set; }
         public string Resolution { get; set; }
         public string Username { get; set; }
+
+
+
         public string Password { get; set; }
         public string Url
         {
@@ -46,6 +50,7 @@ namespace FruitHAP.Sensor.Camera.Devices
         {
             this.logger = logger;
 			this.eventBus = eventBus;
+			this.lastUpdateTime = DateTime.Now;
 			eventBus.Subscribe<ControllerEventData<ImageResponsePacket>>(HandleIncomingResponse, f => f.Direction == Direction.FromController && f.Payload.DestinationSensor == Name);
         }
 
@@ -53,12 +58,13 @@ namespace FruitHAP.Sensor.Camera.Devices
         void HandleIncomingResponse(ControllerEventData<ImageResponsePacket> response)
         {
             this.isReceived = true;
-            this.receivedImageData = response.Payload.ImageData;
+			this.receivedImageData = new ImageValue () { ImageData = response.Payload.ImageData };
+			this.lastUpdateTime = DateTime.Now;
         }
 
 
 
-        public async Task<byte[]> GetImageAsync()
+        public async Task<ImageValue> GetImageAsync()
         {
 			eventBus.Publish(new ControllerEventData<ImageRequestPacket> ()
             {
@@ -73,12 +79,16 @@ namespace FruitHAP.Sensor.Camera.Devices
                 }
             });
 
-            Task<byte[]> workerTask = new Task<byte[]>(() => {
-                while (!isReceived)
-                {
-                }
-                this.isReceived = false;
-                return this.receivedImageData;
+			Task<ImageValue> workerTask = new Task<ImageValue>(() => 
+			{
+
+					while (!isReceived)
+                	{
+                	}
+                	this.isReceived = false;
+                	
+				
+					return this.receivedImageData;
             });
 
             workerTask.Start();
@@ -93,10 +103,24 @@ namespace FruitHAP.Sensor.Camera.Devices
             return new Camera(this.logger, this.eventBus);
         }
 
-        public object GetValue()
+		public ISensorValueType GetValue()
         {
-            return GetImageAsync().Result;
+			try
+			{
+				return GetImageAsync ().Result;
+			}
+			catch (Exception)
+			{
+				this.receivedImageData = new ImageValue () { ImageData = null };
+				this.lastUpdateTime = DateTime.Now;
+				return this.receivedImageData;
+			}
         }
+
+		public DateTime GetLastUpdateTime ()
+		{
+			return lastUpdateTime;
+		}
 
 
         public override string ToString()

@@ -17,6 +17,7 @@ namespace FruitHAP.Core.SensorPersister
 		ILogger logger;
 		IConfigProvider<List<SensorConfigurationEntry>> configProvider;
 		string sensorFile;
+        List<SensorConfigurationEntry> configuration;
 
 		public SensorPersister (IEnumerable<ISensor> prototypes, ILogger logger, IConfigProvider<List<SensorConfigurationEntry>> configProvider)
 		{
@@ -32,7 +33,7 @@ namespace FruitHAP.Core.SensorPersister
 		{
 			var result = new List<ISensor> ();
 			logger.InfoFormat ("Loading sensors from {0}", sensorFile);
-			var configuration = configProvider.LoadConfigFromFile (sensorFile); 
+            configuration = configProvider.LoadConfigFromFile (sensorFile); 
 			List<ISensor> nonAggregateSensors = LoadNonAggregateSensors (configuration.Where (f => !f.IsAggegrate));
 			result.AddRange (nonAggregateSensors);
 			List<ISensor> aggregateSensors = LoadAggregateSensors (configuration.Where (f => f.IsAggegrate),result);
@@ -43,6 +44,8 @@ namespace FruitHAP.Core.SensorPersister
 
         private IEnumerable<SensorConfigurationEntry> BuildConfigurationEntriesList(IEnumerable<ISensor> sensorList)
         {
+
+            //var entries = configuration.Where(f => f.
             List<SensorConfigurationEntry> entries = new List<SensorConfigurationEntry>();
             foreach (var sensor in sensorList)
             {
@@ -70,15 +73,10 @@ namespace FruitHAP.Core.SensorPersister
             return entries;
         }
 
-        public IEnumerable<SensorConfigurationEntry> GetSensorConfiguration(IEnumerable<ISensor> sensorList)
+        public IEnumerable<SensorConfigurationEntry> GetSensorConfiguration()
         {
-            return BuildConfigurationEntriesList(sensorList);
+            return configuration;
         }
-        public void SaveSensors (IEnumerable<ISensor> sensorList)
-		{
-            var configurationEntries = BuildConfigurationEntriesList(sensorList);
-			configProvider.SaveConfigToFile (configurationEntries.ToList(), sensorFile);
-		}
 
 		#endregion
 

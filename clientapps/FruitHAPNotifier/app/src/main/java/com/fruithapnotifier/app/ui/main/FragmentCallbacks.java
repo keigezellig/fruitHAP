@@ -22,4 +22,5 @@ public interface FragmentCallbacks
 {
     void onSectionAttached(Constants.Section section, String title);
     void updateTitle(String title);
+    boolean isConnectedToServer();
 }

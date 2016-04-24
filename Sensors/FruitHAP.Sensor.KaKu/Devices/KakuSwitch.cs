@@ -1,32 +1,30 @@
 ﻿using System;
-using FruitHAP.Core;
-using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
-using System.Collections.Generic;
-using FruitHAP.Common.Helpers;
-using Microsoft.Practices.Prism.PubSubEvents;
-using FruitHAP.Sensor.KaKu.Common;
-using FruitHAP.Core.Sensor.SensorTypes;
-using FruitHAP.Sensor.PacketData.AC;
-using FruitHAP.Core.Controller;
-using FruitHAP.Sensor.PacketData.General;
 using FruitHAP.Common.EventBus;
+using FruitHAP.Core.Controller;
+using FruitHAP.Core.Sensor;
+using FruitHAP.Core.Sensor.SensorTypes;
+using FruitHAP.Core.Sensor.SensorValueTypes;
+using FruitHAP.Sensor.KaKu.Common;
+using FruitHAP.Sensor.PacketData.AC;
 
 namespace FruitHAP.Sensor.KaKu
 {
-	public class KakuSwitch : KakuDevice, ISwitch
+	public class KakuSwitch : KakuDevice, IControllableSwitch
 	{
-		private Command onCommand;
-		private Command offCommand;
-		private SwitchState state;
-		private Trigger trigger;
-		private bool isReadOnly;
+		private ACCommand onCommand;
+		private ACCommand offCommand;
+		private OnOffValue state;
+		private Trigger trigger;		
+		private DateTime lastUpdateTime;
 
 		public KakuSwitch(IEventBus eventBus, ILogger logger) : base(eventBus,logger)
 		{
+			state = new OnOffValue () { Value = StateValue.Undefined };
+			this.lastUpdateTime = DateTime.Now;
 		}
 
-		public Command OnCommand {
+		public ACCommand OnCommand {
 			get {
 				return this.onCommand;
 			}
@@ -35,7 +33,7 @@ namespace FruitHAP.Sensor.KaKu
 			}
 		}
 
-		public Command OffCommand {
+		public ACCommand OffCommand {
 			get {
 				return this.offCommand;
 			}
@@ -51,93 +49,43 @@ namespace FruitHAP.Sensor.KaKu
 				trigger = value;
 			}
 		}
-
-		public bool IsReadOnly {
-			get {
-				return isReadOnly;
-			}
-			set {
-				isReadOnly = value;
-			}
-		}
-
+            
 		public void TurnOn ()
 		{
-            if (!isReadOnly)
-            {
-				UpdateState (SwitchState.On);
-            }
-            else
-            {
-                logger.Warn("Read only switch!");
-            }
+		    UpdateState (StateValue.On);
 		}
 
 		public void TurnOff ()
 		{
-            if (!isReadOnly)
-            {
-				UpdateState (SwitchState.Off);
-            }
-            else
-            {
-                logger.Warn("Read only switch!");
-            }
+            UpdateState (StateValue.Off);            
         }
 
-		private void UpdateState (SwitchState newState)
+		private void UpdateState (StateValue newState)
 		{
-			if (newState == state) 
+			if (state.Value == newState) 
 			{
 				return;
 			}
 
 			TriggerControllerEvent(newState);
-			logger.Debug ("Waiting for ack...");
-			try
-			{
-			var ack = GetAck ().Result;
-			if (ack) {
-				state = newState;
-				TriggerSensorEvent ();
-				logger.InfoFormat ("State changed to {0}", state);				
-			} else {
-				logger.Warn ("Negative or no acknowledgement from controller received, state will not be changed");
-			}
-			}
-			catch (AggregateException aex) 
-			{
-				aex.Handle (ex => 
-					{
-						if (ex is TimeoutException)
-						{
-							logger.Warn ("Time out occured while waiting on ack, state will be set to undefined");
-							state = SwitchState.Undefined;
-						}
-						return ex is TimeoutException;
-					});
-				
-			}
-
-			/*ack.ContinueWith ( (t) => {
-				if (t.Result) {
-					state = newState;
-					TriggerSensorEvent ();
-					logger.InfoFormat ("State changed to {0}", state);				
-				} else {
-					logger.Warn ("Negative or no acknowledgement from controller received, state will not be changed");
-				}
-			});*/
 		}
 
-		public SwitchState GetState ()
+		public OnOffValue State 
 		{
-			return state;
+			get 
+			{
+				return state;
+			}
 		}
         
-		public object GetValue ()
+		public ISensorValueType GetValue ()
 		{
 			return state;
+		}
+
+		public DateTime GetLastUpdateTime ()
+		{
+			return lastUpdateTime;
 		}
 
 		#region ICloneable implementation
@@ -150,9 +98,9 @@ namespace FruitHAP.Sensor.KaKu
 		#endregion
 
 		protected override void ProcessReceivedACDataForThisDevice (ACPacket data)
-		{
-			SwitchState newState = DetermineNewState(data);
-			state = newState;
+		{            
+            StateValue newState = DetermineNewState(data);
+			state.Value = newState;
             TriggerSensorEvent();
             logger.InfoFormat("State changed to {0}", state);
         }
@@ -164,10 +112,10 @@ namespace FruitHAP.Sensor.KaKu
 			switch (trigger) 
 			{
 			case Trigger.On:
-				fireEvent = (state == SwitchState.On);
+				fireEvent = (state.Value == StateValue.On);
 				break;
 			case Trigger.Off:
-				fireEvent = (state == SwitchState.Off);
+				fireEvent = (state.Value == StateValue.Off);
 				break;			
 			}
 
@@ -176,20 +124,19 @@ namespace FruitHAP.Sensor.KaKu
 			if (fireEvent) 
 			{
 				SensorEventData sensorEvent = new SensorEventData () {
-					TimeStamp = DateTime.Now,
+					TimeStamp = lastUpdateTime,
 					Sender = this,
-					EventName = "SensorEvent",
-					OptionalData = state
+					OptionalData = new OptionalDataContainer(state)
 				};
 
 				eventBus.Publish(sensorEvent);
 			}
 		}
 
-		private void TriggerControllerEvent (SwitchState state)
+		private void TriggerControllerEvent (StateValue state)
 		{
 			logger.Debug ("Firing controller event");
-			if (state == SwitchState.Undefined) 
+			if (state == StateValue.Undefined) 
 			{
 				logger.Error ("Cannot send UNDEFINED switch state to controller");
 				return;
@@ -198,27 +145,27 @@ namespace FruitHAP.Sensor.KaKu
 			var data = new ACPacket () {
 				DeviceId = deviceId,
 				UnitCode = unitCode,
-				Command = state == SwitchState.On ? OnCommand : OffCommand,
+				Command = state == StateValue.On ? OnCommand : OffCommand,
 				Level = 0
 			};
-
-			eventBus.Publish(new ControllerEventData<ACPacket> () { Direction = Direction.ToController, Payload = data });
-
+                    
+         
+            eventBus.Publish(new ControllerEventData<ACPacket>() { Direction = Direction.ToController, Payload = data});    
 		}
 			
-		private SwitchState DetermineNewState (ACPacket decodedData)
+		private StateValue DetermineNewState (ACPacket decodedData)
 		{
 			if (decodedData.Command == onCommand) 
 			{
-				return SwitchState.On;
+				return StateValue.On;
 			}
 
 			if (decodedData.Command == offCommand) 
 			{
-				return SwitchState.Off;
+				return StateValue.Off;
 			}
 
-			return SwitchState.Undefined;
+			return StateValue.Undefined;
 		}
 		public override string ToString ()
 		{

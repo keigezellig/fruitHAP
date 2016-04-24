@@ -5,38 +5,27 @@ using FruitHAP.Core.Controller;
 using FruitHAP.Core.Sensor.PacketData.RFXSensor;
 using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
+using FruitHAP.Core.Sensor.SensorValueTypes;
 
 namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 {
 	public class FruitTempSensor : ITemperatureSensor
 	{
+		private QuantityValue<TemperatureUnit> temperature;
+		private DateTime lastUpdated;
 
-		private double temperature;
-		private TemperatureUnit unit;
-
-		#region ITemperatureSensor implementation
-
-		public TemperatureValue GetTemperature ()
+		public ISensorValueType GetValue ()
 		{
-			return new TemperatureValue () 
-			{				
-				Temperature = temperature, 
-				Unit = unit
-			};
-				
-		}
-			
-
-		#endregion
-
-		#region IValueSensor implementation
-
-		public object GetValue ()
-		{
-			return GetTemperature ();
+			return temperature;
 		}
 
-		#endregion
+		public QuantityValue<TemperatureUnit>  Temperature 
+		{
+			get 
+			{
+				return temperature;
+			}
+		}
 
 		#region ICloneable implementation
 
@@ -74,6 +63,8 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 		{
 			this.eventBus = eventBus;
 			this.logger = logger;
+			this.temperature = new QuantityValue<TemperatureUnit> ();
+			this.lastUpdated = DateTime.Now;
 
 			eventBus.Subscribe<ControllerEventData<RFXSensorTemperaturePacket>>(HandleIncomingTempMessage,f => f.Direction == Direction.FromController && f.Payload.SensorId == SensorId);
 
@@ -81,20 +72,30 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 
 		public override string ToString ()
 		{
-			return string.Format ("[FruitTempSensor: temperature={0}, unit={1}, Name={2}, Description={3}, Category={4}, SensorId={5}]", temperature, unit, Name, Description, Category, SensorId);
+			return string.Format ("[FruitTempSensor: Name={1}, Description={2}, Category={3}, SensorId={4}, temperature={0}]", temperature, Name, Description, Category, SensorId);
+		}
+
+		public DateTime GetLastUpdateTime ()
+		{
+			return this.lastUpdated;
 		}
 		
 
 		void HandleIncomingTempMessage (ControllerEventData<RFXSensorTemperaturePacket> obj)
 		{
-			this.temperature = obj.Payload.TemperatureInCentiCelsius / 100;
-			this.unit = TemperatureUnit.Celsius;
+			lastUpdated = DateTime.Now;
+			var temperatureValue = new TemperatureQuantity () {
+				Value = obj.Payload.TemperatureInCentiCelsius / 100,
+				Unit = TemperatureUnit.Celsius
+			};
+			temperature = new QuantityValue<TemperatureUnit> ();
+			temperature.Value = temperatureValue;
+
 
 			SensorEventData sensorEvent = new SensorEventData () {
-				TimeStamp = DateTime.Now,
+				TimeStamp = lastUpdated,
 				Sender = this,
-				EventName = "SensorEvent",
-				OptionalData = GetValue()
+				OptionalData = new OptionalDataContainer(temperature)
 			};
 
 			eventBus.Publish(sensorEvent);

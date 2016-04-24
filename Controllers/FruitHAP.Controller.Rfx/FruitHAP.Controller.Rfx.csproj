@@ -46,13 +46,13 @@
     <Compile Include="PacketHandlers\RfxACProtocol.cs" />
     <Compile Include="RfxPacketInfo.cs" />
     <Compile Include="PacketHandlers\RfxInterfacePacketHandler.cs" />
-    <Compile Include="InternalPacketData\StatusPacket.cs" />
     <Compile Include="RfxDevice.cs" />
     <Compile Include="PacketHandlers\RfxAckPacketHandler.cs" />
     <Compile Include="InternalPacketData\RfxAckPacket.cs" />
     <Compile Include="PacketHandlers\RfxRfxSensorMessagePacketHandler.cs" />
     <Compile Include="PacketHandlers\RfxRfxSensorTemperaturePacketHandler.cs" />
     <Compile Include="PacketHandlers\RfxRfxSensorVoltagePacketHandler.cs" />
+    <Compile Include="InternalPacketData\RfxStatusPacket.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

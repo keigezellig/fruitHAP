@@ -14,7 +14,7 @@ using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Core.Controller;
 using FruitHAP.Sensor.PacketData.AC;
 using FruitHAP.Controller.Rfx.InternalPacketData;
-using FruitHAP.Sensor.PacketData.General;
+using FruitHAP.Core.Sensor.PacketData.General;
 using FruitHAP.Common.EventBus;
 
 namespace FruitHAP.Controller.Rfx
@@ -30,6 +30,8 @@ namespace FruitHAP.Controller.Rfx
 		private RfxControllerPacketHandlerFactory handlerFactory;
 		private List<RfxPacketInfo> packetTypes;
 		private RfxDevice rfxDevice;
+
+        Dictionary<int,ACPacket> acMessagesInProcess;
 
         public override string Name
         {
@@ -47,14 +49,16 @@ namespace FruitHAP.Controller.Rfx
             this.physicalInterfaceFactory = physicalInterfaceFactory;
 			this.handlerFactory = new RfxControllerPacketHandlerFactory (logger, eventBus);
 			this.rfxDevice = new RfxDevice (logger);
+            this.acMessagesInProcess = new Dictionary<int, ACPacket>();
         }
 
 
         protected override void StartController()
-        {
-            SubscribeToEvents();
+        {            
             LoadConfiguration();
+            SubscribeToSensorEvents();
             OpenRfxDevice();
+            SubscribeToRfxEvents();
         }
 
         protected override void StopController()
@@ -65,7 +69,7 @@ namespace FruitHAP.Controller.Rfx
         protected override void DisposeController()
         {
 			eventBus.Unsubscribe<ControllerEventData<ACPacket>>(HandleIncomingACMessage);
-			eventBus.Unsubscribe<ControllerEventData<StatusPacket>>(HandleIncomingSetModeResponse);
+			eventBus.Unsubscribe<ControllerEventData<RfxStatusPacket>>(HandleIncomingSetModeResponse);
 			eventBus.Unsubscribe<ControllerEventData<RfxAckPacket>>(HandleIncomingAckMessage);
             rfxDevice.Dispose();
         }
@@ -174,10 +178,21 @@ namespace FruitHAP.Controller.Rfx
 		{			
 			RfxACProtocol protocol = new RfxACProtocol (logger);
 			byte[] data = protocol.Encode (obj.Payload);
-			rfxDevice.SendData(data);
+            try
+            {
+                int sequenceNumber = rfxDevice.SendData(data);
+                acMessagesInProcess[sequenceNumber] = obj.Payload;
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Error while sending data: ", ex);
+                NakPacket<ControllerEventData<ACPacket>> nakPacket = new NakPacket<ControllerEventData<ACPacket>>() { Data = obj, Reason = NakReason.Failure };
+                eventBus.Publish(nakPacket);
+               
+            }
 		}
 
-		private void HandleIncomingSetModeResponse (ControllerEventData<StatusPacket> obj)
+		private void HandleIncomingSetModeResponse (ControllerEventData<RfxStatusPacket> obj)
 		{
 			var responsePacket = obj.Payload;
 			if (responsePacket.SequenceNumber == rfxDevice.PreviousSequenceNumber) 
@@ -194,11 +209,12 @@ namespace FruitHAP.Controller.Rfx
 		void HandleIncomingAckMessage (ControllerEventData<RfxAckPacket> obj)
 		{
 			var responsePacket = obj.Payload;
-			bool isAck = responsePacket.SequenceNumber == rfxDevice.PreviousSequenceNumber;
-			eventBus.Publish(new ControllerEventData<AckPacket> () {
-				Direction = Direction.FromController,
-				Payload = new AckPacket () { IsAcknowledged = isAck }
-			});
+            if (acMessagesInProcess.ContainsKey(responsePacket.SequenceNumber))
+            {
+                logger.Debug("**** publishing sensor event because of ack ***");
+                eventBus.Publish(new ControllerEventData<ACPacket>() { Direction = Direction.FromController, Payload = acMessagesInProcess[responsePacket.SequenceNumber]});
+                acMessagesInProcess.Remove(responsePacket.SequenceNumber);
+            }			
 		}
 
 		private void LoadConfiguration ()
@@ -208,12 +224,16 @@ namespace FruitHAP.Controller.Rfx
 			handlerFactory.Initialize (packetTypes);
 		}
 
-		private void SubscribeToEvents ()
+		private void SubscribeToSensorEvents ()
 		{
 			eventBus.Subscribe<ControllerEventData<ACPacket>>(HandleIncomingACMessage, f => f.Direction == Direction.ToController);
-			eventBus.Subscribe<ControllerEventData<StatusPacket>>(HandleIncomingSetModeResponse, f => f.Direction == Direction.FromController && f.Payload.CommandType == CommandType.SetMode);
-			eventBus.Subscribe<ControllerEventData<RfxAckPacket>>(HandleIncomingAckMessage, f => f.Direction == Direction.FromController);
+		
 		} 
+        private void SubscribeToRfxEvents()
+        {
+            eventBus.Subscribe<ControllerEventData<RfxStatusPacket>>(HandleIncomingSetModeResponse, f => f.Direction == Direction.FromController && f.Payload.CommandType == CommandType.SetMode);
+            eventBus.Subscribe<ControllerEventData<RfxAckPacket>>(HandleIncomingAckMessage, f => f.Direction == Direction.FromController);
+        }
 
 		private void OpenRfxDevice ()
 		{

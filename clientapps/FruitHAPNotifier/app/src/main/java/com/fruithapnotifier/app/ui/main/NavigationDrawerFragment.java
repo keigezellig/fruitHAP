@@ -139,6 +139,7 @@ public class NavigationDrawerFragment extends Fragment
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
                 new String[]{
+                        getString(R.string.title_dashboard),
                         getString(R.string.title_alertlist)
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
@@ -314,50 +315,6 @@ public class NavigationDrawerFragment extends Fragment
             startActivity(intent);
         }
 
-        if (item.getItemId() == R.id.action_turnonservice)
-        {
-            getActivity().startService(serviceIntent);
-            Toast.makeText(getActivity(), getString(R.string.notification_service_started), Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        if (item.getItemId() == R.id.action_turnoffservice)
-        {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                    getActivity());
-
-            // set title
-            alertDialogBuilder.setTitle(getString(R.string.turn_off_notification_service));
-
-            // set dialog message
-            alertDialogBuilder
-                    .setMessage(getString(R.string.notification_service_stopwarning))
-                    .setCancelable(false)
-                    .setPositiveButton(getString(R.string.caption_yes), new DialogInterface.OnClickListener()
-                    {
-                        public void onClick(DialogInterface dialog, int id)
-                        {
-
-                            getActivity().stopService(serviceIntent);
-
-                        }
-                    })
-                    .setNegativeButton(getString(R.string.caption_no), new DialogInterface.OnClickListener()
-                    {
-                        public void onClick(DialogInterface dialog, int id)
-                        {
-                            // if this button is clicked, just close
-                            // the dialog box and do nothing
-                            dialog.cancel();
-                        }
-                    });
-
-            // create alert dialog
-            AlertDialog alertDialog = alertDialogBuilder.create();
-
-            // show it
-            alertDialog.show();
-        }
 
 
         return super.onOptionsItemSelected(item);

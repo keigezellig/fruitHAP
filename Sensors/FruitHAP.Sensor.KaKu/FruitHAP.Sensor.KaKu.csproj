@@ -41,6 +41,7 @@
     <Compile Include="Devices\KakuButton.cs" />
     <Compile Include="Devices\KakuSwitch.cs" />
     <Compile Include="Common\KakuDevice.cs" />
+    <Compile Include="Devices\KakuReadOnlySwitch.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

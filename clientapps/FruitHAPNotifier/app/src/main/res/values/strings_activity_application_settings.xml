@@ -7,7 +7,7 @@
     <string name="pref_header_serversettings">Server settings</string>
     <string name="pref_server_title_hostname">Host name</string>
     <string name="pref_general_default_hostname">localhost</string>
-    <string name="pref_server_title_port">Port</string>
+    <string name="pref_server_title_pubsub_port">Port</string>
     <string name="pref_general_default_port">5672</string>
     <string name="pref_server_title_username">User name</string>
     <string name="pref_server_default_username">admin</string>
@@ -21,6 +21,7 @@
     <string name="pref_server_default_alert_topic">alerts</string>
     <string name="pref_server_title_event_topic">Event topic</string>
     <string name="pref_server_default_event_topic">events</string>
-    <string name="pref_server_title_rpc_exchange">Control exchange</string>
-    <string name="pref_server_default_rpc_exchange">FruitHAP_Rpc_Exchange</string>
+    <string name="pref_server_title_control_port" >Control port</string>
+    <string name="pref_general_default_control_port">8888</string>
+
 </resources>

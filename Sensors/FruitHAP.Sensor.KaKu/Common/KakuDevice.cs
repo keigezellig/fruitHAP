@@ -1,14 +1,9 @@
-﻿using System;
-using FruitHAP.Core.Sensor;
+﻿using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
-using System.Collections.Generic;
-using FruitHAP.Common.Helpers;
-using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Sensor.PacketData.AC;
 using FruitHAP.Core.Controller;
-using FruitHAP.Sensor.PacketData.General;
-using System.Threading.Tasks;
 using FruitHAP.Common.EventBus;
+using FruitHAP.Core.Sensor.PacketData.General;
 
 namespace FruitHAP.Sensor.KaKu.Common
 {
@@ -26,12 +21,18 @@ namespace FruitHAP.Sensor.KaKu.Common
 
 		protected abstract void ProcessReceivedACDataForThisDevice (ACPacket data);
 
+        protected virtual void ProcessNakPacket(NakPacket<ControllerEventData<ACPacket>> payload)
+        {            
+        }
+
+
+
 		protected KakuDevice (IEventBus eventBus, ILogger logger)
 		{
 			this.eventBus = eventBus;
 			this.logger = logger;
-			eventBus.Subscribe<ControllerEventData<ACPacket>>(HandleIncomingACMessage,f => f.Direction == Direction.FromController && DataReceivedCorrespondsToThisDevice(f.Payload));
-			eventBus.Subscribe<ControllerEventData<AckPacket>>(HandleIncomingAckMessage, f => f.Direction == Direction.FromController);
+			eventBus.Subscribe<ControllerEventData<ACPacket>>(HandleIncomingACMessage,f => f.Direction == Direction.FromController && DataReceivedCorrespondsToThisDevice(f.Payload));			
+            eventBus.Subscribe<NakPacket<ControllerEventData<ACPacket>>>(HandleNakMessage, filter => filter.Data.Payload.DeviceId == this.deviceId && filter.Data.Payload.UnitCode == this.unitCode );
 		}
 			
 		public string Name
@@ -81,29 +82,11 @@ namespace FruitHAP.Sensor.KaKu.Common
 			return (decodedData.DeviceId == deviceId) && (decodedData.UnitCode == unitCode);
 		}
 
-		void HandleIncomingAckMessage (ControllerEventData<AckPacket> obj)
-		{			
-			isAckReceived = true;
-			ackValue = obj.Payload.IsAcknowledged;
-		}
-
-		protected async Task<bool> GetAck()
-		{
-			
-
-			Task<bool> workerTask = new Task<bool>(() => {
-				while (!this.isAckReceived)
-				{
-				}
-				this.isAckReceived = false;
-				return this.ackValue;
-			});
-
-			workerTask.Start();
-
-			return await workerTask.TimeoutAfter(TimeSpan.FromSeconds(5));
-
-		}
+        void HandleNakMessage(NakPacket<ControllerEventData<ACPacket>> obj)
+        {
+            logger.DebugFormat("{0}: NAK received for message {1}. Reason: {2}", this.Name, obj.Data.Payload, obj.Reason);
+            ProcessNakPacket(obj);
+        }
 
 
 		public override string ToString ()
@@ -114,7 +97,7 @@ namespace FruitHAP.Sensor.KaKu.Common
 		public void Dispose ()
 		{
 			eventBus.Unsubscribe<ControllerEventData<ACPacket>> (HandleIncomingACMessage);
-			eventBus.Unsubscribe<ControllerEventData<AckPacket>> (HandleIncomingAckMessage);
+           // eventBus.Unsubscribe<ControllerEventData<NakPacket<ControllerEventData<ACPacket>>>>(HandleNakPacket);			
 		}
 	}
 }

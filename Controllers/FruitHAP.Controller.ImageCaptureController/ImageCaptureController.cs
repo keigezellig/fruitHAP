@@ -80,8 +80,8 @@ namespace FruitHAP.Controllers.ImageCaptureController
             }
             catch (Exception ex)
             {
-                logger.Error("Error capturing image: ", ex);
-                throw;
+                logger.Error("Error capturing image: ", ex); 
+				throw;
             }
 		}
 

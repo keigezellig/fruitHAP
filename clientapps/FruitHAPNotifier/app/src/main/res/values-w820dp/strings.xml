@@ -10,18 +10,24 @@
     <string name="title_alertlist">Alerts</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="turn_on_notification_service">Start notification service</string>
-    <string name="turn_off_notification_service">Stop notification service</string>
+    <string name="turn_on_notification_service">Connect to FruitHAP server</string>
+    <string name="turn_off_notification_service">Disconnect from FruitHAP server</string>
     <string name="action_clear_list">Clear list</string>
     <string name="action_general_settings">General settings</string>
     <string name="clearing_list">Clearing list</string>
     <string name="caption_yes">Yes</string>
     <string name="caption_no">No</string>
-    <string name="notification_service_started">Started notification service</string>
-    <string name="notification_service_stopped">Stopped notification service</string>
-    <string name="notification_service_error">Error while starting notification service. Check your connection settings</string>
+    <string name="notification_service_started">Connected to FruitHAP server</string>
+    <string name="notification_service_stopped">Disconnected from FruitHAP server</string>
+    <string name="notification_service_error">Error while connecting to FruitHAP server. Check your settings</string>
     <string name="notification_service_name">FruitHAP</string>
-    <string name="notification_service_stopwarning">Are you sure you want to turn off the notification service? No alerts will be received and the dashboard won\'t be updated properly</string>
+    <string name="notification_service_stopwarning">Are you sure you want to disconnect from the server? No alerts will be received and the dashboard won\'t be updated</string>
     <string name="action_mark_as_read">Mark all alerts as read</string>
     <string name="alert_image">Optional image going with the alert</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="action_dashboard_refresh">Refresh dashboard</string>
+    <string name="action_values_refresh">Refresh sensor values</string>
+    <string name="configuration_load_error">Error while loading configuration</string>
+    <string name="configuration_successfully_loaded">Configuration loaded</string>
+
 </resources>

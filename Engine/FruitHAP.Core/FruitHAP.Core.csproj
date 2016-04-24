@@ -42,13 +42,18 @@
     <Reference Include="EasyNetQ">
       <HintPath>..\packages\EasyNetQ.0.50.1.392\lib\net40\EasyNetQ.dll</HintPath>
     </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
   <ItemGroup>
-    <Compile Include="Action\IAction.cs" />
     <Compile Include="Controller\BaseController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sensor\ExposedAttribute.cs" />
     <Compile Include="Sensor\ISensor.cs" />
     <Compile Include="Sensor\PacketData\ImageCapture\ImageRequestPacket.cs" />
     <Compile Include="Sensor\PacketData\ImageCapture\ImageResponsePacket.cs" />
@@ -56,8 +61,6 @@
     <Compile Include="Sensor\SensorTypes\ICamera.cs" />
     <Compile Include="SensorRepository\ISensorRepository.cs" />
     <Compile Include="SensorRepository\SensorRepository.cs" />
-    <Compile Include="Service\ISensorProcessingService.cs" />
-    <Compile Include="Service\SensorProcessingService.cs" />
     <Compile Include="MQ\RabbitMqProvider.cs" />
     <Compile Include="MQ\IMessageQueueProvider.cs" />
     <Compile Include="MQ\Helpers\TypeNameSerializer.cs" />
@@ -72,17 +75,27 @@
     <Compile Include="SensorPersister\SensorConfigurationEntry.cs" />
     <Compile Include="SensorPersister\SensorConfigurationProvider.cs" />
     <Compile Include="SensorPersister\SensorPersister.cs" />
-    <Compile Include="Action\SensorMessage.cs" />
-    <Compile Include="Action\ConfigurationMessage.cs" />
-    <Compile Include="Action\RpcAction.cs" />
-    <Compile Include="Sensor\PacketData\General\AckPacket.cs" />
     <Compile Include="Sensor\SensorEventData.cs" />
-    <Compile Include="Action\OptionalDataContainer.cs" />
     <Compile Include="Sensor\PacketData\RFXSensor\RFXSensorTemperaturePacket.cs" />
     <Compile Include="Sensor\PacketData\RFXSensor\RFXSensorMessagePacket.cs" />
     <Compile Include="Sensor\PacketData\RFXSensor\RFXSensorVoltagePacket.cs" />
-    <Compile Include="Sensor\SensorTypes\IBatteryPowered.cs" />
     <Compile Include="Sensor\SensorTypes\ITemperatureSensor.cs" />
+    <Compile Include="Service\ContainerAccessor.cs" />
+    <Compile Include="Sensor\SensorValueTypes\QuantityValue.cs" />
+    <Compile Include="Sensor\SensorValueTypes\ImageValue.cs" />
+    <Compile Include="Sensor\SensorValueTypes\OnOffValue.cs" />
+    <Compile Include="Sensor\SensorValueTypes\TextValue.cs" />
+    <Compile Include="Sensor\SensorValueTypes\NumberValue.cs" />
+    <Compile Include="Sensor\OptionalDataContainer.cs" />
+    <Compile Include="Sensor\SensorValueTypes\ISensorValueType.cs" />
+    <Compile Include="Sensor\SensorValueTypes\TemperatureQuantityValue.cs" />
+    <Compile Include="Sensor\SensorValueTypes\Quantity.cs" />
+    <Compile Include="Plugin\SensorMessage.cs" />
+    <Compile Include="Plugin\IPlugin.cs" />
+    <Compile Include="Sensor\PacketData\General\NakPacket.cs" />
+    <Compile Include="Service\IFruitHAPService.cs" />
+    <Compile Include="Service\FruitHAPService.cs" />
+    <Compile Include="Sensor\SensorTypes\IControllableSwitch.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -93,7 +106,5 @@
       <Name>FruitHAP.Common</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Sensor\PacketData\General\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

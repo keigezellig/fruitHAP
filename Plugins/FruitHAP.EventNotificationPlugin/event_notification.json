@@ -1,0 +1,4 @@
+{
+"RoutingKey":"events",
+"Sensors":["PIR","BlueLight","RedLight","MyTempSensor","DoorCamera"]	
+}

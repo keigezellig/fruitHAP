@@ -39,7 +39,7 @@ namespace FruitHAP.Controller.Rfx.PacketHandlers
 			var pdu = new ACPacket();
 			pdu.DeviceId = BitConverter.ToUInt32(deviceBytes, 0);
 			pdu.UnitCode = rawData[8];
-			pdu.Command = (Command)rawData[9];
+			pdu.Command = (ACCommand)rawData[9];
 			pdu.Level = (byte)(rawData [11] >> 4);
 
 			logger.DebugFormat("Decoded packet: {0}", pdu);

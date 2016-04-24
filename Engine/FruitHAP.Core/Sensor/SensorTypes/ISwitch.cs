@@ -1,19 +1,12 @@
 ﻿using FruitHAP.Core.Sensor;
+using FruitHAP.Core.Sensor.SensorValueTypes;
 
 
 namespace FruitHAP.Core.Sensor.SensorTypes
 {
 	public interface ISwitch : IValueSensor
-	{
-		bool IsReadOnly { get; set; }
-		SwitchState GetState();
-		void TurnOn();
-		void TurnOff();
-	}
-
-	public enum SwitchState
-	{
-		Undefined,On,Off
+	{		
+		OnOffValue State { get; }		
 	}
 
 	public enum Trigger

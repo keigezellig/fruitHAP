@@ -1,4 +1,0 @@
-{
-"RoutingKey":"events",
-"Sensors":["PIR","BlueLight","RedLight"]	
-}

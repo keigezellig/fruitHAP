@@ -34,7 +34,7 @@ namespace FruitHAP.Controller.Rfx.PacketHandlers
 		#region IControllerPacketHandler implementation
 		public void Handle (byte[] data)
 		{
-			StatusPacket decodedPacket = new StatusPacket ();
+			RfxStatusPacket decodedPacket = new RfxStatusPacket ();
 			decodedPacket.SequenceNumber = data [3];
 			decodedPacket.DeviceType = (DeviceType)data [5];
 			decodedPacket.FirmwareVersion = data [6];
@@ -47,7 +47,7 @@ namespace FruitHAP.Controller.Rfx.PacketHandlers
 				decodedPacket.CommandType = CommandType.SetMode;
 			}
 		
-			eventBus.Publish (new ControllerEventData<StatusPacket> () {
+            eventBus.Publish (new ControllerEventData<RfxStatusPacket> () {
 				Direction = Direction.FromController,
 				Payload = decodedPacket
 			});

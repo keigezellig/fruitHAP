@@ -15,8 +15,10 @@
             android:enabled="true"
             android:exported="false" >
         </service>
+
         <service
-            android:name=".service.FruithapRpcService"
+            android:name=".service.RestConsumer"
+            android:enabled="true"
             android:exported="false" >
         </service>
 

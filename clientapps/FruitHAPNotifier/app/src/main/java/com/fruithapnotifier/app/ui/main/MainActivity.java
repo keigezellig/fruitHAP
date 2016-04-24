@@ -15,28 +15,35 @@
 
 package com.fruithapnotifier.app.ui.main;
 
-import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.fruithapnotifier.app.R;
+import com.fruithapnotifier.app.common.ConfigurationLoadErrorEvent;
+import com.fruithapnotifier.app.common.ConfigurationLoader;
 import com.fruithapnotifier.app.common.Constants;
+import com.fruithapnotifier.app.models.sensor.Sensor;
+import com.fruithapnotifier.app.models.sensor.StatefulSensor;
 import com.fruithapnotifier.app.persistence.AlertRepository;
+import com.fruithapnotifier.app.persistence.ConfigurationRepository;
 import com.fruithapnotifier.app.service.FruithapPubSubService;
+import com.fruithapnotifier.app.service.configuration.DatabaseConfigurationLoader;
+import com.fruithapnotifier.app.service.requestadapter.RestRequestAdapter;
 import com.fruithapnotifier.app.ui.alerts.AlertListFragment;
+import com.fruithapnotifier.app.ui.dashboard.DashboardFragment;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerCallbacks, FragmentCallbacks
@@ -55,7 +62,7 @@ public class MainActivity extends AppCompatActivity
     private Constants.Section currentSection;
     private Intent serviceIntent;
     private FragmentManager fragmentManager;
-
+    private AlertRepository alertRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -64,6 +71,7 @@ public class MainActivity extends AppCompatActivity
         fragmentManager = getSupportFragmentManager();
         serviceIntent = new Intent(MainActivity.this, FruithapPubSubService.class);
         startService(serviceIntent);
+
         setContentView(R.layout.main_activity_main);
         mNavigationDrawerFragment = (NavigationDrawerFragment) fragmentManager.findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -73,6 +81,7 @@ public class MainActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        alertRepository = new AlertRepository(this);
 
     }
 
@@ -80,11 +89,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onNavigationDrawerItemSelected(int position)
     {
-
-
         switch (position)
         {
             case 0:
+                //Dashboard
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, DashboardFragment.newInstance())
+                        .commit();
+                break;
+
+            case 1:
                 //Alert list
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, AlertListFragment.newInstance(-1))
@@ -113,6 +127,12 @@ public class MainActivity extends AppCompatActivity
         restoreActionBar();
     }
 
+    @Override
+    public boolean isConnectedToServer()
+    {
+        return FruithapPubSubService.isConnected;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -128,6 +148,11 @@ public class MainActivity extends AppCompatActivity
                 getMenuInflater().inflate(R.menu.menu_alertlist, menu);
             }
 
+            if (currentSection == Constants.Section.DASHBOARD)
+            {
+                getMenuInflater().inflate(R.menu.menu_dashboard, menu);
+            }
+
             restoreActionBar();
             return true;
         }
@@ -140,28 +165,34 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        AlertRepository repository = new AlertRepository(this);
+
+
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_alert_clear_list)
         {
             Toast.makeText(this, getString(R.string.clearing_list), Toast.LENGTH_SHORT).show();
-            repository.deleteAlerts();
+            alertRepository.deleteAlerts();
 
             return true;
         }
 
         if (id == R.id.action_alert_mark_as_read)
         {
-            repository.markAllAsRead();
+            alertRepository.markAllAsRead();
             return true;
         }
 
 
 
+
+
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     protected void onStart()

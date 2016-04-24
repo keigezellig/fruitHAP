@@ -25,16 +25,26 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.fruithapnotifier.app.R;
+import com.fruithapnotifier.app.common.ConfigurationLoader;
+import com.fruithapnotifier.app.common.ConnectionChangedEvent;
+import com.fruithapnotifier.app.common.SensorEvent;
 import com.fruithapnotifier.app.models.alert.AlertPriority;
 import com.fruithapnotifier.app.models.alert.Alert;
+import com.fruithapnotifier.app.models.sensor.switchy.Switch;
 import com.fruithapnotifier.app.persistence.AlertRepository;
+import com.fruithapnotifier.app.persistence.ConfigurationRepository;
+import com.fruithapnotifier.app.service.configuration.DatabaseConfigurationLoader;
+import com.fruithapnotifier.app.service.requestadapter.RestRequestAdapter;
 import com.fruithapnotifier.app.ui.main.MainActivity;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class FruithapPubSubService extends Service
 {
@@ -49,6 +59,8 @@ public class FruithapPubSubService extends Service
     private AlertRepository datasource;
     private LocalBroadcastManager broadcastManager;
     private SharedPreferences preferences;
+
+    public static boolean isConnected;
 
 
     public FruithapPubSubService()
@@ -69,7 +81,6 @@ public class FruithapPubSubService extends Service
         broadcastManager = LocalBroadcastManager.getInstance(this);
         datasource = new AlertRepository(this);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
         fruithapNotificationTask = new FruithapNotificationTask(this);
 
 
@@ -107,11 +118,13 @@ public class FruithapPubSubService extends Service
 
                 }
 
-                if (intent.getAction().equals(Constants.INCOMING_ALERT))
+                if (intent.getAction().equals(Constants.INCOMING_MESSAGE))
                 {
                     String topic = intent.getStringExtra(Constants.MQ_PUBSUB_TOPIC);
                     String message = intent.getStringExtra(Constants.MQ_PUBSUB_MESSAGE);
                     String alertTopic = preferences.getString("pref_server_alert_topic","alerts");
+                    String eventTopic = preferences.getString("pref_server_event_topic", "events");
+
                     if (topic.equals(alertTopic) && !message.isEmpty())
                     {
                         try
@@ -122,6 +135,21 @@ public class FruithapPubSubService extends Service
                             {
                                 datasource.insertAlert(alert);
                             }
+                        }
+                        catch (JSONException e)
+                        {
+                            Log.e(LOGTAG, "Message error", e);
+                        }
+                    }
+
+                    if (topic.equals(eventTopic) && !message.isEmpty())
+                    {
+                        try
+                        {
+                            JSONObject eventData = new JSONObject(message);
+                            SensorEvent updateEvent = new SensorEvent(eventData);
+                            EventBus.getDefault().post(updateEvent);
+
                         }
                         catch (JSONException e)
                         {
@@ -150,6 +178,8 @@ public class FruithapPubSubService extends Service
         }
 
         Log.d(LOGTAG, "Service stopped");
+        isConnected = false;
+        EventBus.getDefault().post(new ConnectionChangedEvent());
         super.onDestroy();
 
     }
@@ -192,8 +222,17 @@ public class FruithapPubSubService extends Service
             Log.d(getClass().getName(), "Task already running");
         }
 
+        ConfigurationLoader configurationLoader = new DatabaseConfigurationLoader(new ConfigurationRepository(this), new RestRequestAdapter(this));
+        configurationLoader.loadConfiguration();
+
+        isConnected = true;
+        EventBus.getDefault().post(new ConnectionChangedEvent());
+
         return START_STICKY;
     }
+
+
+
 
     private ConnectionParameters getConnectionParameters()
     {
@@ -243,7 +282,7 @@ public class FruithapPubSubService extends Service
 
     private void registerBroadcastListener()
     {
-        broadcastManager.registerReceiver(eventNotificationReceiver, new IntentFilter(Constants.INCOMING_ALERT));
+        broadcastManager.registerReceiver(eventNotificationReceiver, new IntentFilter(Constants.INCOMING_MESSAGE));
         broadcastManager.registerReceiver(eventNotificationReceiver, new IntentFilter(Constants.ALERT_INSERTED));
     }
 
