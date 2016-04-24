@@ -26,6 +26,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.fruithapnotifier.app.R;
 import com.fruithapnotifier.app.common.ConfigurationLoader;
+import com.fruithapnotifier.app.common.ConnectionChangedEvent;
 import com.fruithapnotifier.app.common.SensorEvent;
 import com.fruithapnotifier.app.models.alert.AlertPriority;
 import com.fruithapnotifier.app.models.alert.Alert;
@@ -178,6 +179,7 @@ public class FruithapPubSubService extends Service
 
         Log.d(LOGTAG, "Service stopped");
         isConnected = false;
+        EventBus.getDefault().post(new ConnectionChangedEvent());
         super.onDestroy();
 
     }
@@ -224,6 +226,7 @@ public class FruithapPubSubService extends Service
         configurationLoader.loadConfiguration();
 
         isConnected = true;
+        EventBus.getDefault().post(new ConnectionChangedEvent());
 
         return START_STICKY;
     }

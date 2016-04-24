@@ -17,19 +17,19 @@ package com.fruithapnotifier.app.ui.dashboard;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.*;
 import android.widget.Toast;
 import com.fruithapnotifier.app.R;
-import com.fruithapnotifier.app.common.ConfigurationLoadErrorEvent;
-import com.fruithapnotifier.app.common.ConfigurationLoadedEvent;
-import com.fruithapnotifier.app.common.ConfigurationLoader;
-import com.fruithapnotifier.app.common.Constants;
+import com.fruithapnotifier.app.common.*;
 import com.fruithapnotifier.app.models.sensor.Sensor;
 import com.fruithapnotifier.app.models.sensor.StatefulSensor;
 import com.fruithapnotifier.app.models.sensor.button.Button;
@@ -42,6 +42,7 @@ import com.fruithapnotifier.app.models.sensor.switchy.SwitchChangeEvent;
 import com.fruithapnotifier.app.models.sensor.text.TextSensor;
 import com.fruithapnotifier.app.models.sensor.text.TextValueChangeEvent;
 import com.fruithapnotifier.app.persistence.ConfigurationRepository;
+import com.fruithapnotifier.app.service.FruithapPubSubService;
 import com.fruithapnotifier.app.service.configuration.DatabaseConfigurationLoader;
 import com.fruithapnotifier.app.service.requestadapter.RestRequestAdapter;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.SensorViewModel;
@@ -70,6 +71,7 @@ public class DashboardFragment extends Fragment
     private RecyclerView dashboardView;
     private ConfigurationRepository configurationRepository;
     private DatabaseConfigurationLoader configurationLoader;
+    private Intent serviceIntent;
 
     public static DashboardFragment newInstance()
     {
@@ -84,10 +86,35 @@ public class DashboardFragment extends Fragment
 
     }
 
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu (Menu menu)
+    {
+        for (int i = 0; i < menu.size(); i++)
+        {
+            MenuItem item = menu.getItem(i);
+            if (item.getItemId() == R.id.action_dashboard_refresh || item.getItemId() == R.id.action_values_refresh)
+            {
+                item.setEnabled(fragmentCallbacks.isConnectedToServer());
+            }
+
+            if (item.getItemId() == R.id.action_turnonservice)
+            {
+                item.setEnabled(!fragmentCallbacks.isConnectedToServer());
+            }
+
+            if (item.getItemId() == R.id.action_turnoffservice)
+            {
+                item.setEnabled(fragmentCallbacks.isConnectedToServer());
+            }
+
+        }
+
     }
 
     @Override
@@ -115,6 +142,55 @@ public class DashboardFragment extends Fragment
         }
 
 
+        if (item.getItemId() == R.id.action_turnonservice)
+        {
+
+            getActivity().startService(serviceIntent);
+
+            Toast.makeText(getActivity(), getString(R.string.notification_service_started), Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        if (item.getItemId() == R.id.action_turnoffservice)
+        {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                    getActivity());
+
+            // set title
+            alertDialogBuilder.setTitle(getString(R.string.turn_off_notification_service));
+
+            // set dialog message
+            alertDialogBuilder
+                    .setMessage(getString(R.string.notification_service_stopwarning))
+                    .setCancelable(false)
+                    .setPositiveButton(getString(R.string.caption_yes), new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+
+                            getActivity().stopService(serviceIntent);
+
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.caption_no), new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+                            // if this button is clicked, just close
+                            // the dialog box and do nothing
+                            dialog.cancel();
+                        }
+                    });
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+        }
+
+
+
         return super.onOptionsItemSelected(item);
 
 
@@ -134,12 +210,13 @@ public class DashboardFragment extends Fragment
 
             try
             {
+                serviceIntent = new Intent(context, FruithapPubSubService.class);
                 title = getString(R.string.title_dashboard);
                 fragmentCallbacks = (FragmentCallbacks) activity;
                 fragmentCallbacks.onSectionAttached(Constants.Section.DASHBOARD,title);
                 EventBus.getDefault().register(this);
-                configurationRepository = new ConfigurationRepository(getActivity());
-                configurationLoader = new DatabaseConfigurationLoader(configurationRepository, new RestRequestAdapter(getActivity()));
+                configurationRepository = new ConfigurationRepository(context);
+                configurationLoader = new DatabaseConfigurationLoader(configurationRepository, new RestRequestAdapter(context));
                 setHasOptionsMenu(true);
             }
             catch (ClassCastException e)
@@ -172,7 +249,6 @@ public class DashboardFragment extends Fragment
             llm.setOrientation(LinearLayoutManager.VERTICAL);
 
             dashboardView.setLayoutManager(llm);
-
             updateAdapter(true);
         }
         else
@@ -196,7 +272,16 @@ public class DashboardFragment extends Fragment
     {
         Toast.makeText(getActivity(), getString(R.string.configuration_successfully_loaded), Toast.LENGTH_SHORT).show();
         refreshDashboard();
+        EventBus.getDefault().cancelEventDelivery(configurationLoadedEvent);
     }
+
+    @Subscribe
+    public void onConnectionChanged(ConnectionChangedEvent connectionChangedEvent)
+    {
+        refreshDashboard();
+        EventBus.getDefault().cancelEventDelivery(connectionChangedEvent);
+    }
+
 
     private void refreshDashboard()
     {

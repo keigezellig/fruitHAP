@@ -187,50 +187,6 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        if (item.getItemId() == R.id.action_turnonservice)
-        {
-            startService(serviceIntent);
-            Toast.makeText(this, getString(R.string.notification_service_started), Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        if (item.getItemId() == R.id.action_turnoffservice)
-        {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                    this);
-
-            // set title
-            alertDialogBuilder.setTitle(getString(R.string.turn_off_notification_service));
-
-            // set dialog message
-            alertDialogBuilder
-                    .setMessage(getString(R.string.notification_service_stopwarning))
-                    .setCancelable(false)
-                    .setPositiveButton(getString(R.string.caption_yes), new DialogInterface.OnClickListener()
-                    {
-                        public void onClick(DialogInterface dialog, int id)
-                        {
-
-                            stopService(serviceIntent);
-
-                        }
-                    })
-                    .setNegativeButton(getString(R.string.caption_no), new DialogInterface.OnClickListener()
-                    {
-                        public void onClick(DialogInterface dialog, int id)
-                        {
-                            // if this button is clicked, just close
-                            // the dialog box and do nothing
-                            dialog.cancel();
-                        }
-                    });
-
-            // create alert dialog
-            AlertDialog alertDialog = alertDialogBuilder.create();
-
-            // show it
-            alertDialog.show();
-        }
 
 
         return super.onOptionsItemSelected(item);
