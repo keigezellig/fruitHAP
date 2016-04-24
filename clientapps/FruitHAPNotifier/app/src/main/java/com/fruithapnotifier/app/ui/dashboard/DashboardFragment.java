@@ -19,13 +19,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
+import android.widget.Toast;
 import com.fruithapnotifier.app.R;
+import com.fruithapnotifier.app.common.ConfigurationLoadErrorEvent;
+import com.fruithapnotifier.app.common.ConfigurationLoadedEvent;
+import com.fruithapnotifier.app.common.ConfigurationLoader;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.models.sensor.Sensor;
 import com.fruithapnotifier.app.models.sensor.StatefulSensor;
@@ -39,6 +42,8 @@ import com.fruithapnotifier.app.models.sensor.switchy.SwitchChangeEvent;
 import com.fruithapnotifier.app.models.sensor.text.TextSensor;
 import com.fruithapnotifier.app.models.sensor.text.TextValueChangeEvent;
 import com.fruithapnotifier.app.persistence.ConfigurationRepository;
+import com.fruithapnotifier.app.service.configuration.DatabaseConfigurationLoader;
+import com.fruithapnotifier.app.service.requestadapter.RestRequestAdapter;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.SensorViewModel;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.button.ButtonViewModel;
 import com.fruithapnotifier.app.ui.dashboard.viewmodels.image.ImageViewModel;
@@ -63,6 +68,8 @@ public class DashboardFragment extends Fragment
     private FragmentCallbacks fragmentCallbacks;
     private DashboardAdapter adapter;
     private RecyclerView dashboardView;
+    private ConfigurationRepository configurationRepository;
+    private DatabaseConfigurationLoader configurationLoader;
 
     public static DashboardFragment newInstance()
     {
@@ -74,8 +81,46 @@ public class DashboardFragment extends Fragment
 
     public DashboardFragment()
     {
+
     }
 
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();
+
+        if (id == R.id.action_dashboard_refresh)
+        {
+            configurationLoader.loadConfiguration();
+            return true;
+        }
+
+        if (id == R.id.action_values_refresh)
+        {
+            for (Sensor sensor: configurationRepository.getSensors())
+            {
+                if (sensor instanceof StatefulSensor)
+                {
+                    ((StatefulSensor) sensor).requestUpdate();
+                }
+            }
+
+            return true;
+        }
+
+
+        return super.onOptionsItemSelected(item);
+
+
+
+
+    }
     @Override
     public void onAttach(Context context)
     {
@@ -92,6 +137,10 @@ public class DashboardFragment extends Fragment
                 title = getString(R.string.title_dashboard);
                 fragmentCallbacks = (FragmentCallbacks) activity;
                 fragmentCallbacks.onSectionAttached(Constants.Section.DASHBOARD,title);
+                EventBus.getDefault().register(this);
+                configurationRepository = new ConfigurationRepository(getActivity());
+                configurationLoader = new DatabaseConfigurationLoader(configurationRepository, new RestRequestAdapter(getActivity()));
+                setHasOptionsMenu(true);
             }
             catch (ClassCastException e)
             {
@@ -105,6 +154,7 @@ public class DashboardFragment extends Fragment
     {
         super.onDetach();
         EventBus.getDefault().unregister(this);
+
 
     }
 
@@ -123,7 +173,7 @@ public class DashboardFragment extends Fragment
 
             dashboardView.setLayoutManager(llm);
 
-            updateAdapter();
+            updateAdapter(true);
         }
         else
         {
@@ -131,6 +181,28 @@ public class DashboardFragment extends Fragment
         }
 
         return view;
+    }
+
+    @Subscribe
+    public void onConfigurationLoadError(ConfigurationLoadErrorEvent configurationLoadErrorEvent)
+    {
+        Toast.makeText(getActivity(), getString(R.string.configuration_load_error), Toast.LENGTH_SHORT).show();
+        refreshDashboard();
+        EventBus.getDefault().cancelEventDelivery(configurationLoadErrorEvent);
+    }
+
+    @Subscribe
+    public void onConfigurationLoaded(ConfigurationLoadedEvent configurationLoadedEvent)
+    {
+        Toast.makeText(getActivity(), getString(R.string.configuration_successfully_loaded), Toast.LENGTH_SHORT).show();
+        refreshDashboard();
+    }
+
+    private void refreshDashboard()
+    {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.detach(this).attach(this).commit();
+
     }
 
 
@@ -222,10 +294,10 @@ public class DashboardFragment extends Fragment
 
 
 
-    private void updateAdapter()
+    private void updateAdapter(boolean shouldReload)
     {
 
-        if (adapter == null)
+        if (adapter == null || shouldReload)
         {
             final List<Sensor> sensors = getSensorsFromDatasource();
             final List<SensorViewModel> viewItems = new ArrayList<>();
@@ -240,7 +312,7 @@ public class DashboardFragment extends Fragment
             }
             adapter = new DashboardAdapter(viewItems);
             dashboardView.setAdapter(adapter);
-            EventBus.getDefault().register(this);
+
             getLatestValues(sensors);
         }
         else

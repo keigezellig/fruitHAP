@@ -18,7 +18,9 @@ package com.fruithapnotifier.app.ui.main;
 import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.FragmentManager;
@@ -28,6 +30,7 @@ import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.Toast;
 import com.fruithapnotifier.app.R;
+import com.fruithapnotifier.app.common.ConfigurationLoadErrorEvent;
 import com.fruithapnotifier.app.common.ConfigurationLoader;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.models.sensor.Sensor;
@@ -39,6 +42,8 @@ import com.fruithapnotifier.app.service.configuration.DatabaseConfigurationLoade
 import com.fruithapnotifier.app.service.requestadapter.RestRequestAdapter;
 import com.fruithapnotifier.app.ui.alerts.AlertListFragment;
 import com.fruithapnotifier.app.ui.dashboard.DashboardFragment;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerCallbacks, FragmentCallbacks
@@ -58,8 +63,6 @@ public class MainActivity extends AppCompatActivity
     private Intent serviceIntent;
     private FragmentManager fragmentManager;
     private AlertRepository alertRepository;
-    private ConfigurationRepository configurationRepository;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -79,8 +82,6 @@ public class MainActivity extends AppCompatActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         alertRepository = new AlertRepository(this);
-        configurationRepository = new ConfigurationRepository(this);
-
 
     }
 
@@ -91,15 +92,16 @@ public class MainActivity extends AppCompatActivity
         switch (position)
         {
             case 0:
-                //Alert list
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, AlertListFragment.newInstance(-1))
-                        .commit();
-                break;
-            case 1:
                 //Dashboard
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, DashboardFragment.newInstance())
+                        .commit();
+                break;
+
+            case 1:
+                //Alert list
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, AlertListFragment.newInstance(-1))
                         .commit();
                 break;
         }
@@ -183,28 +185,58 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
 
-        if (id == R.id.action_dashboard_refresh)
+
+
+        if (item.getItemId() == R.id.action_turnonservice)
         {
-            ConfigurationLoader configurationLoader = new DatabaseConfigurationLoader(configurationRepository, new RestRequestAdapter(this));
-            configurationLoader.loadConfiguration();
+            startService(serviceIntent);
+            Toast.makeText(this, getString(R.string.notification_service_started), Toast.LENGTH_SHORT).show();
             return true;
         }
 
-        if (id == R.id.action_values_refresh)
+        if (item.getItemId() == R.id.action_turnoffservice)
         {
-            for (Sensor sensor: configurationRepository.getSensors())
-            {
-                if (sensor instanceof StatefulSensor)
-                {
-                    ((StatefulSensor) sensor).requestUpdate();
-                }
-            }
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                    this);
 
-            return true;
+            // set title
+            alertDialogBuilder.setTitle(getString(R.string.turn_off_notification_service));
+
+            // set dialog message
+            alertDialogBuilder
+                    .setMessage(getString(R.string.notification_service_stopwarning))
+                    .setCancelable(false)
+                    .setPositiveButton(getString(R.string.caption_yes), new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+
+                            stopService(serviceIntent);
+
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.caption_no), new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+                            // if this button is clicked, just close
+                            // the dialog box and do nothing
+                            dialog.cancel();
+                        }
+                    });
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
         }
+
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     protected void onStart()

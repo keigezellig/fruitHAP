@@ -38,6 +38,7 @@ import com.fruithapnotifier.app.ui.main.MainActivity;
 import com.fruithapnotifier.app.common.Constants;
 import com.fruithapnotifier.app.ui.helpers.PriorityHelpers;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -226,6 +227,9 @@ public class FruithapPubSubService extends Service
 
         return START_STICKY;
     }
+
+
+
 
     private ConnectionParameters getConnectionParameters()
     {

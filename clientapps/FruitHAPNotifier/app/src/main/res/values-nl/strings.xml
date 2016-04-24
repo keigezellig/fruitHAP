@@ -27,4 +27,6 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="action_dashboard_refresh">Ververs dashboard</string>
     <string name="action_values_refresh">Ververs sensors </string>
+    <string name="configuration_load_error">Error while loading configuration</string>
+    <string name="configuration_successfully_loaded">Configuration loaded</string>
 </resources>

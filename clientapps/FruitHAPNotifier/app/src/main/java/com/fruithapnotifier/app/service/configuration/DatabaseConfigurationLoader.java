@@ -15,18 +15,11 @@
 
 package com.fruithapnotifier.app.service.configuration;
 
-import android.app.Application;
-import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
-import com.fruithapnotifier.app.common.ConfigurationEvent;
-import com.fruithapnotifier.app.common.ConfigurationLoader;
-import com.fruithapnotifier.app.common.RequestAdapter;
-import com.fruithapnotifier.app.common.RequestErrorEvent;
+import com.fruithapnotifier.app.common.*;
 import com.fruithapnotifier.app.models.configuration.ConfigurationItem;
 import com.fruithapnotifier.app.models.configuration.SensorType;
 import com.fruithapnotifier.app.persistence.ConfigurationRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONArray;
@@ -74,19 +67,23 @@ public class DatabaseConfigurationLoader implements ConfigurationLoader
                 }
 
             EventBus.getDefault().cancelEventDelivery(configurationEvent);
+            EventBus.getDefault().post(new ConfigurationLoadedEvent());
+
         }
         catch (JSONException jex)
         {
             Log.e(TAG,"Error loading configuration ",jex);
+            EventBus.getDefault().post(new ConfigurationLoadErrorEvent());
         }
      
     }
 
     @Subscribe
-    public void onConfigurationError(RequestErrorEvent configurationErrorEvent)
+    public void onRequestError(RequestErrorEvent requestErrorEvent)
     {
         repository.deleteConfigurationItems();
-        EventBus.getDefault().cancelEventDelivery(configurationErrorEvent);
+        EventBus.getDefault().cancelEventDelivery(requestErrorEvent);
+        EventBus.getDefault().post(new ConfigurationLoadErrorEvent());
 
     }
 
