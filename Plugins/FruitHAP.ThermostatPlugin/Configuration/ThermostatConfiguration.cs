@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using FruitHAP.Core.Plugin;
 
 namespace FruitHAP.Plugins.Thermostat.Configuration
 {
-	public class ThermostatConfiguration
+	public class ThermostatConfiguration : BasePluginConfiguration
 	{
 		public string RoutingKey { get; set;}
 		public string NotificationTextAbove {get; set;}
