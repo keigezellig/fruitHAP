@@ -76,7 +76,6 @@ namespace FruitHAP.Core.Plugin
         public override string ToString()
         {
             return string.Format("{0} {1}", Name, Version);
-
         }
 
         protected BasePluginWithConfiguration (ILogger logger, IConfigProvider<TConfiguration> configurationProvider)            

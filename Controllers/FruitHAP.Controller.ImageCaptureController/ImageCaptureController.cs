@@ -12,14 +12,7 @@ namespace FruitHAP.Controllers.ImageCaptureController
 
 		public ImageCaptureController(ILogger logger, IEventBus eventBus) : base(logger, eventBus)
         {
-        }
-        public override string Name
-        {
-            get
-            {
-                return "Image capture controller";
-            }
-        }
+        }        
 
         protected override void StopController()
         {
