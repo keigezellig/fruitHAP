@@ -73,13 +73,7 @@
     rabbitmq_user: user=amqpuser password=amqpuser read_priv=.* write_priv=.* state=present
 
   - name: Restart Rabbit MQ
-    service: name=rabbitmq-server state=restarted enabled=yes
-  
-  - name: Download NodeJS
-    get_url: url=http://node-arm.herokuapp.com/node_latest_armhf.deb dest=/home/pi/
-
-  - name: Install NodeJS
-    apt: deb=/home/pi/node_latest_armhf.deb state=present
+    service: name=rabbitmq-server state=restarted enabled=yes 
 
   - name: Install Python PIP
     apt: pkg=python-pip state=latest
@@ -90,9 +84,6 @@
   - name: Install rsync
     apt: pkg=logrotate state=latest
  
-  - name: Cleanup temp files
-    file: path=/home/pi/node_latest_armhf.deb state=absent
-
   - name: Cleanup temp files
     file: path=/home/pi/rabbitmq-server_3.4.4-1_all.deb state=absent
 
@@ -108,26 +99,15 @@
 
   - name: Copy main config file
     copy: src=engine/FruitHAP.Startup.exe.config dest=/home/pi/fruithap/engine force=no
-
-  - name: Copy Pushbullet notifier to ~/fruithap/pushbullet-notifier 
-    synchronize:
-        src: pushbullet-notifier 
-        dest: /home/pi/fruithap/ 
-        recursive: yes 
-        rsync_opts:
-          - "--exclude=*.json"
-       
+      
   - name: Copy supervisor config
     copy: src=initscripts/supervisord.conf dest=/etc/ group=root owner=root mode=0755
   - name: Copy supervisor init script
     copy: src=initscripts/supervisord.sh dest=/etc/init.d/supervisor group=root owner=root mode=0755
   - name: Create log directory for supervisord
     file: path=/var/log/supervisor/ state=directory group=root owner=root mode=0755
-
   - name: Add user pi to group dialout
     user: name=pi groups=dialout append=yes
-  - name: Install required npm packages for pushbullet-notifier
-    npm: path=/home/pi/fruithap/pushbullet-notifier
   - name: Start service supervisor and configure it to run on startup
     service: name=supervisor state=restarted enabled=yes
 
