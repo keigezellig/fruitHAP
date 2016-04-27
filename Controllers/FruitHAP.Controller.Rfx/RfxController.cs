@@ -171,7 +171,7 @@ namespace FruitHAP.Controller.Rfx
 
 		private void HandleIncomingACMessage (ControllerEventData<ACPacket> obj)
 		{			
-            logger.FatalFormat("HandleIncomingACMessage called: {0}", obj);
+            logger.DebugFormat("HandleIncomingACMessage called: {0}", obj);
             byte[] data = protocol.Encode (obj.Payload);
             try
             {
