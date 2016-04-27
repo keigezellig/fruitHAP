@@ -30,6 +30,7 @@ namespace FruitHAP.Controller.Rfx
 		private RfxControllerPacketHandlerFactory handlerFactory;
 		private List<RfxPacketInfo> packetTypes;
 		private RfxDevice rfxDevice;
+        private RfxACProtocol protocol;
 
         Dictionary<int,ACPacket> acMessagesInProcess;
 
@@ -43,6 +44,7 @@ namespace FruitHAP.Controller.Rfx
 			this.handlerFactory = new RfxControllerPacketHandlerFactory (logger, eventBus);
 			this.rfxDevice = new RfxDevice (logger);
             this.acMessagesInProcess = new Dictionary<int, ACPacket>();
+            this.protocol = new RfxACProtocol (logger);
         }
 
 
@@ -169,8 +171,8 @@ namespace FruitHAP.Controller.Rfx
 
 		private void HandleIncomingACMessage (ControllerEventData<ACPacket> obj)
 		{			
-			RfxACProtocol protocol = new RfxACProtocol (logger);
-			byte[] data = protocol.Encode (obj.Payload);
+            logger.FatalFormat("HandleIncomingACMessage called: {0}", obj);
+            byte[] data = protocol.Encode (obj.Payload);
             try
             {
                 int sequenceNumber = rfxDevice.SendData(data);

@@ -30,7 +30,7 @@ namespace FruitHAP.Core.Plugin
             {               
                 InitializePlugin();
             }
-            logger.InfoFormat("Plugin {0}\t{2}", this,IsEnabled ? "ENABLED" : "DISABLED");
+
             
         }
 

@@ -10,8 +10,6 @@ namespace FruitHAP.Plugins.Web.Startup
 {
     public class WebHost : BasePluginWithConfiguration<WebConfiguration>
 	{
-		private readonly IConfigProvider<WebConfiguration> configurationProvider;
-		private readonly ILogger logger;
 		private const string CONFIG_FILENAME = "webconfiguration.json";
 		private IDisposable owinHost;
 

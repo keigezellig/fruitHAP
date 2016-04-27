@@ -141,13 +141,6 @@ namespace FruitHAP.Plugins.Thermostat
 					OptionalData = data.OptionalData
 				};
 		}
-
-
-
-        public void Dispose()
-        {
-            logger.DebugFormat("Dispose action {0}", this);
-		}
 	}
 
 

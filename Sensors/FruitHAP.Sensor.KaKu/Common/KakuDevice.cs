@@ -16,9 +16,6 @@ namespace FruitHAP.Sensor.KaKu.Common
 		protected readonly ILogger logger;
 		protected IEventBus eventBus;
 
-		private bool isAckReceived;
-		private bool ackValue;
-
 		protected abstract void ProcessReceivedACDataForThisDevice (ACPacket data);
 
         protected virtual void ProcessNakPacket(NakPacket<ControllerEventData<ACPacket>> payload)

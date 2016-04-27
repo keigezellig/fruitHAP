@@ -8,6 +8,7 @@ using System;
 using FruitHAP.Core.SensorRepository;
 using FruitHAP.Core.Controller;
 using FruitHAP.Core.MQ;
+using FruitHAP.Common.Helpers;
 
 namespace FruitHAP.Core.Service
 {
@@ -76,7 +77,14 @@ namespace FruitHAP.Core.Service
                 {
                     plugin.Initialize();
                 }
-                log.Info("Plugins initialized");
+                log.Info("Plugins initialized. Summary of status:");
+
+                foreach (var plugin in plugins)
+                {
+                    log.InfoFormat("Plugin {0}\t{1}", plugin, plugin.IsEnabled ? "ENABLED" : "DISABLED");
+                }
+
+                log.InfoFormat("Engine version {0} started",AssemblyHelpers.GetAssemblyVersion(this.GetType().Assembly));
 
             }
             catch (Exception ex)
