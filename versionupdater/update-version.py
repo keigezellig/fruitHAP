@@ -20,7 +20,7 @@ def createArgumentParser():
 def get_existing_version(lines):
     regex = re.compile('.*(\d\.\d\.\d).*')
     list = [match.group(1) for line in lines for match in [regex.search(line)] if match]
-    return list[2]
+    return list[1]
 
 
 def processDotNet(rootdir, version_string, build_type, build_no):
