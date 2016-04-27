@@ -17,7 +17,15 @@ namespace FruitHAP.Common.Helpers
 
         public static string GetAssemblyVersion(Assembly assembly)
         {
-            return assembly.GetName().Version.ToString();
+            var attributes = assembly.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false);
+            if (attributes.Length > 0)
+            {
+                var titleAttribute = (AssemblyInformationalVersionAttribute)attributes[0];
+                if (titleAttribute.InformationalVersion.Length > 0)
+                    return titleAttribute.InformationalVersion;
+            }
+
+            return "";
         }
 
         public static string GetAssemblyTitle(Assembly assembly)
@@ -30,7 +38,7 @@ namespace FruitHAP.Common.Helpers
                     return titleAttribute.Title;
             }
 
-            return null;
+            return "";
         }
 
         public static string GetAssemblyDescription(Assembly assembly)
