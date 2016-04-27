@@ -1,13 +1,8 @@
 - hosts: "{{ target | default('all') }}"
-  tasks:
-  
-  - name: Check if supervisor Service Exists
-    stat: path=/etc/init.d/supervisor
-    register: service_status
-
+  tasks: 
   - name: Stop supervisor Service
     service: name=supervisor state=stopped
-    when: service_status.stat.exists
+    ignore_errors: True
 
   - name: Update repo cache
     apt: update_cache=yes
