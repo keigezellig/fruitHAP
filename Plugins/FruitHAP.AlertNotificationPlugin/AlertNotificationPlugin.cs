@@ -37,7 +37,7 @@ namespace FruitHAP.Plugins.AlertNotification
 
         protected override string GetConfigurationFileName()
         {
-            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), CONFIG_FILENAME);
+            return CONFIG_FILENAME;
         }
 
         protected override void InitializePlugin()

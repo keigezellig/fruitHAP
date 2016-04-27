@@ -10,6 +10,7 @@ using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
 using FruitHAP.Common.EventBus;
+using FruitHAP.Common.Helpers;
 using FruitHAP.Plugins.EventNotification.Configuration;
 
 
@@ -37,9 +38,9 @@ namespace FruitHAP.Plugins.EventNotification
 
         protected override string GetConfigurationFileName()
         {
-            return Path.Combine (Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location), "event_notification.json");
+            return "event_notification.json";
         }
-
+        
         protected override void InitializePlugin()
         {
             Subscribe(this.sensorRepository.GetSensors().Select(f => f.Name).ToList());

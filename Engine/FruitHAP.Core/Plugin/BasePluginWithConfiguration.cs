@@ -3,6 +3,7 @@ using Castle.Core.Logging;
 using FruitHAP.Common.Configuration;
 using System.IO;
 using System.Reflection;
+using FruitHAP.Common.Helpers;
 
 namespace FruitHAP.Core.Plugin
 {
@@ -12,10 +13,9 @@ namespace FruitHAP.Core.Plugin
         protected ILogger logger;
         protected TConfiguration configuration;
 
-        protected abstract string GetConfigurationFileName();
         protected abstract void InitializePlugin();
         protected abstract void CleanUpPlugin();
-
+        protected abstract string GetConfigurationFileName();        
 
         #region IPlugin implementation
 
@@ -23,16 +23,43 @@ namespace FruitHAP.Core.Plugin
         {
             logger.InfoFormat ("Initializing plugin {0}", this);
             logger.InfoFormat ("Loading configuration");
-            configuration = configurationProvider.LoadConfigFromFile (GetConfigurationFileName());
+
+            string fullConfigPath = Path.Combine(AssemblyHelpers.GetAssemblyDirectory(this.GetType().Assembly), GetConfigurationFileName());
+            configuration = configurationProvider.LoadConfigFromFile(fullConfigPath);
             if (configuration.IsEnabled)
             {               
                 InitializePlugin();
             }
-            else
+            logger.InfoFormat("Plugin {0}\t{2}", this,IsEnabled ? "ENABLED" : "DISABLED");
+            
+        }
+
+        public bool IsEnabled
+        {
+            get { return configuration.IsEnabled; }
+        }
+
+        public string Name
+        {
+            get { return AssemblyHelpers.GetAssemblyTitle(this.GetType().Assembly); }
+        }
+
+        public string Description
+        {
+            get
             {
-                logger.WarnFormat("Plugin {0} is NOT enabled", this);
+                return AssemblyHelpers.GetAssemblyDescription(this.GetType().Assembly);            
+                
             }
         }
+       
+
+        public string Version
+        {
+            get { return AssemblyHelpers.GetAssemblyVersion(this.GetType().Assembly); }
+        }
+
+        
 
         #endregion
 
@@ -45,6 +72,11 @@ namespace FruitHAP.Core.Plugin
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            return string.Format("{0} {1}", Name, Version);
+        }
 
         protected BasePluginWithConfiguration (ILogger logger, IConfigProvider<TConfiguration> configurationProvider)            
         {

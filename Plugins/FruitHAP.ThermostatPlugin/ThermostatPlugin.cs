@@ -40,9 +40,9 @@ namespace FruitHAP.Plugins.Thermostat
         #region implemented abstract members of BasePluginWithConfiguration
         protected override string GetConfigurationFileName()
         {
-            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), CONFIG_FILENAME);
+            return CONFIG_FILENAME;
         }
-
+       
         protected override void InitializePlugin()
         {
             switchAbove = sensorRepository.FindSensorOfTypeByName<IControllableSwitch> (configuration.SwitchAbove);

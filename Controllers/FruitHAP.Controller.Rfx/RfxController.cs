@@ -33,13 +33,6 @@ namespace FruitHAP.Controller.Rfx
 
         Dictionary<int,ACPacket> acMessagesInProcess;
 
-        public override string Name
-        {
-            get
-            {
-                return "RFX Controller";
-            }
-        }
 
         public RfxController(ILogger logger, IEventBus eventBus, IConfigProvider<RfxControllerConfiguration> configProvider,
 			IPhysicalInterfaceFactory physicalInterfaceFactory) : base(logger, eventBus)
