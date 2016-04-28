@@ -93,7 +93,7 @@
           - "--exclude=*.config"
 
   - name: Copy main config file
-    copy: src=engine/FruitHAP.Startup.exe.config dest=/home/pi/fruithap/engine force=no
+    copy: src=engine/FruitHAP.Startup.exe.config dest=/home/pi/fruithap/engine/ force=no
       
   - name: Copy supervisor config
     copy: src=initscripts/supervisord.conf dest=/etc/ group=root owner=root mode=0755
