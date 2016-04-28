@@ -152,10 +152,10 @@ public class AlertListFragment extends Fragment
             int priorityColor = PriorityHelpers.convertToColor(alert.getNotificationPriority());
             byte[] image = null;
 
-            if (alert.getOptionalData() != null)
+            if (alert.getOptionalData() != JSONObject.NULL)
             {
-                String typeName = alert.getOptionalData().getString("TypeName");
-                if (typeName.equals("ImageValue"))
+                String typeName = alert.getOptionalData().optString("TypeName");
+                if (typeName != null && typeName.equals("ImageValue"))
                 {
                     String imageString = alert.getOptionalData().getJSONObject("Content").getString("Value");
                     image = Base64.decode(imageString, Base64.DEFAULT);
@@ -170,7 +170,7 @@ public class AlertListFragment extends Fragment
         }
         catch (JSONException e)
         {
-            Log.e(getClass().getName(),"Invalid format in record");
+            Log.e(getClass().getName(),"Invalid format in record", e);
             return null;
         }
     }

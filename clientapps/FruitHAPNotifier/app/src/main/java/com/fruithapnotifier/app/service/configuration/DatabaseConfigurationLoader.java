@@ -154,6 +154,6 @@ public class DatabaseConfigurationLoader implements ConfigurationLoader
 
     private boolean isButton(JSONObject supportedOperations, String valueType)
     {
-        return (supportedOperations.has("PressButton")) && (valueType == null);
+        return (supportedOperations.has("PressButton")) && (valueType == "null");
     }
 }

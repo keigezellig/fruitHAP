@@ -66,6 +66,7 @@ public class Button implements Sensor
     public void onButtonPressFromViewReceived(ButtonPressFromViewEvent viewPressEvent)
     {
         pressButton();
+        EventBus.getDefault().cancelEventDelivery(viewPressEvent);
     }
 
     @Override

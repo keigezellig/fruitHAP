@@ -94,6 +94,7 @@ public class Switch extends StatefulSensor
                 turnOff();
             }
         }
+        EventBus.getDefault().cancelEventDelivery(viewStateChangeEvent);
     }
 
     @Override

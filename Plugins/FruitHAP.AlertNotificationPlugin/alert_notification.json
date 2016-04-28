@@ -1,6 +1,8 @@
 {
-"RoutingKey":"alerts",
+	"IsEnabled":"true",
+	"RoutingKey":"alerts",
 "Sensors":
-	[		
+	[	
+		{"SensorName":"MyTempSensor","NotificationText":"Boom!","Priority":"High"}	
 	]
 }
