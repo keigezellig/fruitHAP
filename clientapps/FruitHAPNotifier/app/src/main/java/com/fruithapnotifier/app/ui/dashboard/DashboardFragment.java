@@ -72,6 +72,7 @@ public class DashboardFragment extends Fragment
     private ConfigurationRepository configurationRepository;
     private DatabaseConfigurationLoader configurationLoader;
     private Intent serviceIntent;
+    private List<Sensor> sensors;
 
     public static DashboardFragment newInstance()
     {
@@ -287,6 +288,7 @@ public class DashboardFragment extends Fragment
     {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.detach(this).attach(this).commit();
+        updateAdapter(true);
 
     }
 
@@ -384,7 +386,16 @@ public class DashboardFragment extends Fragment
 
         if (adapter == null || shouldReload)
         {
-            final List<Sensor> sensors = getSensorsFromDatasource();
+            if (sensors != null)
+            {
+                for (Sensor sensor : sensors)
+                {
+                    sensor.unregisterForEvents();
+                }
+                sensors.clear();
+            }
+            
+            sensors = getSensorsFromDatasource();
             final List<SensorViewModel> viewItems = new ArrayList<>();
             for (Sensor sensor : sensors)
             {
