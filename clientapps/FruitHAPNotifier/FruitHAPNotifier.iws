@@ -12,7 +12,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2de12e7b-7318-456f-a51b-4655796727ae" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FruitHAPNotifier.iws" afterPath="$PROJECT_DIR$/FruitHAPNotifier.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/dashboard_buttonitem.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dashboard_buttonitem.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/DashboardFragment.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/DashboardFragment.java" />
     </list>
     <ignored path="FruitHAPNotifier.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -46,12 +46,15 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="DashboardFragment.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="DashboardFragment.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/DashboardFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="396" column="12" selection-start-line="396" selection-start-column="12" selection-end-line="396" selection-end-column="12" />
-              <folding />
+            <state relative-caret-position="18">
+              <caret line="274" column="0" selection-start-line="274" selection-start-column="0" selection-end-line="274" selection-end-column="0" />
+              <folding>
+                <element signature="e#4172#4173#0" expanded="true" />
+                <element signature="e#4215#4216#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -69,7 +72,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dashboard_buttonitem.xml" pinned="false" current-in-tab="true">
+      <file leaf-file-name="dashboard_buttonitem.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dashboard_buttonitem.xml">
           <provider editor-type-id="android-designer">
             <state />
@@ -117,7 +120,10 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="144">
               <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-              <folding />
+              <folding>
+                <element signature="e#0#4087#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -1579,10 +1585,10 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/alerts/AlertListFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/models/sensor/button/Button.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/service/FruithapPubSubService.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/DashboardFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/models/sensor/switchy/Switch.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/models/sensor/StatefulSensor.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/dashboard_buttonitem.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/DashboardFragment.java" />
       </list>
     </option>
   </component>
@@ -2656,12 +2662,12 @@
       <workItem from="1461859437843" duration="837000" />
       <workItem from="1461860537307" duration="229000" />
       <workItem from="1461860856314" duration="2214000" />
-      <workItem from="1462448322281" duration="3066000" />
+      <workItem from="1462448322281" duration="3790000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="89829000" />
+    <option name="totallyTimeSpent" value="90553000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="25" width="1922" height="1055" extended-state="6" />
@@ -2735,13 +2741,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/DashboardFragment.java</url>
-          <line>288</line>
+          <line>289</line>
           <properties />
           <option name="timeStamp" value="43" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/DashboardFragment.java</url>
-          <line>386</line>
+          <line>387</line>
           <properties />
           <option name="timeStamp" value="44" />
         </line-breakpoint>
@@ -2856,7 +2862,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5814">
           <caret line="384" column="0" selection-start-line="384" selection-start-column="0" selection-end-line="384" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#4172#4173#0" expanded="true" />
+            <element signature="e#4215#4216#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2946,7 +2955,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5670">
           <caret line="384" column="0" selection-start-line="384" selection-start-column="0" selection-end-line="384" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#4172#4173#0" expanded="true" />
+            <element signature="e#4215#4216#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -3157,7 +3169,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="144">
           <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#0#4087#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -3191,26 +3206,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/DashboardAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="664">
-          <caret line="203" column="0" selection-start-line="203" selection-start-column="0" selection-end-line="203" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/models/sensor/Sensor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
           <caret line="25" column="9" selection-start-line="25" selection-start-column="9" selection-end-line="25" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/DashboardFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="396" column="12" selection-start-line="396" selection-start-column="12" selection-end-line="396" selection-end-column="12" />
           <folding />
         </state>
       </provider>
@@ -3242,6 +3241,25 @@
         <state relative-caret-position="451">
           <caret line="39" column="23" selection-start-line="39" selection-start-column="23" selection-end-line="39" selection-end-column="23" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/DashboardAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="664">
+          <caret line="203" column="0" selection-start-line="203" selection-start-column="0" selection-end-line="203" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/fruithapnotifier/app/ui/dashboard/DashboardFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="274" column="0" selection-start-line="274" selection-start-column="0" selection-end-line="274" selection-end-column="0" />
+          <folding>
+            <element signature="e#4172#4173#0" expanded="true" />
+            <element signature="e#4215#4216#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

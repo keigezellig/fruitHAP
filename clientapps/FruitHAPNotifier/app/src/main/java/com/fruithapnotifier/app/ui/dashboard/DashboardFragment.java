@@ -84,7 +84,7 @@ public class DashboardFragment extends Fragment
 
     public DashboardFragment()
     {
-
+        sensors = new ArrayList<>();
     }
 
     @Override
@@ -271,6 +271,7 @@ public class DashboardFragment extends Fragment
     @Subscribe
     public void onConfigurationLoaded(ConfigurationLoadedEvent configurationLoadedEvent)
     {
+
         Toast.makeText(getActivity(), getString(R.string.configuration_successfully_loaded), Toast.LENGTH_SHORT).show();
         refreshDashboard();
         EventBus.getDefault().cancelEventDelivery(configurationLoadedEvent);
@@ -386,7 +387,7 @@ public class DashboardFragment extends Fragment
 
         if (adapter == null || shouldReload)
         {
-            if (sensors != null)
+            if (sensors.size() > 0)
             {
                 for (Sensor sensor : sensors)
                 {
@@ -394,8 +395,9 @@ public class DashboardFragment extends Fragment
                 }
                 sensors.clear();
             }
-            
+
             sensors = getSensorsFromDatasource();
+
             final List<SensorViewModel> viewItems = new ArrayList<>();
             for (Sensor sensor : sensors)
             {
