@@ -39,7 +39,7 @@ For more in depth info about the architecture see my blog
 
 ### Installation of the basic backend ###
 
-Needed stuff (NB this is the BASIC setup, after this you have still to configure your hardware and sensors to get it completely working)
+*Needed stuff (NB this is the BASIC setup, after this you have still to configure your hardware and sensors to get it completely working)*
 
 * A Raspberry Pi (i use a Model 2 B, it should also work on other model Bs, but i haven't tested it thouroughly) 
 * A Raspbian distribution based on Jessie (to be found [here](https://downloads.raspberrypi.org) )
@@ -47,7 +47,7 @@ Needed stuff (NB this is the BASIC setup, after this you have still to configure
 * Latest version of [Ansible](https://www.ansible.com/) on the computer from which you do the install
 * Latest version of the FruitHAP distribution (see [here](http://joosten-industries.nl/files/fruithap_images/) )
 
-Installation:
+*Installation:*
 
 * Install the Raspbian distribution on your Raspberry PI and enable SSH access.
 * On the computer with Ansible modify the /etc/ansible/hosts in such a way that the IP address or hostname of your RPi is listed. For example :
@@ -61,7 +61,7 @@ Installation:
 * Ansible will now take care of installing the backend system on your Pi and will start the FruitHAP service afterwards
 * Now you can configure your sensors and plugins etc, as described on the blog
 
-Starting/stopping the FruitHAP service:
+*Starting/stopping the FruitHAP service:*
 
 The fruitHAP service is controlled by the excellent [Supervisor](http://supervisord.org/) daemon.
 
