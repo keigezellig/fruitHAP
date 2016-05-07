@@ -63,9 +63,10 @@ Installation:
 
 Starting/stopping the FruitHAP service:
 
-The fruitHAP service is controlled by the excellent Supervisor daemon.
+The fruitHAP service is controlled by the excellent [Supervisor](http://supervisord.org/) daemon.
 
 To start/stop/restart:
+
 * SSH into your RPi
 * Run 'sudo supervisorctl start|stop|restart fruithap
 * Or: in a webbrowser go to `http://<RPI-ip>:9001` (username: `supervisor`, password `supervisor`)
