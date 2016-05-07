@@ -64,6 +64,7 @@ Installation:
 Starting/stopping the FruitHAP service:
 
 The fruitHAP service is controlled by the excellent Supervisor daemon.
+
 To start/stop/restart:
 * SSH into your RPi
 * Run 'sudo supervisorctl start|stop|restart fruithap
@@ -71,7 +72,7 @@ To start/stop/restart:
 
 ## Installation of the FruitHAPNotifier Android app
 
-In the FruitHAP distribution under `ClientApps/FruitHAPNotifier` there is an APK which you can install on any Android device which has Android 4.2 or later 
+In the FruitHAP distribution under `ClientApps/FruitHAPNotifier` there is an APK which you can install on any Android device which has Android 4.2 or later.
 
 
 Good luck!
