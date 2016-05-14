@@ -26,7 +26,8 @@ namespace FruitHAP.Core.Plugin
 
             string fullConfigPath = Path.Combine(AssemblyHelpers.GetAssemblyDirectory(this.GetType().Assembly), GetConfigurationFileName());
             configuration = configurationProvider.LoadConfigFromFile(fullConfigPath);
-            if (configuration.IsEnabled)
+            
+            if (configuration != null && configuration.IsEnabled)
             {               
                 InitializePlugin();
             }

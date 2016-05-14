@@ -93,7 +93,9 @@ public class Switch extends StatefulSensor
             {
                 turnOff();
             }
+            EventBus.getDefault().cancelEventDelivery(viewStateChangeEvent);
         }
+
     }
 
     @Override
@@ -103,7 +105,12 @@ public class Switch extends StatefulSensor
         try
         {
             String sensorName = eventData.getString("SensorName");
-            String typeName = eventData.getJSONObject("Data").getString("TypeName");
+            String typeName = "";
+            if (!eventData.isNull("Data"))
+            {
+                typeName = eventData.getJSONObject("Data").getString("TypeName");
+            }
+
 
             if (sensorName.equals(this.name) && typeName.equals("OnOffValue"))
             {

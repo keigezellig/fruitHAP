@@ -242,7 +242,7 @@ public class FruithapPubSubService extends Service
         topics.add(preferences.getString("pref_server_event_topic","events"));
 
         return new ConnectionParameters(preferences.getString("pref_server_hostname","192.168.1.81"),
-                Integer.valueOf(preferences.getString("pref_server_port","5672")),
+                Integer.valueOf(preferences.getString("pref_server_pubsub_port","5672")),
                 preferences.getString("pref_server_username","admin"),
                 preferences.getString("pref_server_password","admin"),
                 preferences.getString("pref_server_vhost","/"),
