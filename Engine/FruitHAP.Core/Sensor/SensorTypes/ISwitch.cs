@@ -1,18 +1,12 @@
-﻿using System;
-using FruitHAP.Core.Sensor;
-using Microsoft.Practices.Prism.PubSubEvents;
-using FruitHAP.Core.SensorEventPublisher;
+﻿using FruitHAP.Core.Sensor;
+using FruitHAP.Core.Sensor.SensorValueTypes;
+
 
 namespace FruitHAP.Core.Sensor.SensorTypes
 {
 	public interface ISwitch : IValueSensor
-	{
-		SwitchState GetState();
-	}
-
-	public enum SwitchState
-	{
-		Undefined,On,Off
+	{		
+		OnOffValue State { get; }		
 	}
 
 	public enum Trigger

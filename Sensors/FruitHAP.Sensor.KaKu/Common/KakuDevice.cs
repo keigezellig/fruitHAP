@@ -1,31 +1,35 @@
-﻿using System;
-using FruitHAP.Core.Sensor;
+﻿using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
-using System.Collections.Generic;
-using FruitHAP.Common.Helpers;
-using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Sensor.PacketData.AC;
 using FruitHAP.Core.Controller;
+using FruitHAP.Common.EventBus;
+using FruitHAP.Core.Sensor.PacketData.General;
 
 namespace FruitHAP.Sensor.KaKu.Common
 {
-	public abstract class KakuDevice : ISensor, ICloneable
+	public abstract class KakuDevice: ISensor
 	{
 		private string name;
 		private string description;	
 		protected uint deviceId;
 		protected byte unitCode;
 		protected readonly ILogger logger;
-		protected IEventAggregator aggregator;
+		protected IEventBus eventBus;
 
 		protected abstract void ProcessReceivedACDataForThisDevice (ACPacket data);
 
-		protected KakuDevice (IEventAggregator aggregator, ILogger logger)
-		{
-			this.aggregator = aggregator;
-			this.logger = logger;
-			aggregator.GetEvent<ACPacketEvent> ().Subscribe (HandleIncomingACMessage, ThreadOption.PublisherThread, false, f => f.Direction == Direction.FromController && DataReceivedCorrespondsToThisDevice(f.Payload));
+        protected virtual void ProcessNakPacket(NakPacket<ControllerEventData<ACPacket>> payload)
+        {            
+        }
 
+
+
+		protected KakuDevice (IEventBus eventBus, ILogger logger)
+		{
+			this.eventBus = eventBus;
+			this.logger = logger;
+			eventBus.Subscribe<ControllerEventData<ACPacket>>(HandleIncomingACMessage,f => f.Direction == Direction.FromController && DataReceivedCorrespondsToThisDevice(f.Payload));			
+            eventBus.Subscribe<NakPacket<ControllerEventData<ACPacket>>>(HandleNakMessage, filter => filter.Data.Payload.DeviceId == this.deviceId && filter.Data.Payload.UnitCode == this.unitCode );
 		}
 			
 		public string Name
@@ -39,6 +43,8 @@ namespace FruitHAP.Sensor.KaKu.Common
 			get { return description; }
 			set { description = value; }
 		}
+
+        public string Category { get; set; }
 
 		public uint DeviceId {
 			get {
@@ -73,13 +79,23 @@ namespace FruitHAP.Sensor.KaKu.Common
 			return (decodedData.DeviceId == deviceId) && (decodedData.UnitCode == unitCode);
 		}
 
+        void HandleNakMessage(NakPacket<ControllerEventData<ACPacket>> obj)
+        {
+            logger.DebugFormat("{0}: NAK received for message {1}. Reason: {2}", this.Name, obj.Data.Payload, obj.Reason);
+            ProcessNakPacket(obj);
+        }
+
+
 		public override string ToString ()
 		{
 			return string.Format ("Name={0}, Description={1}, DeviceId={2}, UnitCode={3}", Name, Description, DeviceId, UnitCode);
 		}
-		
 
-
+		public void Dispose ()
+		{
+			eventBus.Unsubscribe<ControllerEventData<ACPacket>> (HandleIncomingACMessage);
+           // eventBus.Unsubscribe<ControllerEventData<NakPacket<ControllerEventData<ACPacket>>>>(HandleNakPacket);			
+		}
 	}
 }
 

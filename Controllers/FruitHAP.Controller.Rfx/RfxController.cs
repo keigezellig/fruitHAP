@@ -14,49 +14,60 @@ using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Core.Controller;
 using FruitHAP.Sensor.PacketData.AC;
 using FruitHAP.Controller.Rfx.InternalPacketData;
+using FruitHAP.Core.Sensor.PacketData.General;
+using FruitHAP.Common.EventBus;
 
 namespace FruitHAP.Controller.Rfx
 {
-	public class RfxController : IController
+	public class RfxController : BaseController
     {
         
 		private const string CONFIG_FILENAME = "rfx.json";
 
 		private readonly IConfigProvider<RfxControllerConfiguration> configProvider;
         private readonly IPhysicalInterfaceFactory physicalInterfaceFactory;
-        private readonly ILogger logger;
         private RfxControllerConfiguration configuration;
-		private bool isStarted;
-		private SubscriptionToken acEventSubscriptionToken;
-		private SubscriptionToken setModeEventSubscriptionToken;
 		private RfxControllerPacketHandlerFactory handlerFactory;
 		private List<RfxPacketInfo> packetTypes;
 		private RfxDevice rfxDevice;
-		private IEventAggregator aggregator;
+        private RfxACProtocol protocol;
 
-		public RfxController(IConfigProvider<RfxControllerConfiguration> configProvider, IPhysicalInterfaceFactory physicalInterfaceFactory, ILogger logger, IEventAggregator aggregator)
-        {
-			this.aggregator = aggregator;
+        Dictionary<int,ACPacket> acMessagesInProcess;
+
+
+        public RfxController(ILogger logger, IEventBus eventBus, IConfigProvider<RfxControllerConfiguration> configProvider,
+			IPhysicalInterfaceFactory physicalInterfaceFactory) : base(logger, eventBus)
+
+        {            
             this.configProvider = configProvider;
             this.physicalInterfaceFactory = physicalInterfaceFactory;
-            this.logger = logger;
-			this.handlerFactory = new RfxControllerPacketHandlerFactory (logger, aggregator);
+			this.handlerFactory = new RfxControllerPacketHandlerFactory (logger, eventBus);
 			this.rfxDevice = new RfxDevice (logger);
-		}
-
-
-        public string Name
-        {
-            get { return "RFX Controller"; }
+            this.acMessagesInProcess = new Dictionary<int, ACPacket>();
+            this.protocol = new RfxACProtocol (logger);
         }
 
-		public bool IsStarted
-		{
-			get
-			{
-				return isStarted; 
-			}
-		}
+
+        protected override void StartController()
+        {            
+            LoadConfiguration();
+            SubscribeToSensorEvents();
+            OpenRfxDevice();
+            SubscribeToRfxEvents();
+        }
+
+        protected override void StopController()
+        {
+            rfxDevice.Close();
+        }
+
+        protected override void DisposeController()
+        {
+			eventBus.Unsubscribe<ControllerEventData<ACPacket>>(HandleIncomingACMessage);
+			eventBus.Unsubscribe<ControllerEventData<RfxStatusPacket>>(HandleIncomingSetModeResponse);
+			eventBus.Unsubscribe<ControllerEventData<RfxAckPacket>>(HandleIncomingAckMessage);
+            rfxDevice.Dispose();
+        }
 
         private void RfxDataReceived(object sender, ExternalDataReceivedEventArgs e)
         {
@@ -80,42 +91,6 @@ namespace FruitHAP.Controller.Rfx
 				logger.ErrorFormat ("Error handling received data: {0}", ex.Message);
 			}
         }
-
-        public void Start()
-        {
-			if (!IsStarted) {
-				logger.InfoFormat ("Initializing controller {0}", this);
-
-				try {
-					SetSubscriptionTokens ();
-					LoadConfiguration ();
-					OpenRfxDevice ();
-					isStarted = true;
-				} catch (Exception) {
-					isStarted = false;
-					throw;
-				}
-			}
-
-        }
-
-        public void Stop()
-        {
-            logger.InfoFormat("Stopping module {0}", this);
-			rfxDevice.Close ();
-        }
-
-        public void Dispose()
-        {
-            logger.DebugFormat("Dispose module {0}", this);
-			aggregator.GetEvent<ACPacketEvent> ().Unsubscribe (acEventSubscriptionToken);
-			aggregator.GetEvent<SetModeResponsePacketEvent> ().Unsubscribe (setModeEventSubscriptionToken);
-			rfxDevice.Dispose();
-
-        }
-
-
-
 
 		private List<RfxPacketInfo> LoadPacketTypes (RfxControllerConfiguration configuration)
 		{
@@ -153,8 +128,8 @@ namespace FruitHAP.Controller.Rfx
 				}
 			}
 
-			RfxPacketInfo interfacePacket = GetInterfacePacket ();
-			packetList.Add (interfacePacket);
+			packetList.Add (GetInterfacePacket ());
+			packetList.Add (GetAckPacket ());
 
 			return packetList;
 		}
@@ -184,14 +159,35 @@ namespace FruitHAP.Controller.Rfx
 			};
 		}
 
-		private void HandleIncomingACMessage (ControllerEventData<ACPacket> obj)
-		{			
-			RfxACProtocol protocol = new RfxACProtocol (logger);
-			byte[] data = protocol.Encode (obj.Payload);
-			rfxDevice.SendData(data);
+		private RfxPacketInfo GetAckPacket()
+		{
+			return new RfxPacketInfo () {
+				LengthByte = 0x04,
+				PacketType = RfxPacketType.Ack,
+				PacketIndicator = 0x02,
+				SubPacketIndicator = 0x01
+			};
 		}
 
-		private void HandleIncomingSetModeResponse (ControllerEventData<StatusPacket> obj)
+		private void HandleIncomingACMessage (ControllerEventData<ACPacket> obj)
+		{			
+            logger.DebugFormat("HandleIncomingACMessage called: {0}", obj);
+            byte[] data = protocol.Encode (obj.Payload);
+            try
+            {
+                int sequenceNumber = rfxDevice.SendData(data);
+                acMessagesInProcess[sequenceNumber] = obj.Payload;
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Error while sending data: ", ex);
+                NakPacket<ControllerEventData<ACPacket>> nakPacket = new NakPacket<ControllerEventData<ACPacket>>() { Data = obj, Reason = NakReason.Failure };
+                eventBus.Publish(nakPacket);
+               
+            }
+		}
+
+		private void HandleIncomingSetModeResponse (ControllerEventData<RfxStatusPacket> obj)
 		{
 			var responsePacket = obj.Payload;
 			if (responsePacket.SequenceNumber == rfxDevice.PreviousSequenceNumber) 
@@ -205,6 +201,16 @@ namespace FruitHAP.Controller.Rfx
 			}
 		}
 
+		void HandleIncomingAckMessage (ControllerEventData<RfxAckPacket> obj)
+		{
+			var responsePacket = obj.Payload;
+            if (acMessagesInProcess.ContainsKey(responsePacket.SequenceNumber))
+            {
+                logger.Debug("**** publishing sensor event because of ack ***");
+                eventBus.Publish(new ControllerEventData<ACPacket>() { Direction = Direction.FromController, Payload = acMessagesInProcess[responsePacket.SequenceNumber]});
+                acMessagesInProcess.Remove(responsePacket.SequenceNumber);
+            }			
+		}
 
 		private void LoadConfiguration ()
 		{
@@ -213,11 +219,16 @@ namespace FruitHAP.Controller.Rfx
 			handlerFactory.Initialize (packetTypes);
 		}
 
-		private void SetSubscriptionTokens ()
+		private void SubscribeToSensorEvents ()
 		{
-			acEventSubscriptionToken = aggregator.GetEvent<ACPacketEvent> ().Subscribe (HandleIncomingACMessage, ThreadOption.PublisherThread, true, f => f.Direction == Direction.ToController);
-			setModeEventSubscriptionToken = aggregator.GetEvent<SetModeResponsePacketEvent> ().Subscribe (HandleIncomingSetModeResponse, ThreadOption.PublisherThread, true, f => f.Direction == Direction.FromController);
+			eventBus.Subscribe<ControllerEventData<ACPacket>>(HandleIncomingACMessage, f => f.Direction == Direction.ToController);
+		
 		} 
+        private void SubscribeToRfxEvents()
+        {
+            eventBus.Subscribe<ControllerEventData<RfxStatusPacket>>(HandleIncomingSetModeResponse, f => f.Direction == Direction.FromController && f.Payload.CommandType == CommandType.SetMode);
+            eventBus.Subscribe<ControllerEventData<RfxAckPacket>>(HandleIncomingAckMessage, f => f.Direction == Direction.FromController);
+        }
 
 		private void OpenRfxDevice ()
 		{
@@ -227,11 +238,7 @@ namespace FruitHAP.Controller.Rfx
 			rfxDevice.Open (physicalInterface, sensitivityFlags);
 			System.Threading.Thread.Sleep (1000);
 		}
-
-	}
-
-		
-
-
+        
+    }
 
 }

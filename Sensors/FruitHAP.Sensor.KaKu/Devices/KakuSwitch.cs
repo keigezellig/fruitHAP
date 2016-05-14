@@ -1,31 +1,30 @@
 ﻿using System;
-using FruitHAP.Core;
-using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
-using System.Collections.Generic;
-using FruitHAP.Common.Helpers;
-using Microsoft.Practices.Prism.PubSubEvents;
-using FruitHAP.Sensor.KaKu.Common;
+using FruitHAP.Common.EventBus;
+using FruitHAP.Core.Controller;
+using FruitHAP.Core.Sensor;
 using FruitHAP.Core.Sensor.SensorTypes;
+using FruitHAP.Core.Sensor.SensorValueTypes;
+using FruitHAP.Sensor.KaKu.Common;
 using FruitHAP.Sensor.PacketData.AC;
-using FruitHAP.Core.SensorEventPublisher;
 
 namespace FruitHAP.Sensor.KaKu
 {
-	public class KakuSwitch : KakuDevice, ISwitch
+	public class KakuSwitch : KakuDevice, IControllableSwitch
 	{
-		private Command onCommand;
-		private Command offCommand;
-		private SwitchState state;
-		private Trigger trigger;
-		private ISensorEventPublisher sensorEventPublisher;
+		private ACCommand onCommand;
+		private ACCommand offCommand;
+		private OnOffValue state;
+		private Trigger trigger;		
+		private DateTime lastUpdateTime;
 
-		public KakuSwitch(IEventAggregator aggregator, ILogger logger, ISensorEventPublisher sensorEventPublisher) : base(aggregator,logger)
+		public KakuSwitch(IEventBus eventBus, ILogger logger) : base(eventBus,logger)
 		{
-			this.sensorEventPublisher = sensorEventPublisher;
+			state = new OnOffValue () { Value = StateValue.Undefined };
+			this.lastUpdateTime = DateTime.Now;
 		}
 
-		public Command OnCommand {
+		public ACCommand OnCommand {
 			get {
 				return this.onCommand;
 			}
@@ -34,7 +33,7 @@ namespace FruitHAP.Sensor.KaKu
 			}
 		}
 
-		public Command OffCommand {
+		public ACCommand OffCommand {
 			get {
 				return this.offCommand;
 			}
@@ -50,70 +49,123 @@ namespace FruitHAP.Sensor.KaKu
 				trigger = value;
 			}
 		}
+            
+		public void TurnOn ()
+		{
+		    UpdateState (StateValue.On);
+		}
 
-		public SwitchState GetState ()
+		public void TurnOff ()
+		{
+            UpdateState (StateValue.Off);            
+        }
+
+		private void UpdateState (StateValue newState)
+		{
+			if (state.Value == newState) 
+			{
+				return;
+			}
+
+			TriggerControllerEvent(newState);
+		}
+
+		public OnOffValue State 
+		{
+			get 
+			{
+				return state;
+			}
+		}
+        
+		public ISensorValueType GetValue ()
 		{
 			return state;
 		}
 
-
-		public object GetValue ()
+		public DateTime GetLastUpdateTime ()
 		{
-			return state;
+			return lastUpdateTime;
 		}
 
 		#region ICloneable implementation
 
 		public override object Clone ()
 		{
-			return new KakuSwitch(this.aggregator, this.logger, this.sensorEventPublisher);
+			return new KakuSwitch(this.eventBus, this.logger);
 		}
 
 		#endregion
 
 		protected override void ProcessReceivedACDataForThisDevice (ACPacket data)
+		{            
+            StateValue newState = DetermineNewState(data);
+			state.Value = newState;
+            TriggerSensorEvent();
+            logger.InfoFormat("State changed to {0}", state);
+        }
+
+		void TriggerSensorEvent ()
 		{
-			SwitchState newState = DetermineNewState(data);
-			if (newState != state)
-			{										
-				state = newState;
-				logger.InfoFormat ("State changed to {0}",state);
-
-				bool fireEvent = true;
-				switch (trigger) 
-				{
-				case Trigger.On:
-					fireEvent = (state == SwitchState.On);
-					break;
-				case Trigger.Off:
-					fireEvent = (state == SwitchState.Off);
-					break;			
-				}
-
-				logger.DebugFormat("Trigger: {2}, New: {0}, FireEvent: {1}",state,fireEvent, trigger);
-
-				if (fireEvent) 
-				{
-					sensorEventPublisher.Publish<SensorEvent> (this, state.ToString ());
-				}
-
+			logger.Debug ("Firing sensor event");
+			bool fireEvent = true;
+			switch (trigger) 
+			{
+			case Trigger.On:
+				fireEvent = (state.Value == StateValue.On);
+				break;
+			case Trigger.Off:
+				fireEvent = (state.Value == StateValue.Off);
+				break;			
 			}
 
+			logger.DebugFormat("Trigger: {2}, New: {0}, FireEvent: {1}",state,fireEvent, trigger);
+
+			if (fireEvent) 
+			{
+				SensorEventData sensorEvent = new SensorEventData () {
+					TimeStamp = lastUpdateTime,
+					Sender = this,
+					OptionalData = new OptionalDataContainer(state)
+				};
+
+				eventBus.Publish(sensorEvent);
+			}
+		}
+
+		private void TriggerControllerEvent (StateValue state)
+		{
+			logger.Debug ("Firing controller event");
+			if (state == StateValue.Undefined) 
+			{
+				logger.Error ("Cannot send UNDEFINED switch state to controller");
+				return;
+			}
+
+			var data = new ACPacket () {
+				DeviceId = deviceId,
+				UnitCode = unitCode,
+				Command = state == StateValue.On ? OnCommand : OffCommand,
+				Level = 0
+			};
+                    
+         
+            eventBus.Publish(new ControllerEventData<ACPacket>() { Direction = Direction.ToController, Payload = data});    
 		}
 			
-		private SwitchState DetermineNewState (ACPacket decodedData)
+		private StateValue DetermineNewState (ACPacket decodedData)
 		{
 			if (decodedData.Command == onCommand) 
 			{
-				return SwitchState.On;
+				return StateValue.On;
 			}
 
 			if (decodedData.Command == offCommand) 
 			{
-				return SwitchState.Off;
+				return StateValue.Off;
 			}
 
-			return SwitchState.Undefined;
+			return StateValue.Undefined;
 		}
 		public override string ToString ()
 		{

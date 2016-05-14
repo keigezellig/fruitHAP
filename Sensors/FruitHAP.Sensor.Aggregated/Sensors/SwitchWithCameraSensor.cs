@@ -5,8 +5,8 @@ using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Core.Sensor;
 using System.Collections.Generic;
 using System.Linq;
-using FruitHAP.Core.SensorEventPublisher;
 using FruitHAP.Common.Helpers;
+using FruitHAP.Common.EventBus;
 
 namespace FruitHAP.Sensor.Aggregated
 {
@@ -15,12 +15,12 @@ namespace FruitHAP.Sensor.Aggregated
 		private ISwitch @switch;
 		private ICamera camera;
 		private ILogger logger;
-		private ISensorEventPublisher sensorEventPublisher;
 		private List<ISensor> inputs;
+		private IEventBus eventBus;
 
-		public SwitchWithCameraSensor (ISensorEventPublisher sensorEventPublisher, ILogger logger)
+		public SwitchWithCameraSensor (IEventBus eventBus, ILogger logger)
 		{
-			this.sensorEventPublisher = sensorEventPublisher;
+			this.eventBus = eventBus;
 			this.logger = logger;
 		}
 
@@ -29,9 +29,10 @@ namespace FruitHAP.Sensor.Aggregated
 		public string Name { get; set; }
 
 		public string Description { get; set; }
+        public string Category { get; set; }
 
 
-		public List<ISensor> Inputs {
+        public List<ISensor> Inputs {
 			get 
 			{
 				return inputs;
@@ -52,13 +53,19 @@ namespace FruitHAP.Sensor.Aggregated
 			this.inputs = inputs;
 			this.@switch = inputs.Single (f => f is ISwitch) as ISwitch;
 			this.camera = inputs.Single (f => f is ICamera) as ICamera;
-			sensorEventPublisher.Subscribe<SensorEvent> (OnSwitchStateChanged, f => f.Sender == this.@switch);
+			eventBus.Subscribe<SensorEventData> (OnSwitchStateChanged, f => f.Sender == this.@switch);
 		}
 
-		void OnSwitchStateChanged (EventData data)
+		void OnSwitchStateChanged (SensorEventData data)
 		{
 			var image = this.camera.GetImageAsync ().Result;
-			sensorEventPublisher.Publish<SensorEvent> (this, Convert.ToBase64String(image));
+			SensorEventData sensorEvent = new SensorEventData () {
+				TimeStamp = data.TimeStamp,
+				Sender = this,
+				OptionalData = new OptionalDataContainer(image)
+			};
+
+			eventBus.Publish(sensorEvent);
 		}
 			
 		#endregion
@@ -67,21 +74,21 @@ namespace FruitHAP.Sensor.Aggregated
 
 		public object Clone ()
 		{			
-			return new SwitchWithCameraSensor (sensorEventPublisher, logger);
+			return new SwitchWithCameraSensor (eventBus, logger);
 		}
 
 		#endregion
 
 		public override string ToString ()
 		{
-			return string.Format ("[ButtonWithCameraSensor: Name={0}, Description={1}, Inputs={2}]", Name, Description, string.Join(",",Inputs.Select(i => i.Name)));
+			return string.Format ("[SwitchWithCameraSensor: Name={0}, Description={1}, Inputs={2}]", Name, Description, string.Join(",",Inputs.Select(i => i.Name)));
 		}
 
 		#region IDisposable implementation
 		public void Dispose ()
 		{
 			logger.Debug ("Unsubscribing from events");
-			sensorEventPublisher.Unsubscribe<SensorEvent> (OnSwitchStateChanged);
+			eventBus.Unsubscribe<SensorEventData> (OnSwitchStateChanged);
 		}
 		#endregion
 	}

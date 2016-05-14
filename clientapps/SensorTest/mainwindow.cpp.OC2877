@@ -1,0 +1,269 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include "sensor/camera/qcamera.h"
+#include "sensor/switch/qswitch.h"
+#include <QInputDialog>
+#include <QPixmap>
+
+
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow),
+    m_drawing(nullptr),
+    m_client(new QFruitHapClient(QString("FruitHAP_RpcExchange"), QString("FruitHAP_PubSubExchange"),this)),
+    m_configControl(m_client,this),
+    m_eventedSensors()
+
+
+{
+    ui->setupUi(this);
+    connect(&m_configControl,&QConfigurationControl::sensorListReceived,this,&MainWindow::onSensorListReceived);
+    connect(m_client,&QFruitHapClient::connected,this,&MainWindow::onConnected);
+    connect(m_client,&QFruitHapClient::disconnected,this,&MainWindow::onDisconnected);
+    m_timer = new QTimer(this);
+    m_statusBarLabel = new QLabel();
+    ui->statusBar->addWidget(m_statusBarLabel);
+    connect(m_timer,&QTimer::timeout, this, &MainWindow::updateImage);
+    onDisconnected();
+}
+
+MainWindow::~MainWindow()
+{
+    delete m_timer;
+    delete ui;
+    qDeleteAll(m_eventedSensors);
+}
+
+QString convertEnumToString(const SwitchState& state )
+{
+    switch (state)
+    {
+    case SwitchState::Undefined:
+        return QString("Undefined");
+    case SwitchState::On:
+        return QString("On");
+    case SwitchState::Off:
+        return QString("Off");
+    }
+
+    return "Undefined";
+}
+
+
+void MainWindow::connectToMQ(const QStringList &bindingKeys, const QString &uri)
+{
+    m_client->setPubSubTopics(bindingKeys);
+    bool isConnected = m_client->connectToServer(uri);
+    if (!isConnected)
+    {
+        QString uristring = !uri.isEmpty() ? uri : "localhost";
+        qCritical() << "Cannot connect to: " << uristring;
+        onDisconnected();
+    }
+
+}
+
+void MainWindow::onConnected()
+{
+    ui->actionConnect->setEnabled(false);
+    ui->actionDisconnect->setEnabled(true);
+    ui->dialRefreshrate->setEnabled(true);
+    loadSensors();
+    ui->statusBar->setStyleSheet("background-color: green");
+    m_statusBarLabel->setText("Connected to "+m_uri);
+    m_statusBarLabel->setStyleSheet("color: white");
+
+}
+
+void MainWindow::onSensorListReceived(const QList<SensorData> list)
+{
+
+    ui->cmbSwitchList->clear();
+    ui->cmbCameraList->clear();
+
+    foreach (SensorData item, list)
+    {
+        if (item.getCategory() == "Switch")
+        {            
+            QSwitch *eventedSwitch = new QSwitch(m_client,item.getName(),true,item.IsReadOnly(),parent());
+            connect(eventedSwitch, &QSwitch::switchStateReceived, this, &MainWindow::onSwitchStateReceived);
+            connect(eventedSwitch, &QSwitch::errorEventReceived, this, &MainWindow::onErrorReceived);
+            m_eventedSensors.append(eventedSwitch);
+            ui->cmbSwitchList->addItem(item.getName());
+        }
+
+
+        if( (item.getType() == "ButtonWithCameraSensor") || (item.getType() == "SwitchWithCameraSensor"))
+        {
+
+            QCamera *eventedCamera = new QCamera(m_client,item.getName(),false,item.IsReadOnly(),parent());
+            connect(eventedCamera, &QCamera::imageReceived, this, &MainWindow::onImageDataReceived);
+            connect(eventedCamera, &QCamera::errorEventReceived, this, &MainWindow::onErrorReceived);
+            m_eventedSensors.append(eventedCamera);
+            ui->cmbCameraList->addItem(item.getName());
+        }
+
+        if( (item.getType() == "Camera"))
+        {
+            QCamera *eventedCamera = new QCamera(m_client,item.getName(),true,item.IsReadOnly(),parent());
+            connect(eventedCamera, &QCamera::imageReceived, this, &MainWindow::onImageDataReceived);
+            connect(eventedCamera, &QCamera::errorEventReceived, this, &MainWindow::onErrorReceived);
+            m_eventedSensors.append(eventedCamera);
+            ui->cmbCameraList->addItem(item.getName());
+        }
+    }
+
+
+
+}
+
+void MainWindow::onDisconnected()
+{
+    ui->actionConnect->setEnabled(true);
+    ui->actionDisconnect->setEnabled(false);
+    ui->statusBar->setStyleSheet("background-color: red");
+    m_statusBarLabel->setText("Not connected..");
+    m_statusBarLabel->setStyleSheet("color: white");
+}
+
+void MainWindow::onRpcQueueReady()
+{
+}
+
+
+QSensor* MainWindow::getSensorByName(const QString name) const
+{
+    foreach (QSensor* item, m_eventedSensors)
+    {
+        if (item->getName() == name)
+        {
+            return item;
+        }
+    }
+
+    return nullptr;
+}
+
+void MainWindow::updateImage()
+{
+        selectedSensor->getValue();
+}
+
+
+
+void MainWindow::on_cmbSwitchList_currentIndexChanged(int index)
+{
+    QString selectedItem = ui->cmbSwitchList->itemText(index);
+    m_selectedSensor = getSensorByName(selectedItem);
+
+}
+
+void MainWindow::on_cmbCameraList_currentIndexChanged(int index)
+{
+    QString selectedItem = ui->cmbSwitchList->itemText(index);
+    m_selectedSensor = getSensorByName(selectedItem);
+    updateImage;
+}
+
+
+void MainWindow::onSwitchStateReceived(const QString name, SwitchState state)
+{
+  QString selectedItem = ui->cmbSwitchList->currentText();
+  if (selectedItem == name)
+  {
+      ui->lbState->setText(convertEnumToString(state));
+  }
+}
+
+void MainWindow::onErrorReceived(const QString name, const QString errorMessage)
+{
+    qCritical() << "Error received from " << name << ". Message: " << errorMessage;
+}
+
+
+void MainWindow::onImageDataReceived(const QString name, const QByteArray imageData)
+{
+    QString selectedItem = ui->cmbCameraList->currentText();
+    if (selectedItem == name)
+    {
+        QImage image = QImage::fromData(imageData);
+        if (m_drawing != nullptr)
+        {
+            delete m_drawing;
+            m_drawing = nullptr;
+        }
+
+        m_drawing = new QGraphicsScene(this);
+        m_drawing->addPixmap(QPixmap::fromImage(image));
+        m_drawing->setSceneRect(image.rect());
+
+        ui->cameraImage->setScene(m_drawing);
+    }
+}
+
+
+void MainWindow::on_actionConnect_triggered()
+{
+    bool ok;
+    m_uri = QInputDialog::getText(this,"Connect to MQ server",
+                                            "Enter AMQ connection string (default is amqp://guest:guest@localhost)", QLineEdit::Normal,
+                                            "", &ok);
+    if (ok)
+    {
+            QStringList bindingKeys;
+            bindingKeys.push_back("alerts");
+
+            connectToMQ(bindingKeys, m_uri);
+
+    }
+
+}
+
+void MainWindow::on_actionDisconnect_triggered()
+{
+    m_client->disconnectFromServer();
+}
+
+void MainWindow::on_dialRefreshrate_valueChanged(int value)
+{
+    m_timer->start(value);
+}
+
+void MainWindow::on_btnGetValue_clicked()
+{
+        selectedSensor->getValue();
+        ui->btnOn->setEnabled(!selectedSensor->isReadOnly());
+        ui->btnOff->setEnabled(!selectedSensor->isReadOnly());
+}
+
+
+void MainWindow::on_btnOn_clicked()
+{
+    QString selectedItem = ui->cmbSwitchList->itemText(ui->cmbSwitchList->currentIndex());
+    QSensor* selectedSensor = getSensorByName(selectedItem);
+    QSwitch* aSwitch = dynamic_cast<QSwitch*>(selectedSensor);
+
+    if (aSwitch != nullptr)
+    {
+        aSwitch->turnOn();
+    }
+}
+
+void MainWindow::on_btnOff_clicked()
+{
+    QString selectedItem = ui->cmbSwitchList->itemText(ui->cmbSwitchList->currentIndex());
+    QSensor* selectedSensor = getSensorByName(selectedItem);
+    QSwitch* aSwitch = dynamic_cast<QSwitch*>(selectedSensor);
+
+    if (aSwitch != nullptr)
+    {
+        aSwitch->turnOff();
+    }
+}
+
+void MainWindow::loadSensors()
+{    
+    m_configControl.getSensorList();
+
+
+}

@@ -6,6 +6,8 @@ using Castle.Core.Logging;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Common.Helpers;
 using FruitHAP.Core.SensorPersister;
+using System.Collections;
+using System.Reflection;
 
 namespace FruitHAP.Core.SensorRepository
 {
@@ -43,7 +45,11 @@ namespace FruitHAP.Core.SensorRepository
             }
             
         }
-        
+
+        public IEnumerable<ISensor> FindAllSensorsOfTypeByTypeName(string typeName)
+        {
+            return sensors.Where(f => f.GetType().Name.Contains(typeName));
+        }
         public IEnumerable<T> FindAllSensorsOfType<T>() where T : ISensor
         {
             return sensors.OfType<T>();
@@ -61,9 +67,70 @@ namespace FruitHAP.Core.SensorRepository
 
 		public void SaveSensors (IEnumerable<ISensor> sensors)
     	{
-			persister.SaveSensors (sensors);			
+            throw new NotImplementedException();
     	}
 
+        public IEnumerable<ISensor> GetSensorsByCategoryName(string category)
+        {
+            return sensors.Where(f => f.Category == category);
+        }
 
+        public IEnumerable<string> GetSensorCategories()
+        {
+            return sensors.Select(f => f.Category).Distinct();
+        }
+
+        public ISensor GetSensorByName(string name)
+        {
+            return sensors.SingleOrDefault(f => f.Name == name);
+        }
+
+        public IEnumerable<MethodInfo> GetOperationsForSensor(string sensorName)
+        {
+            var operationList = CreateMethodList(sensorName);
+            return operationList;
+        }
+
+
+        public MethodInfo GetOperationForSensor(string sensorName, string operationName)
+        {           
+            var operationList = CreateMethodList(sensorName);
+            return operationList.SingleOrDefault(f => f.Name == operationName);
+        }
+
+        private IEnumerable<MethodInfo> CreateMethodList(string sensorName)
+        {
+            List<MethodInfo> operations = new List<MethodInfo>();
+            ISensor sensor = sensors.Single(f => f.Name == sensorName);
+            {
+                foreach (var intf in sensor.GetType().GetInterfaces().Where(f => f.Name != "IDisposable" && f.Name != "ICloneable"))                    
+                {
+                    foreach (var method in intf.GetMethods().Where(f => !f.IsSpecialName))
+                    {
+                        operations.Add(method);
+                    }
+                }
+            }
+            return operations;
+        }
+
+
+        public Type GetSensorValueType(string sensorName)
+        {
+            var sensor = sensors.Single(f => f.Name == sensorName) as IValueSensor;
+            if (sensor == null)
+            {
+                return null;
+            }
+
+            return sensor.GetValue().GetType();
+
+            //            var getValueMethod = GetOperationForSensor(sensorName, "GetValue");
+//            if (getValueMethod == null)
+//            {
+//                return null;
+//            }
+//            return getValueMethod.ReturnType.;
+        }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System;
+using System.IO;
 using Castle.Core.Logging;
 
 namespace FruitHAP.Common.Configuration
 {
-    public abstract class ConfigProviderBase<TConfig> : IConfigProvider<TConfig>
+    public abstract class ConfigProviderBase<TConfig> : IConfigProvider<TConfig> where TConfig : class 
     {
         protected readonly ILogger logger;
 
@@ -19,21 +20,30 @@ namespace FruitHAP.Common.Configuration
             return default(TConfig);
         }
 
+        public virtual bool IsConfigurationCorrect(TConfig configuration)
+        {
+            return true;
+        }
+
         public TConfig LoadConfigFromFile(string fileName)
         {
-            var result = default(TConfig);
-            
+            TConfig result = null;
+
             try
             {
                 logger.DebugFormat("Loading from file {0}", fileName);
-                result = LoadFromFile(fileName);        
+                result = LoadFromFile(fileName);
+            }
+            catch (FileNotFoundException)
+            {
+                logger.Error("Configuration file does not exist. Creating default config");
+                result = LoadDefaultConfig();
+                logger.InfoFormat("Saving default configuration to {0}", fileName);
+                SaveConfigToFile(result, fileName);
             }
             catch (Exception ex)
-            {
-                logger.Error("Error occured while loading config from configfile. Loading default config", ex);
-                result = LoadDefaultConfig();
-				logger.InfoFormat("Saving default configuration to {0}",fileName);
-				SaveConfigToFile(result, fileName);
+            {                                
+                logger.Error("Error occured while loading config from configfile.",ex);                
             }
 
             return result;

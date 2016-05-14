@@ -17,6 +17,7 @@ namespace FruitHAP.Core.SensorPersister
 		ILogger logger;
 		IConfigProvider<List<SensorConfigurationEntry>> configProvider;
 		string sensorFile;
+        List<SensorConfigurationEntry> configuration;
 
 		public SensorPersister (IEnumerable<ISensor> prototypes, ILogger logger, IConfigProvider<List<SensorConfigurationEntry>> configProvider)
 		{
@@ -32,7 +33,7 @@ namespace FruitHAP.Core.SensorPersister
 		{
 			var result = new List<ISensor> ();
 			logger.InfoFormat ("Loading sensors from {0}", sensorFile);
-			var configuration = configProvider.LoadConfigFromFile (sensorFile); 
+            configuration = configProvider.LoadConfigFromFile (sensorFile); 
 			List<ISensor> nonAggregateSensors = LoadNonAggregateSensors (configuration.Where (f => !f.IsAggegrate));
 			result.AddRange (nonAggregateSensors);
 			List<ISensor> aggregateSensors = LoadAggregateSensors (configuration.Where (f => f.IsAggegrate),result);
@@ -41,33 +42,41 @@ namespace FruitHAP.Core.SensorPersister
 			return result;
 		}
 
-		public void SaveSensors (IEnumerable<ISensor> sensorList)
-		{
-			List<SensorConfigurationEntry> entries = new List<SensorConfigurationEntry> ();
-			foreach (var sensor in sensorList) 
-			{
-				string type = sensor.GetType ().Name;
-				bool isAggregate = sensor is IAggregatedSensor;
-				object parameters = sensor;
+        private IEnumerable<SensorConfigurationEntry> BuildConfigurationEntriesList(IEnumerable<ISensor> sensorList)
+        {
 
-				if (isAggregate) 
-				{
-					var aggregatedSensor = sensor as IAggregatedSensor;
-					parameters = new AggregatedSensorParameters() {Name = aggregatedSensor.Name, Description = aggregatedSensor.Description, Inputs = aggregatedSensor.Inputs.Select(f => f.Name).ToList()};
-				} 
+            //var entries = configuration.Where(f => f.
+            List<SensorConfigurationEntry> entries = new List<SensorConfigurationEntry>();
+            foreach (var sensor in sensorList)
+            {
+                string type = sensor.GetType().Name;
+                bool isAggregate = sensor is IAggregatedSensor;
+                object parameters = sensor;
+
+                if (isAggregate)
+                {
+                    var aggregatedSensor = sensor as IAggregatedSensor;
+                    parameters = new AggregatedSensorParameters() { Name = aggregatedSensor.Name, Description = aggregatedSensor.Description, Inputs = aggregatedSensor.Inputs.Select(f => f.Name).ToList() };
+                }
 
 
-				SensorConfigurationEntry entry = new SensorConfigurationEntry () {
-					Type = type,
-					IsAggegrate = isAggregate,
-					Parameters = parameters
-				};
+                SensorConfigurationEntry entry = new SensorConfigurationEntry()
+                {
+                    Type = type,
+                    IsAggegrate = isAggregate,
+                    Parameters = parameters
+                };
 
-				entries.Add (entry);
-			}
+                entries.Add(entry);
+            }
 
-			configProvider.SaveConfigToFile (entries, sensorFile);
-		}
+            return entries;
+        }
+
+        public IEnumerable<SensorConfigurationEntry> GetSensorConfiguration()
+        {
+            return configuration;
+        }
 
 		#endregion
 
@@ -76,21 +85,25 @@ namespace FruitHAP.Core.SensorPersister
 			var result = new List<ISensor> ();
 			foreach (var entry in configurationEntries) 
 			{
-				ISensor prototype = prototypes.SingleOrDefault (f => f.GetType ().Name.Contains (entry.Type));
-				if (prototype == null) {
+				var prototypeList = prototypes.Where (f => f.GetType().Name == entry.Type);
+
+				if (prototypeList.Count() == 0) {
 					logger.WarnFormat ("Ignoring sensor type {0} because it is not supported. Check your sensor configuration ", entry.Type);
 				} 
 				else 
-				{	
-					var instance = (prototype as ICloneable).Clone ();
-					string parametersInJson = entry.Parameters.ToJsonString ();
-					Dictionary<string,object> parameters = parametersInJson.ParseJsonString<Dictionary<string,object>> ();
-					foreach (var parameter in parameters) 
-					{
-						instance.SetProperty (parameter.Key, parameter.Value);
-					}
-					logger.InfoFormat ("Loaded sensor {0}", instance);
-					result.Add (instance as ISensor);
+				{
+                    foreach (var prototype in prototypeList)
+                    {
+                        var instance = (prototype as ICloneable).Clone();
+                        string parametersInJson = entry.Parameters.ToJsonString();
+                        Dictionary<string, object> parameters = parametersInJson.ParseJsonString<Dictionary<string, object>>();
+                        foreach (var parameter in parameters)
+                        {
+                            instance.SetProperty(parameter.Key, parameter.Value);
+                        }
+                        logger.InfoFormat("Loaded sensor {0}", instance);
+                        result.Add(instance as ISensor);
+                    }
 				}
 			}
 

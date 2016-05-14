@@ -1,0 +1,4 @@
+{
+	"IsEnabled":"true",
+	"RoutingKey":"events"
+}

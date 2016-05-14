@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -36,17 +36,16 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.Prism.PubSubEvents">
+      <HintPath>..\packages\Prism.PubSubEvents.1.1.2\lib\portable-sl5+windowsphone8+windows8+net40+wpa81\Microsoft.Practices.Prism.PubSubEvents.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Configuration\" />
-    <Folder Include="Helpers\" />
-    <Folder Include="PhysicalInterfaces\" />
-    <Folder Include="Properties\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Compile Include="Configuration\ConfigProviderBase.cs" />
     <Compile Include="Configuration\IConfigProvider.cs" />
+    <Compile Include="Helpers\AssemblyHelpers.cs" />
     <Compile Include="Helpers\IEnumerableExtensions.cs" />
     <Compile Include="Helpers\JsonSerializerHelper.cs" />
     <Compile Include="Helpers\XmlSerializerHelper.cs" />
@@ -59,6 +58,11 @@
     <Compile Include="PhysicalInterfaces\SerialPortInterface\SerialPortWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\ReflectionHelper.cs" />
+    <Compile Include="Exceptions\ValidationException.cs" />
+    <Compile Include="Helpers\TaskExtension.cs" />
+    <Compile Include="EventBus\IEventBus.cs" />
+    <Compile Include="EventBus\EventBus.cs" />
+    <Compile Include="Helpers\BitBangExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -21,9 +21,9 @@ namespace FruitHAP.Startup
         {
 			try
 			{
-            configuration.Service<ISensorProcessingService>(s =>
+            configuration.Service<IFruitHAPService>(s =>
             {
-                s.ConstructUsing(name => container.Resolve<ISensorProcessingService>());
+                s.ConstructUsing(name => container.Resolve<IFruitHAPService>());
                 s.WhenStarted(tc => tc.Start());
                 s.WhenStopped(tc =>
                 {

@@ -1,0 +1,104 @@
+How to decode RFXSensor
+===========================
+
+ # ---------------------------------------
+    # 0x70 RFXsensor
+    # ---------------------------------------
+    if packettype == '70':
+        logger.debug("Decode packetType 0x" + str(packettype) + " - Start")
+        decoded = True
+        
+        # DATA
+        if subtype == '00':
+            temperature = float(rfxdecode.decodeTemperature(message[5], message[6]))
+            temperature = temperature * 0.1
+        else:
+            temperature = 0
+        if subtype == '01' or subtype == '02':
+            voltage_hi = int(ByteToHex(message[5]), 16) * 256
+            voltage_lo = int(ByteToHex(message[6]), 16)
+            voltage = voltage_hi + voltage_lo
+        else:
+            voltage = 0
+        signal = rfxdecode.decodeSignal(message[7])
+        
+        if subtype == '03':
+            sensor_message = rfx.rfx_subtype_70_msg03[message[6]]
+        
+        # PRINTOUT
+        if cmdarg.printout_complete == True:
+            print "Subtype\t\t\t= " + rfx.rfx_subtype_70[subtype]
+            print "Seqnbr\t\t\t= " + seqnbr
+            print "Id\t\t\t= " + id1
+        
+            if subtype == '00':
+                print "Temperature\t\t= " + str(temperature) + " C"
+            
+            if subtype == '01' or subtype == '02':
+                print "Voltage\t\t\t= " + str(voltage) + " mV"
+            
+            if subtype == '03':
+                print "Message\t\t\t= " + sensor_message
+            
+            print "Signal level\t\t= " + str(signal)
+
+
+
+
+
+def decodeTemperature(message_high, message_low):
+	"""
+	Decode temperature bytes.
+	"""
+	temp_high = ByteToHex(message_high)
+	temp_low = ByteToHex(message_low)
+	polarity = testBit(int(temp_high,16),7)
+		
+	if polarity == 128:
+		polarity_sign = "-"
+	else:
+		polarity_sign = ""
+			
+	temp_high = clearBit(int(temp_high,16),7)
+	temp_high = temp_high << 8
+	temperature = ( temp_high + int(temp_low,16) ) * 0.1   //Gives temperature in 10th of degrees C
+	temperature_str = polarity_sign + str(temperature)
+
+	return temperature_str
+
+# ----------------------------------------------------------------------------
+
+def decodeSignal(message):
+	"""
+	Decode signal byte.
+	"""
+	signal = int(ByteToHex(message),16) >> 4
+	return signal
+
+
+
+ rfx_subtype_70_msg03 = {"01":"Sensor addresses incremented",
+                            "02":"Battery low detected",
+                            "81":"No 1-wire device connected",
+                            "82":"1-Wire ROM CRC error",
+                            "83":"1-Wire device connected is not a DS18B20 or DS2438",
+                            "84":"No end of read signal received from 1-Wire device",
+                            "85":"1-Wire scratchpad CRC error"}
+
+ rfx_subtype_70 = {"00":"RFXSensor temperature",
+                        "01":"RFXSensor A/S",
+                        "02":"RFXSensor voltage",
+                        "03":"RFXSensor message"}
+
+
+
+5-3-2016 23:22:25= 07 70 00 1D 01 01 90 70
+Packettype    = RFXSensor
+subtype       = Temperature
+Sequence nbr  = 29
+ID            = 1
+msg           = 4 °C
+Signal level  = 7
+
+
+

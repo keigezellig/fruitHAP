@@ -11,7 +11,7 @@ using Castle.Services.Logging.NLogIntegration;
 using Castle.Windsor;
 using FruitHAP.Common.Configuration;
 using FruitHAP.Common.PhysicalInterfaces;
-using FruitHAP.Core.Action;
+using FruitHAP.Core.Plugin;
 using FruitHAP.Core.Sensor;
 using FruitHAP.Core.SensorRepository;
 using FruitHAP.Core.Service;
@@ -21,7 +21,8 @@ using FruitHAP.Core;
 using FruitHAP.Core.MQ;
 using FruitHAP.Core.Controller;
 using FruitHAP.Core.SensorPersister;
-using FruitHAP.Core.SensorEventPublisher;
+
+using FruitHAP.Common.EventBus;
 
 namespace FruitHAP.Startup
 {
@@ -36,11 +37,14 @@ namespace FruitHAP.Startup
 			string sensorDirectory = ConfigurationManager.AppSettings["SensorDirectory"] ??
 				Path.Combine(".", "sensors");
 
-            string actionDirectory = ConfigurationManager.AppSettings["ActionDirectory"] ??
-                                     Path.Combine(".", "actions");
+            string pluginDirectory = ConfigurationManager.AppSettings["PluginDirectory"] ??
+                                     Path.Combine(".", "plugins");
 
             container.Kernel.ComponentRegistered += Kernel_ComponentRegistered;
             container.Kernel.Resolver.AddSubResolver(new CollectionResolver(container.Kernel, true));
+
+
+
             RegisterLogging(container);            
 			RegisterMQPublisher(container);
 			RegisterEventAggregator(container);            
@@ -49,9 +53,9 @@ namespace FruitHAP.Startup
 			RegisterSensors(container,sensorDirectory);
             
 			RegisterDeviceRepository(container);
-            RegisterActions(container,actionDirectory);
+            RegisterPlugins(container,pluginDirectory);
             RegisterService(container);
-            
+			ContainerAccessor.Container = container;
         }
 
 		void RegisterMQPublisher (IWindsorContainer container)
@@ -78,34 +82,34 @@ namespace FruitHAP.Startup
             
         }
 
-        private void RegisterActions(IWindsorContainer container, string baseDirectory)
+        private void RegisterPlugins(IWindsorContainer container, string baseDirectory)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(baseDirectory);
 
             foreach (var directory in directoryInfo.GetDirectories())
             {
-                LoadActionFromDirectory(container, directory.FullName);
+                LoadPluginFromDirectory(container, directory.FullName);
             }
         }
 
-        private void LoadActionFromDirectory(IWindsorContainer container, string actionDirectory)
+        private void LoadPluginFromDirectory(IWindsorContainer container, string pluginDirectory)
         {
             var logger = container.Resolve<Castle.Core.Logging.ILogger>();
 
-            logger.InfoFormat("Loading actions from directory {0}", actionDirectory);
+            logger.InfoFormat("Loading plugins from directory {0}", pluginDirectory);
             
-            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(actionDirectory))
-                .BasedOn<IAction>()
+            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(pluginDirectory))
+                .BasedOn<IPlugin>()
                 .WithService.FromInterface()
                 .LifestyleSingleton());
 
-			container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(actionDirectory))
+			container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(pluginDirectory))
 				.BasedOn(typeof (IConfigProvider<>))
 				.WithService.Base()
 				.LifestyleSingleton());
 			
 
-            logger.InfoFormat("Done loading actions from directory {0}", actionDirectory);
+            logger.InfoFormat("Done loading plugins from directory {0}", pluginDirectory);
 
             
         }
@@ -118,16 +122,17 @@ namespace FruitHAP.Startup
                    .LifestyleSingleton());
 
 			container.Register(
-				Component.For<ISensorEventPublisher>()
-				.ImplementedBy<SensorEventPublisher>()
+				Component.For<IEventBus>()
+				.ImplementedBy<PrismEventBus>()
 				.LifestyleSingleton());
+
         }
 
         private void RegisterService(IWindsorContainer container)
         {
             container.Register(
-                Component.For<ISensorProcessingService>()
-                    .ImplementedBy<SensorProcessingService>()
+                Component.For<IFruitHAPService>()
+                    .ImplementedBy<FruitHAPService>()
                     .LifestyleTransient());
 
         }
@@ -196,16 +201,23 @@ namespace FruitHAP.Startup
 
         private void RegisterLogging(IWindsorContainer container)
         {
-            container.AddFacility<LoggingFacility>(
-                f => f.LogUsing(new NLogFactory(NLogConfigurationFactory.CreateNLogConfiguration())));
-            container.Register(
-                Component.For<LogFactory>()
-                    .UsingFactoryMethod<LogFactory>(ServiceHostConfigurator.CreateLogFactoryForServiceHost));
+			RegisterApplicationLogging (container);
+			RegisterServiceHostLogging (container);
         }
 
+		private void RegisterApplicationLogging (IWindsorContainer container)
+		{
+			container.AddFacility<LoggingFacility> (f => f.LogUsing (new NLogFactory (NLogConfigurationFactory.CreateNLogConfiguration ())));
+		}
+
+		private void RegisterServiceHostLogging (IWindsorContainer container)
+		{
+			container.Register (Component.For<LogFactory> ().UsingFactoryMethod<LogFactory> (ServiceHostConfigurator.CreateLogFactoryForServiceHost));
+		}
+
         private void Kernel_ComponentRegistered(string key, IHandler handler)
-        {            
-            Console.WriteLine("Loading component: {0}", key);
+        {            			
+			Console.WriteLine("Loading component: {0}", key);
         }
     }
 }

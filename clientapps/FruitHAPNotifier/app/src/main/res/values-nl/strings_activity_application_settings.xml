@@ -1,0 +1,26 @@
+<resources>
+    <string name="title_activity_application_settings">Applicatie instellingen</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_serversettings">Server instellingen</string>
+    <string name="pref_server_title_hostname">Servernaam/ip</string>
+    <string name="pref_general_default_hostname">localhost</string>
+    <string name="pref_server_title_pubsub_port">Serverpoort</string>
+    <string name="pref_general_default_port">5672</string>
+    <string name="pref_server_title_username">Gebruikersnaam</string>
+    <string name="pref_server_default_username">admin</string>
+    <string name="pref_server_title_password">Wachtwoord</string>
+    <string name="pref_server_default_password">admin</string>
+    <string name="pref_server_title_vhost">Virtual host</string>
+    <string name="pref_server_default_vhost">/</string>
+    <string name="pref_server_title_event_exchange">Notificatie exchange </string>
+    <string name="pref_server_default_event_exchange">FruitHAP_PubSubExchange</string>
+    <string name="pref_server_title_alert_topic">Topicnaam voor alarmen</string>
+    <string name="pref_server_default_alert_topic">alerts</string>
+    <string name="pref_server_title_event_topic">Topicnaam voor dashboard updates</string>
+    <string name="pref_server_default_event_topic">events</string>
+    <string name="pref_server_title_control_port" >Besturingspoort</string>
+    <string name="pref_general_default_control_port">8888</string>
+</resources>

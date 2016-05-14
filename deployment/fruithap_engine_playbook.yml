@@ -1,0 +1,116 @@
+- hosts: "{{ target | default('all') }}"
+  tasks: 
+  - name: Stop supervisor Service
+    service: name=supervisor state=stopped
+    ignore_errors: True
+
+  - name: Update repo cache
+    apt: update_cache=yes
+
+  - name: Update to latest software
+    apt: upgrade=dist
+    
+  - name: Upgrade to Jessie - Remove Wheezy repos
+    apt_repository: repo='deb http://mirrordirector.raspbian.org/raspbian/ wheezy main contrib non-free rpi' state=absent
+    when: ansible_distribution_release == "wheezy"
+
+  - name: Upgrade to Jessie - Add Jessie repos
+    apt_repository: repo='deb http://mirrordirector.raspbian.org/raspbian/ jessie main contrib non-free rpi' state=present
+    when: ansible_distribution_release == "wheezy"
+
+  - name: Upgrade to Jessie - Update cache
+    apt: update_cache=yes
+    when: ansible_distribution_release == "wheezy"
+
+  - name: Upgrade to Jessie - Upgrade!
+    apt: upgrade=dist
+    when: ansible_distribution_release == "wheezy"
+
+  - name: Test for arm7
+    shell: echo "ARM v7 present so adding Xamarin repos for Mono"
+    when: ansible_architecture == "armv7l"
+
+  - name: Add Xamarin repo keys
+    apt_key: keyserver=keyserver.ubuntu.com id=3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+             state=present
+    when: ansible_architecture == "armv7l"
+
+  - name: Add Xamarin repo
+    apt_repository: repo='deb http://download.mono-project.com/repo/debian wheezy main'
+                    state=present
+    when: ansible_architecture == "armv7l"
+  
+  - name: Install Mono
+    apt: pkg=mono-complete state=latest update_cache=true
+
+  - name: Download rabbit-mq
+    get_url: url=https://www.rabbitmq.com/releases/rabbitmq-server/v3.4.4/rabbitmq-server_3.4.4-1_all.deb dest=/home/pi/
+
+  - name: Install Erlang stuff 1
+    apt: pkg=erlang state=latest
+
+  - name: Install Erlang stuff 2
+    apt: pkg=erlang-nox state=latest
+  
+  - name: Install Erlang stuff 4
+    apt: pkg=logrotate state=latest
+    
+  - name: Install rabbit-mq package
+    apt: deb=/home/pi/rabbitmq-server_3.4.4-1_all.deb state=present
+
+  - name: Enable management plugin for rabbit-mq
+    rabbitmq_plugin: names=rabbitmq_management state=enabled
+
+  - name: Add admin user to rabbit-mq
+    rabbitmq_user: user=admin password=admin tags=administrator configure_priv=.* read_priv=.* write_priv=.* state=present
+  
+  - name: Add non admin user to rabbit-mq (amqpuser)
+    rabbitmq_user: user=amqpuser password=amqpuser read_priv=.* write_priv=.* state=present
+
+  - name: Restart Rabbit MQ
+    service: name=rabbitmq-server state=restarted enabled=yes 
+
+  - name: Install Python PIP
+    apt: pkg=python-pip state=latest
+
+  - name: Install Supervisor through PIP
+    pip: name=supervisor state=latest
+  
+  - name: Install rsync
+    apt: pkg=logrotate state=latest
+ 
+  - name: Cleanup temp files
+    file: path=/home/pi/rabbitmq-server_3.4.4-1_all.deb state=absent
+
+  - name: Copy FruitHAP Engine to ~/fruithap/engine
+    synchronize: 
+        src: engine 
+        dest: /home/pi/fruithap/ 
+        delete: yes
+        recursive: yes 
+        rsync_opts:
+          - "--exclude=*.json"
+          - "--exclude=*.config"
+
+  - name: Copy main config file
+    copy: src=engine/FruitHAP.Startup.exe.config dest=/home/pi/fruithap/engine/ force=no
+      
+  - name: Copy supervisor config
+    copy: src=initscripts/supervisord.conf dest=/etc/ group=root owner=root mode=0755
+  - name: Copy supervisor init script
+    copy: src=initscripts/supervisord.sh dest=/etc/init.d/supervisor group=root owner=root mode=0755
+  - name: Create log directory for supervisord
+    file: path=/var/log/supervisor/ state=directory group=root owner=root mode=0755
+  - name: Add user pi to group dialout
+    user: name=pi groups=dialout append=yes
+  - name: Start service supervisor and configure it to run on startup
+    service: name=supervisor state=restarted enabled=yes
+
+    
+
+    
+
+
+
+
+    

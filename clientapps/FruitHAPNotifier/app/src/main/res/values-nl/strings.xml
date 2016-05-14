@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">FruitHAP</string>
+    <string name="alert_details_priority_label">Prioriteit</string>
+    <string name="alert_details_priority_low">Laag</string>
+    <string name="alert_details_priority_medium">Middel</string>
+    <string name="alert_details_priority_high">Hoog</string>
+    <string name="alert_details_time">Tijd</string>
+    <string name="alert_details_source">Bron</string>
+    <string name="alert_details_message">Boodschap</string>
+    <string name="title_alertlist">Alarmen</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="turn_on_notification_service">Verbind met FruitHAP server</string>
+    <string name="turn_off_notification_service">Verbreek verbinding met FruitHAP server</string>
+    <string name="action_clear_list">Wis lijst</string>
+    <string name="action_general_settings">Algemene instellingen</string>
+    <string name="clearing_list">Lijst wordt gewist</string>
+    <string name="caption_yes">Ja</string>
+    <string name="caption_no">Nee</string>
+    <string name="notification_service_started">Verbonden met server</string>
+    <string name="notification_service_stopped">Verbinding met server verbroken</string>
+    <string name="notification_service_error">Er is een fout opgetreden tijdens het verbinden met de server. Controleer de instellingen</string>
+    <string name="notification_service_name">FruitHAP</string>
+    <string name="notification_service_stopwarning">Weet u het zeker dat u de verbinding met de server wilt verbreken? Er zullen geen alarmen worden ontvangen en het dashboard zal niet worden bijgewerkt</string>
+    <string name="action_mark_as_read">Markeer alle alarmen als gelezen</string>
+    <string name="alert_image">Optional image going with the alert</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="action_dashboard_refresh">Ververs dashboard</string>
+    <string name="action_values_refresh">Ververs sensors </string>
+    <string name="configuration_load_error">Error while loading configuration</string>
+    <string name="configuration_successfully_loaded">Configuration loaded</string>
+</resources>

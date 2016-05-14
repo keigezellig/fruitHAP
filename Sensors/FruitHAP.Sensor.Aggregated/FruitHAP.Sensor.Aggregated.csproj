@@ -40,12 +40,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sensors\ButtonWithCameraSensor.cs" />
     <Compile Include="Sensors\SwitchWithCameraSensor.cs" />
-    <Compile Include="Events\CameraEvent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Sensors\" />
-    <Folder Include="Events\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

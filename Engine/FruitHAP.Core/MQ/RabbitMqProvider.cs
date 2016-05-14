@@ -13,7 +13,7 @@ namespace FruitHAP.Core.MQ
     {
         private IBus messageBus;
 		private ILogger logger;
-		private IExchange exchange;
+		private IExchange pubsubExchange;
 		private bool isInitialized;
 
 
@@ -31,36 +31,24 @@ namespace FruitHAP.Core.MQ
 			}
 		}
 			
-		public void Initialize(string connectionString, string pubSubExchangeName, string rpcExchangeName, string rpcQueueName)
+		public void Initialize(string connectionString, string pubSubExchangeName)
 		{
-			logger.InfoFormat ("Connecting to Rabbit MQ with connection string {0} and to exchange {1} and RPC queue {2}", connectionString,pubSubExchangeName,rpcQueueName );
-			messageBus = CreateMessageBus(connectionString, rpcExchangeName, rpcQueueName);
-			exchange = messageBus.Advanced.ExchangeDeclare (pubSubExchangeName, ExchangeType.Topic,false,false,false,false,null);
+			logger.InfoFormat ("Connecting to Rabbit MQ with connection string {0} and to pubsub exchange {1}", connectionString,pubSubExchangeName);
+			messageBus = CreateMessageBus (connectionString);
+			pubsubExchange = messageBus.Advanced.ExchangeDeclare (pubSubExchangeName, ExchangeType.Topic,false,false,false,false,null);
 
 		}
 
 		public void Publish<T>(T message, string routingKey) where T: class
         {
 			var mqMessage = new Message<T> (message);
-			messageBus.Advanced.Publish (exchange, routingKey, false, false, mqMessage);
-
+			messageBus.Advanced.Publish (pubsubExchange, routingKey, false, false, mqMessage);
+			logger.InfoFormat ("Message published to MQ. Routing key: {0}",routingKey);
+			logger.DebugFormat ("Message published to MQ. Routing key: {0}. Message {1}",routingKey,message);
         }
 
-		public void SubscribeToRequest<TRequest, TResponse>(Func<TRequest, Task<TResponse>> handler) 
-			where TRequest : class  
-			where TResponse : class
-		{
-			try
-			{
-				messageBus.RespondAsync<TRequest,TResponse> (handler);
-			}
-			catch (Exception ex) 
-			{
-				logger.ErrorFormat ("Error subscribing to request: {0} ", ex);
-			}
-		}
 
-		private IBus CreateMessageBus(string connectionString, string exchangeName, string rpcQueueName)
+		private IBus CreateMessageBus(string connectionString)
         {
 			if (string.IsNullOrEmpty(connectionString))
             {
@@ -68,18 +56,8 @@ namespace FruitHAP.Core.MQ
             }
 			var bus = RabbitHutch.CreateBus (connectionString);
 
-			SetCorrectMQNamingConventions (bus, exchangeName, rpcQueueName);
-
 			return bus;        
 		}
-
-		public void SetCorrectMQNamingConventions (IBus bus, string exchangeName, string rpcQueueName)
-		{
-			var conventions = bus.Advanced.Container.Resolve<IConventions> ();
-			conventions.RpcExchangeNamingConvention = () => exchangeName;
-			conventions.RpcRoutingKeyNamingConvention = type => string.Format("{0}.{1}",rpcQueueName,type.FullName);
-		}
-        
 
 		public void Dispose()
         {
