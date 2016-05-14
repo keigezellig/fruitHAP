@@ -65,7 +65,7 @@ For more in depth info about the architecture see my blog
 
 *Starting/stopping the FruitHAP service:*
 
-The fruitHAP service is controlled by the excellent [Supervisor](http://supervisord.org/) daemon.
+The FruitHAP service is controlled by the excellent [Supervisor](http://supervisord.org/) daemon.
 
 To start/stop/restart:
 
