@@ -26,7 +26,8 @@ A Home Automation Platform designed to run on a Raspberry Pi with extensibility 
 * AlertNotificationPlugin: A configurable alert message is sent to a specified topic in the message when a sensor event occurs (e.g. button is pressed externally, switch is flipped externally)
 * WebPlugin: The plugin that makes the control and reading of sensors/actuators available through a REST API 
 
-*Example plugins
+
+*Example plugins*
 
 * ThermostatPlugin: An example plugin to control two switches depending on the input of a temperature sensor
 
@@ -36,8 +37,6 @@ A Home Automation Platform designed to run on a Raspberry Pi with extensibility 
 * FruitHapNotifier: An Android application which features a dashboard part to control the sensors and an alert part that notifies the user of alerts. This uses the message queue and the REST API 
 * SensorTest: An QT C++ application that also is an example of an dashboard and control part with the extra feature of face detection with OpenCV (OpenCV installation needed) WARNING: MAY NOT WORK CORRECTLY SINCE THIS WAS ONLY A DEMO
   This isn't part of the core installation package as below, but you can still look into it to learn more about the system.
-
-For more in depth info about the architecture see my blog
 
 ### Installation of the basic backend ###
 
@@ -61,7 +60,7 @@ For more in depth info about the architecture see my blog
 * Go to the directory in which you unzipped FruitHAP
 * run `./deploy.sh <ip address of RPi>`
 * Ansible will now take care of installing the backend system on your Pi and will start the FruitHAP service afterwards
-* Now you can configure your sensors and plugins etc, as described on the blog
+* Now you can configure your sensors and plugins etc.
 
 *Starting/stopping the FruitHAP service:*
 
