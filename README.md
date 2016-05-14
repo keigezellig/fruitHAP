@@ -21,11 +21,13 @@ A Home Automation Platform designed to run on a Raspberry Pi with extensibility 
 **Plugins**
 
 *Core Plugins*
+
 * EventTriggerPlugin: Updates of sensor states are sent to a specified topic in the message queue when a sensor update occurs (e.g. switch is flipped, new temperature reading is available).
 * AlertNotificationPlugin: A configurable alert message is sent to a specified topic in the message when a sensor event occurs (e.g. button is pressed externally, switch is flipped externally)
 * WebPlugin: The plugin that makes the control and reading of sensors/actuators available through a REST API 
 
 *Example plugins
+
 * ThermostatPlugin: An example plugin to control two switches depending on the input of a temperature sensor
 
 
@@ -45,7 +47,7 @@ For more in depth info about the architecture see my blog
 * A Raspbian distribution based on Jessie (to be found [here](https://downloads.raspberrypi.org) )
 * A network connection for the Raspberry PI (either wired or wireless, I use a wireless dongle from Edimax)
 * Latest version of [Ansible](https://www.ansible.com/) on the computer from which you do the install
-* Latest version of the FruitHAP distribution (see [here](http://joosten-industries.nl/files/fruithap_images/) )
+* Latest version of the FruitHAP distribution (see [here](http://joosten-industries.nl/files/fruithap_dist/) )
 
 *Installation:*
 
