@@ -1,0 +1,47 @@
+<!--
+  ~ * -----------------------------------------------------------------------------------------------
+  ~ * "THE APPRECIATION LICENSE" (Revision 0x100):
+  ~ * Copyright (c) 2016. M. Joosten
+  ~ * You can do anything with this program and its code, even use it to run a nuclear reactor (why should you)
+  ~ * But I won't be responsible for possible damage and mishap, because i never tested it on a nuclear reactor (why should I..)
+  ~ * If you think this program/code is absolutely great and supercalifragilisticexpialidocious (or just plain useful), just
+  ~ * let me know by sending me a nice email or postcard from your country of origin and leave this header in the code.
+  ~ * Or better join my efforts to make this program even better :-)
+  ~ * See my blog (http://joosten-industries/blog), for contact info
+  ~ * ---------------------------------------------------------------------------------------------------
+  ~
+  ~
+  -->
+
+{% extends 'base_with_sidebar.html' %}
+
+{% block sidebar %}
+    <a href="#" class="list-group-item"> <span class="glyphicon glyphicon-cog"></span> Engine </a>
+    <a href="{% url 'sensor_configuration' %}" class="list-group-item">
+        <span class="glyphicon glyphicon-lamp"></span> Sensors <span class="badge">{{ number_of_sensors }}</span>
+    </a>
+    <a href="#" class="list-group-item">
+        <span class="glyphicon glyphicon-wrench"></span> Plugins <span class="badge">3</span>
+    </a>
+    <a href="#" class="list-group-item">
+        <span class="glyphicon glyphicon-signal"></span> Controllers <span class="badge">1</span>
+    </a>
+
+{% endblock %}
+
+{% block main_content %}
+    <h2>Configuration</h2>
+            <p>
+
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id enim eu tortor mattis ultricies. Etiam semper, ligula non tincidunt aliquet, massa elit blandit orci, vel luctus dolor ante in risus. Curabitur id eros maximus, mattis arcu sed, fermentum eros. Nullam eget metus volutpat, ornare sapien vel, egestas tellus. Aenean a enim id erat iaculis feugiat non nec justo. Vivamus nisl sem, eleifend vel nunc et, suscipit consequat mi. Nam aliquet ipsum sit amet elementum ornare. Donec volutpat vehicula lectus non pharetra. Curabitur vitae velit sit amet nisl sagittis malesuada. Praesent eget aliquet magna. Pellentesque mollis enim at sagittis aliquet.
+
+                Nulla efficitur in nisi ut eleifend. Duis placerat sapien diam, quis finibus lorem ornare vitae. Integer iaculis purus eu lacus blandit, nec rhoncus tellus suscipit. Integer at augue et nulla lobortis elementum at quis sapien. Nulla placerat, erat eu venenatis sollicitudin, lectus arcu blandit justo, vel pretium neque leo eu ipsum. Ut vehicula a ligula et porta. Ut gravida elementum odio nec tincidunt. Proin mollis, nunc a porttitor aliquet, mi libero posuere orci, in imperdiet turpis erat non lacus. Nunc posuere enim non placerat fermentum. Phasellus et nunc in dolor ullamcorper luctus pharetra vel nibh. Fusce pulvinar nulla a elit feugiat, ac congue augue faucibus. Nullam sed ante mollis, fermentum risus quis, maximus turpis.
+
+                Vestibulum quis elit at enim auctor cursus et id massa. Donec quis mauris ut metus imperdiet porttitor. Cras sed metus a eros cursus ultrices. Fusce tristique nulla felis. Duis aliquet nibh a purus feugiat tempus. Aenean ut risus lacus. Donec vestibulum imperdiet tellus eget varius. Aenean sem nibh, eleifend eu aliquet vitae, malesuada at quam. Cras maximus libero quis nisi tempor congue. Nam vel cursus orci. Nunc luctus ipsum mauris, ut pretium risus molestie sed. Vestibulum vitae risus non diam tempus efficitur. Praesent sed libero mollis, sollicitudin eros sit amet, volutpat dolor.
+
+                Curabitur nec ornare tellus, a interdum metus. Pellentesque posuere sem vitae sem fringilla, at ultrices nisl finibus. Donec sodales urna arcu, quis convallis enim ullamcorper at. Quisque nec sem bibendum, varius sapien quis, rhoncus nisi. Proin condimentum, mauris vitae aliquet eleifend, sapien tortor tempus ex, nec consequat ipsum augue posuere nunc. Ut vel finibus massa. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Fusce non ultrices arcu, eu suscipit nisl.
+
+                Duis maximus nisi orci, euismod lobortis ante ultricies id. Nullam ut malesuada tortor. Nulla facilisis auctor aliquet. Aenean et suscipit mauris. Ut fringilla est sed mollis imperdiet. Donec ac magna lacus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Pellentesque lacinia magna ut mi accumsan gravida. Vivamus in facilisis felis, vitae congue augue. Integer ut volutpat est, eu congue elit.
+            </p>
+{% endblock %}
+
