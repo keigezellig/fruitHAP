@@ -1,0 +1,77 @@
+{% extends 'sensor_configuration.html' %}
+
+{% block main_content %}
+
+    <h2>Sensor details</h2>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">General</div>
+                <div class="panel-body">
+                    <p>General parameters for this sensor</p>
+                    <table class="table">
+                        <tr>
+                            <td><b>Name</b></td>
+                            <td>{{ details.Name }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Description</b></td>
+                            <td>{{ details.Description }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Category</b></td>
+                            <td>{{ details.Category }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Type</b></td>
+                            <td>{{ details.Type }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Value type</b></td>
+                            <td>{{ details.ValueType }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+        <div class="panel panel-default">
+                <div class="panel-heading">Supported operations</div>
+                    <div class="panel-body">
+                        <div class="list-group">
+                            {% for operation in details.SupportedOperations.items %}
+                                <a href="{{ operation.1 }}" class="list-group-item">{{ operation.0 }}</a>
+                            {% endfor %}
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+        <div class="panel panel-default">
+                <div class="panel-heading">Parameters</div>
+                <div class="panel-body">
+                <p>Device specific parameters</p>
+                <table class="table">
+                    {% for parameter in details.Parameters.items %}
+                        <tr>
+                            <td><b>{{ parameter.0 }}</b></td>
+                            <td>{{ parameter.1 }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+    </div>
+
+
+
+{% endblock %}

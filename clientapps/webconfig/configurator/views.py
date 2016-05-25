@@ -1,34 +1,53 @@
 from django.shortcuts import render
 import requests
 import json
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import Http404
 
 
 def index(request):
-    context = dict(currentPage='index')
+    context = dict(current_section='index')
     return render(request, 'index.html', context)
 
 
 def configuration(request):
-    context = dict(currentPage='configuration', number_of_sensors=9)
+    context = dict(current_section='configuration', number_of_sensors=99)
     return render(request, 'configuration.html', context)
 
 
 def sensor_configuration(request):
     req = requests.get("http://sarajevo:8888/api/configuration/sensors")
     sensor_list = []
-    response = json.loads(req.text)
+    response = req.json()
 
     for response_item in response:
-
-        valueurl = response_item['SupportedOperations'].get('GetValue')
-        if valueurl is None:
-            value = 'N/A'
-        else:
-            value = json.loads(requests.get(valueurl).text)
-
         item = {'name': response_item['Name'], 'desc': response_item['Description'], 'cat': response_item['Category'],
-                'type': response_item['Type'], 'value': value}
+                'type': response_item['Type']}
         sensor_list.append(item)
 
-    context = dict(currentPage='configuration', number_of_sensors=len(sensor_list), sensor_list=sensor_list)
+    paginator = Paginator(sensor_list, 10)
+    page = request.GET.get('page')
+
+    try:
+        sensors = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        sensors = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        sensors = paginator.page(paginator.num_pages)
+
+    context = dict(current_section='configuration', current_page='sensor', number_of_sensors=len(sensor_list),
+                   sensor_list=sensors)
     return render(request, 'sensor_configuration.html', context)
+
+
+def sensor_details(request, sensor_name):
+    req = requests.get("http://sarajevo:8888/api/configuration/sensors/" + sensor_name)
+    if req.status_code == 404:
+        raise Http404('Sensor does not exist')
+
+    if req.status_code == 200:
+        details = req.json()
+        context = dict(current_section='configuration', current_page='sensor', number_of_sensors=999, details=details)
+        return render(request, 'sensor_details.html', context)

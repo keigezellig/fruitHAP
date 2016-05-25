@@ -20,7 +20,9 @@ from configurator import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^configuration/$', views.configuration, name='configuration'),
+    url(r'^configuration/sensors/(?P<sensor_name>[^/]+)', views.sensor_details, name='sensor_details'),
     url(r'^configuration/sensors/$', views.sensor_configuration, name='sensor_configuration'),
+    url(r'^configuration/$', views.configuration, name='configuration'),
+
     url(r'^admin/', admin.site.urls),
 ]
