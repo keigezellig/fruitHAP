@@ -16,3 +16,4 @@ build*
 .idea
 out
 target
+*.pyc
