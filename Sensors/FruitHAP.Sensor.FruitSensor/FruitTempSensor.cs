@@ -7,7 +7,7 @@ using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
 using FruitHAP.Core.Sensor.SensorValueTypes;
 
-namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
+namespace FruitHAP.Sensor.FruitSensor
 {
 	public class FruitTempSensor : ITemperatureSensor
 	{
@@ -85,7 +85,7 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 		{
 			lastUpdated = DateTime.Now;
 			var temperatureValue = new TemperatureQuantity () {
-				Value = obj.Payload.TemperatureInCentiCelsius / 100,
+                Value = (double)(obj.Payload.TemperatureInCentiCelsius / 100.0),
 				Unit = TemperatureUnit.Celsius
 			};
 			temperature = new QuantityValue<TemperatureUnit> ();

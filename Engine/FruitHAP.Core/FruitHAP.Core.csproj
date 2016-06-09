@@ -98,6 +98,8 @@
     <Compile Include="Sensor\SensorTypes\IControllableSwitch.cs" />
     <Compile Include="Plugin\BasePluginWithConfiguration.cs" />
     <Compile Include="Plugin\BasePluginConfiguration.cs" />
+    <Compile Include="Sensor\PacketData\RFXSensor\RFXMeterPacket.cs" />
+    <Compile Include="Sensor\SensorTypes\IHumiditySensor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

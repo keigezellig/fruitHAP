@@ -19,7 +19,8 @@ namespace FruitHAP.Controller.Rfx
 		AC,
 		RfxSensorTemperature,
 		RfxSensorMessage,
-		RfxSensorVoltage
+		RfxSensorVoltage,
+        RfxMeter
 	}
 
 
