@@ -49,6 +49,7 @@ namespace FruitHAP.Sensor.Fake
         #region ISensor implementation
 
         public string Name { get; set; }
+        public string DisplayName { get; set; }
         public string Description { get; set;}
         public string Category { get; set; }
 

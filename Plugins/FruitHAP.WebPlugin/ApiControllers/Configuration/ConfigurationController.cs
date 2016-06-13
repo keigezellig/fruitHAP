@@ -89,6 +89,7 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
         {
          
             string name = parameters["Name"].ToString();
+            string displayName = parameters["DisplayName"].ToString();
             string description = parameters["Description"].ToString();
             string category = parameters["Category"].ToString();
             List<string> inputs = parameters["Inputs"].ToString().ParseJsonString<List<string>>();
@@ -106,15 +107,16 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
                 valueTypeName = valueType.Name;                
             }
             Dictionary<string,string> operations = GetOperations(name);
-            return new AggregatedSensor(name, description, category, type, valueTypeName, operations, inputLinks);
+            return new AggregatedSensor(name, displayName, description, category, type, valueTypeName, operations, inputLinks);
         }
 
         private SensorConfigurationItem CreateNonAggregateItem(string type, Dictionary<string, object> parameters)
         {
             string name = parameters["Name"].ToString();
+            string displayName = parameters["DisplayName"].ToString();
             string description = parameters["Description"].ToString();
             string category = parameters["Category"].ToString();
-            Dictionary<string,object> otherParameters = parameters.Where(f => f.Key != "Name" && f.Key != "Description" && f.Key != "Category").ToDictionary(f => f.Key, f => f.Value);
+            Dictionary<string,object> otherParameters = parameters.Where(f => f.Key != "Name" && f.Key != "Description" && f.Key != "DisplayName" && f.Key != "Category").ToDictionary(f => f.Key, f => f.Value);
             var valueType = repos.GetSensorValueType(name);
             string valueTypeName = null;
             if (valueType != null)
@@ -122,7 +124,7 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
                 valueTypeName = valueType.Name;                
             }
             Dictionary<string,string> operations = GetOperations(name);
-            return new NonAggregatedSensor(name, description, category, type, valueTypeName, operations, otherParameters);
+            return new NonAggregatedSensor(name, displayName, description, category, type, valueTypeName, operations, otherParameters);
         }
 
         Dictionary<string, string> GetOperations(string sensorName)

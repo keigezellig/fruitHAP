@@ -6,6 +6,7 @@ namespace FruitHAP.Core.Sensor
 	public interface ISensor : IDisposable, ICloneable
     {
         string Name { get; }
+        string DisplayName { get; }
         string Description { get; }
         string Category { get; }
 

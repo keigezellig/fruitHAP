@@ -27,7 +27,7 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 		#region ISensor implementation
 
 		public string Name { get; set; }
-
+        public string DisplayName { get; set; }
 		public string Description { get; set; }
         public string Category { get; set; }
 

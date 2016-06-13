@@ -14,7 +14,7 @@ using FruitHAP.Core.Sensor.SensorValueTypes;
 
 namespace FruitHAP.Sensor.Camera.Devices
 {
-	public class Camera : ICamera
+    public class Camera : ICamera
     {
         private readonly ILogger logger;
 		private readonly IEventBus eventBus;
@@ -25,6 +25,7 @@ namespace FruitHAP.Sensor.Camera.Devices
 		private DateTime lastUpdateTime;
 
         public string Name { get; set; }
+        public string DisplayName { get; set; }
         public string Description { get; set; }
         public string Category { get; set; }
         public string Resolution { get; set; }

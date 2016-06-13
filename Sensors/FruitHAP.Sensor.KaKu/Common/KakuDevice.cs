@@ -7,7 +7,7 @@ using FruitHAP.Core.Sensor.PacketData.General;
 
 namespace FruitHAP.Sensor.KaKu.Common
 {
-	public abstract class KakuDevice: ISensor
+    public abstract class KakuDevice: ISensor
 	{
 		private string name;
 		private string description;	
@@ -45,6 +45,9 @@ namespace FruitHAP.Sensor.KaKu.Common
 		}
 
         public string Category { get; set; }
+
+        public string DisplayName { get; set; }
+
 
 		public uint DeviceId {
 			get {
