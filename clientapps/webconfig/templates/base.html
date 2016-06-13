@@ -12,23 +12,24 @@
   ~
   ~
   -->
-
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>FruitHAP Administration</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="/static/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static "bootstrap/dist/css/bootstrap.min.css" %}">
     <!-- Optional Bootstrap theme -->
-    <link rel="stylesheet" href="/static/css/bootstrap-darktheme.min.css">
+    <link rel="stylesheet" href="{% static "css/bootstrap-darktheme.min.css"%}">
+    <link rel="stylesheet" href="{% static "css/styles.css"%}">
 </head>
 <body>
 <div class="container">
     <div class="row">
         <div class="col-md-2 col-sm-2">
             {% block lefttop_block %}
-            <img src="http://joosten-industries.nl/blog/wp-content/uploads/2015/09/frambozen.jpg"
+            <img src="{% static "img/logo.png" %}"
                  class="img-responsive">
             <h4>
                 <small><b>FruitHAP Administration</b></small>
@@ -37,7 +38,7 @@
         </div>
         <div class="col-md-8 col-sm-8">
             {% block top_block %}
-                <nav role="navigation" class="navbar navbar-default ">
+                <nav role="navigation" class="navbar navbar-default">
                 <div class="navbar-header">
                     <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
                         <span class="sr-only">Toggle navigation</span>
@@ -47,23 +48,29 @@
                     </button>
                 </div>
                 <!-- Collection of nav links and other content for toggling -->
-                <div id="navbarCollapse" class="collapse navbar-collapse">
+                <div id="navbarCollapse" class="collapse navbar-collapse navbar-custom">
                     <ul class="nav navbar-nav">
                         {% if current_section == 'index' %}
-                            <li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                            <li class="navbar-active-custom"><a class="navbar-link-custom" href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
                         {% else %}
-                            <li><a href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                            <li><a class="navbar-link-custom" href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
                         {% endif %}
 
                         {% if current_section == 'configuration' %}
-                            <li class="active"><a href="#"><span class="glyphicon glyphicon-cog"></span> Configuration</a></li>
+                            <li class="navbar-active-custom"><a href="#"><span class="glyphicon glyphicon-cog"></span> Configuration</a></li>
                         {% else %}
                             <li><a href="{% url 'configuration' %}"><span class="glyphicon glyphicon-cog"></span> Configuration</a></li>
                         {% endif %}
 
+                     {% if current_section == 'dashboard' %}
+                            <li class="navbar-active-custom"><a href="#"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+                        {% else %}
+                            <li><a href="{% url 'dashboard' %}"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+                        {% endif %}
 
 
-                        <li><a href="#"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+
+
                         <li><a href="#"><span class="glyphicon glyphicon-user"></span> User management</a></li>
                         <li class="dropdown">
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#"><span
@@ -108,8 +115,8 @@
     </div>
 </div>
 
-<script src="/static/jquery/dist/jquery.js"></script>
-<script src="/static/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="{% static "jquery/dist/jquery.js" %}"></script>
+<script src="{% static "bootstrap/dist/js/bootstrap.min.js" %}"></script>
 {% block additional_javascript %}{% endblock %}
 </body>
 </html>

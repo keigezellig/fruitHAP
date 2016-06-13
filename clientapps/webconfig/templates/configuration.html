@@ -16,7 +16,7 @@
 {% extends 'base_with_sidebar.html' %}
 
 {% block sidebar %}
-    <a href="#" class="list-group-item"> <span class="glyphicon glyphicon-cog"></span> Engine </a>
+    <a href="#" class="list-group-item sidebar-custom"> <span class="glyphicon glyphicon-cog"></span> Engine </a>
     <a href="{% url 'sensor_configuration' %}" class="list-group-item">
         <span class="glyphicon glyphicon-lamp"></span> Sensors <span class="badge">{{ number_of_sensors }}</span>
     </a>
