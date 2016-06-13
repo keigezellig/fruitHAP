@@ -4,7 +4,8 @@
  {"Type":"FruitTempSensorHighAccuracy","IsAggegrate":false,"Parameters":{"SensorId":32,"Name":"TempDesk","Category":"Overig","Description":"Temperature at my desk"}},
  {"Type":"FruitHumiditySensorHighAccuracy","IsAggegrate":false,"Parameters":{"SensorId":33,"Name":"HumidityDesk","Category":"Overig","Description":"Humidity at my desk"}},
  {"Type":"FruitTempSensor","IsAggegrate":false,"Parameters":{"SensorId":1,"Name":"MyTempSensor","Category":"Overig","Description":"Temperature sensor"}}, 
- {"Type":"KakuButton","IsAggegrate":false,"Parameters":{"Command":4,"Name":"DeurbelVoor","Description":"My doorbell","Category":"Begane grond","DeviceId":14948386,"UnitCode":1}}
+ {"Type":"KakuButton","IsAggegrate":false,"Parameters":{"Command":4,"Name":"DeurbelVoor","Description":"My doorbell","Category":"Begane grond","DeviceId":14948386,"UnitCode":1}},
+ {"Type":"FakeTemperatureSensor","IsAggegrate":false,"Parameters":{"Name":"FakeTemp","Category":"Overig","Description":"Fake temperature sensor", "Min":0,"Max":50,"Unit":1,"IntervalInMilliSeconds":1000}} 
 
  
 ]
