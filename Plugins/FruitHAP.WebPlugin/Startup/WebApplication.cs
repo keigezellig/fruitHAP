@@ -28,6 +28,7 @@ namespace FruitHAP.Plugins.Web.Startup
 			HttpConfiguration config = new HttpConfiguration();
 			config.MapHttpAttributeRoutes ();
             config.AddJsonpFormatter();
+            config.Formatters.Remove(config.Formatters.XmlFormatter);
 			config.EnsureInitialized ();
 			return config;
 		}
