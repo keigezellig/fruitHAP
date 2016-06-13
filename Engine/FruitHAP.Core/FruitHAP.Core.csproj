@@ -79,7 +79,6 @@
     <Compile Include="Sensor\PacketData\RFXSensor\RFXSensorTemperaturePacket.cs" />
     <Compile Include="Sensor\PacketData\RFXSensor\RFXSensorMessagePacket.cs" />
     <Compile Include="Sensor\PacketData\RFXSensor\RFXSensorVoltagePacket.cs" />
-    <Compile Include="Sensor\SensorTypes\ITemperatureSensor.cs" />
     <Compile Include="Service\ContainerAccessor.cs" />
     <Compile Include="Sensor\SensorValueTypes\QuantityValue.cs" />
     <Compile Include="Sensor\SensorValueTypes\ImageValue.cs" />
@@ -88,7 +87,6 @@
     <Compile Include="Sensor\SensorValueTypes\NumberValue.cs" />
     <Compile Include="Sensor\OptionalDataContainer.cs" />
     <Compile Include="Sensor\SensorValueTypes\ISensorValueType.cs" />
-    <Compile Include="Sensor\SensorValueTypes\TemperatureQuantityValue.cs" />
     <Compile Include="Sensor\SensorValueTypes\Quantity.cs" />
     <Compile Include="Plugin\SensorMessage.cs" />
     <Compile Include="Plugin\IPlugin.cs" />
@@ -99,6 +97,9 @@
     <Compile Include="Plugin\BasePluginWithConfiguration.cs" />
     <Compile Include="Plugin\BasePluginConfiguration.cs" />
     <Compile Include="Sensor\PacketData\RFXSensor\RFXMeterPacket.cs" />
+    <Compile Include="Sensor\SensorValueTypes\PercentageQuantity.cs" />
+    <Compile Include="Sensor\SensorValueTypes\TemperatureQuantity.cs" />
+    <Compile Include="Sensor\SensorTypes\ITemperatureSensor.cs" />
     <Compile Include="Sensor\SensorTypes\IHumiditySensor.cs" />
   </ItemGroup>
   <ItemGroup>

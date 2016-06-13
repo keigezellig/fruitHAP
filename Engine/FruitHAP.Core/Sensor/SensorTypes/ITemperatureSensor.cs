@@ -3,9 +3,9 @@ using FruitHAP.Core.Sensor.SensorValueTypes;
 
 namespace FruitHAP.Core.Sensor.SensorTypes
 {
-    public interface IHumiditySensor : IValueSensor
+	public interface ITemperatureSensor : IValueSensor
 	{
-        NumberValue Humidity { get; }
+		QuantityValue<TemperatureUnit>  Temperature { get; }
 	}
 }
 
