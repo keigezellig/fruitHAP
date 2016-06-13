@@ -5,7 +5,7 @@ namespace FruitHAP.Core.Sensor.SensorTypes
 {
     public interface IHumiditySensor : IValueSensor
 	{
-        PercentageQuantity Humidity { get; }
+        QuantityValue<String> Humidity { get; }
 	}
 }
 

@@ -11,7 +11,7 @@ namespace FruitHAP.Sensor.FruitSensor
 {
     public class FruitHumiditySensorHighAccuracy : IHumiditySensor
 	{
-        private NumberValue humidity;
+        private QuantityValue<String> humidity;
 		private DateTime lastUpdated;
 
 		public ISensorValueType GetValue ()
@@ -19,7 +19,7 @@ namespace FruitHAP.Sensor.FruitSensor
             return humidity;
 		}
 
-        public NumberValue Humidity
+        public QuantityValue<String> Humidity
 		{
 			get 
 			{
@@ -65,7 +65,7 @@ namespace FruitHAP.Sensor.FruitSensor
 		{
 			this.eventBus = eventBus;
 			this.logger = logger;	
-            this.humidity = new NumberValue();
+            this.humidity = new QuantityValue<String> ();
 			this.lastUpdated = DateTime.Now;
             this.fruitProtocol = new RfxFruitProtocol();
             eventBus.Subscribe<ControllerEventData<RFXMeterPacket>>(HandleIncomingMessage,f => f.Direction == Direction.FromController && f.Payload.SensorId == SensorId);
@@ -89,7 +89,13 @@ namespace FruitHAP.Sensor.FruitSensor
             var result = fruitProtocol.Decode(obj.Payload.Value);
             if (result.Quantity == RfxFruitQuantity.HumidityInPercentage)
             {
-                humidity.Value = (double)(result.Value / 100.0);
+                var humidityValue = new PercentageQuantity () {
+                    Value = (double)(result.Value / 100.0)
+                };
+
+                humidity = new QuantityValue<String> ();
+                humidity.Value = humidityValue;
+
                 SensorEventData sensorEvent = new SensorEventData()
                 {
                     TimeStamp = lastUpdated,
