@@ -6,6 +6,13 @@ namespace FruitHAP.Core.Sensor.SensorValueTypes
 	{
 		public double Value { get; set; }
 		public T Unit { get; set; }
+        public string UnitString
+        {
+            get
+            {
+                return Unit.ToString();
+            }
+        }
 		public String QuantityType
 		{ 
 			get
