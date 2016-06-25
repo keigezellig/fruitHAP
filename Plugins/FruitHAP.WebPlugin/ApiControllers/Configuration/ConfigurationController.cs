@@ -97,7 +97,7 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 
             foreach (var input in inputs)
             {
-                inputLinks.Add(Url.Link("GetSensorByName", new { name = input}));
+                inputLinks.Add(Url.Route("GetSensorByName", new { name = input}));
             }
 
             var valueType = repos.GetSensorValueType(name);
@@ -130,7 +130,8 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
         Dictionary<string, string> GetOperations(string sensorName)
         {
             var operations = repos.GetOperationsForSensor(sensorName);
-            return operations.ToDictionary(f => f.Name, g => Url.Link("ExecuteOperation", new { name = sensorName, operation = g.Name}));
+            return operations.ToDictionary(f => f.Name, g => Url.Route("ExecuteOperation", new { name = sensorName, operation = g.Name}));
+
         }
 
         
