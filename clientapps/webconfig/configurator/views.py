@@ -1,8 +1,12 @@
 import requests
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404
 from django.shortcuts import render
+from django.views.generic import FormView
 from django.views.generic.base import TemplateView
+
+from configurator.my_forms import SensorForm
 
 
 def index(request):
@@ -58,6 +62,21 @@ class SensorDetails(TemplateView):
 
         if req.status_code == 200:
             details = req.json()
-            context = dict(current_section='configuration', current_page='sensor', number_of_sensors=999,
+            number_of_sensors = 'N/A'
+            countReq = requests.get("http://localhost/api/configuration/sensors/getCount")
+            if countReq.status_code == 200:
+                number_of_sensors = countReq.json()
+
+            context = dict(current_section='configuration', current_page='sensor', number_of_sensors=number_of_sensors,
                            details=details)
             return self.render_to_response(context)
+
+
+class SensorFormView(FormView):
+    template_name = 'sensor_form.html'
+    form_class = SensorForm
+    success_url = reverse_lazy('sensor_configuration')
+
+    def form_valid(self, form):
+        form.update_config()
+        return super(SensorFormView, self).form_valid(form)
