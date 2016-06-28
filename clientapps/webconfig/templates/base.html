@@ -21,7 +21,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="{% static "bootstrap/dist/css/bootstrap.min.css" %}">
     <!-- Optional Bootstrap theme -->
-    <link rel="stylesheet" href="{% static "css/bootstrap-darktheme.min.css"%}">
+    <link rel="stylesheet" href="{% static "bootstrap/dist/css/bootstrap-darktheme.min.css"%}">
     <link rel="stylesheet" href="{% static "css/styles.css"%}">
 </head>
 <body>
@@ -29,8 +29,8 @@
     <div class="row">
         <div class="col-md-2 col-sm-2">
             {% block lefttop_block %}
-            <img src="{% static "img/logo.png" %}"
-                 class="img-responsive">
+            <a href="{% url 'index' %}"><img src="{% static "img/logo.png" %}"
+                 class="img-responsive"></a>
             <h4>
                 <small><b>FruitHAP Administration</b></small>
             </h4>
@@ -51,19 +51,19 @@
                 <div id="navbarCollapse" class="collapse navbar-collapse navbar-custom">
                     <ul class="nav navbar-nav">
                         {% if current_section == 'index' %}
-                            <li class="navbar-active-custom"><a class="navbar-link-custom" href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                            <li class="navbar-active-custom"><a class="navbar-link-custom" href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
                         {% else %}
                             <li><a class="navbar-link-custom" href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
                         {% endif %}
 
                         {% if current_section == 'configuration' %}
-                            <li class="navbar-active-custom"><a href="#"><span class="glyphicon glyphicon-cog"></span> Configuration</a></li>
+                            <li class="navbar-active-custom"><a href="{% url 'sensor_configuration' %}"><span class="glyphicon glyphicon-cog"></span> Configuration</a></li>
                         {% else %}
-                            <li><a href="{% url 'configuration' %}"><span class="glyphicon glyphicon-cog"></span> Configuration</a></li>
+                            <li><a href="{% url 'sensor_configuration' %}"><span class="glyphicon glyphicon-cog"></span> Configuration</a></li>
                         {% endif %}
 
                      {% if current_section == 'dashboard' %}
-                            <li class="navbar-active-custom"><a href="#"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+                            <li class="navbar-active-custom"><a href="{% url 'dashboard' %}"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
                         {% else %}
                             <li><a href="{% url 'dashboard' %}"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
                         {% endif %}
@@ -107,12 +107,13 @@
             </div>
         {% endblock %}
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            {% block footer_block %}
-            {% endblock %}
-        </div>
-    </div>
+
+    <div class="panel-footer">
+        {% block footer_block %}
+                <p class="text-center"><small>&copy; 2016 M. Joosten | <a href="http://fruithap.org">Website</a> | <a href="http://joosten-industries.nl/blog">Blog</a> | Terms</small></p>
+        {% endblock %}
+
+      </div>
 </div>
 
 <script src="{% static "jquery/dist/jquery.js" %}"></script>

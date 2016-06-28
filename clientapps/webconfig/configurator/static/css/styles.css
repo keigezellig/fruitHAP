@@ -62,3 +62,10 @@ a.list-group-item:hover, a.list-group-item:focus
 .pagination > .disabled > span, .pagination > .disabled > span:hover, .pagination > .disabled > span:focus, .pagination > .disabled > a, .pagination > .disabled > a:hover, .pagination > .disabled > a:focus {
 	background-color: #4a6527;
 }
+
+.footer {
+    position: fixed;
+    height: 60px;
+    bottom: 0;
+    width: 100%;
+}

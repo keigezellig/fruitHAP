@@ -1,3 +1,4 @@
+
 """webconfig URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -23,7 +24,5 @@ urlpatterns = [
     url(r'^configuration/sensors/(?P<sensor_name>[^/]+)', views.sensor_details, name='sensor_details'),
     url(r'^configuration/sensors/$', views.sensor_configuration, name='sensor_configuration'),
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
-    url(r'^configuration/$', views.configuration, name='configuration'),
-
     url(r'^admin/', admin.site.urls),
 ]

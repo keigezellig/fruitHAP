@@ -1,8 +1,7 @@
-from django.shortcuts import render
 import requests
-import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
+from django.shortcuts import render
 
 
 def index(request):
@@ -15,13 +14,8 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 
-def configuration(request):
-    context = dict(current_section='configuration', number_of_sensors=99)
-    return render(request, 'configuration.html', context)
-
-
 def sensor_configuration(request):
-    req = requests.get("http://localhost:8888/api/configuration/sensors")
+    req = requests.get("http://localhost/api/configuration/sensors")
     sensor_list = []
     response = req.json()
 
@@ -48,7 +42,7 @@ def sensor_configuration(request):
 
 
 def sensor_details(request, sensor_name):
-    req = requests.get("http://localhost:8888/api/configuration/sensors/" + sensor_name)
+    req = requests.get("http://localhost/api/configuration/sensors/" + sensor_name)
     if req.status_code == 404:
         raise Http404('Sensor does not exist')
 

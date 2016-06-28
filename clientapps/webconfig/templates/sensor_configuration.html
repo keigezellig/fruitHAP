@@ -15,19 +15,6 @@
 
 {% extends 'configuration.html' %}
 
-{% block sidebar %}
-    <a href="#" class="list-group-item"> <span class="glyphicon glyphicon-cog"></span> Engine </a>
-    <a href="#" class="list-group-item sidebar-active-custom">
-        <span class="glyphicon glyphicon-lamp"></span> Sensors <span class="badge">{{ number_of_sensors }}</span>
-    </a>
-    <a href="#" class="list-group-item">
-        <span class="glyphicon glyphicon-wrench"></span> Plugins <span class="badge">3</span>
-    </a>
-    <a href="#" class="list-group-item">
-        <span class="glyphicon glyphicon-signal"></span> Controllers <span class="badge">1</span>
-    </a>
-
-{% endblock %}
 
 {% block main_content %}
     <h2>Sensor list</h2>
