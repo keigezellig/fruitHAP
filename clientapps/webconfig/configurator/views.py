@@ -2,6 +2,7 @@ import requests
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
 from django.shortcuts import render
+from django.views.generic.base import TemplateView
 
 
 def index(request):
@@ -14,39 +15,49 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 
-def sensor_configuration(request):
-    req = requests.get("http://localhost/api/configuration/sensors")
-    sensor_list = []
-    response = req.json()
+class SensorList(TemplateView):
+    template_name = 'sensor_configuration.html'
 
-    for response_item in response:
-        item = {'name': response_item['Name'], 'desc': response_item['Description'], 'cat': response_item['Category'],
-                'type': response_item['Type']}
-        sensor_list.append(item)
+    def get(self, request, *args, **kwargs):
+        req = requests.get("http://localhost/api/configuration/sensors")
+        sensor_list = []
+        response = req.json()
 
-    paginator = Paginator(sensor_list, 10)
-    page = request.GET.get('page')
+        for response_item in response:
+            item = {'name': response_item['Name'], 'desc': response_item['Description'],
+                    'cat': response_item['Category'],
+                    'type': response_item['Type']}
+            sensor_list.append(item)
 
-    try:
-        sensors = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        sensors = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        sensors = paginator.page(paginator.num_pages)
+        paginator = Paginator(sensor_list, 10)
+        page = request.GET.get('page')
 
-    context = dict(current_section='configuration', current_page='sensor', number_of_sensors=len(sensor_list),
-                   sensor_list=sensors)
-    return render(request, 'sensor_configuration.html', context)
+        try:
+            sensors = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            sensors = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            sensors = paginator.page(paginator.num_pages)
+
+        context = dict(current_section='configuration', current_page='sensor', number_of_sensors=len(sensor_list),
+                       sensor_list=sensors)
+
+        return self.render_to_response(context)
 
 
-def sensor_details(request, sensor_name):
-    req = requests.get("http://localhost/api/configuration/sensors/" + sensor_name)
-    if req.status_code == 404:
-        raise Http404('Sensor does not exist')
+class SensorDetails(TemplateView):
+    template_name = 'sensor_details.html'
 
-    if req.status_code == 200:
-        details = req.json()
-        context = dict(current_section='configuration', current_page='sensor', number_of_sensors=999, details=details)
-        return render(request, 'sensor_details.html', context)
+    def get(self, request, *args, **kwargs):
+        sensor_name = self.kwargs['sensor_name']
+        req = requests.get("http://localhost/api/configuration/sensors/" + sensor_name)
+        if req.status_code == 404:
+            raise Http404('Sensor does not exist')
+
+        if req.status_code == 200:
+            details = req.json()
+            context = dict(current_section='configuration', current_page='sensor', number_of_sensors=999,
+                           details=details)
+            return self.render_to_response(context)
