@@ -9,6 +9,13 @@ from django.views.generic.base import TemplateView
 from configurator.my_forms import SensorForm
 
 
+def get_specific_fields(sensortype):
+    if sensortype == 'Deurbel voordeur':
+        return [("Param1", "int"), ("Param2", "string"), ("Param3", "bool")]
+    if sensortype == 'TV hoekje':
+        return [("Param4", "string"), ("Param5", "bool"), ("Param7", "bool")]
+
+
 def index(request):
     context = dict(current_section='index')
     return render(request, 'index.html', context)
@@ -74,9 +81,12 @@ class SensorDetails(TemplateView):
 
 class SensorFormView(FormView):
     template_name = 'sensor_form.html'
-    form_class = SensorForm
     success_url = reverse_lazy('sensor_configuration')
+    specific_fields = get_specific_fields(sensortype='Deurbel voordeur')
+    form_class = SensorForm(request.POST or None,specific_fields=specific_fields)
 
     def form_valid(self, form):
         form.update_config()
         return super(SensorFormView, self).form_valid(form)
+
+
