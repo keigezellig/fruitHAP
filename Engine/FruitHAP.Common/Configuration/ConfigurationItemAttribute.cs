@@ -1,11 +1,15 @@
 ﻿using System;
 
-namespace FruitHAP.Common
+namespace FruitHAP.Common.Configuration
 {
-    public class ConfigurationItemAttribute
+    [AttributeUsage(AttributeTargets.Property)]
+    public class ConfigurationItemAttribute : Attribute
     {
-        public ConfigurationItemAttribute()
+        public bool IsSensorSpecific { get; set; }
+
+        public override string ToString()
         {
+            return string.Format("[ConfigurationItemAttribute]");
         }
     }
 }

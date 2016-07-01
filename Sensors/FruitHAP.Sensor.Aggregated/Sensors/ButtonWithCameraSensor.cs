@@ -7,6 +7,7 @@ using FruitHAP.Core.SensorRepository;
 using FruitHAP.Core.Sensor.SensorTypes;
 using System.Linq;
 using FruitHAP.Common.EventBus;
+using FruitHAP.Common.Configuration;
 
 namespace FruitHAP.Sensor.Aggregated.Sensors
 {
@@ -26,9 +27,10 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 
 		#region ISensor implementation
 
+
 		public string Name { get; set; }
         public string DisplayName { get; set; }
-		public string Description { get; set; }
+        public string Description { get; set; }
         public string Category { get; set; }
 
 

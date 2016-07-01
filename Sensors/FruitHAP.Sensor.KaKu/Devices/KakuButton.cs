@@ -7,6 +7,7 @@ using FruitHAP.Core.Controller;
 using FruitHAP.Common.EventBus;
 using FruitHAP.Core;
 using FruitHAP.Core.Sensor;
+using FruitHAP.Common.Configuration;
 
 namespace FruitHAP.Sensor.KaKu.Devices
 {
@@ -18,7 +19,8 @@ namespace FruitHAP.Sensor.KaKu.Devices
         {
         }
 
-		public ACCommand Command {
+        [ConfigurationItem(IsSensorSpecific = true)]
+        public ACCommand Command {
 			get {
 				return this.command;
 			}

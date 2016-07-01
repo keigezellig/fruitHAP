@@ -6,6 +6,7 @@ using FruitHAP.Core.Sensor.PacketData.RFXSensor;
 using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
 using FruitHAP.Core.Sensor.SensorValueTypes;
+using FruitHAP.Common.Configuration;
 
 namespace FruitHAP.Sensor.FruitSensor
 {
@@ -47,14 +48,19 @@ namespace FruitHAP.Sensor.FruitSensor
 
 		#region ISensor implementation
 
+        [ConfigurationItem]
 		public string Name { get; set; }
+        [ConfigurationItem]
         public string DisplayName { get; set; }
-		public string Description { get; set;}
-		public string Category { get; set; }
+        [ConfigurationItem]
+        public string Description { get; set;}
+        [ConfigurationItem]
+        public string Category { get; set; }
 
 		#endregion
 
-		public byte SensorId { get; set; }
+        [ConfigurationItem(IsSensorSpecific = true)]
+        public byte SensorId { get; set; }
 
 
 		private ILogger logger;

@@ -6,6 +6,7 @@ using FruitHAP.Core.Sensor;
 using FruitHAP.Core.SensorRepository;
 using FruitHAP.Common.Helpers;
 using System;
+using FruitHAP.Common.Configuration;
 
 
 namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
@@ -22,7 +23,8 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 			this.persister = persister;		
 		}
 
-		/// <summary>
+		
+        /// <summary>
 		/// 
 		/// </summary>
 		/// <remarks>Returns all sensors defined in the system</remarks>
@@ -34,6 +36,28 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 			var sensors = GetAllSensorsFromConfiguration ();
             return Ok<IEnumerable<SensorConfigurationItem>> (sensors);
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>Returns the number of sensors defined in the system</remarks>
+        /// <response code="200">The number of sensors defined in the system</response>
+        [Route("sensors/count")]
+        [HttpGet]
+        public IHttpActionResult GetSensorCount()
+        {
+            var count = GetAllSensorsFromConfiguration ().Count();
+            return Ok(count);
+        }
+
+        [Route("sensors/types")]
+        [HttpGet]
+        public IHttpActionResult GetSensorTypes()
+        {
+            var types = GetSensorTypesFromSystem();
+            return Ok(types);
+        }
+
 
 		/// <summary>
 		/// 
@@ -55,9 +79,6 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
             {
                 return NotFound ();
             }
-
-
-  
 		}
 
 		private IEnumerable<SensorConfigurationItem> GetAllSensorsFromConfiguration()
@@ -84,6 +105,22 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 
             return result;
 		}
+
+
+        private Dictionary<string, object> GetSensorTypesFromSystem()
+        {
+            var result = new Dictionary<string, object>();
+
+            var sensorTypes = persister.GetSensorTypes();
+            foreach (var sensorType in sensorTypes)
+            {
+                var classType = sensorType.GetType();
+                var props = sensorType.GetConfigurableProperties(true);
+                result[classType.Name] = props.Select(prop => new {Parameter = prop.Name, Type = prop.PropertyType.Name});
+            }
+
+            return result;
+        }
 
         private SensorConfigurationItem CreateAggregateItem(string type, Dictionary<string, object> parameters)
         {

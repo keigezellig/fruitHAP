@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
-using FruitHAP.Common.Configuration;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using FruitHAP.Common.Helpers;
+using FruitHAP.Common.Configuration;
 using FruitHAP.Common;
 
 namespace FruitHAP.Core.SensorPersister
 {
-	public class SensorPersister : ISensorPersister
+    public class SensorPersister : ISensorPersister
 	{
 		IEnumerable<ISensor> prototypes;
 		ILogger logger;
@@ -78,6 +78,11 @@ namespace FruitHAP.Core.SensorPersister
             return configuration;
         }
 
+        public IEnumerable<ISensor> GetSensorTypes()
+        {
+            return prototypes;
+        }
+
 		#endregion
 
 		List<ISensor> LoadNonAggregateSensors (IEnumerable<SensorConfigurationEntry> configurationEntries)
@@ -85,13 +90,14 @@ namespace FruitHAP.Core.SensorPersister
 			var result = new List<ISensor> ();
 			foreach (var entry in configurationEntries) 
 			{
-				var prototypeList = prototypes.Where (f => f.GetType().Name == entry.Type);
+                var prototypeList = prototypes.Where (f => f.GetType().Name == entry.Type).ToList();
 
-				if (prototypeList.Count() == 0) {
-					logger.WarnFormat ("Ignoring sensor type {0} because it is not supported. Check your sensor configuration ", entry.Type);
-				} 
-				else 
-				{
+                if (!prototypeList.Any())
+                {
+                    logger.WarnFormat("Ignoring sensor type {0} because it is not supported. Check your sensor configuration ", entry.Type);
+                }
+                else
+                {
                     foreach (var prototype in prototypeList)
                     {
                         var instance = (prototype as ICloneable).Clone();
@@ -99,12 +105,20 @@ namespace FruitHAP.Core.SensorPersister
                         Dictionary<string, object> parameters = parametersInJson.ParseJsonString<Dictionary<string, object>>();
                         foreach (var parameter in parameters)
                         {
-                            instance.SetProperty(parameter.Key, parameter.Value);
+                            if (instance.IsPropertyAConfigurableItem(parameter.Key))
+                            {
+                                instance.SetProperty(parameter.Key, parameter.Value);
+                            }
+                            else
+                            {
+                                logger.WarnFormat("Parameter {0} is not supported for this sensor type. Check configuration.", parameter.Key);
+
+                            }
                         }
                         logger.InfoFormat("Loaded sensor {0}", instance);
                         result.Add(instance as ISensor);
                     }
-				}
+                }
 			}
 
 			return result;
@@ -149,6 +163,8 @@ namespace FruitHAP.Core.SensorPersister
 
 			return result;
 		}
+
+
 	}
 
 

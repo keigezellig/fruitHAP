@@ -8,6 +8,7 @@ namespace FruitHAP.Core.SensorPersister
 	{
 		IEnumerable<ISensor> LoadSensors();		
         IEnumerable<SensorConfigurationEntry> GetSensorConfiguration();
+        IEnumerable<ISensor> GetSensorTypes();
     }
 }
 

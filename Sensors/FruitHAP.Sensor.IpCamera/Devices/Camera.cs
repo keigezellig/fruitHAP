@@ -11,6 +11,7 @@ using FruitHAP.Core.Controller;
 using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Common.EventBus;
 using FruitHAP.Core.Sensor.SensorValueTypes;
+using FruitHAP.Common.Configuration;
 
 namespace FruitHAP.Sensor.Camera.Devices
 {
@@ -24,16 +25,29 @@ namespace FruitHAP.Sensor.Camera.Devices
         private Uri uri;
 		private DateTime lastUpdateTime;
 
+        [ConfigurationItem]
         public string Name { get; set; }
+
+        [ConfigurationItem]
         public string DisplayName { get; set; }
+
+        [ConfigurationItem]
         public string Description { get; set; }
+
+        [ConfigurationItem]
         public string Category { get; set; }
+
+        [ConfigurationItem(IsSensorSpecific = true)]
         public string Resolution { get; set; }
+
+        [ConfigurationItem(IsSensorSpecific = true)]
         public string Username { get; set; }
 
 
-
+        [ConfigurationItem(IsSensorSpecific = true)]
         public string Password { get; set; }
+
+        [ConfigurationItem(IsSensorSpecific = true)]
         public string Url
         {
             get

@@ -5,6 +5,7 @@ using FruitHAP.Common.EventBus;
 using Castle.Core.Logging;
 using System.Timers;
 using FruitHAP.Core.Sensor.SensorTypes;
+using FruitHAP.Common.Configuration;
 
 namespace FruitHAP.Sensor.Fake
 {
@@ -48,16 +49,30 @@ namespace FruitHAP.Sensor.Fake
 
         #region ISensor implementation
 
+        [ConfigurationItem]
         public string Name { get; set; }
+
+        [ConfigurationItem]
         public string DisplayName { get; set; }
+
+        [ConfigurationItem]
         public string Description { get; set;}
+
+        [ConfigurationItem]
         public string Category { get; set; }
 
         #endregion
 
+        [ConfigurationItem(IsSensorSpecific = true)]
         public int Min { get; set; }
+
+        [ConfigurationItem(IsSensorSpecific = true)]
         public int Max { get; set; }
+
+        [ConfigurationItem(IsSensorSpecific = true)]
         public TemperatureUnit Unit { get; set; }
+
+        [ConfigurationItem(IsSensorSpecific = true)]
         public int IntervalInMilliSeconds { get; set; }
 
         private ILogger logger;

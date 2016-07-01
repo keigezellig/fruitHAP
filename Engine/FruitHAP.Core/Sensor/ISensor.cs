@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
+using FruitHAP.Common.Configuration;
 
 namespace FruitHAP.Core.Sensor
 {
