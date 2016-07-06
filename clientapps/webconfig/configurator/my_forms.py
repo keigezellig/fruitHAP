@@ -3,7 +3,7 @@ from django.forms import *
 
 
 def get_my_choices():
-    req = requests.get("http://31.151.51.250:9999/api/configuration/sensors")
+    req = requests.get("http://localhost/api/configuration/sensors")
     sensor_list = []
     response = req.json()
 
@@ -24,12 +24,11 @@ class SensorForm(Form):
         print(self.cleaned_data)
 
     def __init__(self, *args, **kwargs):
-        specific_fields = kwargs.pop('specific_fields')
+        veldjes = kwargs.pop('specific_fields')
         super(SensorForm, self).__init__(*args, **kwargs)
 
-        for i, field in enumerate(specific_fields):
+        for i, field in enumerate(veldjes):
             self.fields['custom_%s' % field[0]] = CharField(label=field[0])
 
         self.fields['sensorType'] = ChoiceField(
             choices=get_my_choices())
-
