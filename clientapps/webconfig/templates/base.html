@@ -108,16 +108,20 @@
         {% endblock %}
     </div>
 
-    <div class="panel-footer">
+    <div class="row">
+        <div class="panel-footer transparentbg">
         {% block footer_block %}
                 <p class="text-center"><small>&copy; 2016 M. Joosten | <a href="http://fruithap.org">Website</a> | <a href="http://joosten-industries.nl/blog">Blog</a> | Terms</small></p>
         {% endblock %}
 
       </div>
+    </div>
 </div>
 
 <script src="{% static "jquery/dist/jquery.js" %}"></script>
 <script src="{% static "bootstrap/dist/js/bootstrap.min.js" %}"></script>
+<script src="{% static "knockout/dist/knockout.js" %}"></script>
+<script src="{% static "js/common.js" %}"></script>
 {% block additional_javascript %}{% endblock %}
 </body>
 </html>

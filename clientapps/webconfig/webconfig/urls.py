@@ -18,6 +18,7 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from configurator import views
+from configurator.views import AddSensorView
 from configurator.views import SensorDetails
 from configurator.views import SensorFormView
 from configurator.views import SensorList
@@ -26,7 +27,7 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^configuration/sensors/(?P<sensor_name>[^/]+)', SensorDetails.as_view(), name='sensor_details'),
     url(r'^configuration/sensors/$', SensorList.as_view(), name='sensor_configuration'),
-    url(r'^configuration/addsensor/$', SensorFormView.as_view(), name='sensor_add'),
+    url(r'^configuration/addsensor/$', AddSensorView.as_view(), name='sensor_add'),
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
     url(r'^admin/', admin.site.urls),
 ]

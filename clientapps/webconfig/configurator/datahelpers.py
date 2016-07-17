@@ -24,8 +24,24 @@ def get_sensordetails(sensor_name):
 
 
 def get_sensorcount():
-    count_req = requests.get("http://localhost/api/configuration/sensors/getCount")
+    count_req = requests.get("http://localhost/api/configuration/sensors/count")
     if count_req.status_code == 200:
         return count_req.json()
+    else:
+        return None
+
+
+def get_sensortypes():
+    types_req = requests.get("http://localhost/api/configuration/sensors/types")
+    if types_req.status_code == 200:
+        return types_req.json()
+    else:
+        return None
+
+
+def get_sensorparameters(type_name):
+    types_req = requests.get("http://localhost/api/configuration/sensors/types/"+type_name)
+    if types_req.status_code == 200:
+        return types_req.json()
     else:
         return None

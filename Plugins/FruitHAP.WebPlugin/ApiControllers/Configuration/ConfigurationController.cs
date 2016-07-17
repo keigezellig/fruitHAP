@@ -7,6 +7,8 @@ using FruitHAP.Core.SensorRepository;
 using FruitHAP.Common.Helpers;
 using System;
 using FruitHAP.Common.Configuration;
+using System.Collections;
+using Castle.Core.Logging;
 
 
 namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
@@ -17,10 +19,13 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 		private readonly ISensorPersister persister;
 		private readonly ISensorRepository repos;
 
-		public ConfigurationController (ISensorPersister persister, ISensorRepository repos)
+        private readonly ILogger log;
+
+		public ConfigurationController (ISensorPersister persister, ISensorRepository repos, ILogger log)
 		{
 			this.repos = repos;
 			this.persister = persister;		
+            this.log = log;
 		}
 
 		
@@ -52,10 +57,32 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 
         [Route("sensors/types")]
         [HttpGet]
-        public IHttpActionResult GetSensorTypes()
+        public IHttpActionResult GetSensorTypeNames()
         {
-            var types = GetSensorTypesFromSystem();
+            var types = CollectSensorTypeNames();
             return Ok(types);
+        }
+
+        [Route("sensors/types/{name}")]
+        [HttpGet]
+        public IHttpActionResult GetSensorParameters(string name, bool onlySpecific = false)
+        {
+            var type = CollectSensorParameters(name,onlySpecific);
+            if (type == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(type);
+        }
+
+        [Route("sensors/add")]
+        [HttpPost]
+        public IHttpActionResult AddSensor(Dictionary<string, string> input)
+        {
+            log.Fatal(input.ToString());
+
+            return Ok();
         }
 
 
@@ -107,19 +134,22 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 		}
 
 
-        private Dictionary<string, object> GetSensorTypesFromSystem()
+        private IEnumerable<string> CollectSensorTypeNames()
         {
-            var result = new Dictionary<string, object>();
-
             var sensorTypes = persister.GetSensorTypes();
-            foreach (var sensorType in sensorTypes)
-            {
-                var classType = sensorType.GetType();
-                var props = sensorType.GetConfigurableProperties(true);
-                result[classType.Name] = props.Select(prop => new {Parameter = prop.Name, Type = prop.PropertyType.Name});
-            }
+            return sensorTypes.Select(t => t.GetType().Name);
+        }
 
-            return result;
+        private IEnumerable CollectSensorParameters(string sensorTypeName, bool onlySpecific)
+        {
+            var sensorType = persister.GetSensorTypes().SingleOrDefault(t => t.GetType().Name == sensorTypeName);
+            if (sensorType == null)
+            {
+                return null;
+            }
+                
+            var props = sensorType.GetConfigurableProperties(onlySpecific);
+            return props.Select(prop => new {Parameter = prop.Name, Type = prop.PropertyType.Name});
         }
 
         private SensorConfigurationItem CreateAggregateItem(string type, Dictionary<string, object> parameters)

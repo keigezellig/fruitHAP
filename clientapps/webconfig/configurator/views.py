@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.views.generic import FormView
 from django.views.generic.base import TemplateView
 
-from configurator.datahelpers import get_sensorlist, get_sensordetails, get_sensorcount
+from configurator.datahelpers import get_sensorlist, get_sensordetails, get_sensorcount, get_sensortypes
 from configurator.my_forms import SensorForm
 
 
@@ -25,6 +25,23 @@ def index(request):
 def dashboard(request):
     context = dict(current_section='dashboard')
     return render(request, 'dashboard.html', context)
+
+
+class AddSensorView(TemplateView):
+    template_name = 'sensor_add.html'
+
+    def get(self, request, *args, **kwargs):
+
+        number_of_sensors = get_sensorcount()
+        if number_of_sensors is None:
+            number_of_sensors = 'N/A'
+
+        context = dict(current_section='configuration', current_page='sensor', number_of_sensors=number_of_sensors)
+
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        print(self.kwargs['sensor_type'])
 
 
 class SensorList(TemplateView):

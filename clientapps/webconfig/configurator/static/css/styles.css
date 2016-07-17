@@ -63,6 +63,10 @@ a.list-group-item:hover, a.list-group-item:focus
 	background-color: #4a6527;
 }
 
+.transparentbg
+{
+    background-color: transparent;
+}
 .footer {
     position: fixed;
     height: 60px;
