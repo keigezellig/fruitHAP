@@ -32,7 +32,7 @@ function SensorViewModel() {
     self.errorsWhileSaving = ko.observable();
 
     self.selectedSensorType.subscribe(function(value) {
-        if (typeof value == 'undefined' || value == "SELECT")
+        if (typeof value == 'undefined')
         {
             self.parameters([]);
         }
@@ -56,17 +56,30 @@ function SensorViewModel() {
 
     self.save = function(formElement) {
         
-        dataToSave = ko.toJSON({name: self.name, displayName: self.displayName, description: self.description, category: self.category, parameters: self.parameters, type: self.selectedSensorType })
-        $.ajax(getApiUrl("configuration/sensors/add"), {
-            data: dataToSave,
-            type: "post", contentType: "application/json",
-            success: function(result) { alert("Success! :"+ result) },
-            error: function(errormsg) {self.errorsWhileSaving(true)}
-        });
+        if (typeof self.selectedSensorType != 'undefined') {
+            var dataToSave = ko.toJSON({
+                Name: self.name,
+                DisplayName: self.displayName,
+                Description: self.description,
+                Category: self.category,
+                Parameters: self.parameters,
+                Type: self.selectedSensorType
+            })
+            $.ajax(getApiUrl("configuration/sensors/add"), {
+                data: dataToSave,
+                type: "post", contentType: "application/json",
+                success: function (result) {
+                    alert("Success! :" + result)
+                },
+                error: function (errormsg) {
+                    self.errorsWhileSaving(true)
+                }
+            });
+        }
     };
 
     self.clearForm = function() {
-        self.selectedSensorType("SELECT");
+        self.selectedSensorType(null);
         self.errorsWhileSaving(false);
         return true;
     };
@@ -80,8 +93,6 @@ function SensorViewModel() {
         success: function(types)
         {
             self.availableSensorTypes(types);
-            self.availableSensorTypes.unshift("SELECT");
-            self.selectedSensorType("SELECT");
         }
     });
 

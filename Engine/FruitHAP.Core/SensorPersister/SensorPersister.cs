@@ -83,6 +83,16 @@ namespace FruitHAP.Core.SensorPersister
             return prototypes;
         }
 
+        public void SaveConfiguration()
+        {            
+            configProvider.SaveConfigToFile(configuration,sensorFile);
+        }
+
+        public void AddConfigurationEntry(SensorConfigurationEntry entry)
+        {            
+            //TODO: Add validation
+            configuration.Add(entry);
+        }
 		#endregion
 
 		List<ISensor> LoadNonAggregateSensors (IEnumerable<SensorConfigurationEntry> configurationEntries)

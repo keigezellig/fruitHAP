@@ -9,6 +9,8 @@ using System;
 using FruitHAP.Common.Configuration;
 using System.Collections;
 using Castle.Core.Logging;
+using FruitHAP.Plugins.Web.ApiControllers.Configuration.Validators;
+using FluentValidation.Results;
 
 
 namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
@@ -78,10 +80,25 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 
         [Route("sensors/add")]
         [HttpPost]
-        public IHttpActionResult AddSensor(Dictionary<string, string> input)
-        {
-            log.Fatal(input.ToString());
+        public IHttpActionResult AddSensor(SensorUpdateDTO input)
+        {            
+            SensorUpdateValidator validator = new SensorUpdateValidator();
+            var validateResults = validator.Validate(input);
+            if (!validateResults.IsValid)
+            {
+                log.Error("Error in input: ");
+                foreach (var error in validateResults.Errors)
+                {
+                    log.ErrorFormat("{0}: {1}", error.PropertyName, error.ErrorMessage);
+                }
 
+                return BadRequest(validateResults.Errors.ToJsonString());
+            }
+            SensorConfigurationEntry entry = new SensorConfigurationEntry();
+            entry.IsAggegrate = false;
+            entry.Type = input.Type;
+            entry.Parameters = new Dictionary<string,object>();
+            //entry.Parameters["Name"] = inp
             return Ok();
         }
 

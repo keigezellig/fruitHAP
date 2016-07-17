@@ -71,6 +71,9 @@
     <Reference Include="WebApiContrib.Formatting.Jsonp">
       <HintPath>..\..\Engine\packages\WebApiContrib.Formatting.Jsonp.3.0.2\lib\net45\WebApiContrib.Formatting.Jsonp.dll</HintPath>
     </Reference>
+    <Reference Include="FluentValidation">
+      <HintPath>..\..\Engine\packages\FluentValidation.6.2.1.0\lib\Net45\FluentValidation.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -85,6 +88,8 @@
     <Compile Include="ApiControllers\Configuration\SensorConfigurationItem.cs" />
     <Compile Include="ApiControllers\Configuration\NonAggregatedSensor.cs" />
     <Compile Include="ApiControllers\Configuration\AggregatedSensor.cs" />
+    <Compile Include="ApiControllers\Configuration\SensorUpdateDTO.cs" />
+    <Compile Include="ApiControllers\Configuration\Validators\SensorUpdateValidator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -93,6 +98,7 @@
   <ItemGroup>
     <Folder Include="ApiControllers\" />
     <Folder Include="Startup\" />
+    <Folder Include="ApiControllers\Configuration\Validators\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\FruitHAP.Core\FruitHAP.Core.csproj">
