@@ -86,11 +86,12 @@ namespace FruitHAP.Core.SensorPersister
         public void SaveConfiguration()
         {            
             configProvider.SaveConfigToFile(configuration,sensorFile);
+            LoadSensors();
         }
 
         public void AddConfigurationEntry(SensorConfigurationEntry entry)
         {            
-            //TODO: Add validation
+            logger.InfoFormat("New sensor added: {0}", entry);
             configuration.Add(entry);
         }
 		#endregion

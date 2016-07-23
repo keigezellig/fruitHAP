@@ -13,11 +13,19 @@
  *
  */
 
-function SensorParameter(name, type, value){
+function SensorParameter(name, type, value, allowedValues){
     var self = this;
     self.name = ko.observable(name);
     self.type = ko.observable(type);
     self.value = ko.observable(value);
+    self.allowableValues = ko.observableArray(allowedValues);
+}
+
+function AllowableValue(name, value){
+    var self = this;
+    self.name = ko.observable(name);
+    self.value = ko.observable(value);
+
 }
 
 function SensorViewModel() {
@@ -43,8 +51,22 @@ function SensorViewModel() {
                 contentType: "text/javascript",
                 dataType: 'jsonp',
                 success: function (parameters) {
+
                     var parameterList = $.map(parameters, function (item) {
-                        return new SensorParameter(item.Parameter, item.Type, "")
+                        var sensorparam;
+                        if (item.allowedValues != null) {
+                            var allowedValueList = $.map(item.allowedValues, function(valueItem) {
+                               return new AllowableValue(valueItem.Name, valueItem.Value)
+                            });
+
+                            sensorparam = new SensorParameter(item.Parameter, item.Type, "", allowedValueList);
+                            alert(sensorparam.name() + "/" + sensorparam.value() + "/" + sensorparam.allowableValues().length );
+                            return sensorparam
+                        }
+                        sensorparam = new SensorParameter(item.Parameter, item.Type, "", null);
+                            alert(sensorparam.name() + "/" + sensorparam.value() + "/" + sensorparam.allowableValues() );
+                        return sensorparam;
+
                     });
                     self.parameters(parameterList);
                 }
@@ -69,10 +91,10 @@ function SensorViewModel() {
                 data: dataToSave,
                 type: "post", contentType: "application/json",
                 success: function (result) {
-                    alert("Success! :" + result)
+                    self.errorsWhileSaving(false);
                 },
                 error: function (errormsg) {
-                    self.errorsWhileSaving(true)
+                    self.errorsWhileSaving(true);
                 }
             });
         }

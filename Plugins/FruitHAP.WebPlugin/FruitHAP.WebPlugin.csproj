@@ -90,6 +90,7 @@
     <Compile Include="ApiControllers\Configuration\AggregatedSensor.cs" />
     <Compile Include="ApiControllers\Configuration\SensorUpdateDTO.cs" />
     <Compile Include="ApiControllers\Configuration\Validators\SensorUpdateValidator.cs" />
+    <Compile Include="ApiControllers\Configuration\SensorParameterItem.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

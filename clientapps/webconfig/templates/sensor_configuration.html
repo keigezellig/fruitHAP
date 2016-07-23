@@ -61,7 +61,7 @@
 
     <ul class="pagination">
        {% if sensor_list.has_previous %}
-           <li><a href="{% url 'sensor-configuration'%}?page={{ sensor_list.previous_page_number }}">&laquo;</a></li>
+           <li><a href="{% url 'sensor_configuration'%}?page={{ sensor_list.previous_page_number }}">&laquo;</a></li>
        {% else %}
 	        <li class="disabled"><a href="#">&laquo;</a></li>
        {% endif %}
@@ -70,13 +70,13 @@
           {% if page_no == sensor_list.number %}
               <li class="active"><a href="#">{{ page_no }}</a></li>
           {% else %}
-              <li><a href="{% url 'sensor-configuration' %}?page={{ page_no }}">{{ page_no }}</a></li>
+              <li><a href="{% url 'sensor_configuration' %}?page={{ page_no }}">{{ page_no }}</a></li>
           {% endif %}
 	
        {% endfor %}
 
        {% if sensor_list.has_next %}
-           <li><a href="{% url 'sensor-configuration' %}?page={{ sensor_list.next_page_number }}">&raquo;</a></li>
+           <li><a href="{% url 'sensor_configuration' %}?page={{ sensor_list.next_page_number }}">&raquo;</a></li>
        {% else %}
            <li class="disabled"><a href="#">&raquo;</a></li>
        {% endif %}

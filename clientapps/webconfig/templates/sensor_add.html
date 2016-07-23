@@ -53,7 +53,6 @@
                         </div>
                     </div>
 
-                    <p data-bind="text: parameters().length"></p>
                     <div data-bind="visible: parameters().length>0" class="row">
                         <div class="col-md-12">
 
@@ -65,9 +64,14 @@
                                         <div class="form-group">
                                             <label data-bind="attr: {for: name}, text: name"
                                                    class="control-label col-md-2"></label>
-                                            <div class="col-md-10">
+                                            <div data-bind="if: allowableValues().length == 0" class="col-md-10">
                                                 <input data-bind="attr: {id: name}, textInput: value"
                                                        class="form-control"/>
+                                            </div>
+
+                                            <div data-bind="ifnot: allowableValues().length == 0" class="col-md-10">
+                                                <select class="form-control"
+                                                        data-bind="options: allowableValues, optionsCaption: 'Select an item...', optionsText: 'name', optionsValue: 'value', value: value"></select>
                                             </div>
                                         </div>
                                     </div>
@@ -99,6 +103,14 @@
         <div class="col-md-12">
             <div class="alert alert-danger fade in">
                 <strong>Error!</strong> A problem has been occurred while submitting your data.
+            </div>
+        </div>
+    </div>
+
+    <div class="row" data-bind="visible: errorsWhileSaving == false">
+        <div class="col-md-12">
+            <div class="alert alert-success fade in">
+                Sensor added succesfully.
             </div>
         </div>
     </div>

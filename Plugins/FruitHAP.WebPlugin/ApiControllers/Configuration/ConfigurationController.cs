@@ -11,6 +11,7 @@ using System.Collections;
 using Castle.Core.Logging;
 using FruitHAP.Plugins.Web.ApiControllers.Configuration.Validators;
 using FluentValidation.Results;
+using System.Reflection;
 
 
 namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
@@ -97,8 +98,27 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
             SensorConfigurationEntry entry = new SensorConfigurationEntry();
             entry.IsAggegrate = false;
             entry.Type = input.Type;
-            entry.Parameters = new Dictionary<string,object>();
-            //entry.Parameters["Name"] = inp
+            var parameters = new Dictionary<string,object>();
+            parameters["Name"] = input.Name;
+            parameters["Description"] = input.Description;
+            parameters["DisplayName"] = input.DisplayName;
+            parameters["Category"] = input.Category;
+            foreach (var specificParameter in input.Parameters)
+            {
+                if (specificParameter.Type == "String")
+                {
+                    parameters[specificParameter.Name] = specificParameter.Value;
+                }
+                else
+                {
+                    parameters[specificParameter.Name] = Int32.Parse(specificParameter.Value);
+                }
+            }
+
+            entry.Parameters = parameters;
+            persister.AddConfigurationEntry(entry);
+            persister.SaveConfiguration();
+
             return Ok();
         }
 
@@ -166,7 +186,24 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
             }
                 
             var props = sensorType.GetConfigurableProperties(onlySpecific);
-            return props.Select(prop => new {Parameter = prop.Name, Type = prop.PropertyType.Name});
+            //props[3].
+            return props.Select(prop =>
+                {
+                    List<AllowedValueItem> allowedValues = null;
+                    var propType = prop.PropertyType;
+                    if (propType.IsEnum)
+                    {                                             
+                        allowedValues = new List<AllowedValueItem>();
+                      
+                        foreach (var value in Enum.GetValues(propType))
+                        {
+                            var name = Enum.GetName(propType,value);
+                            allowedValues.Add(new AllowedValueItem() {Name = name, Value = (int)value});
+                        }
+                    }
+                    return new SensorParameterItem{Parameter = prop.Name, Type = prop.PropertyType.Name, allowedValues = allowedValues };
+                }
+            );
         }
 
         private SensorConfigurationItem CreateAggregateItem(string type, Dictionary<string, object> parameters)
