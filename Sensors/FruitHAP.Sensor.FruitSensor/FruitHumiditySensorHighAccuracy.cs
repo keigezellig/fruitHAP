@@ -70,12 +70,16 @@ namespace FruitHAP.Sensor.FruitSensor
 		{
 			this.eventBus = eventBus;
 			this.logger = logger;	
-            this.humidity = new QuantityValue<String> ();
-			this.lastUpdated = DateTime.Now;
-            this.fruitProtocol = new RfxFruitProtocol();
-            eventBus.Subscribe<ControllerEventData<RFXMeterPacket>>(HandleIncomingMessage,f => f.Direction == Direction.FromController && f.Payload.SensorId == SensorId);
 
 		}
+
+        public void Initialize()
+        {
+            this.humidity = new QuantityValue<String> ();
+            this.lastUpdated = DateTime.Now;
+            this.fruitProtocol = new RfxFruitProtocol();
+            eventBus.Subscribe<ControllerEventData<RFXMeterPacket>>(HandleIncomingMessage,f => f.Direction == Direction.FromController && f.Payload.SensorId == SensorId);
+        }
 
 		public override string ToString ()
 		{

@@ -11,7 +11,7 @@ using FruitHAP.Common.Configuration;
 
 namespace FruitHAP.Sensor.Aggregated.Sensors
 {
-	public class ButtonWithCameraSensor : IAggregatedSensor
+    public class ButtonWithCameraSensor : IAggregatedSensor
 	{
 		private IButton button;
 		private ICamera camera;
@@ -96,6 +96,11 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 			logger.Debug ("Unsubscribing from events");
 			eventBus.Unsubscribe<SensorEventData> (OnButtonPressed);
 		}
+
+        public void Initialize()
+        {
+            throw new NotImplementedException();
+        }
 	}
 }
 

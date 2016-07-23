@@ -31,7 +31,13 @@ namespace FruitHAP.Core.SensorRepository
 				sensors = persister.LoadSensors().ToList();
 				if (sensors.Any())
 				{
-					logger.InfoFormat("{0} sensors loaded",sensors.Count());
+					//logger.InfoFormat("{0} sensors loaded",sensors.Count());
+
+                    foreach (var sensor in sensors)
+                    {
+                        logger.InfoFormat("Initializing sensor {0}",sensor.Name);
+                        sensor.Initialize();
+                    }
 				}
 				else
 				{
@@ -124,6 +130,14 @@ namespace FruitHAP.Core.SensorRepository
             }
 
             return sensor.GetValue().GetType();
+        }
+
+        public void Dispose()
+        {
+            foreach (var sensor in sensors)
+            {
+                sensor.Dispose();
+            }
         }
     }
 }

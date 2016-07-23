@@ -98,10 +98,20 @@ namespace FruitHAP.Core.Service
 
         public void Stop()
         {
-			log.Info("Stopping modules..");
-			foreach (var module in controllers) {
-				if (module.IsStarted) {
-					module.Stop ();
+            log.Info("Stopping plugins..");
+            foreach (var plugin in plugins) {
+                plugin.Dispose();
+            }
+
+            log.Info("Stopping sensors..");
+            sensorRepository.Dispose();
+
+
+            log.Info("Stopping controllers..");
+            foreach (var controller in controllers) {
+				if (controller.IsStarted) {
+					controller.Stop ();
+                    controller.Dispose();
 				}
 			}
 
@@ -109,6 +119,8 @@ namespace FruitHAP.Core.Service
 			if (mqPublisher.IsIntialized) {
 				mqPublisher.Dispose ();
 			}
+
+
         }
     }
 }

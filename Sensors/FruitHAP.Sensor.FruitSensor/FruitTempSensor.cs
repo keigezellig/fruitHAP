@@ -10,7 +10,7 @@ using FruitHAP.Common.Configuration;
 
 namespace FruitHAP.Sensor.FruitSensor
 {
-	public class FruitTempSensor : ITemperatureSensor
+    public class FruitTempSensor : ITemperatureSensor
 	{
 		private QuantityValue<TemperatureUnit> temperature;
 		private DateTime lastUpdated;
@@ -70,12 +70,16 @@ namespace FruitHAP.Sensor.FruitSensor
 		{
 			this.eventBus = eventBus;
 			this.logger = logger;
-			this.temperature = new QuantityValue<TemperatureUnit> ();
-			this.lastUpdated = DateTime.Now;
-
-			eventBus.Subscribe<ControllerEventData<RFXSensorTemperaturePacket>>(HandleIncomingTempMessage,f => f.Direction == Direction.FromController && f.Payload.SensorId == SensorId);
 
 		}
+
+        public void Initialize()
+        {
+            this.temperature = new QuantityValue<TemperatureUnit> ();
+            this.lastUpdated = DateTime.Now;
+
+            eventBus.Subscribe<ControllerEventData<RFXSensorTemperaturePacket>>(HandleIncomingTempMessage,f => f.Direction == Direction.FromController && f.Payload.SensorId == SensorId);
+        }
 
 		public override string ToString ()
 		{

@@ -42,7 +42,9 @@ namespace FruitHAP.Sensor.Fake
 
         public void Dispose ()
         {
+            timer.Stop();
             timer.Dispose();
+            timer = null;
         }
 
         #endregion
@@ -82,13 +84,17 @@ namespace FruitHAP.Sensor.Fake
         {
             this.eventBus = eventBus;
             this.logger = logger;
+
+        }
+
+        public void Initialize()
+        {
             this.temperature = new QuantityValue<TemperatureUnit> ();
             this.lastUpdated = DateTime.Now;
             this.IntervalInMilliSeconds = 5000;
             this.timer = new Timer(IntervalInMilliSeconds);
             timer.Elapsed += (object sender, ElapsedEventArgs e) => GenerateTemperatureMessage();
             timer.Start();
-
         }
 
         public override string ToString()

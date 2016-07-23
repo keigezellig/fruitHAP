@@ -11,5 +11,6 @@ namespace FruitHAP.Core.Sensor
         string Description { get; }
         string Category { get; }
 
+        void Initialize();
     }
 }

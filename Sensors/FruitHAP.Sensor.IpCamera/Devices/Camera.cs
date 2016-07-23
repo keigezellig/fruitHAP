@@ -65,10 +65,13 @@ namespace FruitHAP.Sensor.Camera.Devices
         {
             this.logger = logger;
 			this.eventBus = eventBus;
-			this.lastUpdateTime = DateTime.Now;
-			eventBus.Subscribe<ControllerEventData<ImageResponsePacket>>(HandleIncomingResponse, f => f.Direction == Direction.FromController && f.Payload.DestinationSensor == Name);
         }
 
+        public void Initialize()
+        {
+            this.lastUpdateTime = DateTime.Now;
+            eventBus.Subscribe<ControllerEventData<ImageResponsePacket>>(HandleIncomingResponse, f => f.Direction == Direction.FromController && f.Payload.DestinationSensor == Name);
+        }
 
         void HandleIncomingResponse(ControllerEventData<ImageResponsePacket> response)
         {

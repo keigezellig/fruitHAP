@@ -42,7 +42,9 @@ namespace FruitHAP.Sensor.Fake
 
         public void Dispose ()
         {
+            timer.Stop();
             timer.Dispose();
+            timer = null;
         }
 
         #endregion
@@ -72,13 +74,17 @@ namespace FruitHAP.Sensor.Fake
         {
             this.eventBus = eventBus;
             this.logger = logger;
+
+
+        }
+
+        public void Initialize()
+        {
             this.humidity = new QuantityValue<String> ();
             this.lastUpdated = DateTime.Now;
             this.timer = new Timer(5000);
             timer.Elapsed += (object sender, ElapsedEventArgs e) => GenerateHumidityMessage();
-            timer.Start();
-
-        }
+            timer.Start();        }
 
         public override string ToString()
         {

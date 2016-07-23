@@ -10,7 +10,7 @@ using FruitHAP.Common.EventBus;
 
 namespace FruitHAP.Sensor.Aggregated
 {
-	public class SwitchWithCameraSensor : IAggregatedSensor, ICloneable
+    public class SwitchWithCameraSensor : IAggregatedSensor, ICloneable
 	{
 		private ISwitch @switch;
 		private ICamera camera;
@@ -91,6 +91,11 @@ namespace FruitHAP.Sensor.Aggregated
 			eventBus.Unsubscribe<SensorEventData> (OnSwitchStateChanged);
 		}
 		#endregion
+
+        public void Initialize()
+        {
+            throw new NotImplementedException();
+        }
 	}
 }
 

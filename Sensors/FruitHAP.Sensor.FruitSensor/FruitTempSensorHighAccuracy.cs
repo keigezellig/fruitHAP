@@ -71,13 +71,17 @@ namespace FruitHAP.Sensor.FruitSensor
 		{
 			this.eventBus = eventBus;
 			this.logger = logger;
-			this.temperature = new QuantityValue<TemperatureUnit> ();
-			this.lastUpdated = DateTime.Now;
+
+		}
+
+        public void Initialize()
+        {
+            this.temperature = new QuantityValue<TemperatureUnit> ();
+            this.lastUpdated = DateTime.Now;
             this.fruitProtocol = new RfxFruitProtocol();
 
             eventBus.Subscribe<ControllerEventData<RFXMeterPacket>>(HandleIncomingTempMessage,f => f.Direction == Direction.FromController && f.Payload.SensorId == SensorId);
-
-		}
+        }
 
 		public override string ToString ()
 		{
