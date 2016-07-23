@@ -89,12 +89,14 @@ function SensorViewModel() {
             })
             $.ajax(getApiUrl("configuration/sensors/add"), {
                 data: dataToSave,
-                type: "post", contentType: "application/json",
+                type: "put", contentType: "application/json",
                 success: function (result) {
                     self.errorsWhileSaving(false);
+                    window.location='/restart';
                 },
                 error: function (errormsg) {
                     self.errorsWhileSaving(true);
+
                 }
             });
         }

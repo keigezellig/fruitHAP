@@ -94,6 +94,12 @@ namespace FruitHAP.Core.SensorPersister
             logger.InfoFormat("New sensor added: {0}", entry);
             configuration.Add(entry);
         }
+
+        public void DeleteConfigurationEntry(SensorConfigurationEntry entry)
+        {
+            logger.InfoFormat("Sensor deleted {0}", entry);
+            configuration.Remove(entry);
+        }
 		#endregion
 
 		List<ISensor> LoadNonAggregateSensors (IEnumerable<SensorConfigurationEntry> configurationEntries)

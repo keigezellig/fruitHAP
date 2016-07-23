@@ -79,8 +79,32 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
             return Ok(type);
         }
 
+        [Route("sensors/delete/{name}")]
+        [HttpDelete]
+        public IHttpActionResult DeleteSensor(string name)
+        {
+            var sensorConfigEntry = persister.GetSensorConfiguration().SingleOrDefault(entry => 
+                {
+                    string parametersInJson = entry.Parameters.ToJsonString();
+                    Dictionary<string, object> parameters = parametersInJson.ParseJsonString<Dictionary<string, object>>();
+                    return parameters["Name"].ToString() == name;
+                                        
+                });
+            
+            if (sensorConfigEntry != null)
+            {
+                persister.DeleteConfigurationEntry(sensorConfigEntry);
+                persister.SaveConfiguration();
+                return Ok();
+            }
+            else
+            {
+                return NotFound ();
+            }
+
+        }
         [Route("sensors/add")]
-        [HttpPost]
+        [HttpPut]
         public IHttpActionResult AddSensor(SensorUpdateDTO input)
         {            
             SensorUpdateValidator validator = new SensorUpdateValidator();

@@ -1,20 +1,11 @@
-import requests
+import xmlrpc.client
+
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.urlresolvers import reverse, reverse_lazy
-from django.http import Http404
+from django.core.urlresolvers import reverse
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
-from django.views.generic import FormView
 from django.views.generic.base import TemplateView
-
-from configurator.datahelpers import get_sensorlist, get_sensordetails, get_sensorcount, get_sensortypes
-from configurator.my_forms import SensorForm
-
-
-def get_specific_fields(sensortype):
-    if sensortype == 'Deurbel voordeur':
-        return [("Param1", "int"), ("Param2", "string"), ("Param3", "bool")]
-    if sensortype == 'TV hoekje':
-        return [("Param4", "string"), ("Param5", "bool"), ("Param7", "bool")]
+from configurator.datahelpers import get_sensorlist, get_sensordetails, get_sensorcount
 
 
 def index(request):
@@ -27,21 +18,12 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 
-class AddSensorView(TemplateView):
-    template_name = 'sensor_add.html'
+def restart(request):
+    supervisordServer = xmlrpc.client.Server('http://localhost:9001/RPC2')
+    supervisordServer.supervisor.stopProcess('fruithap')
+    supervisordServer.supervisor.startProcess('fruithap')
 
-    def get(self, request, *args, **kwargs):
-
-        number_of_sensors = get_sensorcount()
-        if number_of_sensors is None:
-            number_of_sensors = 'N/A'
-
-        context = dict(current_section='configuration', current_page='sensor', number_of_sensors=number_of_sensors)
-
-        return self.render_to_response(context)
-
-    def post(self, request, *args, **kwargs):
-        print(self.kwargs['sensor_type'])
+    return HttpResponseRedirect(reverse('sensor_configuration'))
 
 
 class SensorList(TemplateView):
@@ -72,6 +54,20 @@ class SensorList(TemplateView):
         return self.render_to_response(context)
 
 
+class AddSensorView(TemplateView):
+    template_name = 'sensor_add.html'
+
+    def get(self, request, *args, **kwargs):
+        number_of_sensors = get_sensorcount()
+
+        if number_of_sensors is None:
+            number_of_sensors = 'N/A'
+
+        context = dict(current_section='configuration', current_page='sensor', number_of_sensors=number_of_sensors)
+
+        return self.render_to_response(context)
+
+
 class SensorDetails(TemplateView):
     template_name = 'sensor_details.html'
 
@@ -88,23 +84,3 @@ class SensorDetails(TemplateView):
         context = dict(current_section='configuration', current_page='sensor', number_of_sensors=number_of_sensors,
                        details=details)
         return self.render_to_response(context)
-
-
-class SensorFormView(FormView):
-    template_name = 'sensor_form.html'
-    success_url = reverse_lazy('sensor_configuration')
-    specific_fields = get_specific_fields(sensortype='Deurbel voordeur')
-    form_class = SensorForm
-
-    def form_valid(self, form):
-        form.update_config()
-        return super(SensorFormView, self).form_valid(form)
-
-    def get_form_kwargs(self):
-        """This method is what injects forms with their keyword
-            arguments."""
-        # grab the current set of form #kwargs
-        kwargs = super(SensorFormView, self).get_form_kwargs()
-        # Update the kwargs with the user_id
-        kwargs['specific_fields'] = self.specific_fields
-        return kwargs

@@ -11,6 +11,7 @@ namespace FruitHAP.Core.SensorPersister
         IEnumerable<ISensor> GetSensorTypes();
         void SaveConfiguration();
         void AddConfigurationEntry(SensorConfigurationEntry entry);
+        void DeleteConfigurationEntry(SensorConfigurationEntry entry);
     }
 }
 
