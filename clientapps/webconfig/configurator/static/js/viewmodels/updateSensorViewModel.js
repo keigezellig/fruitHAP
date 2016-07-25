@@ -28,10 +28,10 @@ function AllowableValue(name, value){
 
 }
 
-function SensorViewModel() {
+function UpdateSensorViewModel() {
     var self = this;
     self.parameters = ko.observableArray();
-    self.selectedSensorType = ko.observable("SELECT");
+    self.selectedSensorType = ko.observable();
     self.name = ko.observable();
     self.displayName = ko.observable();
     self.description = ko.observable();
@@ -53,19 +53,14 @@ function SensorViewModel() {
                 success: function (parameters) {
 
                     var parameterList = $.map(parameters, function (item) {
-                        var sensorparam;
                         if (item.allowedValues != null) {
                             var allowedValueList = $.map(item.allowedValues, function(valueItem) {
                                return new AllowableValue(valueItem.Name, valueItem.Value)
                             });
 
-                            sensorparam = new SensorParameter(item.Parameter, item.Type, "", allowedValueList);
-                            alert(sensorparam.name() + "/" + sensorparam.value() + "/" + sensorparam.allowableValues().length );
-                            return sensorparam
+                            return new SensorParameter(item.Parameter, item.Type, "", allowedValueList);
                         }
-                        sensorparam = new SensorParameter(item.Parameter, item.Type, "", null);
-                            alert(sensorparam.name() + "/" + sensorparam.value() + "/" + sensorparam.allowableValues() );
-                        return sensorparam;
+                        return new SensorParameter(item.Parameter, item.Type, "", null);
 
                     });
                     self.parameters(parameterList);
@@ -123,4 +118,4 @@ function SensorViewModel() {
 
 }
 
-ko.applyBindings(new SensorViewModel());
+ko.applyBindings(new UpdateSensorViewModel());

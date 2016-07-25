@@ -14,10 +14,12 @@
   -->
 
 {% extends 'configuration.html' %}
+{% load staticfiles %}
 
 
 {% block main_content %}
     <h2>Sensor list</h2>
+
     <div class="table-responsive">
         <table class="table-bordered table">
             <thead>
@@ -47,7 +49,7 @@
                                 <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove-sign"></span> Delete</button>
                             </div>
                         </td>
-                    </tr>
+                    </tr
                 {% endfor %}
             </tbody>
         </table>
@@ -84,3 +86,6 @@
    </ul>
 {% endblock %}
 
+{% block additional_javascript %}
+    <script src="{% static "js/viewmodels/sensorListViewModel.js" %}"></script>
+{% endblock %}

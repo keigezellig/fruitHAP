@@ -104,7 +104,7 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 
         }
         [Route("sensors/add")]
-        [HttpPut]
+        [HttpPost]
         public IHttpActionResult AddSensor(SensorUpdateDTO input)
         {            
             SensorUpdateValidator validator = new SensorUpdateValidator();
