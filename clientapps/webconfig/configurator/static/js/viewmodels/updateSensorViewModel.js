@@ -84,7 +84,8 @@ function UpdateSensorViewModel() {
             })
             $.ajax(getApiUrl("configuration/sensors/add"), {
                 data: dataToSave,
-                type: "put", contentType: "application/json",
+                type: "POST", 
+                contentType: "application/json",
                 success: function (result) {
                     self.errorsWhileSaving(false);
                     window.location='/restart';

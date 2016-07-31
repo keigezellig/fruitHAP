@@ -20,6 +20,7 @@
 {% block main_content %}
     <h2>Sensor list</h2>
 
+
     <div class="table-responsive">
         <table class="table-bordered table">
             <thead>
@@ -32,60 +33,93 @@
             </tr>
             </thead>
             <tbody>
-                {% for sensor in sensor_list %}
-                    <tr>
-                        <td>{{ sensor.name }}</td>
-                        <td>{{ sensor.desc }}</td>
-                        <td>{{ sensor.cat }}</td>
-                        <td>{{ sensor.type }}</td>
-                        <td>
-                            <div class="btn-group btn-group-sm">
-                                <a href="{% url 'sensor_details' sensor.name %}" class="btn btn-primary"><span class="glyphicon glyphicon-info-sign"></span> Details</a>
-                            </div>
-                            <div class="btn-group btn-group-sm">
-                                <button type="button" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span> Edit</button>
-                            </div>
-                            <div class="btn-group btn-group-sm">
-                                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove-sign"></span> Delete</button>
-                            </div>
-                        </td>
-                    </tr
-                {% endfor %}
+            {% for sensor in sensor_list %}
+                <tr>
+                    <td>{{ sensor.name }}</td>
+                    <td>{{ sensor.desc }}</td>
+                    <td>{{ sensor.cat }}</td>
+                    <td>{{ sensor.type }}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <a href="{% url 'sensor_details' sensor.name %}" class="btn btn-primary"><span
+                                    class="glyphicon glyphicon-info-sign"></span> Details</a>
+                        </div>
+                        <div class="btn-group btn-group-sm">
+                            <button type="button" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span>
+                                Edit
+                            </button>
+                        </div>
+                        <div class="btn-group btn-group-sm">
+                            <button type="button" id="delete_{{ sensor.name }}" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-remove-sign"></span> Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
         <div class="btn-group btn-group-sm">
-            <a href="{% url 'sensor_add' %}" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span> Add new</a>
+            <a href="{% url 'sensor_add' %}" type="button" class="btn btn-primary"><span
+                    class="glyphicon glyphicon-plus-sign"></span> Add new</a>
         </div>
         <div class="btn-group btn-group-sm">
-            <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove-sign"></span> Clear all</button>
+            <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove-sign"></span> Clear all
+            </button>
         </div>
     </div>
 
+
     <ul class="pagination">
-       {% if sensor_list.has_previous %}
-           <li><a href="{% url 'sensor_configuration'%}?page={{ sensor_list.previous_page_number }}">&laquo;</a></li>
-       {% else %}
-	        <li class="disabled"><a href="#">&laquo;</a></li>
-       {% endif %}
+        {% if sensor_list.has_previous %}
+            <li><a href="{% url 'sensor_configuration' %}?page={{ sensor_list.previous_page_number }}">&laquo;</a></li>
+        {% else %}
+            <li class="disabled"><a href="#">&laquo;</a></li>
+        {% endif %}
 
-       {% for page_no in sensor_list.paginator.page_range %}
-          {% if page_no == sensor_list.number %}
-              <li class="active"><a href="#">{{ page_no }}</a></li>
-          {% else %}
-              <li><a href="{% url 'sensor_configuration' %}?page={{ page_no }}">{{ page_no }}</a></li>
-          {% endif %}
-	
-       {% endfor %}
+        {% for page_no in sensor_list.paginator.page_range %}
+            {% if page_no == sensor_list.number %}
+                <li class="active"><a href="#">{{ page_no }}</a></li>
+            {% else %}
+                <li><a href="{% url 'sensor_configuration' %}?page={{ page_no }}">{{ page_no }}</a></li>
+            {% endif %}
 
-       {% if sensor_list.has_next %}
-           <li><a href="{% url 'sensor_configuration' %}?page={{ sensor_list.next_page_number }}">&raquo;</a></li>
-       {% else %}
-           <li class="disabled"><a href="#">&raquo;</a></li>
-       {% endif %}
+        {% endfor %}
 
-   </ul>
+        {% if sensor_list.has_next %}
+            <li><a href="{% url 'sensor_configuration' %}?page={{ sensor_list.next_page_number }}">&raquo;</a></li>
+        {% else %}
+            <li class="disabled"><a href="#">&raquo;</a></li>
+        {% endif %}
+
+    </ul>
+
+
+    {% csrf_token %}
 {% endblock %}
 
 {% block additional_javascript %}
-    <script src="{% static "js/viewmodels/sensorListViewModel.js" %}"></script>
+
+    <script type="application/javascript">
+        $(document).ready(function () {
+            $("button[id^='delete_']").click(function () {
+                var buttonId = $(this).attr("id")
+                var sensorName = buttonId.substr(buttonId.indexOf("_") + 1);
+
+                url = "{% url 'sensor_delete'%}";
+                var data = {
+                    'sensor_name': sensorName
+                }
+
+                $.ajax(url, {
+                    data: JSON.stringify(data),
+                    type: "DELETE",
+                    dataType: "json",
+                    success: function (result) {
+                        window.location = result.redirectUrl;
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

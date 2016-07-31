@@ -1,11 +1,15 @@
+import json
 import xmlrpc.client
 
+import time
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import render
-from django.views.generic.base import TemplateView
-from configurator.datahelpers import get_sensorlist, get_sensordetails, get_sensorcount
+from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
+from django.shortcuts import render, redirect
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
+from django.views.generic.base import TemplateView, RedirectView, View
+from configurator.datahelpers import get_sensorlist, get_sensordetails, get_sensorcount, delete_sensor
 
 
 def index(request):
@@ -22,8 +26,24 @@ def restart(request):
     supervisordServer = xmlrpc.client.Server('http://localhost:9001/RPC2')
     supervisordServer.supervisor.stopProcess('fruithap')
     supervisordServer.supervisor.startProcess('fruithap')
-
+    time.sleep(5)
     return HttpResponseRedirect(reverse('sensor_configuration'))
+
+
+class DeleteSensorView(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super(DeleteSensorView, self).dispatch(*args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        print(self.kwargs)
+        body_unicode = request.body.decode('utf-8')
+        body_data = json.loads(body_unicode)
+        result = delete_sensor(body_data['sensor_name'])
+        if result:
+            return JsonResponse({'redirectUrl': reverse('restart')})
+
+        raise Http404('Sensor does not exist')
 
 
 class SensorList(TemplateView):

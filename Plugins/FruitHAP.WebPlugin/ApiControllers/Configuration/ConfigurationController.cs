@@ -107,6 +107,10 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
         [HttpPost]
         public IHttpActionResult AddSensor(SensorUpdateDTO input)
         {            
+
+            if (repos.GetSensorByName(input.Name) != null)
+                return BadRequest("A sensor with this name already exist");
+            
             SensorUpdateValidator validator = new SensorUpdateValidator();
             var validateResults = validator.Validate(input);
             if (!validateResults.IsValid)
