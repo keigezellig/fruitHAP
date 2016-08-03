@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from django.views.generic.base import TemplateView, RedirectView, View
 from configurator.datahelpers import get_sensorlist, get_sensordetails, get_sensorcount, delete_sensor
+from configurator.models import Site
 
 
 def index(request):
@@ -28,6 +29,14 @@ def restart(request):
     supervisordServer.supervisor.startProcess('fruithap')
     time.sleep(5)
     return HttpResponseRedirect(reverse('sensor_configuration'))
+
+
+class SiteView(View):
+    def get(self, request, *args, **kwargs):
+        pass
+
+    def post(self, request, *args, **kwargs):
+        pass
 
 
 class DeleteSensorView(View):

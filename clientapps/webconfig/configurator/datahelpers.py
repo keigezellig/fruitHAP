@@ -49,4 +49,5 @@ def get_sensorparameters(type_name):
 
 def delete_sensor(sensor_name):
     delete_req = requests.delete("http://localhost/api/configuration/sensors/delete/" + sensor_name)
+
     return delete_req.status_code == 200
