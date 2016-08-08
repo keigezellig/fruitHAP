@@ -14,16 +14,19 @@ from configurator.models import Site
 
 
 def index(request):
-    context = dict(current_section='index')
+
+    context = dict(current_section='index', current_site=request.session.get('selected_site', ""))
+    print(context)
     return render(request, 'index.html', context)
 
 
 def dashboard(request):
-    context = dict(current_section='dashboard')
+    context = dict(current_section='dashboard', current_site=request.session.get('selected_site', ""))
     return render(request, 'dashboard.html', context)
 
 
 def restart(request):
+    url = Site.objects.get(name=request.session.get('selected_site', "")).supervisor_url()
     supervisordServer = xmlrpc.client.Server('http://localhost:9001/RPC2')
     supervisordServer.supervisor.stopProcess('fruithap')
     supervisordServer.supervisor.startProcess('fruithap')
@@ -33,10 +36,18 @@ def restart(request):
 
 class SiteView(View):
     def get(self, request, *args, **kwargs):
-        pass
+        sites = dict(sites=list(Site.objects.values('name', 'hostname')))
+        print(sites)
+        return JsonResponse(sites)
 
     def post(self, request, *args, **kwargs):
-        pass
+        selectedSite = request.POST.get('site')
+        if selectedSite != '':
+            request.session['selected_site'] = selectedSite
+            return HttpResponseRedirect(reverse('sensor_configuration'))
+        else:
+            del request.session['selected_site']
+            return HttpResponseRedirect(reverse('index'))
 
 
 class DeleteSensorView(View):
@@ -78,8 +89,9 @@ class SensorList(TemplateView):
             number_of_sensors = 'N/A'
 
         context = dict(current_section='configuration', current_page='sensor', number_of_sensors=number_of_sensors,
-                       sensor_list=sensors)
+                       sensor_list=sensors, current_site=request.session.get('selected_site', ""))
 
+        print(context)
         return self.render_to_response(context)
 
 
@@ -92,7 +104,9 @@ class AddSensorView(TemplateView):
         if number_of_sensors is None:
             number_of_sensors = 'N/A'
 
-        context = dict(current_section='configuration', current_page='sensor', number_of_sensors=number_of_sensors)
+        context = dict(current_section='configuration', current_page='sensor', number_of_sensors=number_of_sensors,
+                       current_site=request.session.get('selected_site', ""))
+        print(context)
 
         return self.render_to_response(context)
 
@@ -111,5 +125,6 @@ class SensorDetails(TemplateView):
             number_of_sensors = 'N/A'
 
         context = dict(current_section='configuration', current_page='sensor', number_of_sensors=number_of_sensors,
-                       details=details)
+                       details=details, current_site=request.session.get('selected_site', ""))
+        print(context)
         return self.render_to_response(context)

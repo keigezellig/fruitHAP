@@ -11,11 +11,11 @@ function SiteListViewModel() {
 
     $.ajax({
         type: "GET",
-        url: "{% url 'site' %}",
+        url: configuration['configurator']['site_url'],
         contentType: "text/javascript",
         dataType: 'json',
-        success: function (sites) {
-            var siteList = $.map(sites, function (item) {
+        success: function (siteObject) {
+            var siteList = $.map(siteObject.sites, function (item) {
                 return new SiteItem(item.name, item.hostname);
             });
 
