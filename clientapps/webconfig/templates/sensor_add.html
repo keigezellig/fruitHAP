@@ -1,0 +1,122 @@
+{% extends 'configuration.html' %}
+{% load staticfiles %}
+{% block main_content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Add new sensor</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-horizontal" data-bind="submit: save, reset: clearForm">
+                <div class="col-md-10">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">General</div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="sensorName" class="control-label col-md-2">Name</label>
+                                <div class="col-md-10">
+                                    <input data-bind="textInput: name" id="sensorName" class="form-control"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sensorDisplayName" class="control-label col-md-2">Display name</label>
+                                <div class="col-md-10">
+                                    <input data-bind="textInput: displayName" id="sensorDisplayName"
+                                           class="form-control"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sensorDescription" class="control-label col-md-2">Description</label>
+                                <div class="col-md-10">
+                                    <input data-bind="textInput: description" id="sensorDescription"
+                                           class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="sensorCategory" class="control-label col-md-2">Category</label>
+                                <div class="col-md-10">
+                                    <input data-bind="textInput: category" id="sensorCategory" class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2">Select sensor type</label>
+                                <div class="col-md-10">
+                                    <select class="form-control"
+                                            data-bind="options: availableSensorTypes, optionsCaption: 'Select an item...', value: selectedSensorType"></select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div data-bind="visible: parameters().length>0" class="row">
+                        <div class="col-md-12">
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Parameters</div>
+                                <div class="panel-body">
+                                    <p>Device specific parameters</p>
+                                    <div data-bind="foreach: parameters">
+                                        <div class="form-group">
+                                            <label data-bind="attr: {for: name}, text: name"
+                                                   class="control-label col-md-2"></label>
+                                            <div data-bind="if: allowableValues().length == 0" class="col-md-10">
+                                                <input data-bind="attr: {id: name}, textInput: value"
+                                                       class="form-control"/>
+                                            </div>
+
+                                            <div data-bind="ifnot: allowableValues().length == 0" class="col-md-10">
+                                                <select class="form-control"
+                                                        data-bind="options: allowableValues, optionsCaption: 'Select an item...', optionsText: 'name', optionsValue: 'value', value: value"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="btn-group ">
+                        <button type="submit" class="btn btn-primary"><span
+                                class="glyphicon glyphicon-floppy-save"></span> Save
+                        </button>
+                    </div>
+                    <div class="btn-group ">
+                        <button type="reset" class="btn btn-primary"> Clear</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+
+
+    <div class="row" data-bind="visible: errorsWhileSaving">
+        <div class="col-md-12">
+            <div class="alert alert-danger fade in">
+                <strong>Error!</strong> A problem has been occurred while submitting your data.
+            </div>
+        </div>
+    </div>
+
+    <div class="row" data-bind="visible: errorsWhileSaving == false">
+        <div class="col-md-12">
+            <div class="alert alert-success fade in">
+                Sensor added succesfully.
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+{% block additional_javascript %}
+    <script src="{% static "js/viewmodels/updateSensorViewModel.js" %}"></script>
+{% endblock %}

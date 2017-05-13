@@ -4,10 +4,11 @@ using FruitHAP.Sensor.PacketData.AC;
 using FruitHAP.Core.Controller;
 using FruitHAP.Common.EventBus;
 using FruitHAP.Core.Sensor.PacketData.General;
+using FruitHAP.Common.Configuration;
 
 namespace FruitHAP.Sensor.KaKu.Common
 {
-	public abstract class KakuDevice: ISensor
+    public abstract class KakuDevice: ISensor
 	{
 		private string name;
 		private string description;	
@@ -28,24 +29,35 @@ namespace FruitHAP.Sensor.KaKu.Common
 		{
 			this.eventBus = eventBus;
 			this.logger = logger;
-			eventBus.Subscribe<ControllerEventData<ACPacket>>(HandleIncomingACMessage,f => f.Direction == Direction.FromController && DataReceivedCorrespondsToThisDevice(f.Payload));			
-            eventBus.Subscribe<NakPacket<ControllerEventData<ACPacket>>>(HandleNakMessage, filter => filter.Data.Payload.DeviceId == this.deviceId && filter.Data.Payload.UnitCode == this.unitCode );
 		}
-			
-		public string Name
+
+        public void Initialize()
+        {
+            eventBus.Subscribe<ControllerEventData<ACPacket>>(HandleIncomingACMessage,f => f.Direction == Direction.FromController && DataReceivedCorrespondsToThisDevice(f.Payload));          
+            eventBus.Subscribe<NakPacket<ControllerEventData<ACPacket>>>(HandleNakMessage, filter => filter.Data.Payload.DeviceId == this.deviceId && filter.Data.Payload.UnitCode == this.unitCode );
+        }			
+
+        [ConfigurationItem]
+        public string Name
 		{
 			get { return name; }
 			set { name = value; }
 		}
 
-		public string Description
+        [ConfigurationItem]
+        public string Description
 		{
 			get { return description; }
 			set { description = value; }
 		}
 
+        [ConfigurationItem]
         public string Category { get; set; }
 
+        [ConfigurationItem]
+        public string DisplayName { get; set; }
+
+        [ConfigurationItem(IsSensorSpecific = true)]
 		public uint DeviceId {
 			get {
 				return this.deviceId;
@@ -55,7 +67,8 @@ namespace FruitHAP.Sensor.KaKu.Common
 			}
 		}
 
-		public byte UnitCode {
+        [ConfigurationItem(IsSensorSpecific = true)]
+        public byte UnitCode {
 			get {
 				return this.unitCode;
 			}

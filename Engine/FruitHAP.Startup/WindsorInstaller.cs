@@ -202,18 +202,14 @@ namespace FruitHAP.Startup
         private void RegisterLogging(IWindsorContainer container)
         {
 			RegisterApplicationLogging (container);
-			RegisterServiceHostLogging (container);
-        }
+		}
 
 		private void RegisterApplicationLogging (IWindsorContainer container)
 		{
 			container.AddFacility<LoggingFacility> (f => f.LogUsing (new NLogFactory (NLogConfigurationFactory.CreateNLogConfiguration ())));
 		}
 
-		private void RegisterServiceHostLogging (IWindsorContainer container)
-		{
-			container.Register (Component.For<LogFactory> ().UsingFactoryMethod<LogFactory> (ServiceHostConfigurator.CreateLogFactoryForServiceHost));
-		}
+		
 
         private void Kernel_ComponentRegistered(string key, IHandler handler)
         {            			

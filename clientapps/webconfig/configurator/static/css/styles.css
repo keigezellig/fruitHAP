@@ -1,0 +1,76 @@
+body
+{
+    background-color: #0d1207
+}
+
+.navbar-custom {
+    color: #FFFFFF;
+    background-color: #709A3C;
+}
+.navbar-active-custom {
+    color: #FFFFFF;
+    background-color: #4a6527;
+}
+
+a.list-group-item, button.list-group-item, a.list-group-item:hover, a.list-group-item:focus
+{
+    color: #FFFFFF;
+}
+
+a.list-group-item:hover, a.list-group-item:focus
+{
+    background-color: #0d1207
+}
+.list-group-item {
+    color: #FFFFFF;
+    background-color: #4a6527;
+}
+
+
+.sidebar-active-custom {
+    color: #FFFFFF;
+    background-color: #709A3C;
+}
+
+.navbar .brand, .navbar .nav > li > a:hover {
+    color: #0d1207;
+}
+
+.navbar .brand, .navbar .nav > li > a:focus {
+    color: #0d1207;
+}
+
+.btn-primary {
+    background-color: #709A3C
+}
+
+.btn-primary:focus, .btn-primary:hover  {
+    background-color: #4a6527
+}
+
+.btn-danger {
+    background-color: #c7053d
+}
+
+.btn-danger:focus, .btn-danger:hover  {
+    background-color: #94042d
+}
+
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+	background-color: #709A3C;
+}
+.pagination > .disabled > span, .pagination > .disabled > span:hover, .pagination > .disabled > span:focus, .pagination > .disabled > a, .pagination > .disabled > a:hover, .pagination > .disabled > a:focus {
+	background-color: #4a6527;
+}
+
+.transparentbg
+{
+    background-color: transparent;
+}
+.footer {
+    position: fixed;
+    height: 60px;
+    bottom: 0;
+    width: 100%;
+}
+

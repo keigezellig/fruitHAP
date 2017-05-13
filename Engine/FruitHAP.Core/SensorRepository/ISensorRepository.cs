@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace FruitHAP.Core.SensorRepository
 {
-    public interface ISensorRepository
+    public interface ISensorRepository : IDisposable
     {
         void Initialize();
         IEnumerable<T> FindAllSensorsOfType<T>() where T: ISensor;

@@ -43,6 +43,9 @@ namespace FruitHAP.Controller.Rfx
 			case RfxPacketType.RfxSensorVoltage:
 				logger.Debug ("RfxSensorVoltage packet received");
 				return new RfxRfxSensorVoltagePacketHandler (logger, eventBus);
+            case RfxPacketType.RfxMeter:
+                logger.Debug ("RfxMeter packet received");
+                return new RfxRfxMeterPacketHandler (logger, eventBus);
 			case RfxPacketType.Interface:
 				logger.Debug ("Interface packet received");
 				return new RfxInterfacePacketHandler (logger, eventBus);

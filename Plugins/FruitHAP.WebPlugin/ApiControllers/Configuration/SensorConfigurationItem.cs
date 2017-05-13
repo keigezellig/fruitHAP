@@ -6,6 +6,7 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
     public class SensorConfigurationItem
     {
         protected string name;
+        protected string displayName;
         protected string description;
         protected string category;
         protected string type;
@@ -14,9 +15,10 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 
  
 
-        protected SensorConfigurationItem(string name, string description, string category, string type, string valueType, Dictionary<string,string> operations)
+        protected SensorConfigurationItem(string name, string displayName, string description, string category, string type, string valueType, Dictionary<string,string> operations)
         {
             this.name = name;
+            this.displayName = displayName;
             this.description = description;
             this.category = category;
             this.type = type;
@@ -33,6 +35,13 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
             }
         }
 
+        public string DisplayName
+        {
+            get
+            {
+                return this.displayName;
+            }
+        }
         public string Description
         {
             get

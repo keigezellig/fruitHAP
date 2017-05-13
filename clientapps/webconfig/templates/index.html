@@ -1,0 +1,50 @@
+<!--
+  ~ * -----------------------------------------------------------------------------------------------
+  ~ * "THE APPRECIATION LICENSE" (Revision 0x100):
+  ~ * Copyright (c) 2016. M. Joosten
+  ~ * You can do anything with this program and its code, even use it to run a nuclear reactor (why should you)
+  ~ * But I won't be responsible for possible damage and mishap, because i never tested it on a nuclear reactor (why should I..)
+  ~ * If you think this program/code is absolutely great and supercalifragilisticexpialidocious (or just plain useful), just
+  ~ * let me know by sending me a nice email or postcard from your country of origin and leave this header in the code.
+  ~ * Or better join my efforts to make this program even better :-)
+  ~ * See my blog (http://joosten-industries/blog), for contact info
+  ~ * ---------------------------------------------------------------------------------------------------
+  ~
+  ~
+  -->
+
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+
+{% block main_content %}
+    <h2>Welcome to the FruitHAP administration interface</h2>
+    <p>
+        With this interface the FruitHAP system can be configured.<br/>
+        Click on the buttons above to gain access to the different configuration options
+    </p>
+
+    <div class="row">
+
+                <div class="col-md-4">
+
+        <form class="form-horizontal"  action="{% url 'site' %}" method="post">
+            {% csrf_token %}
+            <select class="form-control" name="site" id="siteSelection"
+                    data-bind="options: availableSites, optionsCaption: 'Select an item...', optionsText: 'name', optionsValue: 'name', value: name"></select>
+                                <div class="btn-group ">
+                        <button type="submit" class="btn btn-primary"><span
+                                class="glyphicon glyphicon-check"></span> Select
+                        </button>
+                    </div>
+
+        </form>
+                </div>
+    </div>
+
+{% endblock %}
+
+{% block additional_javascript %}
+    <script src="{% static "js/viewmodels/siteListViewModel.js" %}"></script>
+{% endblock %}
+

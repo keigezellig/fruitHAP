@@ -11,10 +11,11 @@ using FruitHAP.Core.Controller;
 using Microsoft.Practices.Prism.PubSubEvents;
 using FruitHAP.Common.EventBus;
 using FruitHAP.Core.Sensor.SensorValueTypes;
+using FruitHAP.Common.Configuration;
 
 namespace FruitHAP.Sensor.Camera.Devices
 {
-	public class Camera : ICamera
+    public class Camera : ICamera
     {
         private readonly ILogger logger;
 		private readonly IEventBus eventBus;
@@ -24,15 +25,29 @@ namespace FruitHAP.Sensor.Camera.Devices
         private Uri uri;
 		private DateTime lastUpdateTime;
 
+        [ConfigurationItem]
         public string Name { get; set; }
+
+        [ConfigurationItem]
+        public string DisplayName { get; set; }
+
+        [ConfigurationItem]
         public string Description { get; set; }
+
+        [ConfigurationItem]
         public string Category { get; set; }
+
+        [ConfigurationItem(IsSensorSpecific = true)]
         public string Resolution { get; set; }
+
+        [ConfigurationItem(IsSensorSpecific = true)]
         public string Username { get; set; }
 
 
-
+        [ConfigurationItem(IsSensorSpecific = true)]
         public string Password { get; set; }
+
+        [ConfigurationItem(IsSensorSpecific = true)]
         public string Url
         {
             get
@@ -50,10 +65,13 @@ namespace FruitHAP.Sensor.Camera.Devices
         {
             this.logger = logger;
 			this.eventBus = eventBus;
-			this.lastUpdateTime = DateTime.Now;
-			eventBus.Subscribe<ControllerEventData<ImageResponsePacket>>(HandleIncomingResponse, f => f.Direction == Direction.FromController && f.Payload.DestinationSensor == Name);
         }
 
+        public void Initialize()
+        {
+            this.lastUpdateTime = DateTime.Now;
+            eventBus.Subscribe<ControllerEventData<ImageResponsePacket>>(HandleIncomingResponse, f => f.Direction == Direction.FromController && f.Payload.DestinationSensor == Name);
+        }
 
         void HandleIncomingResponse(ControllerEventData<ImageResponsePacket> response)
         {

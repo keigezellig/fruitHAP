@@ -26,21 +26,22 @@ namespace FruitHAP.Common.EventBus
 		{
 			var theEvent = aggregator.GetEvent<PrismEvent<TEvent>> ();
 			theEvent.Subscribe(eventHandler,ThreadOption.PublisherThread,true,new Predicate<TEvent>(eventFilter));
-			logger.Debug ("Subscribed to event");
+            logger.DebugFormat ("Subscribed from event {0}",theEvent);
+
 		}
 
 		public void Subscribe<TEvent> (Action<TEvent> eventHandler)
 		{
 			var theEvent = aggregator.GetEvent<PrismEvent<TEvent>> ();
 			theEvent.Subscribe (eventHandler, ThreadOption.PublisherThread, true);
-			logger.Debug ("Subscribed to event");
+            logger.DebugFormat ("Subscribed from event {0}",theEvent);
 		}
 
 		public void Unsubscribe<TEvent> (Action<TEvent> eventHandler)
 		{
 			var theEvent = aggregator.GetEvent<PrismEvent<TEvent>> ();
 			theEvent.Unsubscribe (eventHandler);
-			logger.Debug ("Unsubscribed from event");
+            logger.DebugFormat ("Unsubscribed from event {0}",theEvent);
 		}
 
 	}

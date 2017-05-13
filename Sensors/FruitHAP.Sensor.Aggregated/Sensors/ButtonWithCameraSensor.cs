@@ -7,10 +7,11 @@ using FruitHAP.Core.SensorRepository;
 using FruitHAP.Core.Sensor.SensorTypes;
 using System.Linq;
 using FruitHAP.Common.EventBus;
+using FruitHAP.Common.Configuration;
 
 namespace FruitHAP.Sensor.Aggregated.Sensors
 {
-	public class ButtonWithCameraSensor : IAggregatedSensor
+    public class ButtonWithCameraSensor : IAggregatedSensor
 	{
 		private IButton button;
 		private ICamera camera;
@@ -26,9 +27,10 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 
 		#region ISensor implementation
 
-		public string Name { get; set; }
 
-		public string Description { get; set; }
+		public string Name { get; set; }
+        public string DisplayName { get; set; }
+        public string Description { get; set; }
         public string Category { get; set; }
 
 
@@ -94,6 +96,11 @@ namespace FruitHAP.Sensor.Aggregated.Sensors
 			logger.Debug ("Unsubscribing from events");
 			eventBus.Unsubscribe<SensorEventData> (OnButtonPressed);
 		}
+
+        public void Initialize()
+        {
+            throw new NotImplementedException();
+        }
 	}
 }
 

@@ -45,6 +45,19 @@
         }
 
       ]
+    },
+{
+      "Name": "RFXMeter",
+      "Id": 113,
+      "Length": 10,
+      "SubTypes": [
+        {
+          "Name": "RfxMeter",
+          "Id": 0,
+          "IsEnabled": true,
+          "SensitivityFlag": "X10"
+        }        
+      ]
     }
   ]
 }

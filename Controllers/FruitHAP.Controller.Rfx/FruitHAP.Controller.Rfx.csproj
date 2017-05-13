@@ -53,6 +53,7 @@
     <Compile Include="PacketHandlers\RfxRfxSensorTemperaturePacketHandler.cs" />
     <Compile Include="PacketHandlers\RfxRfxSensorVoltagePacketHandler.cs" />
     <Compile Include="InternalPacketData\RfxStatusPacket.cs" />
+    <Compile Include="PacketHandlers\RfxRfxMeterPacketHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

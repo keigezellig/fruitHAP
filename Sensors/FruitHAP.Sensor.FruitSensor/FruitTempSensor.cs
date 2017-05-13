@@ -6,10 +6,11 @@ using FruitHAP.Core.Sensor.PacketData.RFXSensor;
 using FruitHAP.Core.Sensor;
 using Castle.Core.Logging;
 using FruitHAP.Core.Sensor.SensorValueTypes;
+using FruitHAP.Common.Configuration;
 
-namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
+namespace FruitHAP.Sensor.FruitSensor
 {
-	public class FruitTempSensor : ITemperatureSensor
+    public class FruitTempSensor : ITemperatureSensor
 	{
 		private QuantityValue<TemperatureUnit> temperature;
 		private DateTime lastUpdated;
@@ -47,12 +48,18 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 
 		#region ISensor implementation
 
-		public string Name { get; set; }
-		public string Description { get; set;}
-		public string Category { get; set; }
+        [ConfigurationItem]
+        public string Name { get; set; }
+        [ConfigurationItem]
+        public string DisplayName { get; set; }
+        [ConfigurationItem]
+        public string Description { get; set;}
+        [ConfigurationItem]
+        public string Category { get; set; }
 
 		#endregion
 
+        [ConfigurationItem(IsSensorSpecific = true)]
 		public byte SensorId { get; set; }
 
 
@@ -63,12 +70,16 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 		{
 			this.eventBus = eventBus;
 			this.logger = logger;
-			this.temperature = new QuantityValue<TemperatureUnit> ();
-			this.lastUpdated = DateTime.Now;
-
-			eventBus.Subscribe<ControllerEventData<RFXSensorTemperaturePacket>>(HandleIncomingTempMessage,f => f.Direction == Direction.FromController && f.Payload.SensorId == SensorId);
 
 		}
+
+        public void Initialize()
+        {
+            this.temperature = new QuantityValue<TemperatureUnit> ();
+            this.lastUpdated = DateTime.Now;
+
+            eventBus.Subscribe<ControllerEventData<RFXSensorTemperaturePacket>>(HandleIncomingTempMessage,f => f.Direction == Direction.FromController && f.Payload.SensorId == SensorId);
+        }
 
 		public override string ToString ()
 		{
@@ -85,7 +96,7 @@ namespace FruitHAP.Sensor.FruitSensor.FruitTempSensor
 		{
 			lastUpdated = DateTime.Now;
 			var temperatureValue = new TemperatureQuantity () {
-				Value = obj.Payload.TemperatureInCentiCelsius / 100,
+                Value = (double)(obj.Payload.TemperatureInCentiCelsius / 100.0),
 				Unit = TemperatureUnit.Celsius
 			};
 			temperature = new QuantityValue<TemperatureUnit> ();

@@ -63,6 +63,8 @@
     <Compile Include="EventBus\IEventBus.cs" />
     <Compile Include="EventBus\EventBus.cs" />
     <Compile Include="Helpers\BitBangExtensions.cs" />
+    <Compile Include="Configuration\ConfigurationItemAttribute.cs" />
+    <Compile Include="Configuration\ConfigurationHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

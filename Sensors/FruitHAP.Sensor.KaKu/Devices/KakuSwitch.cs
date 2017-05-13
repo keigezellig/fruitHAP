@@ -7,6 +7,7 @@ using FruitHAP.Core.Sensor.SensorTypes;
 using FruitHAP.Core.Sensor.SensorValueTypes;
 using FruitHAP.Sensor.KaKu.Common;
 using FruitHAP.Sensor.PacketData.AC;
+using FruitHAP.Common.Configuration;
 
 namespace FruitHAP.Sensor.KaKu
 {
@@ -24,7 +25,8 @@ namespace FruitHAP.Sensor.KaKu
 			this.lastUpdateTime = DateTime.Now;
 		}
 
-		public ACCommand OnCommand {
+        [ConfigurationItem(IsSensorSpecific = true)]
+        public ACCommand OnCommand {
 			get {
 				return this.onCommand;
 			}
@@ -33,7 +35,8 @@ namespace FruitHAP.Sensor.KaKu
 			}
 		}
 
-		public ACCommand OffCommand {
+        [ConfigurationItem(IsSensorSpecific = true)]
+        public ACCommand OffCommand {
 			get {
 				return this.offCommand;
 			}
@@ -41,7 +44,9 @@ namespace FruitHAP.Sensor.KaKu
 				offCommand = value;
 			}
 		}
-		public Trigger Trigger {
+
+        [ConfigurationItem(IsSensorSpecific = true)]
+        public Trigger Trigger {
 			get {
 				return this.trigger;
 			}

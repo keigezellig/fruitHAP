@@ -2,7 +2,7 @@
 
 namespace FruitHAP.Core.Sensor.SensorValueTypes
 {
-	public class NumberValue
+    public class NumberValue : ISensorValueType
 	{
 		public double Value { get; set; }
 

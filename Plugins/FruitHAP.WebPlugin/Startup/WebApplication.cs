@@ -3,6 +3,8 @@ using Owin;
 using FruitHAP.Core;
 using System.Web.Http;
 using OWIN.Windsor.DependencyResolverScopeMiddleware;
+using WebApiContrib.Formatting.Jsonp;
+
 
 namespace FruitHAP.Plugins.Web.Startup
 {
@@ -25,6 +27,8 @@ namespace FruitHAP.Plugins.Web.Startup
 		{
 			HttpConfiguration config = new HttpConfiguration();
 			config.MapHttpAttributeRoutes ();
+            config.AddJsonpFormatter();
+            config.Formatters.Remove(config.Formatters.XmlFormatter);
 			config.EnsureInitialized ();
 			return config;
 		}

@@ -6,6 +6,12 @@ using FruitHAP.Core.Sensor;
 using FruitHAP.Core.SensorRepository;
 using FruitHAP.Common.Helpers;
 using System;
+using FruitHAP.Common.Configuration;
+using System.Collections;
+using Castle.Core.Logging;
+using FruitHAP.Plugins.Web.ApiControllers.Configuration.Validators;
+using FluentValidation.Results;
+using System.Reflection;
 
 
 namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
@@ -16,13 +22,17 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 		private readonly ISensorPersister persister;
 		private readonly ISensorRepository repos;
 
-		public ConfigurationController (ISensorPersister persister, ISensorRepository repos)
+        private readonly ILogger log;
+
+		public ConfigurationController (ISensorPersister persister, ISensorRepository repos, ILogger log)
 		{
 			this.repos = repos;
 			this.persister = persister;		
+            this.log = log;
 		}
 
-		/// <summary>
+		
+        /// <summary>
 		/// 
 		/// </summary>
 		/// <remarks>Returns all sensors defined in the system</remarks>
@@ -34,6 +44,112 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 			var sensors = GetAllSensorsFromConfiguration ();
             return Ok<IEnumerable<SensorConfigurationItem>> (sensors);
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>Returns the number of sensors defined in the system</remarks>
+        /// <response code="200">The number of sensors defined in the system</response>
+        [Route("sensors/count")]
+        [HttpGet]
+        public IHttpActionResult GetSensorCount()
+        {
+            var count = GetAllSensorsFromConfiguration ().Count();
+            return Ok(count);
+        }
+
+        [Route("sensors/types")]
+        [HttpGet]
+        public IHttpActionResult GetSensorTypeNames()
+        {
+            var types = CollectSensorTypeNames();
+            return Ok(types);
+        }
+
+        [Route("sensors/types/{name}")]
+        [HttpGet]
+        public IHttpActionResult GetSensorParameters(string name, bool onlySpecific = false)
+        {
+            var type = CollectSensorParameters(name,onlySpecific);
+            if (type == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(type);
+        }
+
+        [Route("sensors/delete/{name}")]
+        [HttpDelete]
+        public IHttpActionResult DeleteSensor(string name)
+        {
+            var sensorConfigEntry = persister.GetSensorConfiguration().SingleOrDefault(entry => 
+                {
+                    string parametersInJson = entry.Parameters.ToJsonString();
+                    Dictionary<string, object> parameters = parametersInJson.ParseJsonString<Dictionary<string, object>>();
+                    return parameters["Name"].ToString() == name;
+                                        
+                });
+            
+            if (sensorConfigEntry != null)
+            {
+                persister.DeleteConfigurationEntry(sensorConfigEntry);
+                persister.SaveConfiguration();
+                return Ok();
+            }
+            else
+            {
+                return NotFound ();
+            }
+
+        }
+        [Route("sensors/add")]
+        [HttpPost]
+        public IHttpActionResult AddSensor(SensorUpdateDTO input)
+        {            
+
+            if (repos.GetSensorByName(input.Name) != null)
+                return BadRequest("A sensor with this name already exist");
+            
+            SensorUpdateValidator validator = new SensorUpdateValidator();
+            var validateResults = validator.Validate(input);
+            if (!validateResults.IsValid)
+            {
+                log.Error("Error in input: ");
+                foreach (var error in validateResults.Errors)
+                {
+                    log.ErrorFormat("{0}: {1}", error.PropertyName, error.ErrorMessage);
+                }
+
+                return BadRequest(validateResults.Errors.ToJsonString());
+            }
+            SensorConfigurationEntry entry = new SensorConfigurationEntry();
+            entry.IsAggegrate = false;
+            entry.Type = input.Type;
+            var parameters = new Dictionary<string,object>();
+            parameters["Name"] = input.Name;
+            parameters["Description"] = input.Description;
+            parameters["DisplayName"] = input.DisplayName;
+            parameters["Category"] = input.Category;
+            foreach (var specificParameter in input.Parameters)
+            {
+                if (specificParameter.Type == "String")
+                {
+                    parameters[specificParameter.Name] = specificParameter.Value;
+                }
+                else
+                {
+                    parameters[specificParameter.Name] = Int32.Parse(specificParameter.Value);
+                }
+            }
+
+            entry.Parameters = parameters;
+            persister.AddConfigurationEntry(entry);
+            persister.SaveConfiguration();
+
+            return Ok();
+        }
+
 
 		/// <summary>
 		/// 
@@ -55,9 +171,6 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
             {
                 return NotFound ();
             }
-
-
-  
 		}
 
 		private IEnumerable<SensorConfigurationItem> GetAllSensorsFromConfiguration()
@@ -85,10 +198,47 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
             return result;
 		}
 
+
+        private IEnumerable<string> CollectSensorTypeNames()
+        {
+            var sensorTypes = persister.GetSensorTypes();
+            return sensorTypes.Select(t => t.GetType().Name);
+        }
+
+        private IEnumerable CollectSensorParameters(string sensorTypeName, bool onlySpecific)
+        {
+            var sensorType = persister.GetSensorTypes().SingleOrDefault(t => t.GetType().Name == sensorTypeName);
+            if (sensorType == null)
+            {
+                return null;
+            }
+                
+            var props = sensorType.GetConfigurableProperties(onlySpecific);
+            //props[3].
+            return props.Select(prop =>
+                {
+                    List<AllowedValueItem> allowedValues = null;
+                    var propType = prop.PropertyType;
+                    if (propType.IsEnum)
+                    {                                             
+                        allowedValues = new List<AllowedValueItem>();
+                      
+                        foreach (var value in Enum.GetValues(propType))
+                        {
+                            var name = Enum.GetName(propType,value);
+                            allowedValues.Add(new AllowedValueItem() {Name = name, Value = (int)value});
+                        }
+                    }
+                    return new SensorParameterItem{Parameter = prop.Name, Type = prop.PropertyType.Name, allowedValues = allowedValues };
+                }
+            );
+        }
+
         private SensorConfigurationItem CreateAggregateItem(string type, Dictionary<string, object> parameters)
         {
          
             string name = parameters["Name"].ToString();
+            string displayName = parameters["DisplayName"].ToString();
             string description = parameters["Description"].ToString();
             string category = parameters["Category"].ToString();
             List<string> inputs = parameters["Inputs"].ToString().ParseJsonString<List<string>>();
@@ -96,7 +246,7 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
 
             foreach (var input in inputs)
             {
-                inputLinks.Add(Url.Link("GetSensorByName", new { name = input}));
+                inputLinks.Add(Url.Route("GetSensorByName", new { name = input}));
             }
 
             var valueType = repos.GetSensorValueType(name);
@@ -106,15 +256,16 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
                 valueTypeName = valueType.Name;                
             }
             Dictionary<string,string> operations = GetOperations(name);
-            return new AggregatedSensor(name, description, category, type, valueTypeName, operations, inputLinks);
+            return new AggregatedSensor(name, displayName, description, category, type, valueTypeName, operations, inputLinks);
         }
 
         private SensorConfigurationItem CreateNonAggregateItem(string type, Dictionary<string, object> parameters)
         {
             string name = parameters["Name"].ToString();
+            string displayName = parameters["DisplayName"].ToString();
             string description = parameters["Description"].ToString();
             string category = parameters["Category"].ToString();
-            Dictionary<string,object> otherParameters = parameters.Where(f => f.Key != "Name" && f.Key != "Description" && f.Key != "Category").ToDictionary(f => f.Key, f => f.Value);
+            Dictionary<string,object> otherParameters = parameters.Where(f => f.Key != "Name" && f.Key != "Description" && f.Key != "DisplayName" && f.Key != "Category").ToDictionary(f => f.Key, f => f.Value);
             var valueType = repos.GetSensorValueType(name);
             string valueTypeName = null;
             if (valueType != null)
@@ -122,13 +273,14 @@ namespace FruitHAP.Plugins.Web.ApiControllers.Configuration
                 valueTypeName = valueType.Name;                
             }
             Dictionary<string,string> operations = GetOperations(name);
-            return new NonAggregatedSensor(name, description, category, type, valueTypeName, operations, otherParameters);
+            return new NonAggregatedSensor(name, displayName, description, category, type, valueTypeName, operations, otherParameters);
         }
 
         Dictionary<string, string> GetOperations(string sensorName)
         {
             var operations = repos.GetOperationsForSensor(sensorName);
-            return operations.ToDictionary(f => f.Name, g => Url.Link("ExecuteOperation", new { name = sensorName, operation = g.Name}));
+            return operations.ToDictionary(f => f.Name, g => Url.Route("ExecuteOperation", new { name = sensorName, operation = g.Name}));
+
         }
 
         
