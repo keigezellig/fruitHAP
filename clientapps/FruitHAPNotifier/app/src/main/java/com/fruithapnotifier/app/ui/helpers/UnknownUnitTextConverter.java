@@ -15,22 +15,13 @@
 
 package com.fruithapnotifier.app.ui.helpers;
 
-public class UnitTextConverterFactory
+
+public class UnknownUnitTextConverter implements UnitTextConverter
 {
-    public static UnitTextConverter getUnitTextConverter(String quantity)
+    @Override
+    public String getUnitText(String unitDefinition)
     {
-        if (quantity.equals("TemperatureQuantity"))
-        {
-            return new TemperatureUnitTextConverter();
-        }
-
-        if (quantity.equals("PercentageQuantity"))
-        {
-            return new PercentageTextConverter();
-        }
-        
-
-        return new UnknownUnitTextConverter();
+        return "(unkn)";
     }
-
 }
+
