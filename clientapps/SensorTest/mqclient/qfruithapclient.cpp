@@ -63,8 +63,7 @@ void QFruitHapClient::setPubSubTopics(const QStringList &topics)
     m_pubSubTopics = topics;
 }
 
-QStringList QFruitHapClient::
-PubSubTopics() const
+QStringList QFruitHapClient::getPubSubTopics() const
 {
     return m_pubSubTopics;
 }

@@ -3,7 +3,7 @@
 
 enum class SwitchState
 {
-    Undefined,On,Off
+    Undefined,Off,On
 };
 
 

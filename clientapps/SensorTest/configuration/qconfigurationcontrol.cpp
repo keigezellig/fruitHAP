@@ -3,29 +3,21 @@
 #include "facedetectionsettings/facedetectionsettingsmodel.h"
 
 
-QConfigurationControl::QConfigurationControl(QFruitHapClient *client, FaceVerifier *faceVerifier, QObject *parent):
-    QObject(parent), m_client(client), m_faceVerifier(faceVerifier)
-{
 
+QConfigurationControl::QConfigurationControl(QFruitHapClient *mqClient, FruitHapApi *apiClient, FaceVerifier *faceVerifier, QObject *parent):
+    QObject(parent), m_mqClient(mqClient), m_apiClient(apiClient), m_faceVerifier(faceVerifier)
+{
     m_sensors = QList<QFruitHapSensor*>();
-    connect(m_client,&QFruitHapClient::responseReceived,this,&QConfigurationControl::onClientResponseReceived);
+    connect(m_apiClient,&FruitHapApi::configResponseReceived,this,&QConfigurationControl::onClientResponseReceived);
     connect(this,&QConfigurationControl::sensorListReceived,this,&QConfigurationControl::onSensorListReceived);
 }
 
 
 void QConfigurationControl::requestSensorList()
 {
-    QJsonObject obj;
-    QJsonObject paramObj;
-
-    obj["OperationName"] = "GetAllSensors";
-    obj["Parameters"] = paramObj;
-    obj["MessageType"] = 0;
-
-    QString routingKey("FruitHAP_RpcQueue.FruitHAP.Core.Action.ConfigurationMessage");
-    QString messageType("FruitHAP.Core.Action.ConfigurationMessage:FruitHAP.Core");
-    m_client->sendMessage(obj,routingKey,messageType);
-}
+    //TODO: use network manager to do request
+    m_apiClient->requestConfiguration();
+ }
 
 void QConfigurationControl::getAllSensors(QList<QFruitHapSensor *> &list) const
 {
@@ -72,59 +64,41 @@ void QConfigurationControl::getAllSwitches(QList<QSwitch *> &list) const
     }
 }
 
-void QConfigurationControl::handleConfigurationMessage(QJsonObject responseObject)
+void QConfigurationControl::handleConfigurationMessage(QJsonArray responseObject)
 {
+        QList<SensorData> sensorDataList;        
 
-    if (responseObject["MessageType"] == 2)
-    {
-        QString message(responseObject["Data"].toString());
-        qCritical() << "Error response received " << message;
-        return;
-    }
-
-    if (responseObject["OperationName"] == "GetAllSensors")
-    {
-        QList<SensorData> sensorDataList;
-        QJsonObject dataObject = responseObject["Data"].toObject();
-        QJsonArray sensorList = dataObject["$values"].toArray();
-        foreach(auto sensor, sensorList)
+        foreach(auto sensor, responseObject)
         {
             QJsonObject sensorObject = sensor.toObject();
-            QJsonObject parameters = sensorObject["Parameters"].toObject();
-            SensorData data(parameters["Name"].toString(),parameters["Category"].toString(), sensorObject["Type"].toString(), parameters["IsReadOnly"].toBool() );
+            SensorData data(sensorObject["Name"].toString(),sensorObject["Category"].toString(), sensorObject["Type"].toString(), sensorObject["Type"].toString().contains("ReadOnly") );
             sensorDataList.append(data);
 
         }
 
         emit sensorListReceived(sensorDataList);
 
-
-    }
-
-
 }
 
-void QConfigurationControl::onClientResponseReceived(const QJsonDocument response, const QString messageType)
+void QConfigurationControl::onClientResponseReceived(const QJsonDocument response)
 {
-    qDebug() << "QConfigurationControl::onClientResponseReceived| Response received " << messageType;
     if (response.isNull() || response.isEmpty())
     {
         qCritical() << "QCameraControl::onClientResponseReceived| Response is empty";
         return;
     }
 
-    QJsonObject responseObject = response.object();
+    QJsonArray responseObject = response.array();
     if (response.isNull() || response.isEmpty())
     {
         qCritical() << "QCameraControl::onClientResponseReceived| Response object is empty";
         return;
     }
 
-    if (messageType.contains("ConfigurationMessage"))
-    {
-        handleConfigurationMessage(responseObject);
 
-    }
+   handleConfigurationMessage(responseObject);
+
+
 }
 
 void QConfigurationControl::onSensorListReceived(const QList<SensorData> list)
@@ -137,7 +111,7 @@ void QConfigurationControl::onSensorListReceived(const QList<SensorData> list)
     {
         if (item.getCategory() == "Switch")
         {
-            QSwitch *eventedSwitch = new QSwitch(m_client,item.getName(),true,item.IsReadOnly(),parent());
+            QSwitch *eventedSwitch = new QSwitch(m_mqClient, m_apiClient, item.getName(),true,item.IsReadOnly(),parent());
             //connect(eventedSwitch, &QSwitch::errorEventReceived, this, &MainWindow::onErrorReceived);            
             m_sensors.append(eventedSwitch);
             qDebug() << "Added " << item.getName();
@@ -148,14 +122,14 @@ void QConfigurationControl::onSensorListReceived(const QList<SensorData> list)
 
         if( (item.getType() == "ButtonWithCameraSensor") || (item.getType() == "SwitchWithCameraSensor"))
         {
-            QCamera *eventedCamera = new QCamera(m_client,item.getName(),false,item.IsReadOnly(),m_faceVerifier,parent());
+            QCamera *eventedCamera = new QCamera(m_mqClient, m_apiClient, item.getName(),false,item.IsReadOnly(),m_faceVerifier,parent());
             m_sensors.append(eventedCamera);
             qDebug() << "Added " << item.getName();
         }
 
         if (item.getType() == "Camera")
         {
-            QCamera *eventedCamera = new QCamera(m_client,item.getName(),true,item.IsReadOnly(),m_faceVerifier,parent());
+            QCamera *eventedCamera = new QCamera(m_mqClient, m_apiClient, item.getName(),true,item.IsReadOnly(),m_faceVerifier,parent());
             m_sensors.append(eventedCamera);
             qDebug() << "Added " << item.getName();
         }

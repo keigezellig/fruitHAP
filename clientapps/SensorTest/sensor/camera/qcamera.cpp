@@ -3,8 +3,8 @@
 
 
 
-QCamera::QCamera(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, FaceVerifier *faceVerifier, QObject *parent):
-    QFruitHapSensor(client,name,isPollable,isReadOnly,parent), m_isFaceDetectionEnabled(false), m_faceVerifier(faceVerifier)
+QCamera::QCamera(QFruitHapClient *client,FruitHapApi *apiClient, QString name, bool isPollable, bool isReadOnly, FaceVerifier *faceVerifier, QObject *parent):
+    QFruitHapSensor(client, apiClient, name,isPollable,isReadOnly,parent), m_isFaceDetectionEnabled(false), m_faceVerifier(faceVerifier)
 {
 
 }
@@ -22,7 +22,7 @@ bool QCamera::isFaceDetectionEnabled() const
 void QCamera::sendImage(const QJsonObject responseObject)
 {
     QJsonObject dataObject = responseObject["Data"].toObject();
-    QByteArray base64Data = dataObject["Content"].toObject()["$value"].toString().toLatin1();
+    QByteArray base64Data = dataObject["Content"].toObject()["ImageData"].toString().toLatin1();
     QDateTime timestamp = QDateTime::fromString(responseObject["TimeStamp"].toString(),Qt::ISODate);
     QByteArray data = QByteArray::fromBase64(base64Data);
     QByteArray imageWithFace;

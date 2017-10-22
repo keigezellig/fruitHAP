@@ -21,7 +21,7 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    const QString DOORCAMERA_NAME = QString("IpCamMotionDetect");
+    const QString DOORCAMERA_NAME = QString("IPCamera");
     const QString ALARMSWITCH_NAME = QString("RedLight");
     const QString APROVESWITCH_NAME = QString("BlueLight");
 

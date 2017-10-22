@@ -13,7 +13,7 @@ TEMPLATE = app
 CONFIG += c++11
 
 
-INCLUDEPATH += /usr/local/include/opencv
+INCLUDEPATH += /usr/include/opencv2
 LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -lopencv_highgui -lopencv_objdetect
 
 SOURCES += \
@@ -41,7 +41,8 @@ SOURCES += \
     configuration/facedetectionsettings/facedetectionsettingsmodel.cpp \
     configuration/facedetectionsettings/facedetectionsetting.cpp \
     statemachine/DoorMachine_sm.cpp \
-    statemachine/door.cpp
+    statemachine/door.cpp \    
+    apimanager/fruithapapi.cpp
 
 
 
@@ -78,7 +79,8 @@ HEADERS  += \
     configuration/facedetectionsettings/facedetectionsettingsmodel.h \
     statemachine/DoorMachine_sm.h \
     statemachine/door.h \    
-    statemachine/statemap.h
+    statemachine/statemap.h \
+    apimanager/fruithapapi.h
 
 FORMS += \
     mainwindow.ui \

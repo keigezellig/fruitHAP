@@ -3,8 +3,8 @@
 #include <QDateTime>
 
 
-QSwitch::QSwitch(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent):
-    QFruitHapSensor(client,name,isPollable,isReadOnly,parent)
+QSwitch::QSwitch(QFruitHapClient *client, FruitHapApi *apiClient, QString name, bool isPollable, bool isReadOnly, QObject *parent):
+    QFruitHapSensor(client, apiClient, name,isPollable,isReadOnly,parent)
 {
 
 }
@@ -58,7 +58,7 @@ void QSwitch::turnOff()
 void QSwitch::sendSignal(const QJsonObject &responseObject)
 {
     QJsonObject dataObject = responseObject["Data"].toObject();
-    int state = dataObject["Content"].toInt();
+    int state = dataObject["Content"].toObject()["Value"].toInt();
     QDateTime timestamp = QDateTime::fromString(responseObject["TimeStamp"].toString(),Qt::ISODate);
     SwitchState theState = static_cast<SwitchState>(state);
     qDebug() << "State for " << m_name << " is " << (int)theState;

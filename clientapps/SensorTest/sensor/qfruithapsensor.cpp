@@ -2,17 +2,19 @@
 #include <QJsonObject>
 
 
-QFruitHapSensor::QFruitHapSensor(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent):
-    QObject(parent), m_client(client), m_name(name), m_isPollable(isPollable), m_isReadOnly(isReadOnly)
+QFruitHapSensor::QFruitHapSensor(QFruitHapClient *client, FruitHapApi *apiClient, QString name, bool isPollable, bool isReadOnly, QObject *parent):
+    QObject(parent), m_apiClient(apiClient), m_client(client), m_name(name), m_isPollable(isPollable), m_isReadOnly(isReadOnly)
 {
     connect(m_client, &QFruitHapClient::responseReceived, this, &QFruitHapSensor::onClientResponseReceived);
+    connect(m_apiClient, &FruitHapApi::sensorResponseReceived, this, &QFruitHapSensor::onApiResponseReceived );
 }
 
 void QFruitHapSensor::sendRequest(const QJsonObject request)
 {
-    QString routingKey("FruitHAP_RpcQueue.FruitHAP.Core.Action.SensorMessage");
-    QString messageType("FruitHAP.Core.Action.SensorMessage:FruitHAP.Core");
-    m_client->sendMessage(request,routingKey,messageType);
+    QString sensorName = request["SensorName"].toString();
+    QString operation = request["Data"].toObject()["OperationName"].toString();
+
+    m_apiClient->requestSensorOperation(sensorName, operation);
 }
 
 void QFruitHapSensor::handleGetValueEvent(const QJsonObject)
@@ -42,31 +44,24 @@ void QFruitHapSensor::onClientResponseReceived(const QJsonDocument response, con
 
      auto topics = m_client->getPubSubTopics();
 
-     if ( (topics.contains(messageType) || messageType.contains("SensorMessage")) && responseObject["SensorName"] == m_name)
+     if ( (topics.contains(messageType) && responseObject["SensorName"] == m_name))
      {
          qDebug() << this->metaObject()->className() << "This response is for me: " << responseObject["SensorName"].toString();
-         if (responseObject["EventType"] == "SensorEvent")
-         {
-            handleSensorEvent(responseObject);
-         }
-
-         if (responseObject["EventType"] == "GetValue")
-         {
-             handleGetValueEvent(responseObject);
-         }
-
-         if (responseObject["EventType"] == "ErrorMessage")
-         {
-             QString message = responseObject["Data"].toObject()["$value"].toString();
-             QString name = responseObject["SensorName"].toString();
-             emit errorEventReceived(message,name);
-         }
-
+         handleSensorEvent(responseObject);
 
      }
 
+}
 
+void QFruitHapSensor::onApiResponseReceived(const QJsonDocument response)
+{
+    QJsonObject responseObject = response.object();
+    QJsonObject dataObject = responseObject["Data"].toObject();
+    QString sensorName = responseObject["SensorName"].toString();
 
+    if (sensorName == m_name && dataObject["TypeName"] != "CommandResult") {
+        handleGetValueEvent(responseObject);
+    }
 }
 
 
@@ -93,9 +88,17 @@ void QFruitHapSensor::getValue()
         qWarning() << "This sensor is not pollable";
         return;
     }
+
+
     QJsonObject obj;
+    QJsonObject commandObject;
+
+    commandObject["OperationName"] = "GetValue";
+    commandObject["Parameters"] = QJsonValue::Null;
+
     obj["SensorName"] = m_name;
-    obj["EventType"] = "GetValue";
+    obj["EventType"] = "Command";
+    obj["Data"] = commandObject;
     sendRequest(obj);
 }
 

@@ -3,10 +3,12 @@
 
 #include <QJsonObject>
 #include <QJsonArray>
-#include "../mqclient/qfruithapclient.h"
+
+#include "../apimanager/fruithapapi.h"
 #include "../sensor/qfruithapsensor.h"
 #include "../sensor/switch/qswitch.h"
 #include "../sensor/camera/qcamera.h"
+#include "../mqclient/qfruithapclient.h"
 #include "sensordata.h"
 #include "../faceverifier/faceverifier.h"
 #include <QTimer>
@@ -16,7 +18,7 @@ class QConfigurationControl : public QObject
 {
     Q_OBJECT
 public:
-    QConfigurationControl(QFruitHapClient *client, FaceVerifier *faceVerifier,  QObject *parent = 0);
+    QConfigurationControl(QFruitHapClient *mqClient, FruitHapApi *apiClient, FaceVerifier *faceVerifier,  QObject *parent = 0);
     void requestSensorList();
     void getAllSensors(QList<QFruitHapSensor*> &list) const;
     QFruitHapSensor* getSensorByName(const QString& name) const;
@@ -26,15 +28,16 @@ public:
     ~QConfigurationControl();
 
 private:
-    QFruitHapClient *m_client;
+    FruitHapApi *m_apiClient;
+    QFruitHapClient *m_mqClient;
     QList<QFruitHapSensor*> m_sensors;
     FaceVerifier *m_faceVerifier;
-    void handleConfigurationMessage(QJsonObject responseObject);
+    void handleConfigurationMessage(QJsonArray responseObject);
 signals:
     void sensorListReceived(const QList<SensorData> list);
     void sensorListLoaded();
 private slots:
-    void onClientResponseReceived(const QJsonDocument response, const QString messageType);
+    void onClientResponseReceived(const QJsonDocument response);
     void onSensorListReceived(const QList<SensorData> list);
 
 };

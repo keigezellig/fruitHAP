@@ -16,11 +16,12 @@
 
 
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_client(new QFruitHapClient(QString("FruitHAP_RpcExchange"), QString("FruitHAP_PubSubExchange"),this)),        
-    m_configControl(m_client, new QOpenCvFaceVerifier(1,false,this), this),
+    m_configControl(m_client, new FruitHapApi("http://localhost:8888/",this), new QOpenCvFaceVerifier(1,false,this), this),
     m_switchBoard(0),
     m_door(new Door(this)),
     m_doorCameraWidget(0)

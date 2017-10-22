@@ -10,7 +10,7 @@ class QSwitch : public QFruitHapSensor
     Q_OBJECT
     void sendSignal(const QJsonObject &responseObject);
 public:
-    QSwitch(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent);
+    QSwitch(QFruitHapClient *client, FruitHapApi *apiClient, QString name, bool isPollable, bool isReadOnly, QObject *parent);
 protected:
     virtual void handleSensorEvent(const QJsonObject responseObject);
     virtual void handleGetValueEvent(const QJsonObject responseObject);

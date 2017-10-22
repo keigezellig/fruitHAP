@@ -1,15 +1,58 @@
-[{"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"BlueLight","DisplayName":"Blue light","Category":"Switch","Description":"Blue light","DeviceId":0x010101,"UnitCode":1}},
- {"Type":"KakuSwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"RedLight","DisplayName":"Red light","Category":"Switch","Description":"Red light","DeviceId":0x010101,"UnitCode":2}},
- {"Type":"KakuReadOnlySwitch","IsAggegrate":false,"Parameters":{"OnCommand":1,"OffCommand":0,"Name":"PIR","DisplayName":"Infrared detector","Category":"Switch","Description":"Motion detector","DeviceId":0xD9D6DA,"UnitCode":10}},
- {"Type":"FruitTempSensorHighAccuracy","IsAggegrate":false,"Parameters":{"SensorId":32,"Name":"TempDesk","DisplayName":"Desk temperature","Category":"Overig","Description":"Temperature at my desk"}},
- {"Type":"FruitHumiditySensorHighAccuracy","IsAggegrate":false,"Parameters":{"SensorId":33,"Name":"HumidityDesk","DisplayName":"Desk humidity","Category":"Overig","Description":"Humidity at my desk"}},
- {"Type":"FruitTempSensor","IsAggegrate":false,"Parameters":{"SensorId":"1","Name":"MyTempSensor","DisplayName":"My temperature sensor","Category":"Overig","Description":"Temperature sensor"}}, 
- {"Type":"KakuButton","IsAggegrate":false,"Parameters":{"Command":4,"Name":"DeurbelVoor","DisplayName":"Doorbell","Description":"My doorbell","Category":"Begane grond","DeviceId":14948386,"UnitCode":1}},
- {"Type":"FakeTemperatureSensor","IsAggegrate":false,"Parameters":{"Name":"FakeTemp","DisplayName":"Fake temp sensor 1","Category":"Overig","Description":"Fake temperature sensor", "Min":0,"Max":50,"Unit":1,"IntervalInMilliSeconds":1000}}, 
- {"Type":"FakeHumiditySensor","IsAggegrate":false,"Parameters":{"Name":"FakeHum","DisplayName":"Fake humidity sensor 1","Category":"Overig","Description":"Fake humidity sensor"}}
-
- 
+[
+    {
+        "Type": "KakuSwitch",
+        "IsAggegrate": false,
+        "Parameters": {
+            "OnCommand": 1,
+            "OffCommand": 0,
+            "Name": "BlueLight",
+            "DisplayName": "Blue light",
+            "Category": "Switch",
+            "Description": "Blue light",
+            "DeviceId": 0x010101,
+            "UnitCode": 1
+        }
+    },
+    {
+        "Type": "KakuSwitch",
+        "IsAggegrate": false,
+        "Parameters": {
+            "OnCommand": 1,
+            "OffCommand": 0,
+            "Name": "RedLight",
+            "DisplayName": "Red light",
+            "Category": "Switch",
+            "Description": "Red light",
+            "DeviceId": 0x010101,
+            "UnitCode": 2
+        }
+    },
+    {
+        "Type": "KakuReadOnlySwitch",
+        "IsAggegrate": false,
+        "Parameters": {
+            "OnCommand": 1,
+            "OffCommand": 0,
+            "Name": "PIR",
+            "DisplayName": "Infrared detector",
+            "Category": "Switch",
+            "Description": "Motion detector",
+            "DeviceId": 0xD9D6DA,
+            "UnitCode": 10
+        }
+    },
+    {
+        "Type": "Camera",
+        "IsAggegrate": false,
+        "Parameters": {
+            "Name": "IPCamera",
+            "DisplayName": "Attic Camera",
+            "Description": "IP Camera @ attic",
+            "Category": "Camera",
+            "Url": "http://192.168.1.229/snapshot.cgi" ,
+            "Resolution": "640x480",
+            "Username": "visitor",
+            "Password": "visitor"
+        }
+    }
 ]
-
-
- 

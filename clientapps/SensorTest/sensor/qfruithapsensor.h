@@ -5,6 +5,7 @@
 #include <QJsonObject>
 #include <QTimer>
 #include "../mqclient/qfruithapclient.h"
+#include "../apimanager/fruithapapi.h"
 
 class QFruitHapSensor : public QObject
 {
@@ -17,8 +18,9 @@ public:
 
 
 protected:
-    QFruitHapSensor(QFruitHapClient *client, QString name, bool isPollable, bool isReadOnly, QObject *parent = 0);
+    QFruitHapSensor(QFruitHapClient *client, FruitHapApi *apiClient, QString name, bool isPollable, bool isReadOnly, QObject *parent = 0);
     QFruitHapClient* m_client;
+    FruitHapApi* m_apiClient;
     QString m_name;
     bool m_isPollable;
     bool m_isReadOnly;
@@ -30,6 +32,7 @@ signals:
 
 private slots:
     void onClientResponseReceived(const QJsonDocument response, const QString messageType);
+    void onApiResponseReceived(const QJsonDocument response);
 public slots:
     void getValue();
 
