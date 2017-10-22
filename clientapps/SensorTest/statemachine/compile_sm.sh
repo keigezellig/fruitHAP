@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar ~/apps/smc/bin/Smc.jar -c++ $1
+java -jar /opt/smc/bin/Smc.jar -c++ $1

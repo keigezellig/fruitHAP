@@ -28,6 +28,20 @@
         }
     },
     {
+        "Type": "KakuSwitch",
+        "IsAggegrate": false,
+        "Parameters": {
+            "OnCommand": 1,
+            "OffCommand": 0,
+            "Name": "Fan",
+            "DisplayName": "Portable fan",
+            "Category": "Switch",
+            "Description": "Fan",
+            "DeviceId": 0x010101,
+            "UnitCode": 3
+        }
+    },
+    {
         "Type": "KakuReadOnlySwitch",
         "IsAggegrate": false,
         "Parameters": {

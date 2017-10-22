@@ -33,9 +33,9 @@ Exit
 }
 {
   ApprovalTimeOut
-    WaitingForFaceDetection
+    Alarm
     {
-	onApprovalTimeOut();
+	onNotApproved();	
     }
   Approval (isApproved: const bool)
     [isApproved=false] 

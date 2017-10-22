@@ -13,7 +13,6 @@
 
 #include "statemap.h"
 #include <QByteArray>
-
 // Forward declarations.
 class MainMap;
 class MainMap_WaitingForFaceDetection;

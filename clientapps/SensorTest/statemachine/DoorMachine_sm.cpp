@@ -151,12 +151,12 @@ void MainMap_WaitingForApproval::ApprovalTimeOut(DoorMachineContext& context)
     context.clearState();
     try
     {
-        ctxt.onApprovalTimeOut();
-        context.setState(MainMap::WaitingForFaceDetection);
+        ctxt.onNotApproved();
+        context.setState(MainMap::Alarm);
     }
     catch (...)
     {
-        context.setState(MainMap::WaitingForFaceDetection);
+        context.setState(MainMap::Alarm);
         throw;
     }
     context.getState().Entry(context);
