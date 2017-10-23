@@ -54,11 +54,13 @@ private:
 
 private slots:
     void loadSensors();    
-    void initDoorSetup();
+    void armDoor();
+    void disarmDoor();
     void on_actionConnect_triggered();
     void on_actionDisconnect_triggered();    
     void on_actionInit_sensors_triggered();
     void on_actionInit_door_triggered();
+    void on_actionDisarm_door_alarm_triggered();
     void on_btnApprove_clicked();
     void on_btnNotApprove_clicked();
     void on_btnReset_clicked();

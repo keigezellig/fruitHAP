@@ -183,7 +183,7 @@ void MainWindow::stopAllSounds()
     m_soundEffects["NoAnswer"]->stop();
 }
 
-void MainWindow::initDoorSetup()
+void MainWindow::armDoor()
 {
 
     connect(m_door,&Door::initialize,this,&MainWindow::onDoorInitialize);
@@ -203,6 +203,37 @@ void MainWindow::initDoorSetup()
     {
         qCritical () << "DoorCamera not found";
     }
+}
+
+void MainWindow::disarmDoor()
+{
+    disconnect(m_door,&Door::initialize,this,&MainWindow::onDoorInitialize);
+    disconnect(m_door,&Door::personApproved,this, &MainWindow::onDoorAccessGranted);
+    disconnect(m_door,&Door::personNotApproved,this, &MainWindow::onDoorAccessDenied);
+    disconnect(m_door,&Door::noAnswer,this, &MainWindow::onDoorNoAnswer);
+
+    QCamera* doorCamera = dynamic_cast<QCamera*>(m_configControl.getSensorByName(DOORCAMERA_NAME));
+
+    if (doorCamera != nullptr)
+    {
+        doorCamera->enableFaceDetection(false);
+        disconnect(m_door,&Door::imageWithFaceIsAvailable, this, &MainWindow::onDoorImageWithFaceIsAvailable);
+    }
+    else
+    {
+        qCritical () << "DoorCamera not found";
+    }
+
+
+
+    ui->btnApprove->setEnabled(false);
+    ui->btnNotApprove->setEnabled(false);
+    ui->btnReset->setEnabled(false);
+    QCameraWidget *widget = dynamic_cast<QCameraWidget*>(ui->doorCameraWidget);
+    widget->clear();
+
+
+
 }
 
 void MainWindow::loadFaceDetectionSettings()
@@ -339,7 +370,14 @@ void MainWindow::on_actionInit_sensors_triggered()
 
 void MainWindow::on_actionInit_door_triggered()
 {
-    initDoorSetup();
+    qDebug() << "Arming door alarm";
+    armDoor();
+}
+
+void MainWindow::on_actionDisarm_door_alarm_triggered()
+{
+    qDebug() << "Disarming door alarm";
+    disarmDoor();
 }
 
 void MainWindow::on_btnApprove_clicked()

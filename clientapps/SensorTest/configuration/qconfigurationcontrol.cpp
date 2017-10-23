@@ -117,7 +117,7 @@ void QConfigurationControl::onSensorListReceived(const QList<SensorData> list)
             qDebug() << "Added " << item.getName();
         }
 
-        if (item.getType() == "ImageValue")
+        if (item.getValueType() == "ImageValue")
         {
             QCamera *eventedCamera = new QCamera(m_mqClient, m_apiClient, item.getName(),true,item.IsReadOnly(),m_faceVerifier,parent());
             m_sensors.append(eventedCamera);
