@@ -42,6 +42,20 @@
         }
     },
     {
+        "Type": "KakuSwitch",
+        "IsAggegrate": false,
+        "Parameters": {
+            "OnCommand": 1,
+            "OffCommand": 0,
+            "Name": "Dimmer",
+            "DisplayName": "Dimmer",
+            "Category": "Switch",
+            "Description": "Fan",
+            "DeviceId": 0x010101,
+            "UnitCode": 4
+        }
+    },
+    {
         "Type": "KakuReadOnlySwitch",
         "IsAggegrate": false,
         "Parameters": {
@@ -68,5 +82,7 @@
             "Username": "visitor",
             "Password": "visitor"
         }
-    }
+    },
+    {"Type":"FruitTempSensorHighAccuracy","IsAggegrate":false,"Parameters":{"SensorId":255,"Name":"TempDesk","DisplayName":"Desk temperature","Category":"Overig","Description":"Temperature at my desk"}},
+    {"Type":"FruitHumiditySensorHighAccuracy","IsAggegrate":false,"Parameters":{"SensorId":254,"Name":"HumidityDesk","DisplayName":"Desk humidity","Category":"Overig","Description":"Humidity at my desk"}}
 ]
