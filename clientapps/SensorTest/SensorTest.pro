@@ -42,7 +42,8 @@ SOURCES += \
     configuration/facedetectionsettings/facedetectionsetting.cpp \
     statemachine/DoorMachine_sm.cpp \
     statemachine/door.cpp \    
-    apimanager/fruithapapi.cpp
+    apimanager/fruithapapi.cpp \
+    sensor/qvaluesensor.cpp
 
 
 
@@ -80,7 +81,8 @@ HEADERS  += \
     statemachine/DoorMachine_sm.h \
     statemachine/door.h \    
     statemachine/statemap.h \
-    apimanager/fruithapapi.h
+    apimanager/fruithapapi.h \
+    sensor/qvaluesensor.h
 
 FORMS += \
     mainwindow.ui \

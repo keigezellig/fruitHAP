@@ -71,7 +71,7 @@ void QConfigurationControl::handleConfigurationMessage(QJsonArray responseObject
         foreach(auto sensor, responseObject)
         {
             QJsonObject sensorObject = sensor.toObject();
-            SensorData data(sensorObject["Name"].toString(),sensorObject["Category"].toString(), sensorObject["Type"].toString(), sensorObject["Type"].toString().contains("ReadOnly") );
+            SensorData data(sensorObject["Name"].toString(),sensorObject["Category"].toString(), sensorObject["Type"].toString(), sensorObject["ValueType"].toString(), sensorObject["Type"].toString().contains("ReadOnly") );
             sensorDataList.append(data);
 
         }
@@ -109,25 +109,15 @@ void QConfigurationControl::onSensorListReceived(const QList<SensorData> list)
 
     foreach (SensorData item, list)
     {
-        if (item.getCategory() == "Switch")
+        if (item.getValueType() == "OnOffValue")
         {
             QSwitch *eventedSwitch = new QSwitch(m_mqClient, m_apiClient, item.getName(),true,item.IsReadOnly(),parent());
             //connect(eventedSwitch, &QSwitch::errorEventReceived, this, &MainWindow::onErrorReceived);            
             m_sensors.append(eventedSwitch);
             qDebug() << "Added " << item.getName();
-
-
         }
 
-
-        if( (item.getType() == "ButtonWithCameraSensor") || (item.getType() == "SwitchWithCameraSensor"))
-        {
-            QCamera *eventedCamera = new QCamera(m_mqClient, m_apiClient, item.getName(),false,item.IsReadOnly(),m_faceVerifier,parent());
-            m_sensors.append(eventedCamera);
-            qDebug() << "Added " << item.getName();
-        }
-
-        if (item.getType() == "Camera")
+        if (item.getType() == "ImageValue")
         {
             QCamera *eventedCamera = new QCamera(m_mqClient, m_apiClient, item.getName(),true,item.IsReadOnly(),m_faceVerifier,parent());
             m_sensors.append(eventedCamera);

@@ -45,7 +45,7 @@
              <x>0</x>
              <y>0</y>
              <width>1154</width>
-             <height>530</height>
+             <height>539</height>
             </rect>
            </property>
           </widget>
@@ -71,8 +71,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>98</width>
-             <height>28</height>
+             <width>1154</width>
+             <height>539</height>
             </rect>
            </property>
           </widget>
@@ -144,7 +144,7 @@
      <x>0</x>
      <y>0</y>
      <width>1196</width>
-     <height>27</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -156,6 +156,7 @@
     <addaction name="separator"/>
     <addaction name="actionInit_sensors"/>
     <addaction name="actionInit_door"/>
+    <addaction name="actionDisarm_door_alarm"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -213,7 +214,15 @@
   </action>
   <action name="actionInit_door">
    <property name="text">
-    <string>Init door</string>
+    <string>Arm door alarm</string>
+   </property>
+   <property name="toolTip">
+    <string>Arm door alarm</string>
+   </property>
+  </action>
+  <action name="actionDisarm_door_alarm">
+   <property name="text">
+    <string>Disarm door alarm</string>
    </property>
   </action>
  </widget>
